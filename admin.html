@@ -3,17 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
     <title>SR Editer — Console Admin</title>
+    <link rel="icon" type="image/png" href="assets/logo_small.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="js/theme.js"></script>
-    <link rel="stylesheet" href="styles/tokens.css" />
-    <link rel="stylesheet" href="styles/base.css" />
-    <link rel="stylesheet" href="styles/admin.css" />
+    <script src="js/theme.js?v=0.3.0"></script>
+    <link rel="stylesheet" href="styles/tokens.css?v=0.3.0" />
+    <link rel="stylesheet" href="styles/base.css?v=0.3.0" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.3.0" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -193,7 +195,7 @@
                 </div>
                 <div class="field">
                   <label for="manage-password">Mot de passe (Compte de connexion)</label>
-                  <input type="password" id="manage-password" required placeholder="Min. 6 caractères" style="width:100%;" />
+                  <input type="password" id="manage-password" required minlength="8" autocomplete="new-password" placeholder="Min. 8 caractères" style="width:100%;" />
                 </div>
                 <div class="field">
                   <label for="manage-role">Rôle</label>
@@ -386,9 +388,9 @@
       </div>
     </div>
 
-    <script src="js/wallpapers.js"></script>
-    <script src="js/config.js"></script>
-    <script src="js/admin.js"></script>
+    <script src="js/wallpapers.js?v=0.3.0"></script>
+    <script src="js/config.js?v=0.3.0"></script>
+    <script src="js/admin.js?v=0.3.0"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));

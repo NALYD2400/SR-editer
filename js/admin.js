@@ -1,17 +1,11 @@
 (function initAdminDashboard() {
   const config = window.SR_CONFIG || {};
   let supabase = null;
-  let tempSupabase = null;
+  let usersCache = [];
+  const demoMode = config.demoMode === true;
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
     supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
-    tempSupabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-        detectSessionInUrl: false
-      }
-    });
   }
 
   const loginView = document.getElementById("login-view");
@@ -36,6 +30,37 @@
     dashboardView.hidden = true;
   }
 
+  function showLoginError(message) {
+    if (!loginError) return;
+    loginError.textContent = message;
+    loginError.hidden = false;
+  }
+
+  async function adminRequest(action, payload = {}) {
+    if (!supabase) throw new Error("Supabase n'est pas configuré.");
+    const functionName = config.adminFunctionName || "admin-users";
+    const { data, error } = await supabase.functions.invoke(functionName, {
+      body: { action, ...payload }
+    });
+    if (error) throw new Error(error.message || "Service administrateur indisponible.");
+    if (!data?.ok) throw new Error(data?.error || "Action administrateur refusée.");
+    return data;
+  }
+
+  async function requireAdminAccess(email) {
+    try {
+      const result = await adminRequest("me");
+      if (result.profile?.role !== "admin") throw new Error("Ce compte n'a pas le rôle administrateur.");
+      showDashboard(email);
+      return true;
+    } catch (reason) {
+      await supabase?.auth.signOut();
+      showLogin();
+      showLoginError(String(reason).replace(/^Error:\s*/i, ""));
+      return false;
+    }
+  }
+
   function showDashboard(email) {
     loginView.hidden = true;
     dashboardView.hidden = false;
@@ -50,7 +75,7 @@
     }
     const { data } = await supabase.auth.getSession();
     if (data.session?.user?.email) {
-      showDashboard(data.session.user.email);
+      await requireAdminAccess(data.session.user.email);
     } else {
       showLogin();
     }
@@ -63,19 +88,16 @@
     const password = document.getElementById("login-password").value;
 
     if (!supabase) {
-      loginError.textContent = "Supabase non configuré — édite js/config.js";
-      loginError.hidden = false;
+      showLoginError("Supabase non configuré — édite js/config.js");
       return;
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error || !data.session) {
-      loginError.textContent = error?.message || "Connexion refusée.";
-      loginError.hidden = false;
+      showLoginError(error?.message || "Connexion refusée.");
       return;
     }
-    showDashboard(data.session.user.email);
-    addLog("s", `Connexion admin : ${email}`);
+    if (await requireAdminAccess(data.session.user.email)) addLog("s", `Connexion admin : ${email}`);
   });
 
   logoutBtn?.addEventListener("click", async () => {
@@ -115,13 +137,17 @@
     let users = [];
 
     if (supabase) {
-      const res = await supabase.from("profiles").select("email, created_at, role, write_mode").limit(50);
-      if (!res.error && res.data?.length) {
-        users = res.data;
+      try {
+        const result = await adminRequest("list");
+        users = result.users || [];
+      } catch (reason) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">${escapeHtml(String(reason).replace(/^Error:\s*/i, ""))}</td></tr>`;
+        if (countEl) countEl.textContent = "—";
+        return;
       }
     }
 
-    if (users.length === 0) {
+    if (!supabase && demoMode && users.length === 0) {
       const mockStorage = sessionStorage.getItem("sr_mock_profiles");
       if (mockStorage) {
         users = JSON.parse(mockStorage);
@@ -134,6 +160,8 @@
         sessionStorage.setItem("sr_mock_profiles", JSON.stringify(users));
       }
     }
+
+    usersCache = users;
 
     // Filter by search query
     const searchInput = document.getElementById("users-search");
@@ -162,10 +190,12 @@
         <td>${escapeHtml(user.write_mode || "direct")}</td>
         <td><span class="role-pill ${user.role || "membre"}">${escapeHtml(user.role || "membre")}</span></td>
         <td style="text-align: right;">
-          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 10px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.06); font-weight:600;" onclick="viewUserDetail('${escapeHtml(user.email)}')">Consulter</button>
-          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 10px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);" onclick="deleteUser('${escapeHtml(user.email)}')">Supprimer</button>
+          <button type="button" class="btn btn-ghost btn-sm view-user-btn" style="padding: 4px 10px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.06); font-weight:600;">Consulter</button>
+          <button type="button" class="btn btn-ghost btn-sm delete-user-btn" style="padding: 4px 10px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);">Supprimer</button>
         </td>
       `;
+      tr.querySelector(".view-user-btn")?.addEventListener("click", () => window.viewUserDetail(user.email));
+      tr.querySelector(".delete-user-btn")?.addEventListener("click", () => window.deleteUser(user.email));
       tbody.appendChild(tr);
     });
 
@@ -174,10 +204,7 @@
 
   // Detailed profile page view
   window.viewUserDetail = (email) => {
-    // Get profiles from cache/storage
-    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
-    let users = mockStorage ? JSON.parse(mockStorage) : [];
-    let user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    let user = usersCache.find(u => u.email.toLowerCase() === email.toLowerCase());
     
     if (!user) {
       user = { email, role: "membre", write_mode: "direct", created_at: new Date().toISOString() };
@@ -220,22 +247,20 @@
       };
     }
 
-    // User activity logs simulation
+    // Profile facts only: never fabricate user activity in a production console.
     const detailLogs = document.getElementById("detail-logs");
     if (detailLogs) {
+      const createdAt = user.created_at ? new Date(user.created_at).toLocaleString("fr-FR") : "Date inconnue";
       const activities = [
-        `[12:10:04] Session active : Connexion établie via Desktop`,
-        `[12:12:45] Explorateur : Consultation du fichier w_pi_combatpistol.ytd`,
-        `[12:14:10] Studio : Modification de 3 calques de texture (Mode ${user.write_mode === "direct" ? "Production" : "Brouillon"})`,
-        `[12:18:22] Viewport : Rendu de la prévisualisation 3D réussi`
+        { time: "Profil", description: `Créé le ${createdAt}` },
+        { time: "Rôle", description: user.role || "membre" },
+        { time: "Mode", description: user.write_mode === "direct" ? "Production" : "Brouillon" }
       ];
       if (user.role === "suspendu") {
-        activities.push(`[13:00:00] ALERTE : Accès révoqué, compte suspendu`);
+        activities.push({ time: "Accès", description: "Compte suspendu" });
       }
-      detailLogs.innerHTML = activities.map(line => {
-        const time = line.substring(0, 10);
-        const desc = line.substring(10);
-        return `<div class="log-line"><span class="t">${time}</span> ${escapeHtml(desc)}</div>`;
+      detailLogs.innerHTML = activities.map((activity) => {
+        return `<div class="log-line"><span class="t">${escapeHtml(activity.time)}</span> ${escapeHtml(activity.description)}</div>`;
       }).join("");
     }
 
@@ -249,41 +274,24 @@
         const mVal = modeSelect.value;
         addLog("i", `Enregistrement des modifications pour ${email}...`);
 
-        let success = false;
-        if (supabase) {
-          // Check if profile exists to avoid upsert conflict/400 errors
-          const { data: existing } = await supabase.from("profiles").select("email").eq("email", email).maybeSingle();
-          if (existing) {
-            // Update
-            const { error } = await supabase.from("profiles").update({ role: rVal, write_mode: mVal }).eq("email", email);
-            if (!error) success = true;
-            else addLog("e", `Erreur update DB : ${error.message}`);
+        try {
+          if (supabase) {
+            await adminRequest("update", { email, role: rVal, writeMode: mVal });
+          } else if (demoMode) {
+            const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+            const mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
+            const idx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+            if (idx >= 0) Object.assign(mockUsers[idx], { role: rVal, write_mode: mVal });
+            else mockUsers.push({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
+            sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
           } else {
-            // Insert
-            const { error } = await supabase.from("profiles").insert({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
-            if (!error) success = true;
-            else addLog("e", `Erreur insert DB : ${error.message}`);
+            throw new Error("Service administrateur non configuré.");
           }
-        }
-
-        // Update local sessionStorage cache
-        const mockStorage = sessionStorage.getItem("sr_mock_profiles");
-        let mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
-        const idx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-        if (idx >= 0) {
-          mockUsers[idx].role = rVal;
-          mockUsers[idx].write_mode = mVal;
-        } else {
-          mockUsers.push({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
-        }
-        sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
-
-        if (!supabase) success = true;
-
-        if (success) {
           addLog("s", `Compte mis à jour avec succès : ${email}`);
-          refreshUsers();
+          await refreshUsers();
           showPanel("users");
+        } catch (reason) {
+          addLog("e", String(reason).replace(/^Error:\s*/i, ""));
         }
       };
     }
@@ -304,32 +312,26 @@
     if (!confirm(`Supprimer le membre ${email} ?`)) return;
     addLog("i", `Suppression du membre : ${email}...`);
 
-    let success = false;
-    if (supabase) {
-      const { error } = await supabase.from("profiles").delete().eq("email", email);
-      if (!error) {
-        success = true;
+    try {
+      if (supabase) {
+        await adminRequest("delete", { email });
+      } else if (demoMode) {
+        const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+        const mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
+        sessionStorage.setItem("sr_mock_profiles", JSON.stringify(
+          mockUsers.filter(u => u.email.toLowerCase() !== email.toLowerCase())
+        ));
       } else {
-        addLog("e", `Erreur DB : ${error.message}`);
+        throw new Error("Service administrateur non configuré.");
       }
-    }
-
-    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
-    if (mockStorage) {
-      let mockUsers = JSON.parse(mockStorage);
-      mockUsers = mockUsers.filter(u => u.email.toLowerCase() !== email.toLowerCase());
-      sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
-    }
-
-    if (!supabase) success = true;
-
-    if (success) {
       addLog("s", `Membre supprimé : ${email}`);
-      refreshUsers();
+      await refreshUsers();
+    } catch (reason) {
+      addLog("e", String(reason).replace(/^Error:\s*/i, ""));
     }
   };
 
-  // Create or Update user form handler (using tempSupabase to create account and safe SELECT/INSERT to sync profile role)
+  // Account creation is delegated to the protected server-side Edge Function.
   document.getElementById("user-manage-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("manage-email").value.trim();
@@ -339,68 +341,23 @@
 
     addLog("i", `Création du compte d'accès pour ${email}...`);
 
-    let success = false;
-    let authCreated = false;
-
-    if (tempSupabase) {
-      // 1. Create the Auth Login Account (email + password)
-      const { data: authData, error: authError } = await tempSupabase.auth.signUp({
-        email,
-        password
-      });
-
-      if (authError) {
-        addLog("e", `Erreur d'inscription Auth : ${authError.message}`);
-        return;
-      }
-
-      authCreated = true;
-      addLog("s", `Compte d'accès Auth créé pour ${email}.`);
-    }
-
-    if (supabase) {
-      // 2. Sync their profile role & write mode in profiles table
-      const { data: existing } = await supabase.from("profiles").select("email").eq("email", email).maybeSingle();
-      if (existing) {
-        const { error } = await supabase.from("profiles").update({ role, write_mode }).eq("email", email);
-        if (!error) success = true;
-        else addLog("e", `Erreur de modification rôle DB : ${error.message}`);
+    try {
+      if (supabase) {
+        await adminRequest("create", { email, password, role, writeMode: write_mode });
+      } else if (demoMode) {
+        const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+        const mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
+        mockUsers.push({ email, created_at: new Date().toISOString(), role, write_mode });
+        sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
       } else {
-        const { error } = await supabase.from("profiles").insert({ email, role, write_mode, created_at: new Date().toISOString() });
-        if (!error) success = true;
-        else addLog("e", `Erreur d'insertion rôle DB : ${error.message}`);
+        throw new Error("Service administrateur non configuré.");
       }
-    }
-
-    // Always fallback/sync local sessionStorage mock profiles cache
-    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
-    let mockUsers = mockStorage ? JSON.parse(mockStorage) : [
-      { email: "d.robert.2400@gmail.com", created_at: new Date().toISOString(), role: "admin", write_mode: "direct" },
-      { email: "moderateur@sr-editer.fr", created_at: new Date().toISOString(), role: "moderateur", write_mode: "draft" },
-      { email: "testeur@sr-editer.fr", created_at: new Date().toISOString(), role: "membre", write_mode: "direct" }
-    ];
-
-    const existingIdx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-    if (existingIdx >= 0) {
-      mockUsers[existingIdx].role = role;
-      mockUsers[existingIdx].write_mode = write_mode;
-    } else {
-      mockUsers.push({
-        email,
-        created_at: new Date().toISOString(),
-        role,
-        write_mode
-      });
-    }
-    sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
-
-    if (!supabase) success = true;
-
-    if (success) {
       addLog("s", `Membre entièrement configuré : ${email} (${role}, ${write_mode})`);
       document.getElementById("manage-email").value = "";
       document.getElementById("manage-password").value = "";
-      refreshUsers();
+      await refreshUsers();
+    } catch (reason) {
+      addLog("e", String(reason).replace(/^Error:\s*/i, ""));
     }
   });
 
@@ -413,15 +370,7 @@
     const versionEl = document.getElementById("kpi-version");
     const pingEl = document.getElementById("kpi-ping");
     if (versionEl) versionEl.textContent = `v${config.appVersion || "0.3.0"}`;
-    if (pingEl) {
-      const ping = Math.floor(Math.random() * 18) + 14;
-      pingEl.textContent = `${ping} ms`;
-    }
-
-    const bars = document.querySelectorAll(".chart-bar");
-    bars.forEach((bar) => {
-      bar.style.height = `${20 + Math.random() * 80}%`;
-    });
+    if (pingEl) pingEl.textContent = supabase ? "API active" : demoMode ? "Mode démo" : "Non configuré";
   }
 
   function addLog(type, message) {

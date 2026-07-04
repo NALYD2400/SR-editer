@@ -8,10 +8,22 @@
   const mosaicTrack = document.getElementById("mosaic-track");
   const cycleBtn = document.getElementById("cycle-ambiance");
   const versionBadge = document.getElementById("app-version");
-  const downloadBtn = document.getElementById("download-btn");
+  const downloadLinks = ["download-btn", "download-btn-2", "download-nav"]
+    .map((id) => document.getElementById(id))
+    .filter(Boolean);
 
   if (versionBadge && config.appVersion) versionBadge.textContent = `v${config.appVersion}`;
-  if (downloadBtn && config.downloadUrl) downloadBtn.href = config.downloadUrl;
+  downloadLinks.forEach((link) => {
+    if (config.downloadUrl) {
+      link.href = config.downloadUrl;
+      link.removeAttribute("aria-disabled");
+      return;
+    }
+    link.removeAttribute("href");
+    link.setAttribute("aria-disabled", "true");
+    link.title = "La release publique signée n'est pas encore disponible.";
+    link.textContent = "Bientôt disponible";
+  });
 
   document.querySelectorAll(".bento-card[data-bg]").forEach((card) => {
     const file = card.getAttribute("data-bg");
@@ -38,7 +50,8 @@
   }
 
   if (mosaicTrack) {
-    const mosaicFiles = wallpapers.filter((_, i) => i % 2 === 0);
+    // Une sélection courte évite de décoder des dizaines d'images 1080p sur la landing page.
+    const mosaicFiles = wallpapers.filter((_, index) => index % 5 === 0).slice(0, 12);
     mosaicFiles.forEach((file) => {
       const card = document.createElement("article");
       card.className = "mosaic-card";
@@ -46,6 +59,7 @@
       img.src = url(file);
       img.alt = "Visuel Vice City";
       img.loading = "lazy";
+      img.decoding = "async";
       card.appendChild(img);
       mosaicTrack.appendChild(card);
     });
