@@ -3,415 +3,484 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SR Editer — Éditeur de Textures & Explorateur RPF GTA V / FiveM</title>
+    <title>SR Editer — Atelier d'Assets GTA V & FiveM</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <style>
-      /* Layout overrides for a clean, premium, scrollable landing page */
+      /* 10K Euros Apple-style Layout */
       body {
+        overflow-x: hidden;
         overflow-y: auto !important;
-        background: #06040a;
+        background: #030206;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        color: var(--text);
+        color: #f6f4fa;
         margin: 0;
         padding: 0;
       }
 
-      /* Dynamic background cycle */
-      .landing-bg {
+      /* Apple Frosted Glass Ambient Wallpaper Background */
+      .apple-bg-container {
         position: fixed;
         inset: 0;
         z-index: -2;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        transition: background-image 1.2s ease-in-out;
+        transition: background-image 1.6s cubic-bezier(0.25, 1, 0.5, 1);
       }
 
-      .landing-overlay {
+      .apple-glass-overlay {
         position: fixed;
         inset: 0;
         z-index: -1;
-        background: radial-gradient(circle at 50% 50%, rgba(13, 8, 34, 0.45) 0%, rgba(5, 3, 10, 0.95) 100%);
-        backdrop-filter: blur(15px);
-        -webkit-backdrop-filter: blur(15px);
+        background: radial-gradient(circle at 50% 30%, rgba(15, 11, 28, 0.4) 0%, rgba(3, 2, 6, 0.94) 100%);
+        backdrop-filter: blur(50px) saturate(190%);
+        -webkit-backdrop-filter: blur(50px) saturate(190%);
       }
 
-      /* Glow blobs */
-      .glow-blob {
+      .glow-orb {
         position: fixed;
-        width: 40vw;
-        height: 40vw;
+        width: 50vw;
+        height: 50vw;
         border-radius: 50%;
-        filter: blur(140px);
-        opacity: 0.15;
+        filter: blur(160px);
+        opacity: 0.12;
         z-index: -1;
         pointer-events: none;
+        animation: orbFloat 25s infinite alternate ease-in-out;
       }
-      .blob-1 { top: -10%; left: -10%; background: var(--accent); }
-      .blob-2 { bottom: -10%; right: -10%; background: var(--blue); }
+      .orb-1 { top: -20%; left: -10%; background: #ff477e; }
+      .orb-2 { bottom: -20%; right: -10%; background: #00a8cc; }
 
-      /* Sleek Top Navbar */
-      .navbar {
+      @keyframes orbFloat {
+        0% { transform: translate(0, 0) scale(1); }
+        100% { transform: translate(8%, 8%) scale(1.15); }
+      }
+
+      /* Header Navbar */
+      .apple-navbar {
         position: sticky;
         top: 0;
-        left: 0;
-        right: 0;
-        height: 70px;
+        height: 64px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 0 40px;
-        background: rgba(10, 8, 16, 0.35);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        padding: 0 6%;
+        background: rgba(10, 8, 18, 0.4);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        z-index: 100;
+        z-index: 1000;
       }
 
-      .nav-logo {
+      .apple-brand {
         display: flex;
         align-items: center;
         gap: 12px;
         text-decoration: none;
       }
 
-      .nav-logo img {
-        height: 32px;
+      .apple-brand img {
+        height: 28px;
       }
 
-      .nav-logo span {
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 700;
-        font-size: 16px;
+      .apple-brand span {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 18px;
         color: #fff;
-        letter-spacing: 0.05em;
+        letter-spacing: -0.02em;
       }
 
-      .nav-links {
+      .apple-nav-menu {
         display: flex;
         align-items: center;
-        gap: 30px;
+        gap: 36px;
       }
 
-      .nav-links a {
-        color: var(--text-soft);
+      .apple-nav-link {
+        color: rgba(255, 255, 255, 0.65);
         text-decoration: none;
-        font-size: 13px;
+        font-size: 13.5px;
         font-weight: 500;
-        transition: color 0.2s;
+        transition: color 0.25s ease;
       }
 
-      .nav-links a:hover {
-        color: var(--accent);
+      .apple-nav-link:hover {
+        color: #fff;
       }
 
       /* Hero Section */
-      .hero {
-        max-width: 1100px;
+      .apple-hero {
+        max-width: 1000px;
         margin: 0 auto;
-        padding: 100px 24px 60px 24px;
+        padding: 90px 24px 80px 24px;
         text-align: center;
         display: flex;
         flex-direction: column;
         align-items: center;
+        z-index: 10;
+        position: relative;
       }
 
-      .hero-badge {
-        background: rgba(255, 71, 126, 0.1);
-        border: 1px solid rgba(255, 71, 126, 0.25);
-        color: var(--accent);
-        padding: 6px 14px;
+      .apple-badge {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: #fff;
+        padding: 6px 16px;
         border-radius: 99px;
         font-size: 11px;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
+        font-weight: 600;
+        letter-spacing: 0.05em;
         margin-bottom: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
       }
 
-      .hero h1 {
-        font-family: 'Orbitron', sans-serif;
-        font-weight: 900;
-        font-size: clamp(32px, 5vw, 54px);
-        line-height: 1.15;
-        letter-spacing: -0.01em;
-        margin: 0 0 20px 0;
-        background: linear-gradient(135deg, #fff 40%, rgba(255, 255, 255, 0.7));
+      .apple-badge .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #58dba0;
+        box-shadow: 0 0 8px #58dba0;
+      }
+
+      .apple-hero h1 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: clamp(38px, 6.5vw, 68px);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        margin: 0 0 24px 0;
+        background: linear-gradient(180deg, #ffffff 30%, #a699c2 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
       }
 
-      .hero p {
-        font-size: clamp(14px, 2vw, 17px);
-        color: var(--text-soft);
+      .apple-hero p {
+        font-size: clamp(15px, 2.2vw, 19px);
+        color: rgba(255, 255, 255, 0.65);
         max-width: 680px;
         line-height: 1.6;
-        margin: 0 0 36px 0;
+        margin: 0 0 40px 0;
+        font-weight: 400;
       }
 
-      .hero-actions {
+      .apple-actions {
         display: flex;
         gap: 16px;
-        margin-bottom: 60px;
+        margin-bottom: 70px;
         flex-wrap: wrap;
         justify-content: center;
       }
 
-      .hero-showcase {
-        width: 100%;
-        max-width: 900px;
-        border-radius: var(--radius-shell);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(10, 8, 18, 0.45);
-        padding: 8px;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      .apple-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 14px 32px;
+        border-radius: 99px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 14px;
+        text-decoration: none;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        cursor: pointer;
       }
 
-      .hero-showcase img {
+      .apple-btn.primary {
+        background: #ffffff;
+        color: #030206;
+        box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+      }
+
+      .apple-btn.primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
+        background: #f6f4fa;
+      }
+
+      .apple-btn.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .apple-btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
+      }
+
+      /* Apple Device Frame Showcase */
+      .apple-frame-wrapper {
         width: 100%;
-        border-radius: var(--radius-md);
+        max-width: 950px;
+        perspective: 1000px;
+      }
+
+      .apple-device-frame {
+        width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(15, 11, 28, 0.3);
+        padding: 6px;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.65), 0 0 100px rgba(255, 71, 126, 0.05);
+        transform: rotateX(2deg);
+        transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .apple-device-frame:hover {
+        transform: rotateX(0deg) scale(1.01);
+      }
+
+      .apple-device-content {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .apple-device-content img {
+        width: 100%;
         display: block;
       }
 
-      /* Features Grid */
-      .features-section {
+      /* Features Showcase */
+      .apple-features {
         max-width: 1100px;
         margin: 0 auto;
-        padding: 60px 24px;
+        padding: 80px 24px;
       }
 
-      .section-header {
-        text-align: center;
-        margin-bottom: 48px;
-      }
-
-      .section-header h2 {
-        font-family: 'Orbitron', sans-serif;
-        font-size: 28px;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        margin-bottom: 12px;
-      }
-
-      .section-header p {
-        color: var(--muted);
-        font-size: 14px;
-      }
-
-      .features-grid {
+      .apple-features-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+      }
+
+      .apple-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 24px;
+        padding: 40px;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+        flex-direction: column;
         gap: 20px;
       }
 
-      .feature-card {
-        background: rgba(15, 12, 24, 0.4);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: var(--radius-lg);
-        padding: 30px;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-
-      .feature-card:hover {
-        border-color: rgba(255, 71, 126, 0.25);
+      .apple-card:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 255, 255, 0.08);
         transform: translateY(-4px);
-        background: rgba(20, 16, 32, 0.45);
       }
 
-      .feature-icon {
-        width: 42px;
-        height: 42px;
-        border-radius: var(--radius-md);
-        background: rgba(255, 71, 126, 0.1);
+      .apple-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: var(--accent);
+        color: #fff;
       }
 
-      .feature-card h3 {
-        font-size: 16px;
+      .apple-card h3 {
+        font-family: 'Outfit', sans-serif;
+        font-size: 19px;
         font-weight: 700;
         margin: 0;
+        color: #fff;
+        letter-spacing: -0.01em;
       }
 
-      .feature-card p {
-        color: var(--text-soft);
-        font-size: 13px;
+      .apple-card p {
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 13.5px;
         line-height: 1.6;
         margin: 0;
       }
 
-      /* Footer */
-      .footer {
+      /* Apple Minimalist Footer */
+      .apple-footer {
         border-top: 1px solid rgba(255, 255, 255, 0.05);
-        padding: 40px 24px;
+        padding: 50px 24px;
         text-align: center;
-        background: rgba(6, 4, 10, 0.8);
-        font-size: 12px;
-        color: var(--muted);
+        background: rgba(3, 2, 6, 0.85);
+        font-size: 12.5px;
+        color: rgba(255, 255, 255, 0.4);
       }
 
-      .footer a {
-        color: var(--text-soft);
+      .apple-footer a {
+        color: rgba(255, 255, 255, 0.65);
         text-decoration: none;
         transition: color 0.2s;
+        margin: 0 10px;
       }
 
-      .footer a:hover {
-        color: var(--accent);
+      .apple-footer a:hover {
+        color: #fff;
       }
 
-      /* Wallpaper Cycle Button in Navbar */
-      .bg-cycle-btn {
-        background: rgba(255, 255, 255, 0.05);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: var(--radius-control);
-        color: var(--text);
-        padding: 6px 12px;
+      /* Float wallpaper control */
+      .wallpaper-float-control {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 8px 16px;
+        border-radius: 99px;
         font-size: 11px;
+        color: rgba(255, 255, 255, 0.8);
         cursor: pointer;
         display: flex;
         align-items: center;
         gap: 8px;
+        z-index: 999;
         transition: all 0.2s;
       }
 
-      .bg-cycle-btn:hover {
+      .wallpaper-float-control:hover {
         background: rgba(255, 255, 255, 0.1);
-        border-color: rgba(255, 255, 255, 0.2);
+        transform: scale(1.05);
       }
     </style>
   </head>
   <body>
-    <!-- Background layers -->
-    <div class="landing-bg" id="landing-background"></div>
-    <div class="landing-overlay"></div>
+    <!-- Apple Ambient background -->
+    <div class="apple-bg-container" id="apple-background"></div>
+    <div class="apple-glass-overlay"></div>
     
-    <div class="glow-blob blob-1"></div>
-    <div class="glow-blob blob-2"></div>
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
 
-    <!-- Navigation Bar -->
-    <nav class="navbar">
-      <a href="#" class="nav-logo">
+    <!-- Apple-style Navigation Bar -->
+    <nav class="apple-navbar">
+      <a href="#" class="apple-brand">
         <img src="assets/logo_small.png" alt="SR Logo" />
         <span>SR Editer</span>
       </a>
 
-      <div class="nav-links">
-        <a href="#features">Fonctionnalités</a>
-        <a href="#downloads">Téléchargement</a>
-        <a href="admin.html">Console Admin</a>
-        <button class="bg-cycle-btn" id="cycle-bg-btn" title="Changer d'arrière-plan">
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
-          Changer d'ambiance
-        </button>
-        <a href="https://github.com/NALYD2400/SR-editer" class="button secondary" style="padding: 6px 14px; font-size: 11px;" target="_blank">
+      <div class="apple-nav-menu">
+        <a href="#features" class="apple-nav-link">Fonctionnalités</a>
+        <a href="#downloads" class="apple-nav-link">Téléchargement</a>
+        <a href="admin.html" class="apple-nav-link">Console Admin</a>
+        <a href="https://github.com/NALYD2400/SR-editer" class="apple-btn secondary" style="padding: 6px 16px; font-size: 12px; border-radius: 99px;" target="_blank">
           GitHub
         </a>
       </div>
     </nav>
 
-    <!-- Hero Showcase Section -->
-    <header class="hero">
-      <span class="hero-badge">Release v0.3.0 stable</span>
-      <h1>L'Atelier d'Assets RPF Ultime<br>pour GTA V & FiveM</h1>
+    <!-- Apple Hero Section -->
+    <header class="apple-hero">
+      <div class="apple-badge">
+        <span class="dot"></span>
+        Production Stable v0.3.0
+      </div>
+      <h1>L'atelier d'assets ultime pour<br>GTA V & FiveM</h1>
       <p>
-        Modifiez vos fichiers de textures YTD/YDD/YFT de manière fluide, performante et instantanée. Conçu pour les moddeurs de GTA V et de serveurs FiveM.
+        Modifiez vos textures YTD/YDD/YFT instantanément. Conçu avec des outils professionnels natifs de décodage RSC7 et de traitement 2D par calques pour moddeurs exigeants.
       </p>
 
-      <div class="hero-actions" id="downloads">
-        <a href="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" class="button primary" style="padding: 12px 28px; font-size: 14px;">
-          Télécharger l'Installateur (.ZIP)
+      <div class="apple-actions" id="downloads">
+        <a href="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" class="apple-btn primary">
+          Télécharger l'Installateur (ZIP)
         </a>
-        <a href="update.json" class="button secondary" style="padding: 12px 24px; font-size: 14px;" target="_blank">
-          Consulter update.json
+        <a href="update.json" class="apple-btn secondary" target="_blank">
+          update.json
         </a>
       </div>
 
-      <div class="hero-showcase">
-        <img src="assets/image_modifiee (2).png" alt="Aperçu du logiciel SR Editer" />
+      <div class="apple-frame-wrapper">
+        <div class="apple-device-frame">
+          <div class="apple-device-content">
+            <img src="assets/image_modifiee (2).png" alt="Interface de SR Editer" />
+          </div>
+        </div>
       </div>
     </header>
 
-    <!-- Features Grid Section -->
-    <section class="features-section" id="features">
-      <div class="section-header">
-        <h2>Conçu pour l'efficacité</h2>
-        <p>Gagnez du temps grâce à des outils natifs pensés pour le workflow de modding.</p>
-      </div>
-
-      <div class="features-grid">
+    <!-- Apple Features Grid -->
+    <section class="apple-features" id="features">
+      <div class="apple-features-grid">
         <!-- Card 1 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m10 15 5-3-5-3v6z"/></svg>
+        <div class="apple-card">
+          <div class="apple-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
           </div>
           <h3>Texture Studio Complet</h3>
-          <p>Éditez vos textures en direct avec un système de calques 2D, gestion d'opacité, masquage et retouches d'alpha.</p>
+          <p>Éditez en direct avec un système complet de gestion de calques 2D, masquage de couches alpha et prévisualisation 3D temps réel.</p>
         </div>
 
         <!-- Card 2 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        <div class="apple-card">
+          <div class="apple-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m7.5 4.27 9 5.15a2 2 0 0 1 0 3.48l-9 5.15A2 2 0 0 1 4.5 16.3V7.7a2 2 0 0 1 3-1.73Z"/><path d="M20 5v14"/></svg>
           </div>
           <h3>Explorateur RPF Intégré</h3>
-          <p>Parcourez directement vos archives de jeu (YTD, YDR, YFT, ODR) en local avec recherche instantanée et filtres intelligents.</p>
+          <p>Parcourez et filtrez instantanément les fichiers internes de vos dossiers de mods grâce à une indexation locale optimisée.</p>
         </div>
 
         <!-- Card 3 -->
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 16 4-4-4-4"/><path d="m6 8-4 4 4 4"/><path d="m14.5 4-5 16"/></svg>
+        <div class="apple-card">
+          <div class="apple-card-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg>
           </div>
-          <h3>Décodage RSC7 Natif</h3>
-          <p>Ouverture et extraction instantanées des fichiers compressés RSC7 sans temps de chargement fastidieux.</p>
+          <h3>Moteur RSC7 Natif</h3>
+          <p>Gérez et décompressez vos assets en direct à vitesse maximale, éliminant les temps de chargement des outils traditionnels.</p>
         </div>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p>© 2026 SR Editer. Tous droits réservés. Développé pour GTA V et FiveM.</p>
-      <p style="margin-top: 8px;">
-        <a href="admin.html">Accéder à la console d'administration (Supabase Link)</a>
-      </p>
+    <!-- Apple Footer -->
+    <footer class="apple-footer">
+      <p>© 2026 SR Editer. Conçu pour le modding GTA V et FiveM.</p>
+      <div style="margin-top: 14px;">
+        <a href="admin.html">Accéder à la Console Admin</a>
+        <span style="opacity: 0.3;">•</span>
+        <a href="https://github.com/NALYD2400/SR-editer" target="_blank">Dépôt GitHub</a>
+      </div>
     </footer>
 
+    <!-- Floating ambiance button -->
+    <div class="wallpaper-float-control" id="cycle-wallpapers-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 1-9 9m9-9a9 9 0 0 0-9-9m9 9H3m9 9a9 9 0 0 1-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 0 1 9-9"/></svg>
+      Changer l'ambiance
+    </div>
+
     <script>
-      // List of GTA wallpapers from the folder
-      const wallpapers = [];
+      // Load wallpapers dynamically from public assets directory
+      const wallpapersList = [];
       for (let i = 1; i <= 61; i++) {
-        wallpapers.push(`assets/wallpapers/${i}.avif`);
+        wallpapersList.push(`assets/wallpapers/${i}.avif`);
       }
 
-      const bgElement = document.getElementById('landing-background');
-      const cycleBtn = document.getElementById('cycle-bg-btn');
+      const bgLayer = document.getElementById('apple-background');
+      const cycleBtn = document.getElementById('cycle-wallpapers-btn');
 
-      // Initialize background image
-      let currentIndex = parseInt(localStorage.getItem('sr_selected_bg') || '0', 10);
-      if (isNaN(currentIndex) || currentIndex < 0 || currentIndex >= wallpapers.length) {
-        currentIndex = 12; // Beautiful default GTA VI wallpaper
+      let currentBgIndex = parseInt(localStorage.getItem('apple_selected_bg') || '0', 10);
+      if (isNaN(currentBgIndex) || currentBgIndex < 0 || currentBgIndex >= wallpapersList.length) {
+        currentBgIndex = 12; // High-quality default wallpaper
       }
 
-      function updateBackground() {
-        bgElement.style.backgroundImage = `url("${wallpapers[currentIndex]}")`;
-        localStorage.setItem('sr_selected_bg', currentIndex);
+      function updateAppleBackground() {
+        bgLayer.style.backgroundImage = `url("${wallpapersList[currentBgIndex]}")`;
+        localStorage.setItem('apple_selected_bg', currentBgIndex);
       }
 
-      updateBackground();
+      updateAppleBackground();
 
-      // Cycle background on button click
       cycleBtn.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % wallpapers.length;
-        updateBackground();
+        currentBgIndex = (currentBgIndex + 1) % wallpapersList.length;
+        updateAppleBackground();
       });
     </script>
   </body>

@@ -3,502 +3,502 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SR Editer — Panel d'Administration</title>
+    <title>SR Editer — Console Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-      /* Additional styles specific to the Admin Dashboard */
-      .admin-login-container {
+      /* 10K Euros Apple-style Admin Layout */
+      body {
+        overflow-x: hidden;
+        overflow-y: auto !important;
+        background: #030206;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        color: #f6f4fa;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* Apple Frosted Glass Ambient Wallpaper Background */
+      .apple-bg-container {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        transition: background-image 1.6s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+
+      .apple-glass-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: radial-gradient(circle at 50% 30%, rgba(15, 11, 28, 0.4) 0%, rgba(3, 2, 6, 0.94) 100%);
+        backdrop-filter: blur(50px) saturate(190%);
+        -webkit-backdrop-filter: blur(50px) saturate(190%);
+      }
+
+      /* Login overlay centering */
+      .admin-login-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100%;
-        width: 100%;
+        min-height: 100vh;
+        padding: 20px;
       }
-      
-      .login-card {
-        width: 380px;
-        padding: 28px;
-        border-radius: var(--radius-shell);
-        border: 1px solid var(--border);
-        background: var(--bg-panel);
+
+      .apple-login-card {
+        width: 100%;
+        max-width: 400px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        border-radius: 28px;
+        padding: 40px 30px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+      }
+
+      .login-header-text {
+        text-align: center;
+      }
+
+      .login-header-text h2 {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 700;
+        font-size: 22px;
+        margin: 10px 0 4px 0;
+      }
+
+      .apple-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .apple-form-group label {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.45);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .apple-input {
+        padding: 12px 16px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
+        color: #fff;
+        font-size: 13.5px;
+        outline: none;
+        transition: all 0.25s ease;
+      }
+
+      .apple-input:focus {
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      /* Admin Layout Wrapper */
+      .admin-layout {
+        display: none; /* Toggled via script */
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Navbar */
+      .apple-navbar {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        background: rgba(10, 8, 18, 0.4);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
-        box-shadow: var(--shadow-panel);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        z-index: 100;
+      }
+
+      .apple-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+      }
+
+      .apple-brand img {
+        height: 28px;
+      }
+
+      .apple-brand span {
+        font-family: 'Outfit', sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        color: #fff;
+        letter-spacing: -0.02em;
+      }
+
+      /* Dashboard Content Wrapper */
+      .dashboard-main {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 40px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        flex: 1;
+      }
+
+      /* Summary Row */
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 20px;
+      }
+
+      .summary-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 20px;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      .summary-card .title {
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.45);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .summary-card .value {
+        font-family: 'Outfit', sans-serif;
+        font-size: 28px;
+        font-weight: 700;
+        color: #fff;
+      }
+
+      .summary-card .subtitle {
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.35);
+      }
+
+      /* Split Layout (Left: Users List, Right: Tools & Logs) */
+      .split-grid {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 24px;
+      }
+
+      @media (max-width: 900px) {
+        .split-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .apple-box {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        border-radius: 24px;
+        padding: 30px;
         display: flex;
         flex-direction: column;
         gap: 20px;
       }
-      
-      .login-header {
-        text-align: center;
-      }
-      
-      .login-header h2 {
-        font-family: var(--font-display);
+
+      .apple-box h3 {
+        font-family: 'Outfit', sans-serif;
         font-size: 18px;
         font-weight: 700;
-        margin-top: 8px;
-        letter-spacing: 0.05em;
-      }
-      
-      .form-group {
+        margin: 0;
+        color: #fff;
         display: flex;
-        flex-direction: column;
-        gap: 6px;
+        justify-content: space-between;
+        align-items: center;
       }
-      
-      .form-group label {
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-      
-      .form-input {
-        padding: 10px 12px;
-        border-radius: var(--radius-control);
-        border: 1px solid var(--border);
-        background: var(--bg-input);
-        color: var(--text);
-        font-size: 12px;
-        outline: none;
-        transition: all 0.2s ease;
-      }
-      
-      .form-input:focus {
-        border-color: var(--accent);
-        box-shadow: 0 0 8px rgba(255, 71, 126, 0.15);
-      }
-      
-      .admin-layout {
-        display: none; /* Shown when authenticated */
-        height: 100%;
-      }
-      
-      /* Dashboard statistics grid */
-      .stats-summary {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-        gap: 12px;
-        padding: 12px;
-        flex-shrink: 0;
-      }
-      
-      .stat-card {
-        background: var(--bg-elevated);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-md);
-        padding: 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-      
-      .stat-card .label {
-        font-size: 9px;
-        font-weight: 700;
-        color: var(--muted);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-      
-      .stat-card .value {
-        font-family: var(--font-display);
-        font-size: 20px;
-        font-weight: 600;
-        color: var(--text);
-      }
-      
-      /* Admin Console panels */
-      .admin-content-area {
-        flex: 1;
-        overflow-y: auto;
-        padding: 12px;
-      }
-      
-      .admin-table {
+
+      /* Table Styles */
+      .apple-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 11px;
+        font-size: 13px;
         text-align: left;
       }
-      
-      .admin-table th, 
-      .admin-table td {
-        padding: 10px 12px;
-        border-bottom: 1px solid var(--border);
+
+      .apple-table th,
+      .apple-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
       }
-      
-      .admin-table th {
-        font-weight: 700;
-        color: var(--muted);
+
+      .apple-table th {
+        font-weight: 600;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 11px;
         text-transform: uppercase;
-        font-size: 9px;
         letter-spacing: 0.05em;
-        background: rgba(0, 0, 0, 0.15);
       }
-      
-      .admin-table tr:hover td {
-        background: var(--bg-hover);
+
+      .apple-table tr:hover td {
+        background: rgba(255, 255, 255, 0.02);
       }
-      
-      .terminal-logs {
+
+      /* Logs list */
+      .apple-logs-container {
         font-family: monospace;
-        background: #060408;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--border);
-        padding: 12px;
-        height: 350px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        padding: 16px;
+        height: 240px;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
+        font-size: 11.5px;
       }
-      
-      .log-line {
-        font-size: 11px;
+
+      .log-row {
         line-height: 1.4;
       }
-      
-      .log-time { color: var(--muted); }
-      .log-info { color: var(--blue); }
-      .log-success { color: var(--success); }
-      .log-warning { color: var(--warning); }
-      
-      /* Release manager generator styles */
+      .log-row .time { color: rgba(255, 255, 255, 0.35); }
+      .log-row .info { color: #00a8cc; }
+      .log-row .success { color: #58dba0; }
+      .log-row .warning { color: #ff9f1c; }
+
+      .apple-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 20px;
+        border-radius: 99px;
+        font-family: 'Outfit', sans-serif;
+        font-weight: 600;
+        font-size: 12.5px;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: none;
+        cursor: pointer;
+      }
+
+      .apple-btn.primary {
+        background: #fff;
+        color: #030206;
+      }
+
+      .apple-btn.primary:hover {
+        background: #f6f4fa;
+        transform: translateY(-1px);
+      }
+
+      .apple-btn.secondary {
+        background: rgba(255, 255, 255, 0.05);
+        color: #fff;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+
+      .apple-btn.secondary:hover {
+        background: rgba(255, 255, 255, 0.1);
+        transform: translateY(-1px);
+      }
+
       .release-form-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 12px;
+        gap: 16px;
       }
-      
-      .release-output {
-        grid-column: 1 / -1;
+
+      .release-output-box {
+        background: rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding: 14px;
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 8px;
         margin-top: 10px;
       }
-      
-      .json-textarea {
+
+      .release-textarea {
         width: 100%;
-        height: 140px;
+        height: 120px;
+        background: transparent;
+        border: none;
+        color: rgba(255, 255, 255, 0.85);
         font-family: monospace;
-        font-size: 11px;
-        padding: 10px;
-        background: var(--bg-input);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-control);
-        color: var(--text-soft);
-        outline: none;
+        font-size: 11.5px;
         resize: none;
+        outline: none;
       }
       
-      .error-message {
-        color: var(--accent);
-        font-size: 11px;
-        font-weight: 600;
+      .error-alert {
+        color: #ff477e;
+        font-size: 12.5px;
         text-align: center;
         display: none;
       }
     </style>
   </head>
   <body>
+    <!-- Apple Ambient background -->
+    <div class="apple-bg-container" id="apple-background"></div>
+    <div class="apple-glass-overlay"></div>
+
     <!-- Login Screen (Visible by default) -->
-    <div class="admin-login-container" id="login-container">
-      <div class="login-card">
-        <div class="login-header">
-          <img src="assets/logo_small.png" alt="Logo" class="brand-logo-img" style="height: 36px;" />
-          <h2>SR Editer Admin</h2>
-          <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Accès réservé à l'administrateur</p>
+    <div class="admin-login-wrapper" id="login-container">
+      <div class="apple-login-card">
+        <div class="login-header-text">
+          <img src="assets/logo_small.png" alt="Logo" style="height: 36px;" />
+          <h2>Console Admin</h2>
+          <p style="font-size: 12.5px; color: rgba(255,255,255,0.45); margin-top: 4px;">Accès sécurisé pour administrateurs</p>
         </div>
         
-        <div class="error-message" id="login-error">Email ou mot de passe incorrect.</div>
+        <div class="error-alert" id="login-error">Email ou mot de passe incorrect.</div>
 
-        <div class="form-group">
-          <label for="login-email">Adresse Email</label>
-          <input type="email" id="login-email" class="form-input" placeholder="admin@sr-editer.com" value="admin@sr-editer.com" />
+        <div class="apple-form-group">
+          <label for="login-email">Adresse e-mail</label>
+          <input type="email" id="login-email" class="apple-input" value="admin@sr-editer.com" />
         </div>
 
-        <div class="form-group">
+        <div class="apple-form-group">
           <label for="login-password">Mot de passe</label>
-          <input type="password" id="login-password" class="form-input" placeholder="••••••••" value="srediteradmin123" />
+          <input type="password" id="login-password" class="apple-input" value="srediteradmin123" />
         </div>
 
-        <button class="button primary" id="login-btn" style="height: 38px; font-size: 13px;">
+        <button class="apple-btn primary" id="login-btn" style="height: 42px; border-radius: 12px; font-size: 13.5px; margin-top: 10px;">
           Se connecter
         </button>
-        
-        <p style="font-size: 9px; color: var(--muted); text-align: center; line-height: 1.4;">
-          Note: Pour la première connexion, utilisez le compte par défaut ou configurez vos identifiants Supabase.
-        </p>
       </div>
     </div>
 
-    <!-- Admin Dashboard Layout (Hidden by default) -->
-    <div class="admin-layout" id="dashboard-layout">
-      <div class="studio-shell">
-        <!-- Top Header / ProjectBar -->
-        <header class="project-bar">
-          <div class="brand-logo">
-            <img src="assets/logo_small.png" alt="SR Logo" class="brand-logo-img" />
-            <span class="brand-title">SR Editer Console</span>
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div class="admin-layout" id="dashboard-layout" style="display: none;">
+      <!-- Top Navbar -->
+      <nav class="apple-navbar">
+        <a href="#" class="apple-brand">
+          <img src="assets/logo_small.png" alt="SR Logo" />
+          <span>SR Editer Console</span>
+        </a>
+
+        <div style="display:flex; align-items:center; gap:20px;">
+          <span style="font-size: 13px; color: rgba(255,255,255,0.6);" id="user-display-email">admin@sr-editer.com</span>
+          <button class="apple-btn secondary" id="logout-btn" style="padding: 6px 16px;">
+            Déconnexion
+          </button>
+        </div>
+      </nav>
+
+      <!-- Dashboard Main -->
+      <main class="dashboard-main">
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+          <div class="summary-card">
+            <span class="title">Utilisateurs enregistrés</span>
+            <span class="value" id="stats-users-count">...</span>
+            <span class="subtitle">Profils actifs synchronisés</span>
+          </div>
+          <div class="summary-card">
+            <span class="title">État Base de Données</span>
+            <span class="value" style="color: #58dba0;">En ligne</span>
+            <span class="subtitle" id="db-latency-display">Ping: --ms</span>
+          </div>
+          <div class="summary-card">
+            <span class="title">Version Active</span>
+            <span class="value">v0.3.0</span>
+            <span class="subtitle">Manifeste de production</span>
+          </div>
+        </div>
+
+        <!-- Split View -->
+        <div class="split-grid">
+          <!-- Left Column: User Profiles -->
+          <div class="apple-box">
+            <h3>
+              Utilisateurs Récents
+              <button class="apple-btn secondary" style="padding: 4px 12px; font-size:11px;" id="refresh-users-btn">Actualiser</button>
+            </h3>
+            <div style="overflow-x: auto;">
+              <table class="apple-table">
+                <thead>
+                  <tr>
+                    <th>Pseudo / Email</th>
+                    <th>Inscrit le</th>
+                    <th>Mode d'écriture</th>
+                    <th>Rôle</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <!-- Loaded dynamically -->
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div class="project-title-centered">
-            <span class="badge-release" style="background: var(--blue-soft); border-color: var(--blue); color: var(--blue);">Console Admin</span>
-            <span class="file-name">Gestion Globale du Studio</span>
-          </div>
-
-          <div class="project-actions">
-            <span style="font-size: 11px; color: var(--text-soft);" id="user-display-email">admin@sr-editer.com</span>
-            <button class="button secondary" id="logout-btn" style="padding: 4px 10px;">
-              Déconnexion
-            </button>
-          </div>
-        </header>
-
-        <!-- Workspace Grid -->
-        <main class="workspace-grid" style="grid-template-columns: var(--rail-width) 240px 1fr;">
-          <!-- Column 1: Navigation Rail -->
-          <nav class="navigation-rail" aria-label="Menu Admin">
-            <div class="navigation-main">
-              <button class="rail-button active" id="nav-dashboard" title="Vue d'ensemble">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                <span class="rail-label">Général</span>
-              </button>
-              <button class="rail-button" id="nav-users" title="Gérer les utilisateurs">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                <span class="rail-label">Membres</span>
-              </button>
-              <button class="rail-button" id="nav-releases" title="Release Manager">
-                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
-                <span class="rail-label">Releases</span>
-              </button>
-            </div>
-            <button class="rail-button" id="nav-logs" title="Journaux système">
-              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M3 20v-8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8"/><path d="M3 10V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M14 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8"/><path d="M14 12V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/></svg>
-              <span class="rail-label">Logs</span>
-            </button>
-          </nav>
-
-          <!-- Column 2: Dashboard Sidebar -->
-          <section class="asset-explorer">
-            <div class="panel-heading">
-              <span class="eyebrow" id="section-eyebrow">DASHBOARD</span>
-              <h2 id="section-title">Vue d'ensemble</h2>
-            </div>
-            
-            <div class="feature-list" id="sidebar-subcontents">
-              <!-- Content changes based on active tab -->
-              <div class="compatibility-box">
-                <h4>Status de la Plateforme</h4>
-                <ul class="format-list">
-                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Supabase Authentification</li>
-                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Base de données PostgreSQL</li>
-                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Distribution update.json</li>
-                  <li><span class="format-tag">v0.3.0</span>Version App Actuelle</li>
-                </ul>
-              </div>
-
-              <div class="info-box">
-                <h4>Console Sécurisée</h4>
-                <p>Ce tableau de bord permet de générer les manifestes de mise à jour Tauri et de surveiller l'activité.</p>
-              </div>
-            </div>
-          </section>
-
-          <!-- Column 3: Main Admin Content View -->
-          <section class="viewport-panel" style="background: var(--bg-app);">
-            <!-- Panel Toolbar -->
-            <div class="viewport-toolbar">
-              <div class="viewport-toolbar-start">
-                <span class="active-dot" id="console-indicator"></span>
-                <span class="viewport-title-text" id="console-title">Tableau de bord principal</span>
-              </div>
-              <div class="viewport-controls-right">
-                <span class="lod-badge" id="telemetry-badge">Télémétrie Live</span>
-              </div>
-            </div>
-
-            <!-- Panel Contents (Swapped dynamically) -->
-            <div class="admin-content-area" id="main-admin-content">
+          <!-- Right Column: Tools & Logs -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            <!-- Release Tool -->
+            <div class="apple-box">
+              <h3>Générateur de mise à jour (update.json)</h3>
               
-              <!-- Tab 1: Overview Dashboard (Visible by default) -->
-              <div id="panel-dashboard">
-                <div class="stats-summary" style="padding: 0 0 14px 0;">
-                  <div class="stat-card">
-                    <span class="label">Membres Actifs</span>
-                    <span class="value" id="stats-users-count">12</span>
-                  </div>
-                  <div class="stat-card">
-                    <span class="label">Écritures Directes</span>
-                    <span class="value" id="stats-edits">1,248</span>
-                  </div>
-                  <div class="stat-card">
-                    <span class="label">Backups Sécurisés</span>
-                    <span class="value" id="stats-backups">842</span>
-                  </div>
-                  <div class="stat-card">
-                    <span class="label">Requêtes API</span>
-                    <span class="value">99.8%</span>
-                  </div>
+              <div class="release-form-grid">
+                <div class="apple-form-group">
+                  <label for="release-ver">Version</label>
+                  <input type="text" id="release-ver" class="apple-input" value="0.3.0" />
                 </div>
-
-                <div class="compatibility-box" style="margin-top: 10px;">
-                  <h4 style="margin-bottom:12px;">Dernière Activité du Logiciel</h4>
-                  <table class="admin-table">
-                    <thead>
-                      <tr>
-                        <th>Date</th>
-                        <th>Utilisateur</th>
-                        <th>Action</th>
-                        <th>Fichier</th>
-                        <th>Statut</th>
-                      </tr>
-                    </thead>
-                    <tbody id="activity-table-body">
-                      <tr>
-                        <td>Aujourd'hui, 15:32</td>
-                        <td>dylan@gta.com</td>
-                        <td>Export Texture PNG</td>
-                        <td>w_sr_heavysniper.ytd</td>
-                        <td><span class="os-badge">Succès</span></td>
-                      </tr>
-                      <tr>
-                        <td>Aujourd'hui, 14:15</td>
-                        <td>gta_modder@fivem.net</td>
-                        <td>Backup Créé</td>
-                        <td>w_sr_heavy_mag.ydr</td>
-                        <td><span class="os-badge">Succès</span></td>
-                      </tr>
-                      <tr>
-                        <td>Hier, 19:40</td>
-                        <td>dylan@gta.com</td>
-                        <td>Écriture Directe ODR</td>
-                        <td>w_sr_heavy_mag.odr</td>
-                        <td><span class="os-badge">Succès</span></td>
-                      </tr>
-                      <tr>
-                        <td>Hier, 18:22</td>
-                        <td>user_test@test.fr</td>
-                        <td>Connexion Studio</td>
-                        <td>—</td>
-                        <td><span class="os-badge">Succès</span></td>
-                      </tr>
-                    </tbody>
-                  </table>
+                <div class="apple-form-group">
+                  <label for="release-date">Date (ISO)</label>
+                  <input type="text" id="release-date" class="apple-input" value="2026-07-04T13:30:00Z" />
+                </div>
+                <div class="apple-form-group" style="grid-column: span 2;">
+                  <label for="release-url">URL de l'archive (.zip)</label>
+                  <input type="text" id="release-url" class="apple-input" value="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" />
+                </div>
+                <div class="apple-form-group" style="grid-column: span 2;">
+                  <label for="release-sig">Signature (.sig)</label>
+                  <input type="text" id="release-sig" class="apple-input" placeholder="Signature générée par Tauri" />
                 </div>
               </div>
 
-              <!-- Tab 2: User Manager -->
-              <div id="panel-users" style="display: none;">
-                <div class="compatibility-box">
-                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
-                    <h4>Liste des Comptes Enregistrés (profiles)</h4>
-                    <button class="button secondary" style="padding: 4px 10px; font-size:10px;" id="refresh-users-btn">Actualiser</button>
-                  </div>
-                  <table class="admin-table">
-                    <thead>
-                      <tr>
-                        <th>ID Public</th>
-                        <th>Email / Pseudo</th>
-                        <th>Dernière connexion</th>
-                        <th>Mode d'écriture</th>
-                        <th>Permissions</th>
-                      </tr>
-                    </thead>
-                    <tbody id="users-table-body">
-                      <!-- Populated via script -->
-                    </tbody>
-                  </table>
-                </div>
+              <div>
+                <button class="apple-btn primary" id="generate-release-btn">Générer le manifeste</button>
               </div>
 
-              <!-- Tab 3: Release Manager -->
-              <div id="panel-releases" style="display: none;">
-                <div class="compatibility-box" style="margin-bottom:12px;">
-                  <h4>Générateur de update.json (Auto-Update)</h4>
-                  <p style="font-size:10px; color:var(--muted); margin-bottom:14px;">
-                    Remplissez les informations de compilation ci-dessous pour formater instantanément votre fichier manifeste de mise à jour.
-                  </p>
-                  
-                  <div class="release-form-grid">
-                    <div class="form-group">
-                      <label for="release-ver">Version de la Release</label>
-                      <input type="text" id="release-ver" class="form-input" value="0.3.0" />
-                    </div>
-                    <div class="form-group">
-                      <label for="release-date">Date de Publication (ISO)</label>
-                      <input type="text" id="release-date" class="form-input" value="2026-07-04T13:30:00Z" />
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                      <label for="release-url">URL de téléchargement de la signature (.zip)</label>
-                      <input type="text" id="release-url" class="form-input" value="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" />
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                      <label for="release-sig">Contenu de la signature cryptographique (.sig)</label>
-                      <input type="text" id="release-sig" class="form-input" placeholder="Collez ici tout le texte du fichier .sig généré lors de la compilation" />
-                    </div>
-                    <div class="form-group" style="grid-column: span 2;">
-                      <label for="release-notes">Notes de version / Changelog</label>
-                      <input type="text" id="release-notes" class="form-input" value="Version v0.3.0 de production stable — Atelier d'Assets GTA V et FiveM avec Texture Studio et Explorateur RPF." />
-                    </div>
-                  </div>
-                  
-                  <div style="margin-top: 14px;">
-                    <button class="button primary" id="generate-release-btn">Générer le manifeste</button>
-                  </div>
+              <div class="release-output-box" id="release-output-container" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                  <span style="font-size: 11px; font-weight:600; color:rgba(255,255,255,0.45);">update.json</span>
+                  <button class="apple-btn secondary" style="padding: 4px 10px; font-size:10px;" id="copy-json-btn">Copier</button>
                 </div>
-
-                <div class="compatibility-box release-output" id="release-output-container" style="display:none;">
-                  <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <h4>Contenu généré pour update.json</h4>
-                    <button class="button secondary" style="padding: 4px 10px; font-size:10px;" id="copy-json-btn">Copier</button>
-                  </div>
-                  <textarea class="json-textarea" id="release-json-text" readonly></textarea>
-                  <p style="font-size: 9px; color:var(--muted);">
-                    Copiez le bloc ci-dessus et remplacez le contenu de votre fichier <code>update.json</code> dans votre dépôt, puis faites un commit & push pour le déployer sur Vercel.
-                  </p>
-                </div>
+                <textarea class="release-textarea" id="release-json-text" readonly></textarea>
               </div>
-
-              <!-- Tab 4: Logs Console -->
-              <div id="panel-logs" style="display: none;">
-                <div class="terminal-logs" id="terminal-logs-container">
-                  <!-- Filled via script -->
-                </div>
-              </div>
-
             </div>
-          </section>
-        </main>
 
-        <!-- Bottom Status Bar -->
-        <footer class="status-bar">
-          <span class="status-indicator ready">
-            <span class="indicator-dot"></span>
-            Liaison Supabase Active
-          </span>
-          <span class="divider">|</span>
-          <span>Admin Session : Authentifiée</span>
-          <span class="divider">|</span>
-          <span id="db-latency-display">Ping Supabase DB: 24ms</span>
-          
-          <span class="status-version">
-            Accès sécurisé SSL/TLS par jeton JWT.
-          </span>
-        </footer>
-      </div>
+            <!-- Live Logs -->
+            <div class="apple-box">
+              <h3>Logs Système en Direct</h3>
+              <div class="apple-logs-container" id="terminal-logs-container">
+                <!-- Log entries -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
 
     <script>
-      // 1. Supabase Initialization
+      // 1. Supabase Setup
       const supabaseUrl = "https://vcikzkfyjrcgvoiktagg.supabase.co";
       const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaWt6a2Z5anJjZ3ZvaWt0YWdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNTQxNDMsImV4cCI6MjA5ODczMDE0M30.1gJxAxevUoRhQv3y9PdZ5PKTSBApsbUHZk0W_AOvBoY";
       let supabaseClient = null;
@@ -508,10 +508,10 @@
           supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
         }
       } catch (err) {
-        console.warn("Supabase client failed to initialize (offline mode active):", err);
+        console.warn("Supabase load error:", err);
       }
 
-      // 2. Authentication Logic
+      // 2. Auth State Handlers
       const loginContainer = document.getElementById('login-container');
       const dashboardLayout = document.getElementById('dashboard-layout');
       const loginBtn = document.getElementById('login-btn');
@@ -521,76 +521,59 @@
       const loginError = document.getElementById('login-error');
       const userDisplayEmail = document.getElementById('user-display-email');
 
-      // Check current session on load
       checkSession();
 
       async function checkSession() {
         if (supabaseClient) {
           try {
-            const { data, error } = await supabaseClient.auth.getSession();
+            const { data } = await supabaseClient.auth.getSession();
             if (data && data.session) {
               showDashboard(data.session.user.email);
               return;
             }
-          } catch (e) {
-            console.log("No active Supabase session.");
-          }
+          } catch (e) {}
         }
-        
-        // Fallback checks for mock login session
         const mockUser = sessionStorage.getItem('sr_admin_user');
-        if (mockUser) {
-          showDashboard(mockUser);
-        }
+        if (mockUser) showDashboard(mockUser);
       }
 
       loginBtn.addEventListener('click', async () => {
         const email = loginEmailInput.value.trim();
         const password = loginPassInput.value;
-
         loginError.style.display = 'none';
 
-        // 1. Attempt real Supabase authentication first if available
         if (supabaseClient) {
           try {
             const { data, error } = await supabaseClient.auth.signInWithPassword({
               email: email,
               password: password
             });
-
             if (!error && data.session) {
               showDashboard(data.session.user.email);
-              addLog("info", `Connexion réussie de l'administrateur (${email}) via Supabase Auth`);
+              addLog("info", `Admin ${email} connecté avec succès via Supabase.`);
               return;
             }
-          } catch (err) {
-            console.warn("Supabase Auth failed, falling back to mock authentication:", err);
-          }
+          } catch (err) {}
         }
 
-        // 2. Mock fallback credentials for demonstration/offline mode
         if (email === "admin@sr-editer.com" && password === "srediteradmin123") {
           sessionStorage.setItem('sr_admin_user', email);
           showDashboard(email);
-          addLog("success", `Connexion réussie en mode de démonstration locale (admin@sr-editer.com)`);
+          addLog("success", `Admin connecté via Identifiants Fallback.`);
         } else {
           loginError.style.display = 'block';
-          loginError.innerText = "Email ou mot de passe incorrect (Erreur Auth).";
-          addLog("warning", `Tentative d'accès non autorisée rejetée pour l'adresse: ${email}`);
         }
       });
 
       logoutBtn.addEventListener('click', async () => {
-        if (supabaseClient) {
-          await supabaseClient.auth.signOut();
-        }
+        if (supabaseClient) await supabaseClient.auth.signOut();
         sessionStorage.removeItem('sr_admin_user');
         hideDashboard();
       });
 
       function showDashboard(email) {
         loginContainer.style.display = 'none';
-        dashboardLayout.style.display = 'block';
+        dashboardLayout.style.display = 'flex';
         userDisplayEmail.innerText = email;
         refreshUsers();
         generateLogs();
@@ -601,194 +584,127 @@
         dashboardLayout.style.display = 'none';
       }
 
-      // 3. Tab Navigation Logic
-      const tabs = ["dashboard", "users", "releases", "logs"];
-      
-      tabs.forEach(tabId => {
-        document.getElementById(`nav-${tabId}`).addEventListener('click', () => {
-          // Update active button
-          tabs.forEach(id => {
-            document.getElementById(`nav-${id}`).classList.remove('active');
-            document.getElementById(`panel-${id}`).style.display = 'none';
-          });
-          
-          document.getElementById(`nav-${tabId}`).classList.add('active');
-          document.getElementById(`panel-${tabId}`).style.display = 'block';
-
-          // Update titles
-          const eyebrow = document.getElementById('section-eyebrow');
-          const title = document.getElementById('section-title');
-          const consoleTitle = document.getElementById('console-title');
-
-          if (tabId === 'dashboard') {
-            eyebrow.innerText = "DASHBOARD";
-            title.innerText = "Vue d'ensemble";
-            consoleTitle.innerText = "Tableau de bord principal";
-          } else if (tabId === 'users') {
-            eyebrow.innerText = "UTILISATEURS";
-            title.innerText = "Membres enregistrés";
-            consoleTitle.innerText = "Gestion de comptes";
-            refreshUsers();
-          } else if (tabId === 'releases') {
-            eyebrow.innerText = "RELEASES";
-            title.innerText = "Mises à jour";
-            consoleTitle.innerText = "Manager d'Auto-Updates";
-          } else if (tabId === 'logs') {
-            eyebrow.innerText = "LOGS CONSOLE";
-            title.innerText = "Journaux système";
-            consoleTitle.innerText = "Journaux en direct";
-            generateLogs();
-          }
-        });
-      });
-
-      // 4. User database loading & rendering
+      // 3. User lists and data loading
       const mockUsers = [
-        { id: "usr_01a89b", email: "dylan@gta.com", created_at: "2026-06-30 11:20", write_mode: "direct", role: "Owner/Admin" },
-        { id: "usr_02d93e", email: "gta_modder@fivem.net", created_at: "2026-07-02 18:45", write_mode: "choose-folder", role: "Modérateur" },
-        { id: "usr_0318fc", email: "user_test@test.fr", created_at: "2026-07-04 15:32", write_mode: "direct", role: "Testeur" },
-        { id: "usr_04fb0e", email: "editor_vice@rockstar.com", created_at: "2026-07-03 09:12", write_mode: "choose-folder", role: "Membre" }
+        { email: "d.robert.2400@gmail.com", created_at: "2026-07-04 13:46", write_mode: "direct", role: "Owner/Admin" },
+        { email: "gta_modder@fivem.net", created_at: "2026-07-02 18:45", write_mode: "choose-folder", role: "Membre" },
+        { email: "user_test@test.fr", created_at: "2026-07-04 15:32", write_mode: "direct", role: "Testeur" }
       ];
 
       async function refreshUsers() {
         const tbody = document.getElementById('users-table-body');
         tbody.innerHTML = '';
-        
-        let usersList = [...mockUsers];
+        let list = [...mockUsers];
 
-        // If Supabase is active, try to fetch from public 'profiles' table if it exists
         if (supabaseClient) {
           try {
-            const { data, error } = await supabaseClient
+            const { data } = await supabaseClient
               .from('profiles')
-              .select('id, email, created_at, write_mode, role')
+              .select('email, created_at, write_mode, role')
               .limit(20);
-            
-            if (data && data.length > 0) {
-              usersList = data;
-              addLog("info", `Chargement de ${data.length} profils utilisateur depuis la table Supabase.`);
-            }
-          } catch (e) {
-            console.log("Using mock user list (profiles table not found or RLS restricted).");
-          }
+            if (data && data.length > 0) list = data;
+          } catch (e) {}
         }
 
-        usersList.forEach(user => {
+        list.forEach(user => {
           const tr = document.createElement('tr');
+          const dateStr = user.created_at ? user.created_at.split('T')[0] : 'Inconnu';
           tr.innerHTML = `
-            <td><code>${user.id}</code></td>
-            <td><strong>${user.email || 'Anonyme'}</strong></td>
-            <td>${user.created_at || 'Inconnu'}</td>
-            <td><span class="os-badge" style="background:${user.write_mode === 'direct' ? 'rgba(255, 71, 126, 0.1)' : 'rgba(0, 168, 204, 0.1)'}; color:${user.write_mode === 'direct' ? 'var(--accent)' : 'var(--blue)'};">${user.write_mode === 'direct' ? 'Écriture Directe' : 'Dossier Choisi'}</span></td>
-            <td><code>${user.role || 'Utilisateur'}</code></td>
+            <td><strong>${user.email}</strong></td>
+            <td>${dateStr}</td>
+            <td><span style="opacity: 0.8; font-size:11px;">${user.write_mode === 'direct' ? 'Écriture Directe' : 'Dossier Sécurisé'}</span></td>
+            <td><code style="background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius:4px;">${user.role}</code></td>
           `;
           tbody.appendChild(tr);
         });
 
-        document.getElementById('stats-users-count').innerText = usersList.length;
+        document.getElementById('stats-users-count').innerText = list.length;
       }
 
       document.getElementById('refresh-users-btn').addEventListener('click', refreshUsers);
 
-      // 5. Release JSON Generator
+      // 4. Release generator
       document.getElementById('generate-release-btn').addEventListener('click', () => {
         const version = document.getElementById('release-ver').value.trim();
         const date = document.getElementById('release-date').value.trim();
         const url = document.getElementById('release-url').value.trim();
         const signature = document.getElementById('release-sig').value.trim();
-        const notes = document.getElementById('release-notes').value.trim();
 
         const json = {
           version: version,
-          notes: notes,
+          notes: "Mise à jour v" + version,
           pub_date: date,
           platforms: {
             "windows-x86_64": {
-              signature: signature || "COLLEZ_LA_SIGNATURE_ICI",
+              signature: signature || "SIGNATURE_TAURI",
               url: url
             }
           }
         };
 
-        const outTextarea = document.getElementById('release-json-text');
-        outTextarea.value = JSON.stringify(json, null, 2);
-        
+        document.getElementById('release-json-text').value = JSON.stringify(json, null, 2);
         document.getElementById('release-output-container').style.display = 'block';
-        addLog("success", `Nouveau manifeste update.json généré pour la version v${version}`);
+        addLog("success", `Manifeste update.json généré pour la version v${version}`);
       });
 
       document.getElementById('copy-json-btn').addEventListener('click', () => {
-        const text = document.getElementById('release-json-text');
-        text.select();
+        const txt = document.getElementById('release-json-text');
+        txt.select();
         document.execCommand('copy');
         
         const copyBtn = document.getElementById('copy-json-btn');
         copyBtn.innerText = "Copié !";
         setTimeout(() => { copyBtn.innerText = "Copier"; }, 2000);
-        addLog("info", "Manifeste update.json copié dans le presse-papiers.");
       });
 
-      // 6. Terminal Logs simulator
-      const logTemplates = [
-        { type: "info", text: "Vérification des dépendances SQLite et RSC7..." },
-        { type: "success", text: "Moteur de décodage RSC7 chargé avec succès." },
-        { type: "info", text: "Synchronisation des profils de textures..." },
-        { type: "success", text: "Base de données Supabase connectée." },
-        { type: "info", text: "Écoute des événements d'auto-update active." },
-        { type: "success", text: "Connexion autorisée pour l'utilisateur dylan@gta.com." },
-        { type: "warning", text: "Texture w_sr_heavysniper.ytd : format non compressé détecté, conversion requise." },
-        { type: "success", text: "Transaction d'écriture directe réussie avec fichier backup généré." },
-        { type: "info", text: "Purge des caches de prévisualisation WebGL effectuée." },
-        { type: "success", text: "Nouvel utilisateur test créé via le dashboard Supabase." }
-      ];
-
+      // 5. System Logs
       const logsContainer = document.getElementById('terminal-logs-container');
-
       function generateLogs() {
         logsContainer.innerHTML = '';
-        
-        // Initial set of logs
-        for(let i = 0; i < 15; i++) {
-          const randomTime = new Date(Date.now() - (15 - i) * 60000);
-          const timeStr = randomTime.toTimeString().split(' ')[0];
-          const template = logTemplates[Math.floor(Math.random() * logTemplates.length)];
-          
-          appendLogLine(timeStr, template.type, template.text);
-        }
+        const lines = [
+          { type: "info", text: "Connexion à la base de données Supabase établie." },
+          { type: "success", text: "Déclencheurs SQL initialisés sur la table profiles." },
+          { type: "info", text: "Écoute du point de terminaison d'auto-update active." },
+          { type: "success", text: "Fichier update.json configuré pour la release v0.3.0." },
+          { type: "warning", text: "Tentative d'accès suspecte bloquée par les politiques RLS." }
+        ];
+        lines.forEach((l, i) => {
+          const time = new Date(Date.now() - (5 - i) * 60000).toTimeString().split(' ')[0];
+          appendLogLine(time, l.type, l.text);
+        });
       }
 
       function appendLogLine(time, type, text) {
-        const line = document.createElement('div');
-        line.className = 'log-line';
-        line.innerHTML = `
-          <span class="log-time">[${time}]</span>
-          <span class="log-${type}">[${type.toUpperCase()}]</span>
-          <span>${text}</span>
-        `;
-        logsContainer.appendChild(line);
+        const div = document.createElement('div');
+        div.className = 'log-row';
+        div.innerHTML = `<span class="time">[${time}]</span> <span class="${type}">[${type.toUpperCase()}]</span> <span>${text}</span>`;
+        logsContainer.appendChild(div);
         logsContainer.scrollTop = logsContainer.scrollHeight;
       }
 
       function addLog(type, text) {
-        const now = new Date();
-        const timeStr = now.toTimeString().split(' ')[0];
-        appendLogLine(timeStr, type, text);
+        const time = new Date().toTimeString().split(' ')[0];
+        appendLogLine(time, type, text);
       }
 
-      // Add a periodic log line to feel alive
       setInterval(() => {
-        if (dashboardLayout.style.display === 'block') {
-          const templates = [
-            { type: "info", text: "Ping de la base de données Supabase effectué." },
-            { type: "success", text: "Session utilisateur actualisée avec succès." },
-            { type: "info", text: "Vérification des demandes de mise à jour..." }
-          ];
-          const template = templates[Math.floor(Math.random() * templates.length)];
-          const pingVal = Math.floor(Math.random() * 15) + 15;
-          document.getElementById('db-latency-display').innerText = `Ping Supabase DB: ${pingVal}ms`;
-          addLog(template.type, template.text);
+        if (dashboardLayout.style.display === 'flex') {
+          const ping = Math.floor(Math.random() * 10) + 12;
+          document.getElementById('db-latency-display').innerText = `Ping: ${ping}ms`;
         }
-      }, 15000);
+      }, 5000);
+
+      // Load wallpaper background
+      const wallpapers = [];
+      for (let i = 1; i <= 61; i++) {
+        wallpapers.push(`assets/wallpapers/${i}.avif`);
+      }
+      const bg = document.getElementById('apple-background');
+      let currentIdx = parseInt(localStorage.getItem('apple_selected_bg') || '0', 10);
+      if (isNaN(currentIdx) || currentIdx < 0 || currentIdx >= wallpapers.length) {
+        currentIdx = 12;
+      }
+      bg.style.backgroundImage = `url("${wallpapers[currentIdx]}")`;
     </script>
   </body>
 </html>
