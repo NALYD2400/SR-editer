@@ -75,13 +75,27 @@
     showLogin();
   });
 
+  function showPanel(panelId) {
+    panels.forEach((p) => p.classList.toggle("is-active", p.id === `panel-${panelId}`));
+    navLinks.forEach((l) => l.classList.toggle("is-active", l.getAttribute("data-panel") === panelId));
+    if (pageTitle) {
+      if (panelTitles[panelId]) {
+        pageTitle.textContent = panelTitles[panelId];
+      } else if (panelId === "user-detail") {
+        pageTitle.textContent = "Fiche Profil Membre";
+      }
+    }
+  }
+
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       const panelId = link.getAttribute("data-panel");
-      navLinks.forEach((l) => l.classList.toggle("is-active", l === link));
-      panels.forEach((p) => p.classList.toggle("is-active", p.id === `panel-${panelId}`));
-      if (pageTitle && panelTitles[panelId]) pageTitle.textContent = panelTitles[panelId];
+      showPanel(panelId);
     });
+  });
+
+  document.getElementById("back-to-users-btn")?.addEventListener("click", () => {
+    showPanel("users");
   });
 
   async function refreshUsers() {
@@ -138,10 +152,10 @@
         <td><strong>${escapeHtml(user.email || "—")}</strong></td>
         <td>${date}</td>
         <td>${escapeHtml(user.write_mode || "direct")}</td>
-        <td><span class="role-pill">${escapeHtml(user.role || "membre")}</span></td>
+        <td><span class="role-pill ${user.role || "membre"}">${escapeHtml(user.role || "membre")}</span></td>
         <td style="text-align: right;">
-          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; margin-right: 4px; border: 1px solid rgba(255,255,255,0.05);" onclick="editUser('${escapeHtml(user.email)}', '${escapeHtml(user.role)}', '${escapeHtml(user.write_mode)}')">Modifier</button>
-          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);" onclick="deleteUser('${escapeHtml(user.email)}')">Supprimer</button>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 10px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.06); font-weight:600;" onclick="viewUserDetail('${escapeHtml(user.email)}')">Consulter</button>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 10px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);" onclick="deleteUser('${escapeHtml(user.email)}')">Supprimer</button>
         </td>
       `;
       tbody.appendChild(tr);
@@ -150,16 +164,131 @@
     if (countEl) countEl.textContent = String(users.length);
   }
 
-  // Edit user action
-  window.editUser = (email, role, write_mode) => {
-    const emailEl = document.getElementById("manage-email");
-    const roleEl = document.getElementById("manage-role");
-    const modeEl = document.getElementById("manage-mode");
-    if (emailEl) emailEl.value = email;
-    if (roleEl) roleEl.value = role;
-    if (modeEl) modeEl.value = write_mode;
-    if (emailEl) emailEl.focus();
-    addLog("i", `Modification en cours pour : ${email}`);
+  // Detailed profile page view
+  window.viewUserDetail = (email) => {
+    // Get profiles from cache/storage
+    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+    let users = mockStorage ? JSON.parse(mockStorage) : [];
+    let user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (!user) {
+      user = { email, role: "membre", write_mode: "direct", created_at: new Date().toISOString() };
+    }
+
+    showPanel("user-detail");
+
+    // Fill elements
+    const avatar = document.getElementById("detail-avatar");
+    const emailLabel = document.getElementById("detail-email");
+    const rolePill = document.getElementById("detail-role-pill");
+    const roleSelect = document.getElementById("detail-role");
+    const modeSelect = document.getElementById("detail-mode");
+
+    if (avatar) avatar.textContent = email.charAt(0).toUpperCase();
+    if (emailLabel) emailLabel.textContent = email;
+    if (rolePill) {
+      rolePill.textContent = user.role.toUpperCase();
+      rolePill.className = `role-pill ${user.role}`;
+    }
+    if (roleSelect) roleSelect.value = user.role;
+    if (modeSelect) modeSelect.value = user.write_mode;
+
+    // Checkboxes permissions matrix
+    const permWrite = document.getElementById("perm-write");
+    const permAi = document.getElementById("perm-ai");
+    const permAdmin = document.getElementById("perm-admin");
+
+    const updateCheckboxes = (role) => {
+      if (permWrite) permWrite.checked = role !== "suspendu";
+      if (permAi) permAi.checked = role === "admin" || role === "moderateur";
+      if (permAdmin) permAdmin.checked = role === "admin";
+    };
+
+    updateCheckboxes(user.role);
+
+    roleSelect?.onchange = (e) => {
+      updateCheckboxes(e.target.value);
+    };
+
+    // User activity logs simulation
+    const detailLogs = document.getElementById("detail-logs");
+    if (detailLogs) {
+      const activities = [
+        `[12:10:04] Session active : Connexion établie via Desktop`,
+        `[12:12:45] Explorateur : Consultation du fichier w_pi_combatpistol.ytd`,
+        `[12:14:10] Studio : Modification de 3 calques de texture (Mode ${user.write_mode === "direct" ? "Production" : "Brouillon"})`,
+        `[12:18:22] Viewport : Rendu de la prévisualisation 3D réussi`
+      ];
+      if (user.role === "suspendu") {
+        activities.push(`[13:00:00] ALERTE : Accès révoqué, compte suspendu`);
+      }
+      detailLogs.innerHTML = activities.map(line => {
+        const time = line.substring(0, 10);
+        const desc = line.substring(10);
+        return `<div class="log-line"><span class="t">${time}</span> ${escapeHtml(desc)}</div>`;
+      }).join("");
+    }
+
+    // Buttons actions
+    const saveBtn = document.getElementById("save-detail-btn");
+    const suspendBtn = document.getElementById("suspend-detail-btn");
+
+    if (saveBtn) {
+      saveBtn.onclick = async () => {
+        const rVal = roleSelect.value;
+        const mVal = modeSelect.value;
+        addLog("i", `Enregistrement des modifications pour ${email}...`);
+
+        let success = false;
+        if (supabase) {
+          // Check if profile exists to avoid upsert conflict/400 errors
+          const { data: existing } = await supabase.from("profiles").select("email").eq("email", email).maybeSingle();
+          if (existing) {
+            // Update
+            const { error } = await supabase.from("profiles").update({ role: rVal, write_mode: mVal }).eq("email", email);
+            if (!error) success = true;
+            else addLog("e", `Erreur update DB : ${error.message}`);
+          } else {
+            // Insert
+            const { error } = await supabase.from("profiles").insert({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
+            if (!error) success = true;
+            else addLog("e", `Erreur insert DB : ${error.message}`);
+          }
+        }
+
+        // Update local sessionStorage cache
+        const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+        if (mockStorage) {
+          let mockUsers = JSON.parse(mockStorage);
+          const idx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+          if (idx >= 0) {
+            mockUsers[idx].role = rVal;
+            mockUsers[idx].write_mode = mVal;
+          } else {
+            mockUsers.push({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
+          }
+          sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
+        }
+
+        if (!supabase) success = true;
+
+        if (success) {
+          addLog("s", `Compte mis à jour avec succès : ${email}`);
+          refreshUsers();
+          showPanel("users");
+        }
+      };
+    }
+
+    if (suspendBtn) {
+      suspendBtn.onclick = () => {
+        if (roleSelect) {
+          roleSelect.value = "suspendu";
+          updateCheckboxes("suspendu");
+          saveBtn?.click();
+        }
+      };
+    }
   };
 
   // Delete user action
@@ -192,7 +321,7 @@
     }
   };
 
-  // Create or Update user form handler
+  // Create or Update user form handler (using safe SELECT -> UPDATE/INSERT check to prevent upsert 400 conflict errors)
   document.getElementById("user-manage-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("manage-email").value.trim();
@@ -203,17 +332,18 @@
 
     let success = false;
     if (supabase) {
-      const { error } = await supabase.from("profiles").upsert({
-        email,
-        role,
-        write_mode,
-        created_at: new Date().toISOString()
-      }, { onConflict: "email" });
-
-      if (!error) {
-        success = true;
+      // Find if exists
+      const { data: existing } = await supabase.from("profiles").select("email").eq("email", email).maybeSingle();
+      if (existing) {
+        // Update
+        const { error } = await supabase.from("profiles").update({ role, write_mode }).eq("email", email);
+        if (!error) success = true;
+        else addLog("e", `Erreur de modification DB : ${error.message}`);
       } else {
-        addLog("e", `Erreur d'enregistrement DB : ${error.message}`);
+        // Insert
+        const { error } = await supabase.from("profiles").insert({ email, role, write_mode, created_at: new Date().toISOString() });
+        if (!error) success = true;
+        else addLog("e", `Erreur d'insertion DB : ${error.message}. Note: ce membre doit aussi être créé dans Supabase Auth.`);
       }
     }
 
@@ -249,6 +379,7 @@
 
   // Search input handler
   document.getElementById("users-search")?.addEventListener("input", refreshUsers);
+
 
 
   function refreshKpis() {
