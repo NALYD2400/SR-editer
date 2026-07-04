@@ -4,707 +4,240 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>SR Editer — Console Admin</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/base.css" />
+    <link rel="stylesheet" href="styles/admin.css" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-      /* 10K Euros Apple-style Admin Layout */
-      body {
-        overflow-x: hidden;
-        overflow-y: auto !important;
-        background: #030206;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-        color: #f6f4fa;
-        margin: 0;
-        padding: 0;
-      }
-
-      /* Apple Frosted Glass Ambient Wallpaper Background */
-      .apple-bg-container {
-        position: fixed;
-        inset: 0;
-        z-index: -2;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        transition: background-image 1.6s cubic-bezier(0.25, 1, 0.5, 1);
-      }
-
-      .apple-glass-overlay {
-        position: fixed;
-        inset: 0;
-        z-index: -1;
-        background: radial-gradient(circle at 50% 30%, rgba(15, 11, 28, 0.4) 0%, rgba(3, 2, 6, 0.94) 100%);
-        backdrop-filter: blur(50px) saturate(190%);
-        -webkit-backdrop-filter: blur(50px) saturate(190%);
-      }
-
-      /* Login overlay centering */
-      .admin-login-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-        padding: 20px;
-      }
-
-      .apple-login-card {
-        width: 100%;
-        max-width: 400px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(30px);
-        -webkit-backdrop-filter: blur(30px);
-        border-radius: 28px;
-        padding: 40px 30px;
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-      }
-
-      .login-header-text {
-        text-align: center;
-      }
-
-      .login-header-text h2 {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 700;
-        font-size: 22px;
-        margin: 10px 0 4px 0;
-      }
-
-      .apple-form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .apple-form-group label {
-        font-size: 11px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.45);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .apple-input {
-        padding: 12px 16px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background: rgba(255, 255, 255, 0.03);
-        color: #fff;
-        font-size: 13.5px;
-        outline: none;
-        transition: all 0.25s ease;
-      }
-
-      .apple-input:focus {
-        border-color: rgba(255, 255, 255, 0.3);
-        background: rgba(255, 255, 255, 0.06);
-      }
-
-      /* Admin Layout Wrapper */
-      .admin-layout {
-        display: none; /* Toggled via script */
-        min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-
-      /* Navbar */
-      .apple-navbar {
-        height: 64px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 40px;
-        background: rgba(10, 8, 18, 0.4);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        z-index: 100;
-      }
-
-      .apple-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        text-decoration: none;
-      }
-
-      .apple-brand img {
-        height: 28px;
-      }
-
-      .apple-brand span {
-        font-family: 'Outfit', sans-serif;
-        font-weight: 800;
-        font-size: 18px;
-        color: #fff;
-        letter-spacing: -0.02em;
-      }
-
-      /* Dashboard Content Wrapper */
-      .dashboard-main {
-        max-width: 1200px;
-        width: 100%;
-        margin: 0 auto;
-        padding: 40px 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-        flex: 1;
-      }
-
-      /* Summary Row */
-      .summary-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-      }
-
-      .summary-card {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        border-radius: 20px;
-        padding: 24px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-      }
-
-      .summary-card .title {
-        font-size: 11px;
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.45);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .summary-card .value {
-        font-family: 'Outfit', sans-serif;
-        font-size: 28px;
-        font-weight: 700;
-        color: #fff;
-      }
-
-      .summary-card .subtitle {
-        font-size: 12px;
-        color: rgba(255, 255, 255, 0.35);
-      }
-
-      /* Split Layout (Left: Users List, Right: Tools & Logs) */
-      .split-grid {
-        display: grid;
-        grid-template-columns: 1.2fr 1fr;
-        gap: 24px;
-      }
-
-      @media (max-width: 900px) {
-        .split-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      .apple-box {
-        background: rgba(255, 255, 255, 0.02);
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        border-radius: 24px;
-        padding: 30px;
-        display: flex;
-        flex-direction: column;
-        gap: 20px;
-      }
-
-      .apple-box h3 {
-        font-family: 'Outfit', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-        margin: 0;
-        color: #fff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      /* Table Styles */
-      .apple-table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 13px;
-        text-align: left;
-      }
-
-      .apple-table th,
-      .apple-table td {
-        padding: 12px 16px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      }
-
-      .apple-table th {
-        font-weight: 600;
-        color: rgba(255, 255, 255, 0.45);
-        font-size: 11px;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
-
-      .apple-table tr:hover td {
-        background: rgba(255, 255, 255, 0.02);
-      }
-
-      /* Logs list */
-      .apple-logs-container {
-        font-family: monospace;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 14px;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        padding: 16px;
-        height: 240px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        font-size: 11.5px;
-      }
-
-      .log-row {
-        line-height: 1.4;
-      }
-      .log-row .time { color: rgba(255, 255, 255, 0.35); }
-      .log-row .info { color: #00a8cc; }
-      .log-row .success { color: #58dba0; }
-      .log-row .warning { color: #ff9f1c; }
-
-      .apple-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 20px;
-        border-radius: 99px;
-        font-family: 'Outfit', sans-serif;
-        font-weight: 600;
-        font-size: 12.5px;
-        text-decoration: none;
-        transition: all 0.2s ease;
-        border: none;
-        cursor: pointer;
-      }
-
-      .apple-btn.primary {
-        background: #fff;
-        color: #030206;
-      }
-
-      .apple-btn.primary:hover {
-        background: #f6f4fa;
-        transform: translateY(-1px);
-      }
-
-      .apple-btn.secondary {
-        background: rgba(255, 255, 255, 0.05);
-        color: #fff;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-      }
-
-      .apple-btn.secondary:hover {
-        background: rgba(255, 255, 255, 0.1);
-        transform: translateY(-1px);
-      }
-
-      .release-form-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 16px;
-      }
-
-      .release-output-box {
-        background: rgba(0, 0, 0, 0.35);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        border-radius: 12px;
-        padding: 14px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        margin-top: 10px;
-      }
-
-      .release-textarea {
-        width: 100%;
-        height: 120px;
-        background: transparent;
-        border: none;
-        color: rgba(255, 255, 255, 0.85);
-        font-family: monospace;
-        font-size: 11.5px;
-        resize: none;
-        outline: none;
-      }
-      
-      .error-alert {
-        color: #ff477e;
-        font-size: 12.5px;
-        text-align: center;
-        display: none;
-      }
-    </style>
   </head>
   <body>
-    <!-- Apple Ambient background -->
-    <div class="apple-bg-container" id="apple-background"></div>
-    <div class="apple-glass-overlay"></div>
+    <div class="ambient-layer" id="ambient-layer"></div>
+    <div class="ambient-vignette"></div>
+    <div class="ambient-blur"></div>
 
-    <!-- Login Screen (Visible by default) -->
-    <div class="admin-login-wrapper" id="login-container">
-      <div class="apple-login-card">
-        <div class="login-header-text">
-          <img src="assets/logo_small.png" alt="Logo" style="height: 36px;" />
-          <h2>Console Admin</h2>
-          <p style="font-size: 12.5px; color: rgba(255,255,255,0.45); margin-top: 4px;">Accès sécurisé pour administrateurs</p>
+    <!-- Login -->
+    <div id="login-view" class="admin-login">
+      <div class="glass-card admin-login-card">
+        <div>
+          <a href="index.html" class="client-brand" style="margin-bottom: 8px">
+            <img src="assets/logo_small.png" width="20" height="20" alt="" />
+            <span>SR Editer</span>
+          </a>
+          <h1>Console Admin</h1>
+          <p>Accès réservé aux administrateurs via Supabase Auth.</p>
         </div>
-        
-        <div class="error-alert" id="login-error">Email ou mot de passe incorrect.</div>
-
-        <div class="apple-form-group">
-          <label for="login-email">Adresse e-mail</label>
-          <input type="email" id="login-email" class="apple-input" value="admin@sr-editer.com" />
-        </div>
-
-        <div class="apple-form-group">
-          <label for="login-password">Mot de passe</label>
-          <input type="password" id="login-password" class="apple-input" value="srediteradmin123" />
-        </div>
-
-        <button class="apple-btn primary" id="login-btn" style="height: 42px; border-radius: 12px; font-size: 13.5px; margin-top: 10px;">
-          Se connecter
-        </button>
+        <div class="alert-error" id="login-error" hidden></div>
+        <form id="login-form" class="field" style="gap: 16px">
+          <div class="field">
+            <label for="login-email">Email</label>
+            <input type="email" id="login-email" autocomplete="email" required placeholder="admin@exemple.com" />
+          </div>
+          <div class="field">
+            <label for="login-password">Mot de passe</label>
+            <input type="password" id="login-password" autocomplete="current-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary" style="width: 100%">Se connecter</button>
+        </form>
+        <p style="margin: 0; font-size: 12px; color: var(--muted-dim); text-align: center">
+          <a href="index.html" style="color: var(--muted)">← Retour au site</a>
+        </p>
       </div>
     </div>
 
-    <!-- Admin Dashboard (Hidden by default) -->
-    <div class="admin-layout" id="dashboard-layout" style="display: none;">
-      <!-- Top Navbar -->
-      <nav class="apple-navbar">
-        <a href="#" class="apple-brand">
-          <img src="assets/logo_small.png" alt="SR Logo" />
-          <span>SR Editer Console</span>
+    <!-- Dashboard -->
+    <div id="dashboard-view" class="admin-shell" hidden>
+      <aside class="admin-sidebar">
+        <a href="index.html" class="sidebar-brand">
+          <img src="assets/logo_small.png" alt="" />
+          <span>Console</span>
         </a>
-
-        <div style="display:flex; align-items:center; gap:20px;">
-          <span style="font-size: 13px; color: rgba(255,255,255,0.6);" id="user-display-email">admin@sr-editer.com</span>
-          <button class="apple-btn secondary" id="logout-btn" style="padding: 6px 16px;">
-            Déconnexion
+        <nav class="sidebar-nav">
+          <button type="button" class="sidebar-link is-active" data-panel="overview">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            Vue d'ensemble
           </button>
+          <button type="button" class="sidebar-link" data-panel="users">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Utilisateurs
+          </button>
+          <button type="button" class="sidebar-link" data-panel="releases">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Releases
+          </button>
+          <button type="button" class="sidebar-link" data-panel="logs">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            Journaux
+          </button>
+        </nav>
+        <div class="sidebar-footer">
+          <a href="index.html">← Site public</a>
         </div>
-      </nav>
+      </aside>
 
-      <!-- Dashboard Main -->
-      <main class="dashboard-main">
-        <!-- Summary Cards -->
-        <div class="summary-grid">
-          <div class="summary-card">
-            <span class="title">Utilisateurs enregistrés</span>
-            <span class="value" id="stats-users-count">...</span>
-            <span class="subtitle">Profils actifs synchronisés</span>
+      <div class="admin-main">
+        <header class="admin-topbar">
+          <h2 id="page-title">Vue d'ensemble</h2>
+          <div class="admin-topbar-actions">
+            <span class="admin-user" id="admin-user-email"></span>
+            <button type="button" class="btn btn-ghost btn-sm" id="logout-btn">Déconnexion</button>
           </div>
-          <div class="summary-card">
-            <span class="title">État Base de Données</span>
-            <span class="value" style="color: #58dba0;">En ligne</span>
-            <span class="subtitle" id="db-latency-display">Ping: --ms</span>
-          </div>
-          <div class="summary-card">
-            <span class="title">Version Active</span>
-            <span class="value">v0.3.0</span>
-            <span class="subtitle">Manifeste de production</span>
-          </div>
-        </div>
+        </header>
 
-        <!-- Split View -->
-        <div class="split-grid">
-          <!-- Left Column: User Profiles -->
-          <div class="apple-box">
-            <h3>
-              Utilisateurs Récents
-              <button class="apple-btn secondary" style="padding: 4px 12px; font-size:11px;" id="refresh-users-btn">Actualiser</button>
-            </h3>
-            <div style="overflow-x: auto;">
-              <table class="apple-table">
-                <thead>
-                  <tr>
-                    <th>Pseudo / Email</th>
-                    <th>Inscrit le</th>
-                    <th>Mode d'écriture</th>
-                    <th>Rôle</th>
-                  </tr>
-                </thead>
-                <tbody id="users-table-body">
-                  <!-- Loaded dynamically -->
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <!-- Right Column: Tools & Logs -->
-          <div style="display:flex; flex-direction:column; gap:24px;">
-            <!-- Release Tool -->
-            <div class="apple-box">
-              <h3>Générateur de mise à jour (update.json)</h3>
-              
-              <div class="release-form-grid">
-                <div class="apple-form-group">
-                  <label for="release-ver">Version</label>
-                  <input type="text" id="release-ver" class="apple-input" value="0.3.0" />
-                </div>
-                <div class="apple-form-group">
-                  <label for="release-date">Date (ISO)</label>
-                  <input type="text" id="release-date" class="apple-input" value="2026-07-04T13:30:00Z" />
-                </div>
-                <div class="apple-form-group" style="grid-column: span 2;">
-                  <label for="release-url">URL de l'archive (.zip)</label>
-                  <input type="text" id="release-url" class="apple-input" value="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" />
-                </div>
-                <div class="apple-form-group" style="grid-column: span 2;">
-                  <label for="release-sig">Signature (.sig)</label>
-                  <input type="text" id="release-sig" class="apple-input" placeholder="Signature générée par Tauri" />
-                </div>
+        <div class="admin-content">
+          <!-- Overview -->
+          <section class="admin-panel is-active" id="panel-overview">
+            <div class="kpi-grid">
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Utilisateurs</span>
+                <span class="kpi-value" id="kpi-users">—</span>
+                <span class="kpi-trend">Profils Supabase</span>
               </div>
-
-              <div>
-                <button class="apple-btn primary" id="generate-release-btn">Générer le manifeste</button>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Base de données</span>
+                <span class="kpi-value status-online">En ligne</span>
+                <span class="kpi-trend" id="kpi-ping">— ms</span>
               </div>
-
-              <div class="release-output-box" id="release-output-container" style="display:none;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-                  <span style="font-size: 11px; font-weight:600; color:rgba(255,255,255,0.45);">update.json</span>
-                  <button class="apple-btn secondary" style="padding: 4px 10px; font-size:10px;" id="copy-json-btn">Copier</button>
-                </div>
-                <textarea class="release-textarea" id="release-json-text" readonly></textarea>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Version live</span>
+                <span class="kpi-value" id="kpi-version">v0.3.0</span>
+                <span class="kpi-trend">update.json</span>
+              </div>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Plateforme</span>
+                <span class="kpi-value" style="font-size: 1.4rem">Windows</span>
+                <span class="kpi-trend is-warn">x86_64 · NSIS</span>
               </div>
             </div>
 
-            <!-- Live Logs -->
-            <div class="apple-box">
-              <h3>Logs Système en Direct</h3>
-              <div class="apple-logs-container" id="terminal-logs-container">
-                <!-- Log entries -->
+            <div class="dashboard-split">
+              <div class="glass-card panel-card">
+                <div class="panel-card-header">
+                  <h3>Activité (7 jours)</h3>
+                </div>
+                <div class="chart-bars" aria-hidden="true">
+                  <div class="chart-bar" style="height: 45%"></div>
+                  <div class="chart-bar" style="height: 62%"></div>
+                  <div class="chart-bar" style="height: 38%"></div>
+                  <div class="chart-bar" style="height: 78%"></div>
+                  <div class="chart-bar" style="height: 55%"></div>
+                  <div class="chart-bar" style="height: 88%"></div>
+                  <div class="chart-bar" style="height: 70%"></div>
+                </div>
+              </div>
+              <div class="glass-card panel-card">
+                <div class="panel-card-header">
+                  <h3>Activité récente</h3>
+                </div>
+                <div class="activity-list">
+                  <div class="activity-item">
+                    <span class="activity-dot success"></span>
+                    <div>
+                      <p>Manifeste update.json accessible sur Vercel</p>
+                      <time>À l'instant</time>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <span class="activity-dot"></span>
+                    <div>
+                      <p>Auth Email/Password active sur Supabase</p>
+                      <time>Session courante</time>
+                    </div>
+                  </div>
+                  <div class="activity-item">
+                    <span class="activity-dot warn"></span>
+                    <div>
+                      <p>Table <code>profiles</code> optionnelle pour les rôles</p>
+                      <time>Configuration</time>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
+
+          <!-- Users -->
+          <section class="admin-panel" id="panel-users">
+            <div class="glass-card panel-card">
+              <div class="panel-card-header">
+                <h3>Utilisateurs</h3>
+                <button type="button" class="btn btn-ghost btn-sm" id="refresh-users-btn">Actualiser</button>
+              </div>
+              <div style="overflow-x: auto">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Inscrit</th>
+                      <th>Mode</th>
+                      <th>Rôle</th>
+                    </tr>
+                  </thead>
+                  <tbody id="users-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Releases -->
+          <section class="admin-panel" id="panel-releases">
+            <div class="glass-card panel-card">
+              <div class="panel-card-header">
+                <h3>Générateur update.json</h3>
+              </div>
+              <div class="release-grid">
+                <div class="field">
+                  <label for="release-version">Version</label>
+                  <input type="text" id="release-version" value="0.3.0" />
+                </div>
+                <div class="field">
+                  <label for="release-date">Date ISO</label>
+                  <input type="text" id="release-date" value="2026-07-04T14:00:00Z" />
+                </div>
+                <div class="field span-2">
+                  <label for="release-url">URL archive .zip (GitHub Release)</label>
+                  <input type="url" id="release-url" />
+                </div>
+                <div class="field span-2">
+                  <label for="release-signature">Signature Tauri (.sig)</label>
+                  <input type="text" id="release-signature" placeholder="Contenu du fichier .sig" />
+                </div>
+                <div class="field span-2">
+                  <label for="release-notes">Notes de version</label>
+                  <input type="text" id="release-notes" placeholder="Corrections et nouveautés..." />
+                </div>
+              </div>
+              <button type="button" class="btn btn-primary" id="generate-release-btn">Générer le manifeste</button>
+              <div class="code-output" id="release-output" hidden>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
+                  <span style="font-size: 11px; color: var(--muted-dim); font-weight: 700">update.json</span>
+                  <button type="button" class="btn btn-ghost btn-sm" id="copy-json-btn">Copier</button>
+                </div>
+                <textarea id="release-json" readonly></textarea>
+              </div>
+            </div>
+          </section>
+
+          <!-- Logs -->
+          <section class="admin-panel" id="panel-logs">
+            <div class="glass-card panel-card">
+              <div class="panel-card-header">
+                <h3>Journaux système</h3>
+                <button type="button" class="btn btn-ghost btn-sm" id="refresh-logs-btn">Rafraîchir</button>
+              </div>
+              <div class="log-terminal" id="log-terminal"></div>
+            </div>
+          </section>
         </div>
-      </main>
+      </div>
     </div>
 
-    <script>
-      // 1. Supabase Setup
-      const supabaseUrl = "https://vcikzkfyjrcgvoiktagg.supabase.co";
-      const supabaseAnonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaWt6a2Z5anJjZ3ZvaWt0YWdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNTQxNDMsImV4cCI6MjA5ODczMDE0M30.1gJxAxevUoRhQv3y9PdZ5PKTSBApsbUHZk0W_AOvBoY";
-      let supabaseClient = null;
-
-      try {
-        if (typeof supabase !== 'undefined') {
-          supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
-        }
-      } catch (err) {
-        console.warn("Supabase load error:", err);
-      }
-
-      // 2. Auth State Handlers
-      const loginContainer = document.getElementById('login-container');
-      const dashboardLayout = document.getElementById('dashboard-layout');
-      const loginBtn = document.getElementById('login-btn');
-      const logoutBtn = document.getElementById('logout-btn');
-      const loginEmailInput = document.getElementById('login-email');
-      const loginPassInput = document.getElementById('login-password');
-      const loginError = document.getElementById('login-error');
-      const userDisplayEmail = document.getElementById('user-display-email');
-
-      checkSession();
-
-      async function checkSession() {
-        if (supabaseClient) {
-          try {
-            const { data } = await supabaseClient.auth.getSession();
-            if (data && data.session) {
-              showDashboard(data.session.user.email);
-              return;
-            }
-          } catch (e) {}
-        }
-        const mockUser = sessionStorage.getItem('sr_admin_user');
-        if (mockUser) showDashboard(mockUser);
-      }
-
-      loginBtn.addEventListener('click', async () => {
-        const email = loginEmailInput.value.trim();
-        const password = loginPassInput.value;
-        loginError.style.display = 'none';
-
-        if (supabaseClient) {
-          try {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
-              email: email,
-              password: password
-            });
-            if (!error && data.session) {
-              showDashboard(data.session.user.email);
-              addLog("info", `Admin ${email} connecté avec succès via Supabase.`);
-              return;
-            }
-          } catch (err) {}
-        }
-
-        if (email === "admin@sr-editer.com" && password === "srediteradmin123") {
-          sessionStorage.setItem('sr_admin_user', email);
-          showDashboard(email);
-          addLog("success", `Admin connecté via Identifiants Fallback.`);
-        } else {
-          loginError.style.display = 'block';
-        }
-      });
-
-      logoutBtn.addEventListener('click', async () => {
-        if (supabaseClient) await supabaseClient.auth.signOut();
-        sessionStorage.removeItem('sr_admin_user');
-        hideDashboard();
-      });
-
-      function showDashboard(email) {
-        loginContainer.style.display = 'none';
-        dashboardLayout.style.display = 'flex';
-        userDisplayEmail.innerText = email;
-        refreshUsers();
-        generateLogs();
-      }
-
-      function hideDashboard() {
-        loginContainer.style.display = 'flex';
-        dashboardLayout.style.display = 'none';
-      }
-
-      // 3. User lists and data loading
-      const mockUsers = [
-        { email: "d.robert.2400@gmail.com", created_at: "2026-07-04 13:46", write_mode: "direct", role: "Owner/Admin" },
-        { email: "gta_modder@fivem.net", created_at: "2026-07-02 18:45", write_mode: "choose-folder", role: "Membre" },
-        { email: "user_test@test.fr", created_at: "2026-07-04 15:32", write_mode: "direct", role: "Testeur" }
-      ];
-
-      async function refreshUsers() {
-        const tbody = document.getElementById('users-table-body');
-        tbody.innerHTML = '';
-        let list = [...mockUsers];
-
-        if (supabaseClient) {
-          try {
-            const { data } = await supabaseClient
-              .from('profiles')
-              .select('email, created_at, write_mode, role')
-              .limit(20);
-            if (data && data.length > 0) list = data;
-          } catch (e) {}
-        }
-
-        list.forEach(user => {
-          const tr = document.createElement('tr');
-          const dateStr = user.created_at ? user.created_at.split('T')[0] : 'Inconnu';
-          tr.innerHTML = `
-            <td><strong>${user.email}</strong></td>
-            <td>${dateStr}</td>
-            <td><span style="opacity: 0.8; font-size:11px;">${user.write_mode === 'direct' ? 'Écriture Directe' : 'Dossier Sécurisé'}</span></td>
-            <td><code style="background: rgba(255,255,255,0.05); padding: 2px 6px; border-radius:4px;">${user.role}</code></td>
-          `;
-          tbody.appendChild(tr);
-        });
-
-        document.getElementById('stats-users-count').innerText = list.length;
-      }
-
-      document.getElementById('refresh-users-btn').addEventListener('click', refreshUsers);
-
-      // 4. Release generator
-      document.getElementById('generate-release-btn').addEventListener('click', () => {
-        const version = document.getElementById('release-ver').value.trim();
-        const date = document.getElementById('release-date').value.trim();
-        const url = document.getElementById('release-url').value.trim();
-        const signature = document.getElementById('release-sig').value.trim();
-
-        const json = {
-          version: version,
-          notes: "Mise à jour v" + version,
-          pub_date: date,
-          platforms: {
-            "windows-x86_64": {
-              signature: signature || "SIGNATURE_TAURI",
-              url: url
-            }
-          }
-        };
-
-        document.getElementById('release-json-text').value = JSON.stringify(json, null, 2);
-        document.getElementById('release-output-container').style.display = 'block';
-        addLog("success", `Manifeste update.json généré pour la version v${version}`);
-      });
-
-      document.getElementById('copy-json-btn').addEventListener('click', () => {
-        const txt = document.getElementById('release-json-text');
-        txt.select();
-        document.execCommand('copy');
-        
-        const copyBtn = document.getElementById('copy-json-btn');
-        copyBtn.innerText = "Copié !";
-        setTimeout(() => { copyBtn.innerText = "Copier"; }, 2000);
-      });
-
-      // 5. System Logs
-      const logsContainer = document.getElementById('terminal-logs-container');
-      function generateLogs() {
-        logsContainer.innerHTML = '';
-        const lines = [
-          { type: "info", text: "Connexion à la base de données Supabase établie." },
-          { type: "success", text: "Déclencheurs SQL initialisés sur la table profiles." },
-          { type: "info", text: "Écoute du point de terminaison d'auto-update active." },
-          { type: "success", text: "Fichier update.json configuré pour la release v0.3.0." },
-          { type: "warning", text: "Tentative d'accès suspecte bloquée par les politiques RLS." }
-        ];
-        lines.forEach((l, i) => {
-          const time = new Date(Date.now() - (5 - i) * 60000).toTimeString().split(' ')[0];
-          appendLogLine(time, l.type, l.text);
-        });
-      }
-
-      function appendLogLine(time, type, text) {
-        const div = document.createElement('div');
-        div.className = 'log-row';
-        div.innerHTML = `<span class="time">[${time}]</span> <span class="${type}">[${type.toUpperCase()}]</span> <span>${text}</span>`;
-        logsContainer.appendChild(div);
-        logsContainer.scrollTop = logsContainer.scrollHeight;
-      }
-
-      function addLog(type, text) {
-        const time = new Date().toTimeString().split(' ')[0];
-        appendLogLine(time, type, text);
-      }
-
-      setInterval(() => {
-        if (dashboardLayout.style.display === 'flex') {
-          const ping = Math.floor(Math.random() * 10) + 12;
-          document.getElementById('db-latency-display').innerText = `Ping: ${ping}ms`;
-        }
-      }, 5000);
-
-      // Load wallpaper background
-      const wallpapers = [];
-      for (let i = 1; i <= 61; i++) {
-        wallpapers.push(`assets/wallpapers/${i}.avif`);
-      }
-      const bg = document.getElementById('apple-background');
-      let currentIdx = parseInt(localStorage.getItem('apple_selected_bg') || '0', 10);
-      if (isNaN(currentIdx) || currentIdx < 0 || currentIdx >= wallpapers.length) {
-        currentIdx = 12;
-      }
-      bg.style.backgroundImage = `url("${wallpapers[currentIdx]}")`;
-    </script>
+    <script src="js/wallpapers.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/admin.js"></script>
   </body>
 </html>
