@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,6 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
+    <script src="js/theme.js"></script>
     <link rel="stylesheet" href="styles/tokens.css" />
     <link rel="stylesheet" href="styles/base.css" />
     <link rel="stylesheet" href="styles/admin.css" />
@@ -22,10 +23,19 @@
 
     <!-- Login -->
     <div id="login-view" class="admin-login">
+      <button type="button" class="theme-toggle" id="theme-toggle-login" style="position: fixed; top: 20px; right: 20px; z-index: 10" aria-label="Changer le thème">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <span data-theme-label>Clair</span>
+      </button>
       <div class="glass-card admin-login-card">
         <div>
           <a href="index.html" class="client-brand" style="margin-bottom: 8px">
-            <img src="assets/logo_small.png" width="20" height="20" alt="" />
             <span>SR Editer</span>
           </a>
           <h1>Console Admin</h1>
@@ -53,7 +63,6 @@
     <div id="dashboard-view" class="admin-shell" hidden>
       <aside class="admin-sidebar">
         <a href="index.html" class="sidebar-brand">
-          <img src="assets/logo_small.png" alt="" />
           <span>Console</span>
         </a>
         <nav class="sidebar-nav">
@@ -83,6 +92,16 @@
         <header class="admin-topbar">
           <h2 id="page-title">Vue d'ensemble</h2>
           <div class="admin-topbar-actions">
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+              <span data-theme-label>Clair</span>
+            </button>
             <span class="admin-user" id="admin-user-email"></span>
             <button type="button" class="btn btn-ghost btn-sm" id="logout-btn">Déconnexion</button>
           </div>
@@ -239,5 +258,9 @@
     <script src="js/wallpapers.js"></script>
     <script src="js/config.js"></script>
     <script src="js/admin.js"></script>
+    <script>
+      window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
+      window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));
+    </script>
   </body>
 </html>

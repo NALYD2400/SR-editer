@@ -6,34 +6,12 @@
   const ambient = document.getElementById("ambient-layer");
   const nav = document.querySelector(".client-nav");
   const mosaicTrack = document.getElementById("mosaic-track");
-  const heroFloats = document.getElementById("hero-floats");
   const cycleBtn = document.getElementById("cycle-ambiance");
   const versionBadge = document.getElementById("app-version");
   const downloadBtn = document.getElementById("download-btn");
 
   if (versionBadge && config.appVersion) versionBadge.textContent = `v${config.appVersion}`;
   if (downloadBtn && config.downloadUrl) downloadBtn.href = config.downloadUrl;
-
-  const heroPick = [
-    "ULTIMATE_EDITION_VICE_CITY_STYLE_01.0.u1gt~99yzks.avif",
-    "VINTAGE_VICE_CITY_PACK_EXCLUSIVE_LOOKS_01.15zo0h-xdm91b.avif",
-    "ULTIMATE_EDITION_ONE_EYED_WILLIE_01.0n7-__or5f.b6.avif",
-    "ULTIMATE_EDITION_SAFEHOUSE_VEHICLES_01.0wv6pw3t-mky3.avif",
-    "ULTIMATE_EDITION_VAPID_BUGGY_01.0jxfiql~371ik.avif",
-    "VINTAGE_VICE_CITY_PACK_01.05zaof7o1uz.3.avif"
-  ];
-
-  heroPick.forEach((file, index) => {
-    if (!heroFloats) return;
-    const img = document.createElement("img");
-    img.className = "hero-float";
-    img.src = url(file);
-    img.alt = "";
-    img.loading = index < 2 ? "eager" : "lazy";
-    img.decoding = "async";
-    if (index >= 4) img.style.setProperty("--float-opacity", "0.35");
-    heroFloats.appendChild(img);
-  });
 
   document.querySelectorAll(".bento-card[data-bg]").forEach((card) => {
     const file = card.getAttribute("data-bg");

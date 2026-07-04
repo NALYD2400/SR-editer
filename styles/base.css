@@ -16,6 +16,7 @@ body {
   color: var(--text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  transition: background 0.35s var(--ease-out), color 0.35s var(--ease-out);
 }
 
 img {
@@ -63,17 +64,19 @@ select {
   background:
     radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 71, 126, 0.08), transparent 55%),
     radial-gradient(ellipse 70% 50% at 100% 100%, rgba(0, 168, 204, 0.06), transparent 50%),
-    linear-gradient(180deg, rgba(3, 2, 6, 0.35) 0%, rgba(3, 2, 6, 0.92) 72%, #030206 100%);
+    var(--ambient-overlay);
   pointer-events: none;
+  transition: background 0.35s var(--ease-out);
 }
 
 .ambient-blur {
   position: fixed;
   inset: 0;
   z-index: -1;
-  backdrop-filter: blur(42px) saturate(160%);
-  -webkit-backdrop-filter: blur(42px) saturate(160%);
+  backdrop-filter: blur(var(--ambient-blur-strength)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--ambient-blur-strength)) saturate(160%);
   pointer-events: none;
+  transition: backdrop-filter 0.35s var(--ease-out);
 }
 
 .btn {
@@ -101,14 +104,14 @@ select {
 }
 
 .btn-primary {
-  background: #fff;
-  color: #0a0812;
-  box-shadow: 0 12px 40px rgba(255, 255, 255, 0.12);
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+  box-shadow: var(--btn-primary-shadow);
 }
 
 .btn-primary:hover {
-  background: #f4f2f8;
-  box-shadow: 0 16px 48px rgba(255, 255, 255, 0.18);
+  filter: brightness(1.05);
+  box-shadow: var(--btn-primary-shadow);
 }
 
 .btn-ghost {
@@ -119,7 +122,7 @@ select {
 
 .btn-ghost:hover {
   background: var(--bg-glass-strong);
-  border-color: rgba(255, 255, 255, 0.14);
+  border-color: var(--border-strong);
 }
 
 .btn-sm {
@@ -151,11 +154,12 @@ select {
 }
 
 .glass-card {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  background: var(--glass-gradient);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
+  transition: background 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
 }
 
 .field {
@@ -178,7 +182,7 @@ select {
   padding: 12px 14px;
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
-  background: rgba(255, 255, 255, 0.03);
+  background: var(--field-bg);
   color: var(--text);
   outline: none;
   transition: border-color 0.2s, background 0.2s;
@@ -187,8 +191,43 @@ select {
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
-  border-color: rgba(255, 255, 255, 0.22);
-  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--field-focus-border);
+  background: var(--field-focus-bg);
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--bg-glass);
+  color: var(--text-soft);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.theme-toggle:hover {
+  background: var(--bg-glass-strong);
+  color: var(--text);
+}
+
+.theme-toggle svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.theme-toggle .icon-sun,
+html[data-theme="light"] .theme-toggle .icon-moon {
+  display: none;
+}
+
+html[data-theme="light"] .theme-toggle .icon-sun {
+  display: block;
 }
 
 .alert-error {
