@@ -1,0 +1,81 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, system-ui, sans-serif;
+  --bg: #0e0c15;
+  --text: #f6f4fa;
+  --muted: #a699c2;
+  --accent: #ff477e;
+  --card: rgba(18, 15, 26, 0.85);
+  --border: rgba(157, 78, 221, 0.2);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(255, 71, 126, 0.15), transparent 40%),
+    radial-gradient(circle at 85% 90%, rgba(0, 168, 204, 0.12), transparent 35%),
+    var(--bg);
+  color: var(--text);
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 48px 20px 64px;
+}
+
+.eyebrow {
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+h1 {
+  margin: 8px 0 12px;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+
+.lead {
+  color: var(--muted);
+  max-width: 60ch;
+  line-height: 1.6;
+}
+
+.cards {
+  display: grid;
+  gap: 16px;
+  margin-top: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.cards article {
+  padding: 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.cards h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.cards p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+  font-size: 0.92rem;
+}
+
+footer {
+  margin-top: 48px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}

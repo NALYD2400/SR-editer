@@ -1,0 +1,11 @@
+{
+  "version": "0.3.0",
+  "notes": "Version initiale — remplace cette note à chaque release.",
+  "pub_date": "2026-07-04T10:00:00Z",
+  "platforms": {
+    "windows-x86_64": {
+      "signature": "REMPLACE_PAR_LA_SIGNATURE_GENEREE_AU_BUILD",
+      "url": "https://github.com/TON-UTILISATEUR/TON-REPO/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip"
+    }
+  }
+}
