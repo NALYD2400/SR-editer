@@ -206,9 +206,11 @@
 
     updateCheckboxes(user.role);
 
-    roleSelect?.onchange = (e) => {
-      updateCheckboxes(e.target.value);
-    };
+    if (roleSelect) {
+      roleSelect.onchange = (e) => {
+        updateCheckboxes(e.target.value);
+      };
+    }
 
     // User activity logs simulation
     const detailLogs = document.getElementById("detail-logs");
