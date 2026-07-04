@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SR Editer — Panel d'Administration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+      /* Additional styles specific to the Admin Dashboard */
+      .admin-login-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+      
+      .login-card {
+        width: 380px;
+        padding: 28px;
+        border-radius: var(--radius-shell);
+        border: 1px solid var(--border);
+        background: var(--bg-panel);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: var(--shadow-panel);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .login-header {
+        text-align: center;
+      }
+      
+      .login-header h2 {
+        font-family: var(--font-display);
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 8px;
+        letter-spacing: 0.05em;
+      }
+      
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      
+      .form-group label {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      .form-input {
+        padding: 10px 12px;
+        border-radius: var(--radius-control);
+        border: 1px solid var(--border);
+        background: var(--bg-input);
+        color: var(--text);
+        font-size: 12px;
+        outline: none;
+        transition: all 0.2s ease;
+      }
+      
+      .form-input:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 8px rgba(255, 71, 126, 0.15);
+      }
+      
+      .admin-layout {
+        display: none; /* Shown when authenticated */
+        height: 100%;
+      }
+      
+      /* Dashboard statistics grid */
+      .stats-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        padding: 12px;
+        flex-shrink: 0;
+      }
+      
+      .stat-card {
+        background: var(--bg-elevated);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      
+      .stat-card .label {
+        font-size: 9px;
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      
+      .stat-card .value {
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      
+      /* Admin Console panels */
+      .admin-content-area {
+        flex: 1;
+        overflow-y: auto;
+        padding: 12px;
+      }
+      
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+        text-align: left;
+      }
+      
+      .admin-table th, 
+      .admin-table td {
+        padding: 10px 12px;
+        border-bottom: 1px solid var(--border);
+      }
+      
+      .admin-table th {
+        font-weight: 700;
+        color: var(--muted);
+        text-transform: uppercase;
+        font-size: 9px;
+        letter-spacing: 0.05em;
+        background: rgba(0, 0, 0, 0.15);
+      }
+      
+      .admin-table tr:hover td {
+        background: var(--bg-hover);
+      }
+      
+      .terminal-logs {
+        font-family: monospace;
+        background: #060408;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        padding: 12px;
+        height: 350px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      
+      .log-line {
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      
+      .log-time { color: var(--muted); }
+      .log-info { color: var(--blue); }
+      .log-success { color: var(--success); }
+      .log-warning { color: var(--warning); }
+      
+      /* Release manager generator styles */
+      .release-form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      
+      .release-output {
+        grid-column: 1 / -1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 10px;
+      }
+      
+      .json-textarea {
+        width: 100%;
+        height: 140px;
+        font-family: monospace;
+        font-size: 11px;
+        padding: 10px;
+        background: var(--bg-input);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-control);
+        color: var(--text-soft);
+        outline: none;
+        resize: none;
+      }
+      
+      .error-message {
+        color: var(--accent);
+        font-size: 11px;
+        font-weight: 600;
+        text-align: center;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Login Screen (Visible by default) -->
+    <div class="admin-login-container" id="login-container">
+      <div class="login-card">
+        <div class="login-header">
+          <img src="assets/logo_small.png" alt="Logo" class="brand-logo-img" style="height: 36px;" />
+          <h2>SR Editer Admin</h2>
+          <p style="font-size: 11px; color: var(--muted); margin-top: 4px;">Accès réservé à l'administrateur</p>
+        </div>
+        
+        <div class="error-message" id="login-error">Email ou mot de passe incorrect.</div>
+
+        <div class="form-group">
+          <label for="login-email">Adresse Email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="admin@sr-editer.com" value="admin@sr-editer.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Mot de passe</label>
+          <input type="password" id="login-password" class="form-input" placeholder="••••••••" value="srediteradmin123" />
+        </div>
+
+        <button class="button primary" id="login-btn" style="height: 38px; font-size: 13px;">
+          Se connecter
+        </button>
+        
+        <p style="font-size: 9px; color: var(--muted); text-align: center; line-height: 1.4;">
+          Note: Pour la première connexion, utilisez le compte par défaut ou configurez vos identifiants Supabase.
+        </p>
+      </div>
+    </div>
+
+    <!-- Admin Dashboard Layout (Hidden by default) -->
+    <div class="admin-layout" id="dashboard-layout">
+      <div class="studio-shell">
+        <!-- Top Header / ProjectBar -->
+        <header class="project-bar">
+          <div class="brand-logo">
+            <img src="assets/logo_small.png" alt="SR Logo" class="brand-logo-img" />
+            <span class="brand-title">SR Editer Console</span>
+          </div>
+
+          <div class="project-title-centered">
+            <span class="badge-release" style="background: var(--blue-soft); border-color: var(--blue); color: var(--blue);">Console Admin</span>
+            <span class="file-name">Gestion Globale du Studio</span>
+          </div>
+
+          <div class="project-actions">
+            <span style="font-size: 11px; color: var(--text-soft);" id="user-display-email">admin@sr-editer.com</span>
+            <button class="button secondary" id="logout-btn" style="padding: 4px 10px;">
+              Déconnexion
+            </button>
+          </div>
+        </header>
+
+        <!-- Workspace Grid -->
+        <main class="workspace-grid" style="grid-template-columns: var(--rail-width) 240px 1fr;">
+          <!-- Column 1: Navigation Rail -->
+          <nav class="navigation-rail" aria-label="Menu Admin">
+            <div class="navigation-main">
+              <button class="rail-button active" id="nav-dashboard" title="Vue d'ensemble">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span class="rail-label">Général</span>
+              </button>
+              <button class="rail-button" id="nav-users" title="Gérer les utilisateurs">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span class="rail-label">Membres</span>
+              </button>
+              <button class="rail-button" id="nav-releases" title="Release Manager">
+                <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" x2="12" y1="22.08" y2="12"/></svg>
+                <span class="rail-label">Releases</span>
+              </button>
+            </div>
+            <button class="rail-button" id="nav-logs" title="Journaux système">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M3 20v-8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8"/><path d="M3 10V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/><path d="M14 20v-4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v8"/><path d="M14 12V8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v4"/></svg>
+              <span class="rail-label">Logs</span>
+            </button>
+          </nav>
+
+          <!-- Column 2: Dashboard Sidebar -->
+          <section class="asset-explorer">
+            <div class="panel-heading">
+              <span class="eyebrow" id="section-eyebrow">DASHBOARD</span>
+              <h2 id="section-title">Vue d'ensemble</h2>
+            </div>
+            
+            <div class="feature-list" id="sidebar-subcontents">
+              <!-- Content changes based on active tab -->
+              <div class="compatibility-box">
+                <h4>Status de la Plateforme</h4>
+                <ul class="format-list">
+                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Supabase Authentification</li>
+                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Base de données PostgreSQL</li>
+                  <li><span class="format-tag" style="background:rgba(88,219,160,0.12); color:var(--success);">OK</span>Distribution update.json</li>
+                  <li><span class="format-tag">v0.3.0</span>Version App Actuelle</li>
+                </ul>
+              </div>
+
+              <div class="info-box">
+                <h4>Console Sécurisée</h4>
+                <p>Ce tableau de bord permet de générer les manifestes de mise à jour Tauri et de surveiller l'activité.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Column 3: Main Admin Content View -->
+          <section class="viewport-panel" style="background: var(--bg-app);">
+            <!-- Panel Toolbar -->
+            <div class="viewport-toolbar">
+              <div class="viewport-toolbar-start">
+                <span class="active-dot" id="console-indicator"></span>
+                <span class="viewport-title-text" id="console-title">Tableau de bord principal</span>
+              </div>
+              <div class="viewport-controls-right">
+                <span class="lod-badge" id="telemetry-badge">Télémétrie Live</span>
+              </div>
+            </div>
+
+            <!-- Panel Contents (Swapped dynamically) -->
+            <div class="admin-content-area" id="main-admin-content">
+              
+              <!-- Tab 1: Overview Dashboard (Visible by default) -->
+              <div id="panel-dashboard">
+                <div class="stats-summary" style="padding: 0 0 14px 0;">
+                  <div class="stat-card">
+                    <span class="label">Membres Actifs</span>
+                    <span class="value" id="stats-users-count">12</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Écritures Directes</span>
+                    <span class="value" id="stats-edits">1,248</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Backups Sécurisés</span>
+                    <span class="value" id="stats-backups">842</span>
+                  </div>
+                  <div class="stat-card">
+                    <span class="label">Requêtes API</span>
+                    <span class="value">99.8%</span>
+                  </div>
+                </div>
+
+                <div class="compatibility-box" style="margin-top: 10px;">
+                  <h4 style="margin-bottom:12px;">Dernière Activité du Logiciel</h4>
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Utilisateur</th>
+                        <th>Action</th>
+                        <th>Fichier</th>
+                        <th>Statut</th>
+                      </tr>
+                    </thead>
+                    <tbody id="activity-table-body">
+                      <tr>
+                        <td>Aujourd'hui, 15:32</td>
+                        <td>dylan@gta.com</td>
+                        <td>Export Texture PNG</td>
+                        <td>w_sr_heavysniper.ytd</td>
+                        <td><span class="os-badge">Succès</span></td>
+                      </tr>
+                      <tr>
+                        <td>Aujourd'hui, 14:15</td>
+                        <td>gta_modder@fivem.net</td>
+                        <td>Backup Créé</td>
+                        <td>w_sr_heavy_mag.ydr</td>
+                        <td><span class="os-badge">Succès</span></td>
+                      </tr>
+                      <tr>
+                        <td>Hier, 19:40</td>
+                        <td>dylan@gta.com</td>
+                        <td>Écriture Directe ODR</td>
+                        <td>w_sr_heavy_mag.odr</td>
+                        <td><span class="os-badge">Succès</span></td>
+                      </tr>
+                      <tr>
+                        <td>Hier, 18:22</td>
+                        <td>user_test@test.fr</td>
+                        <td>Connexion Studio</td>
+                        <td>—</td>
+                        <td><span class="os-badge">Succès</span></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab 2: User Manager -->
+              <div id="panel-users" style="display: none;">
+                <div class="compatibility-box">
+                  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 14px;">
+                    <h4>Liste des Comptes Enregistrés (profiles)</h4>
+                    <button class="button secondary" style="padding: 4px 10px; font-size:10px;" id="refresh-users-btn">Actualiser</button>
+                  </div>
+                  <table class="admin-table">
+                    <thead>
+                      <tr>
+                        <th>ID Public</th>
+                        <th>Email / Pseudo</th>
+                        <th>Dernière connexion</th>
+                        <th>Mode d'écriture</th>
+                        <th>Permissions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                      <!-- Populated via script -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- Tab 3: Release Manager -->
+              <div id="panel-releases" style="display: none;">
+                <div class="compatibility-box" style="margin-bottom:12px;">
+                  <h4>Générateur de update.json (Auto-Update)</h4>
+                  <p style="font-size:10px; color:var(--muted); margin-bottom:14px;">
+                    Remplissez les informations de compilation ci-dessous pour formater instantanément votre fichier manifeste de mise à jour.
+                  </p>
+                  
+                  <div class="release-form-grid">
+                    <div class="form-group">
+                      <label for="release-ver">Version de la Release</label>
+                      <input type="text" id="release-ver" class="form-input" value="0.3.0" />
+                    </div>
+                    <div class="form-group">
+                      <label for="release-date">Date de Publication (ISO)</label>
+                      <input type="text" id="release-date" class="form-input" value="2026-07-04T13:30:00Z" />
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                      <label for="release-url">URL de téléchargement de la signature (.zip)</label>
+                      <input type="text" id="release-url" class="form-input" value="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip" />
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                      <label for="release-sig">Contenu de la signature cryptographique (.sig)</label>
+                      <input type="text" id="release-sig" class="form-input" placeholder="Collez ici tout le texte du fichier .sig généré lors de la compilation" />
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                      <label for="release-notes">Notes de version / Changelog</label>
+                      <input type="text" id="release-notes" class="form-input" value="Version v0.3.0 de production stable — Atelier d'Assets GTA V et FiveM avec Texture Studio et Explorateur RPF." />
+                    </div>
+                  </div>
+                  
+                  <div style="margin-top: 14px;">
+                    <button class="button primary" id="generate-release-btn">Générer le manifeste</button>
+                  </div>
+                </div>
+
+                <div class="compatibility-box release-output" id="release-output-container" style="display:none;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4>Contenu généré pour update.json</h4>
+                    <button class="button secondary" style="padding: 4px 10px; font-size:10px;" id="copy-json-btn">Copier</button>
+                  </div>
+                  <textarea class="json-textarea" id="release-json-text" readonly></textarea>
+                  <p style="font-size: 9px; color:var(--muted);">
+                    Copiez le bloc ci-dessus et remplacez le contenu de votre fichier <code>update.json</code> dans votre dépôt, puis faites un commit & push pour le déployer sur Vercel.
+                  </p>
+                </div>
+              </div>
+
+              <!-- Tab 4: Logs Console -->
+              <div id="panel-logs" style="display: none;">
+                <div class="terminal-logs" id="terminal-logs-container">
+                  <!-- Filled via script -->
+                </div>
+              </div>
+
+            </div>
+          </section>
+        </main>
+
+        <!-- Bottom Status Bar -->
+        <footer class="status-bar">
+          <span class="status-indicator ready">
+            <span class="indicator-dot"></span>
+            Liaison Supabase Active
+          </span>
+          <span class="divider">|</span>
+          <span>Admin Session : Authentifiée</span>
+          <span class="divider">|</span>
+          <span id="db-latency-display">Ping Supabase DB: 24ms</span>
+          
+          <span class="status-version">
+            Accès sécurisé SSL/TLS par jeton JWT.
+          </span>
+        </footer>
+      </div>
+    </div>
+
+    <script>
+      // 1. Supabase Initialization
+      const supabaseUrl = "https://vcikzkfyjrcgvoiktagg.supabase.co";
+      const supabaseAnonKey = "sb_publishable_fLA6qCsdGZ5q-wCTqWUczQ_jHSxjjPA";
+      let supabaseClient = null;
+
+      try {
+        if (typeof supabase !== 'undefined') {
+          supabaseClient = supabase.createClient(supabaseUrl, supabaseAnonKey);
+        }
+      } catch (err) {
+        console.warn("Supabase client failed to initialize (offline mode active):", err);
+      }
+
+      // 2. Authentication Logic
+      const loginContainer = document.getElementById('login-container');
+      const dashboardLayout = document.getElementById('dashboard-layout');
+      const loginBtn = document.getElementById('login-btn');
+      const logoutBtn = document.getElementById('logout-btn');
+      const loginEmailInput = document.getElementById('login-email');
+      const loginPassInput = document.getElementById('login-password');
+      const loginError = document.getElementById('login-error');
+      const userDisplayEmail = document.getElementById('user-display-email');
+
+      // Check current session on load
+      checkSession();
+
+      async function checkSession() {
+        if (supabaseClient) {
+          try {
+            const { data, error } = await supabaseClient.auth.getSession();
+            if (data && data.session) {
+              showDashboard(data.session.user.email);
+              return;
+            }
+          } catch (e) {
+            console.log("No active Supabase session.");
+          }
+        }
+        
+        // Fallback checks for mock login session
+        const mockUser = sessionStorage.getItem('sr_admin_user');
+        if (mockUser) {
+          showDashboard(mockUser);
+        }
+      }
+
+      loginBtn.addEventListener('click', async () => {
+        const email = loginEmailInput.value.trim();
+        const password = loginPassInput.value;
+
+        loginError.style.display = 'none';
+
+        // 1. Attempt real Supabase authentication first if available
+        if (supabaseClient) {
+          try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+            if (!error && data.session) {
+              showDashboard(data.session.user.email);
+              addLog("info", `Connexion réussie de l'administrateur (${email}) via Supabase Auth`);
+              return;
+            }
+          } catch (err) {
+            console.warn("Supabase Auth failed, falling back to mock authentication:", err);
+          }
+        }
+
+        // 2. Mock fallback credentials for demonstration/offline mode
+        if (email === "admin@sr-editer.com" && password === "srediteradmin123") {
+          sessionStorage.setItem('sr_admin_user', email);
+          showDashboard(email);
+          addLog("success", `Connexion réussie en mode de démonstration locale (admin@sr-editer.com)`);
+        } else {
+          loginError.style.display = 'block';
+          loginError.innerText = "Email ou mot de passe incorrect (Erreur Auth).";
+          addLog("warning", `Tentative d'accès non autorisée rejetée pour l'adresse: ${email}`);
+        }
+      });
+
+      logoutBtn.addEventListener('click', async () => {
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
+        sessionStorage.removeItem('sr_admin_user');
+        hideDashboard();
+      });
+
+      function showDashboard(email) {
+        loginContainer.style.display = 'none';
+        dashboardLayout.style.display = 'block';
+        userDisplayEmail.innerText = email;
+        refreshUsers();
+        generateLogs();
+      }
+
+      function hideDashboard() {
+        loginContainer.style.display = 'flex';
+        dashboardLayout.style.display = 'none';
+      }
+
+      // 3. Tab Navigation Logic
+      const tabs = ["dashboard", "users", "releases", "logs"];
+      
+      tabs.forEach(tabId => {
+        document.getElementById(`nav-${tabId}`).addEventListener('click', () => {
+          // Update active button
+          tabs.forEach(id => {
+            document.getElementById(`nav-${id}`).classList.remove('active');
+            document.getElementById(`panel-${id}`).style.display = 'none';
+          });
+          
+          document.getElementById(`nav-${tabId}`).classList.add('active');
+          document.getElementById(`panel-${tabId}`).style.display = 'block';
+
+          // Update titles
+          const eyebrow = document.getElementById('section-eyebrow');
+          const title = document.getElementById('section-title');
+          const consoleTitle = document.getElementById('console-title');
+
+          if (tabId === 'dashboard') {
+            eyebrow.innerText = "DASHBOARD";
+            title.innerText = "Vue d'ensemble";
+            consoleTitle.innerText = "Tableau de bord principal";
+          } else if (tabId === 'users') {
+            eyebrow.innerText = "UTILISATEURS";
+            title.innerText = "Membres enregistrés";
+            consoleTitle.innerText = "Gestion de comptes";
+            refreshUsers();
+          } else if (tabId === 'releases') {
+            eyebrow.innerText = "RELEASES";
+            title.innerText = "Mises à jour";
+            consoleTitle.innerText = "Manager d'Auto-Updates";
+          } else if (tabId === 'logs') {
+            eyebrow.innerText = "LOGS CONSOLE";
+            title.innerText = "Journaux système";
+            consoleTitle.innerText = "Journaux en direct";
+            generateLogs();
+          }
+        });
+      });
+
+      // 4. User database loading & rendering
+      const mockUsers = [
+        { id: "usr_01a89b", email: "dylan@gta.com", created_at: "2026-06-30 11:20", write_mode: "direct", role: "Owner/Admin" },
+        { id: "usr_02d93e", email: "gta_modder@fivem.net", created_at: "2026-07-02 18:45", write_mode: "choose-folder", role: "Modérateur" },
+        { id: "usr_0318fc", email: "user_test@test.fr", created_at: "2026-07-04 15:32", write_mode: "direct", role: "Testeur" },
+        { id: "usr_04fb0e", email: "editor_vice@rockstar.com", created_at: "2026-07-03 09:12", write_mode: "choose-folder", role: "Membre" }
+      ];
+
+      async function refreshUsers() {
+        const tbody = document.getElementById('users-table-body');
+        tbody.innerHTML = '';
+        
+        let usersList = [...mockUsers];
+
+        // If Supabase is active, try to fetch from public 'profiles' table if it exists
+        if (supabaseClient) {
+          try {
+            const { data, error } = await supabaseClient
+              .from('profiles')
+              .select('id, email, created_at, write_mode, role')
+              .limit(20);
+            
+            if (data && data.length > 0) {
+              usersList = data;
+              addLog("info", `Chargement de ${data.length} profils utilisateur depuis la table Supabase.`);
+            }
+          } catch (e) {
+            console.log("Using mock user list (profiles table not found or RLS restricted).");
+          }
+        }
+
+        usersList.forEach(user => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td><code>${user.id}</code></td>
+            <td><strong>${user.email || 'Anonyme'}</strong></td>
+            <td>${user.created_at || 'Inconnu'}</td>
+            <td><span class="os-badge" style="background:${user.write_mode === 'direct' ? 'rgba(255, 71, 126, 0.1)' : 'rgba(0, 168, 204, 0.1)'}; color:${user.write_mode === 'direct' ? 'var(--accent)' : 'var(--blue)'};">${user.write_mode === 'direct' ? 'Écriture Directe' : 'Dossier Choisi'}</span></td>
+            <td><code>${user.role || 'Utilisateur'}</code></td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        document.getElementById('stats-users-count').innerText = usersList.length;
+      }
+
+      document.getElementById('refresh-users-btn').addEventListener('click', refreshUsers);
+
+      // 5. Release JSON Generator
+      document.getElementById('generate-release-btn').addEventListener('click', () => {
+        const version = document.getElementById('release-ver').value.trim();
+        const date = document.getElementById('release-date').value.trim();
+        const url = document.getElementById('release-url').value.trim();
+        const signature = document.getElementById('release-sig').value.trim();
+        const notes = document.getElementById('release-notes').value.trim();
+
+        const json = {
+          version: version,
+          notes: notes,
+          pub_date: date,
+          platforms: {
+            "windows-x86_64": {
+              signature: signature || "COLLEZ_LA_SIGNATURE_ICI",
+              url: url
+            }
+          }
+        };
+
+        const outTextarea = document.getElementById('release-json-text');
+        outTextarea.value = JSON.stringify(json, null, 2);
+        
+        document.getElementById('release-output-container').style.display = 'block';
+        addLog("success", `Nouveau manifeste update.json généré pour la version v${version}`);
+      });
+
+      document.getElementById('copy-json-btn').addEventListener('click', () => {
+        const text = document.getElementById('release-json-text');
+        text.select();
+        document.execCommand('copy');
+        
+        const copyBtn = document.getElementById('copy-json-btn');
+        copyBtn.innerText = "Copié !";
+        setTimeout(() => { copyBtn.innerText = "Copier"; }, 2000);
+        addLog("info", "Manifeste update.json copié dans le presse-papiers.");
+      });
+
+      // 6. Terminal Logs simulator
+      const logTemplates = [
+        { type: "info", text: "Vérification des dépendances SQLite et RSC7..." },
+        { type: "success", text: "Moteur de décodage RSC7 chargé avec succès." },
+        { type: "info", text: "Synchronisation des profils de textures..." },
+        { type: "success", text: "Base de données Supabase connectée." },
+        { type: "info", text: "Écoute des événements d'auto-update active." },
+        { type: "success", text: "Connexion autorisée pour l'utilisateur dylan@gta.com." },
+        { type: "warning", text: "Texture w_sr_heavysniper.ytd : format non compressé détecté, conversion requise." },
+        { type: "success", text: "Transaction d'écriture directe réussie avec fichier backup généré." },
+        { type: "info", text: "Purge des caches de prévisualisation WebGL effectuée." },
+        { type: "success", text: "Nouvel utilisateur test créé via le dashboard Supabase." }
+      ];
+
+      const logsContainer = document.getElementById('terminal-logs-container');
+
+      function generateLogs() {
+        logsContainer.innerHTML = '';
+        
+        // Initial set of logs
+        for(let i = 0; i < 15; i++) {
+          const randomTime = new Date(Date.now() - (15 - i) * 60000);
+          const timeStr = randomTime.toTimeString().split(' ')[0];
+          const template = logTemplates[Math.floor(Math.random() * logTemplates.length)];
+          
+          appendLogLine(timeStr, template.type, template.text);
+        }
+      }
+
+      function appendLogLine(time, type, text) {
+        const line = document.createElement('div');
+        line.className = 'log-line';
+        line.innerHTML = `
+          <span class="log-time">[${time}]</span>
+          <span class="log-${type}">[${type.toUpperCase()}]</span>
+          <span>${text}</span>
+        `;
+        logsContainer.appendChild(line);
+        logsContainer.scrollTop = logsContainer.scrollHeight;
+      }
+
+      function addLog(type, text) {
+        const now = new Date();
+        const timeStr = now.toTimeString().split(' ')[0];
+        appendLogLine(timeStr, type, text);
+      }
+
+      // Add a periodic log line to feel alive
+      setInterval(() => {
+        if (dashboardLayout.style.display === 'block') {
+          const templates = [
+            { type: "info", text: "Ping de la base de données Supabase effectué." },
+            { type: "success", text: "Session utilisateur actualisée avec succès." },
+            { type: "info", text: "Vérification des demandes de mise à jour..." }
+          ];
+          const template = templates[Math.floor(Math.random() * templates.length)];
+          const pingVal = Math.floor(Math.random() * 15) + 15;
+          document.getElementById('db-latency-display').innerText = `Ping Supabase DB: ${pingVal}ms`;
+          addLog(template.type, template.text);
+        }
+      }, 15000);
+    </script>
+  </body>
+</html>

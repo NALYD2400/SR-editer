@@ -3,41 +3,250 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SR Editer — Atelier GTA V / FiveM</title>
+    <title>SR Editer — Atelier Desktop GTA V / FiveM</title>
     <meta
       name="description"
-      content="SR Editer : inspecter, prévisualiser et modifier des assets GTA V / FiveM."
+      content="SR Editer : Visualisez, éditez et gérez vos textures et matériaux GTA V / FiveM en local avec décodage RSC7 natif."
     />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <main class="page">
-      <header class="hero">
-        <p class="eyebrow">SR Editer</p>
-        <h1>Atelier desktop pour assets GTA V / FiveM</h1>
-        <p class="lead">
-          Texture Studio, viewport 3D, explorateur RPF et décodage natif RSC7 — le tout en local sur ton PC.
-        </p>
+    <div class="studio-shell">
+      <!-- Top Header / ProjectBar -->
+      <header class="project-bar">
+        <div class="brand-logo">
+          <img src="assets/logo_small.png" alt="SR Logo" class="brand-logo-img" />
+          <span class="brand-title">SR Editer</span>
+        </div>
+
+        <div class="project-title-centered">
+          <span class="badge-release">Release v0.3.0</span>
+          <span class="file-name">Atelier d'Assets GTA V / FiveM</span>
+        </div>
+
+        <div class="project-actions">
+          <button class="icon-button" id="wallpaper-cycle-btn" title="Changer l'ambiance (Wallpaper)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+          </button>
+          <a href="https://github.com/NALYD2400/SR-editer" target="_blank" rel="noopener noreferrer" class="button secondary" title="Code Source GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
+            GitHub
+          </a>
+        </div>
       </header>
 
-      <section class="cards">
-        <article>
-          <h2>Texture Studio</h2>
-          <p>Calques 2D, export PNG/DDS et retouches IA optionnelles.</p>
-        </article>
-        <article>
-          <h2>Explorateur GTA</h2>
-          <p>Parcours ton installation, tes mods ou tes archives RPF en lecture.</p>
-        </article>
-        <article>
-          <h2>Mises à jour auto</h2>
-          <p>L'application desktop vérifie ce site pour les nouvelles versions.</p>
-        </article>
-      </section>
+      <!-- Main Workspace Container -->
+      <main class="workspace-grid">
+        
+        <!-- Column 1: Navigation Rail -->
+        <nav class="navigation-rail" aria-label="Menu principal">
+          <div class="navigation-main">
+            <button class="rail-button active" title="Accueil">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+              <span class="rail-label">Accueil</span>
+            </button>
+            <button class="rail-button" onclick="scrollToSection('features-section')" title="Fonctionnalités">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275Z"/></svg>
+              <span class="rail-label">Features</span>
+            </button>
+            <button class="rail-button" onclick="scrollToSection('downloads-section')" title="Télécharger">
+              <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              <span class="rail-label">Download</span>
+            </button>
+          </div>
+          <button class="rail-button" onclick="scrollToSection('docs-section')" title="Aide & Docs">
+            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+            <span class="rail-label">Aide</span>
+          </button>
+        </nav>
 
-      <footer>
-        <p>Non affilié à Rockstar Games, Take-Two ou Cfx.re.</p>
+        <!-- Column 2: Sidebar (Feature List) -->
+        <section class="asset-explorer" id="features-section">
+          <div class="panel-heading">
+            <span class="eyebrow">FONCTIONNALITÉS</span>
+            <h2>Studio GTA V & FiveM</h2>
+          </div>
+          
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+              </div>
+              <div class="feature-content">
+                <h3>Texture Studio Complet</h3>
+                <p>Éditez vos textures en direct avec un système de calques 2D, ajustements d'opacité, masquage de couches et retouches IA optionnelles.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+              </div>
+              <div class="feature-content">
+                <h3>Explorateur RPF Intégré</h3>
+                <p>Parcourez directement vos fichiers de jeu (.YTD, .YDR, .YFT, .ODR) en local avec recherche instantanée et filtres intelligents.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              </div>
+              <div class="feature-content">
+                <h3>Décodage RSC7 Natif</h3>
+                <p>Ouvrez et lisez vos fichiers compressés RSC7 sans temps de chargement fastidieux grâce à notre moteur natif optimisé.</p>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>
+              </div>
+              <div class="feature-content">
+                <h3>Auto-Updates & Sécurité</h3>
+                <p>Restez à jour en permanence. L'application intègre un vérificateur de versions avec signature cryptographique NSIS.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Column 3: Viewport Panel (Main screenshot showcase) -->
+        <section class="viewport-panel">
+          <div class="viewport-toolbar">
+            <div class="viewport-toolbar-start">
+              <span class="active-dot"></span>
+              <span class="viewport-title-text">Aperçu du Logiciel</span>
+            </div>
+            <div class="viewport-controls-right">
+              <span class="lod-badge">LOD High</span>
+              <span class="stat-badge">FPS: 60</span>
+            </div>
+          </div>
+          
+          <div class="viewport-canvas-container">
+            <img src="assets/image_modifiee (2).png" alt="Aperçu SR Editer" class="app-screenshot" />
+            
+            <div class="hud-layer">
+              <div class="hud-widget bottom-left">
+                <strong>w_sr_heavysniper_mag1.odr</strong>
+                <small>Format: RSC7 OpenFormats</small>
+              </div>
+              <div class="hud-widget bottom-right">
+                <strong>Atelier 3D Actif</strong>
+                <small>Rendu WebGL2</small>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Column 4: Inspector Panel (Download & Compatibility) -->
+        <section class="inspector-panel" id="downloads-section">
+          <div class="panel-heading">
+            <span class="eyebrow">TÉLÉCHARGEMENT</span>
+            <h2>Installer SR Editer</h2>
+          </div>
+          
+          <div class="inspector-scrollable">
+            <!-- Download Box -->
+            <div class="download-card">
+              <div class="download-card-header">
+                <h3>Windows (64-bit)</h3>
+                <span class="os-badge">Recommandé</span>
+              </div>
+              <p>Version stable avec installateur complet NSIS et auto-update.</p>
+              
+              <a href="https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.exe" class="button primary download-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                Télécharger l'Installateur
+              </a>
+              
+              <div class="download-details">
+                <span>Format: <code>.exe</code> (NSIS)</span>
+                <span>Taille: ~75 Mo</span>
+              </div>
+            </div>
+
+            <!-- Auto Update Config -->
+            <div class="info-box" id="docs-section">
+              <h4>
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12" y1="8" y2="8"/></svg>
+                Fichier de Configuration
+              </h4>
+              <p>Pour le système de mise à jour automatique, l'application pointe vers notre point de contrôle public :</p>
+              <a href="update.json" class="json-link" target="_blank">
+                <code>update.json</code>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+              </a>
+            </div>
+
+            <!-- Formats Compatibility -->
+            <div class="compatibility-box">
+              <h4>Formats Supportés</h4>
+              <ul class="format-list">
+                <li><span class="format-tag">YTD</span>Textures compressées</li>
+                <li><span class="format-tag">YDR</span>Modèles d'objets</li>
+                <li><span class="format-tag">YFT</span>Fragments physiques</li>
+                <li><span class="format-tag">ODR</span>OpenFormats RSC7</li>
+                <li><span class="format-tag">OTX</span>Textures OpenFormats</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Bottom Status Bar -->
+      <footer class="status-bar">
+        <span class="status-indicator ready">
+          <span class="indicator-dot"></span>
+          Serveur Web Vercel Actif
+        </span>
+        <span class="divider">|</span>
+        <span>Version de production stable : 0.3.0</span>
+        <span class="divider">|</span>
+        <span>Auto-Update configuré avec signature NSIS</span>
+        
+        <span class="status-version">
+          Non affilié à Rockstar Games ou Take-Two Interactive.
+        </span>
       </footer>
-    </main>
+    </div>
+
+    <!-- Wallpaper cycler script -->
+    <script>
+      const wallpapers = [
+        'assets/wallpapers/ULTIMATE_EDITION_VICE_CITY_STYLE_01.0.u1gt~99yzks.avif',
+        'assets/wallpapers/ULTIMATE_EDITION_SAFEHOUSE_VEHICLES_01.0wv6pw3t-mky3.avif',
+        'assets/wallpapers/ULTIMATE_EDITION_STOCK_305_01.0vuq0m5_1j-17.avif',
+        'assets/wallpapers/ULTIMATE_EDITION_RIDEOUT_CUSTOMS_01.065-ms8~k8vbq.avif'
+      ];
+      
+      let currentIdx = 0;
+      
+      // Load selected index from localStorage if exists
+      const savedIdx = localStorage.getItem('sr_web_wallpaper_idx');
+      if (savedIdx !== null && !isNaN(savedIdx)) {
+        currentIdx = parseInt(savedIdx, 10) % wallpapers.length;
+      }
+      
+      // Apply initial wallpaper
+      document.body.style.backgroundImage = `url('${wallpapers[currentIdx]}')`;
+
+      document.getElementById('wallpaper-cycle-btn').addEventListener('click', () => {
+        currentIdx = (currentIdx + 1) % wallpapers.length;
+        document.body.style.backgroundImage = `url('${wallpapers[currentIdx]}')`;
+        localStorage.setItem('sr_web_wallpaper_idx', currentIdx);
+      });
+
+      function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    </script>
   </body>
 </html>

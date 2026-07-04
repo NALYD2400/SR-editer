@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SR Editer — Atelier GTA V / FiveM</title>
+    <meta
+      name="description"
+      content="SR Editer : inspecter, prévisualiser et modifier des assets GTA V / FiveM."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">SR Editer</p>
+        <h1>Atelier desktop pour assets GTA V / FiveM</h1>
+        <p class="lead">
+          Texture Studio, viewport 3D, explorateur RPF et décodage natif RSC7 — le tout en local sur ton PC.
+        </p>
+      </header>
+
+      <section class="cards">
+        <article>
+          <h2>Texture Studio</h2>
+          <p>Calques 2D, export PNG/DDS et retouches IA optionnelles.</p>
+        </article>
+        <article>
+          <h2>Explorateur GTA</h2>
+          <p>Parcours ton installation, tes mods ou tes archives RPF en lecture.</p>
+        </article>
+        <article>
+          <h2>Mises à jour auto</h2>
+          <p>L'application desktop vérifie ce site pour les nouvelles versions.</p>
+        </article>
+      </section>
+
+      <footer>
+        <p>Non affilié à Rockstar Games, Take-Two ou Cfx.re.</p>
+      </footer>
+    </main>
+  </body>
+</html>

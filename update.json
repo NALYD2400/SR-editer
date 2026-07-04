@@ -1,11 +1,11 @@
 {
   "version": "0.3.0",
-  "notes": "Version initiale — remplace cette note à chaque release.",
-  "pub_date": "2026-07-04T10:00:00Z",
+  "notes": "Version v0.3.0 de production stable — Atelier d'Assets GTA V et FiveM avec Texture Studio et Explorateur RPF.",
+  "pub_date": "2026-07-04T13:30:00Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "REMPLACE_PAR_LA_SIGNATURE_GENEREE_AU_BUILD",
-      "url": "https://github.com/TON-UTILISATEUR/TON-REPO/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip"
+      "signature": "REMPLACE_PAR_LA_SIGNATURE_GENEREE_DANS_LE_FICHIER_SIG",
+      "url": "https://github.com/NALYD2400/SR-editer/releases/download/v0.3.0/SR_Editer_0.3.0_x64-setup.nsis.zip"
     }
   }
 }
