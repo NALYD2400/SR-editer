@@ -94,12 +94,39 @@
 
     if (supabase) {
       const res = await supabase.from("profiles").select("email, created_at, role, write_mode").limit(50);
-      if (!res.error && res.data?.length) users = res.data;
+      if (!res.error && res.data?.length) {
+        users = res.data;
+      }
+    }
+
+    if (users.length === 0) {
+      const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+      if (mockStorage) {
+        users = JSON.parse(mockStorage);
+      } else {
+        users = [
+          { email: "d.robert.2400@gmail.com", created_at: new Date().toISOString(), role: "admin", write_mode: "direct" },
+          { email: "moderateur@sr-editer.fr", created_at: new Date().toISOString(), role: "moderateur", write_mode: "draft" },
+          { email: "testeur@sr-editer.fr", created_at: new Date().toISOString(), role: "membre", write_mode: "direct" }
+        ];
+        sessionStorage.setItem("sr_mock_profiles", JSON.stringify(users));
+      }
+    }
+
+    // Filter by search query
+    const searchInput = document.getElementById("users-search");
+    const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : "";
+    if (searchVal) {
+      users = users.filter(u => 
+        (u.email && u.email.toLowerCase().includes(searchVal)) || 
+        (u.role && u.role.toLowerCase().includes(searchVal)) ||
+        (u.write_mode && u.write_mode.toLowerCase().includes(searchVal))
+      );
     }
 
     if (users.length === 0) {
       tbody.innerHTML =
-        '<tr><td colspan="4" class="empty-state">Aucun profil trouvé. Crée la table <code>profiles</code> dans Supabase ou ajoute des utilisateurs via Authentication.</td></tr>';
+        '<tr><td colspan="5" class="empty-state">Aucun profil ne correspond.</td></tr>';
       if (countEl) countEl.textContent = "0";
       return;
     }
@@ -112,12 +139,117 @@
         <td>${date}</td>
         <td>${escapeHtml(user.write_mode || "direct")}</td>
         <td><span class="role-pill">${escapeHtml(user.role || "membre")}</span></td>
+        <td style="text-align: right;">
+          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; margin-right: 4px; border: 1px solid rgba(255,255,255,0.05);" onclick="editUser('${escapeHtml(user.email)}', '${escapeHtml(user.role)}', '${escapeHtml(user.write_mode)}')">Modifier</button>
+          <button type="button" class="btn btn-ghost btn-sm" style="padding: 4px 8px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);" onclick="deleteUser('${escapeHtml(user.email)}')">Supprimer</button>
+        </td>
       `;
       tbody.appendChild(tr);
     });
 
     if (countEl) countEl.textContent = String(users.length);
   }
+
+  // Edit user action
+  window.editUser = (email, role, write_mode) => {
+    const emailEl = document.getElementById("manage-email");
+    const roleEl = document.getElementById("manage-role");
+    const modeEl = document.getElementById("manage-mode");
+    if (emailEl) emailEl.value = email;
+    if (roleEl) roleEl.value = role;
+    if (modeEl) modeEl.value = write_mode;
+    if (emailEl) emailEl.focus();
+    addLog("i", `Modification en cours pour : ${email}`);
+  };
+
+  // Delete user action
+  window.deleteUser = async (email) => {
+    if (!confirm(`Supprimer le membre ${email} ?`)) return;
+    addLog("i", `Suppression du membre : ${email}...`);
+
+    let success = false;
+    if (supabase) {
+      const { error } = await supabase.from("profiles").delete().eq("email", email);
+      if (!error) {
+        success = true;
+      } else {
+        addLog("e", `Erreur DB : ${error.message}`);
+      }
+    }
+
+    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+    if (mockStorage) {
+      let mockUsers = JSON.parse(mockStorage);
+      mockUsers = mockUsers.filter(u => u.email.toLowerCase() !== email.toLowerCase());
+      sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
+    }
+
+    if (!supabase) success = true;
+
+    if (success) {
+      addLog("s", `Membre supprimé : ${email}`);
+      refreshUsers();
+    }
+  };
+
+  // Create or Update user form handler
+  document.getElementById("user-manage-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = document.getElementById("manage-email").value.trim();
+    const role = document.getElementById("manage-role").value;
+    const write_mode = document.getElementById("manage-mode").value;
+
+    addLog("i", `Enregistrement du membre : ${email}...`);
+
+    let success = false;
+    if (supabase) {
+      const { error } = await supabase.from("profiles").upsert({
+        email,
+        role,
+        write_mode,
+        created_at: new Date().toISOString()
+      }, { onConflict: "email" });
+
+      if (!error) {
+        success = true;
+      } else {
+        addLog("e", `Erreur d'enregistrement DB : ${error.message}`);
+      }
+    }
+
+    const mockStorage = sessionStorage.getItem("sr_mock_profiles");
+    let mockUsers = mockStorage ? JSON.parse(mockStorage) : [
+      { email: "d.robert.2400@gmail.com", created_at: new Date().toISOString(), role: "admin", write_mode: "direct" },
+      { email: "moderateur@sr-editer.fr", created_at: new Date().toISOString(), role: "moderateur", write_mode: "draft" },
+      { email: "testeur@sr-editer.fr", created_at: new Date().toISOString(), role: "membre", write_mode: "direct" }
+    ];
+
+    const existingIdx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+    if (existingIdx >= 0) {
+      mockUsers[existingIdx].role = role;
+      mockUsers[existingIdx].write_mode = write_mode;
+    } else {
+      mockUsers.push({
+        email,
+        created_at: new Date().toISOString(),
+        role,
+        write_mode
+      });
+    }
+    sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
+
+    if (!supabase) success = true;
+
+    if (success) {
+      addLog("s", `Membre enregistré : ${email} (${role}, ${write_mode})`);
+      document.getElementById("manage-email").value = "";
+      refreshUsers();
+    }
+  });
+
+  // Search input handler
+  document.getElementById("users-search")?.addEventListener("input", refreshUsers);
+
 
   function refreshKpis() {
     const versionEl = document.getElementById("kpi-version");

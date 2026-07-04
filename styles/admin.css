@@ -1,5 +1,9 @@
 /* ── Admin SaaS dashboard ── */
 
+[hidden] {
+  display: none !important;
+}
+
 .admin-shell {
   min-height: 100vh;
   display: flex;
