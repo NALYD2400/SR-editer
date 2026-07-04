@@ -77,62 +77,74 @@
           <h2 style="font-family: 'Outfit', sans-serif; font-size: clamp(24px, 4vw, 36px); font-weight:700; margin-top:8px; color:#fff; letter-spacing: -0.02em;">Découvrez l'interface en action</h2>
         </div>
 
-        <div class="apple-scroll-track" style="display: flex; gap: 40px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 20px 10%; width: 100%; box-sizing: border-box; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);">
-          
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 163113.png" alt="Texture Studio" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+        <div style="position: relative; width: 100%;">
+          <!-- Floating Left Arrow -->
+          <button type="button" id="scroll-prev" style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%); z-index: 20; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 11, 28, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(-50%) scale(1.08)';" onmouseout="this.style.background='rgba(15, 11, 28, 0.5)'; this.style.transform='translateY(-50%) scale(1)';" aria-label="Défiler vers la gauche">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+
+          <div class="apple-scroll-track" style="display: flex; gap: 40px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 20px 10%; width: 100%; box-sizing: border-box; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);">
+            
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 163113.png" alt="Texture Studio" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
             </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 163236.png" alt="Explorateur RPF" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162223.png" alt="Viewport 3D" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162306.png" alt="Édition Texture" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162341.png" alt="Gestionnaire de Fichiers" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162357.png" alt="Paramètres" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162433.png" alt="Workspace" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162644.png" alt="Texture Editor Suite" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
+            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
+              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
+                <img src="assets/photo app/Capture d’écran 2026-07-04 162925.png" alt="File Manager List" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
+              </div>
+            </div>
+
           </div>
 
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 163236.png" alt="Explorateur RPF" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162223.png" alt="Viewport 3D" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162306.png" alt="Édition Texture" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162341.png" alt="Gestionnaire de Fichiers" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162357.png" alt="Paramètres" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162433.png" alt="Workspace" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162644.png" alt="Texture Editor Suite" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
-          <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-              <img src="assets/photo app/Capture d’écran 2026-07-04 162925.png" alt="File Manager List" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-            </div>
-          </div>
-
+          <!-- Floating Right Arrow -->
+          <button type="button" id="scroll-next" style="position: absolute; right: 40px; top: 50%; transform: translateY(-50%); z-index: 20; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 11, 28, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(-50%) scale(1.08)';" onmouseout="this.style.background='rgba(15, 11, 28, 0.5)'; this.style.transform='translateY(-50%) scale(1)';" aria-label="Défiler vers la droite">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
         </div>
       </section>
 
@@ -230,6 +242,62 @@
     <script src="js/client.js"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
+    </script>
+    <script>
+      (function setupScrollGallery() {
+        const track = document.querySelector('.apple-scroll-track');
+        const btnPrev = document.getElementById('scroll-prev');
+        const btnNext = document.getElementById('scroll-next');
+
+        if (track) {
+          // Arrow button clicks
+          btnPrev?.addEventListener('click', () => {
+            const itemWidth = track.firstElementChild?.getBoundingClientRect().width || 400;
+            track.scrollBy({ left: -(itemWidth + 40), behavior: 'smooth' });
+          });
+
+          btnNext?.addEventListener('click', () => {
+            const itemWidth = track.firstElementChild?.getBoundingClientRect().width || 400;
+            track.scrollBy({ left: itemWidth + 40, behavior: 'smooth' });
+          });
+
+          // Grab and drag-to-scroll with mouse
+          let isDown = false;
+          let startX;
+          let scrollLeft;
+
+          track.addEventListener('mousedown', (e) => {
+            isDown = true;
+            track.style.cursor = 'grabbing';
+            track.style.scrollBehavior = 'auto'; // Disable transitions for real-time drag response
+            startX = e.pageX - track.offsetLeft;
+            scrollLeft = track.scrollLeft;
+          });
+
+          track.addEventListener('mouseleave', () => {
+            isDown = false;
+            track.style.cursor = 'grab';
+            track.style.scrollBehavior = 'smooth';
+          });
+
+          track.addEventListener('mouseup', () => {
+            isDown = false;
+            track.style.cursor = 'grab';
+            track.style.scrollBehavior = 'smooth';
+          });
+
+          track.addEventListener('mousemove', (e) => {
+            if (!isDown) return;
+            e.preventDefault();
+            const x = e.pageX - track.offsetLeft;
+            const walk = (x - startX) * 1.5; // Drag speed modifier
+            track.scrollLeft = scrollLeft - walk;
+          });
+
+          // Set default grab cursor
+          track.style.cursor = 'grab';
+        }
+      })();
     </script>
   </body>
 </html>
