@@ -184,12 +184,16 @@
             <!-- User management form -->
             <div class="glass-card panel-card" style="margin-bottom: 24px;">
               <div class="panel-card-header">
-                <h3>Créer ou Modifier un membre</h3>
+                <h3>Créer un nouveau compte d'accès</h3>
               </div>
-              <form id="user-manage-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; align-items: end;">
+              <form id="user-manage-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: end;">
                 <div class="field">
                   <label for="manage-email">Adresse e-mail</label>
                   <input type="email" id="manage-email" required placeholder="membre@site.com" style="width:100%;" />
+                </div>
+                <div class="field">
+                  <label for="manage-password">Mot de passe (Compte de connexion)</label>
+                  <input type="password" id="manage-password" required placeholder="Min. 6 caractères" style="width:100%;" />
                 </div>
                 <div class="field">
                   <label for="manage-role">Rôle</label>
@@ -207,7 +211,7 @@
                   </select>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary" style="width: 100%; height: 38px;">Enregistrer le membre</button>
+                  <button type="submit" class="btn btn-primary" style="width: 100%; height: 38px;">Créer le membre</button>
                 </div>
               </form>
             </div>

@@ -1,9 +1,17 @@
 (function initAdminDashboard() {
   const config = window.SR_CONFIG || {};
   let supabase = null;
+  let tempSupabase = null;
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
     supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
+    tempSupabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey, {
+      auth: {
+        persistSession: false,
+        autoRefreshToken: false,
+        detectSessionInUrl: false
+      }
+    });
   }
 
   const loginView = document.getElementById("login-view");
@@ -260,17 +268,15 @@
 
         // Update local sessionStorage cache
         const mockStorage = sessionStorage.getItem("sr_mock_profiles");
-        if (mockStorage) {
-          let mockUsers = JSON.parse(mockStorage);
-          const idx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
-          if (idx >= 0) {
-            mockUsers[idx].role = rVal;
-            mockUsers[idx].write_mode = mVal;
-          } else {
-            mockUsers.push({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
-          }
-          sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
+        let mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
+        const idx = mockUsers.findIndex(u => u.email.toLowerCase() === email.toLowerCase());
+        if (idx >= 0) {
+          mockUsers[idx].role = rVal;
+          mockUsers[idx].write_mode = mVal;
+        } else {
+          mockUsers.push({ email, role: rVal, write_mode: mVal, created_at: new Date().toISOString() });
         }
+        sessionStorage.setItem("sr_mock_profiles", JSON.stringify(mockUsers));
 
         if (!supabase) success = true;
 
@@ -323,32 +329,50 @@
     }
   };
 
-  // Create or Update user form handler (using safe SELECT -> UPDATE/INSERT check to prevent upsert 400 conflict errors)
+  // Create or Update user form handler (using tempSupabase to create account and safe SELECT/INSERT to sync profile role)
   document.getElementById("user-manage-form")?.addEventListener("submit", async (e) => {
     e.preventDefault();
     const email = document.getElementById("manage-email").value.trim();
+    const password = document.getElementById("manage-password").value;
     const role = document.getElementById("manage-role").value;
     const write_mode = document.getElementById("manage-mode").value;
 
-    addLog("i", `Enregistrement du membre : ${email}...`);
+    addLog("i", `Création du compte d'accès pour ${email}...`);
 
     let success = false;
+    let authCreated = false;
+
+    if (tempSupabase) {
+      // 1. Create the Auth Login Account (email + password)
+      const { data: authData, error: authError } = await tempSupabase.auth.signUp({
+        email,
+        password
+      });
+
+      if (authError) {
+        addLog("e", `Erreur d'inscription Auth : ${authError.message}`);
+        return;
+      }
+
+      authCreated = true;
+      addLog("s", `Compte d'accès Auth créé pour ${email}.`);
+    }
+
     if (supabase) {
-      // Find if exists
+      // 2. Sync their profile role & write mode in profiles table
       const { data: existing } = await supabase.from("profiles").select("email").eq("email", email).maybeSingle();
       if (existing) {
-        // Update
         const { error } = await supabase.from("profiles").update({ role, write_mode }).eq("email", email);
         if (!error) success = true;
-        else addLog("e", `Erreur de modification DB : ${error.message}`);
+        else addLog("e", `Erreur de modification rôle DB : ${error.message}`);
       } else {
-        // Insert
         const { error } = await supabase.from("profiles").insert({ email, role, write_mode, created_at: new Date().toISOString() });
         if (!error) success = true;
-        else addLog("e", `Erreur d'insertion DB : ${error.message}. Note: ce membre doit aussi être créé dans Supabase Auth.`);
+        else addLog("e", `Erreur d'insertion rôle DB : ${error.message}`);
       }
     }
 
+    // Always fallback/sync local sessionStorage mock profiles cache
     const mockStorage = sessionStorage.getItem("sr_mock_profiles");
     let mockUsers = mockStorage ? JSON.parse(mockStorage) : [
       { email: "d.robert.2400@gmail.com", created_at: new Date().toISOString(), role: "admin", write_mode: "direct" },
@@ -373,8 +397,9 @@
     if (!supabase) success = true;
 
     if (success) {
-      addLog("s", `Membre enregistré : ${email} (${role}, ${write_mode})`);
+      addLog("s", `Membre entièrement configuré : ${email} (${role}, ${write_mode})`);
       document.getElementById("manage-email").value = "";
+      document.getElementById("manage-password").value = "";
       refreshUsers();
     }
   });
