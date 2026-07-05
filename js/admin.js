@@ -784,8 +784,8 @@
     const versionEl = document.getElementById("kpi-version");
     const healthVersionEl = document.getElementById("health-version");
     const pingEl = document.getElementById("kpi-ping");
-    if (versionEl) versionEl.textContent = `v${config.appVersion || "0.3.0"}`;
-    if (healthVersionEl) healthVersionEl.textContent = `v${config.appVersion || "0.3.0"}`;
+    if (versionEl) versionEl.textContent = `v${config.appVersion || "0.3.2"}`;
+    if (healthVersionEl) healthVersionEl.textContent = `v${config.appVersion || "0.3.2"}`;
     if (pingEl) pingEl.textContent = supabase ? "API active" : demoMode ? "Mode démo" : "Non configuré";
   }
 
