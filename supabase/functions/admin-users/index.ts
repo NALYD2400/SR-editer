@@ -213,11 +213,21 @@ Deno.serve(async (request) => {
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
   }
   if (action === "release-upsert") {
-    const version = textOf(body.version, 32); const artifactUrl = textOf(body.artifactUrl, 2048); const signature = textOf(body.signature, 8192);
-    if (!/^\d+\.\d+\.\d+/.test(version) || !artifactUrl.startsWith("https://") || signature.length < 20) return json(origin, 400, { ok: false, error: "Release incomplète ou non signée." });
-    const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes: textOf(body.notes, 5000), published: Boolean(body.published), updated_at: new Date().toISOString() });
-    if (!error) await audit("release.upsert", "release", version, { published: Boolean(body.published) });
-    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+    const version = textOf(body.version, 32); const artifactUrl = textOf(body.artifactUrl, 2048); const signature = textOf(body.signature, 8192); const published = Boolean(body.published);
+    if (!/^\d+\.\d+\.\d+$/.test(version) || !artifactUrl.startsWith("https://") || signature.length < 20) return json(origin, 400, { ok: false, error: "Release incomplète ou non signée." });
+    if (published) {
+      try {
+        const artifact = await fetch(artifactUrl, { method: "HEAD", redirect: "follow" });
+        if (!artifact.ok) return json(origin, 400, { ok: false, error: `L'installateur est inaccessible (HTTP ${artifact.status}).` });
+      } catch {
+        return json(origin, 400, { ok: false, error: "L'installateur GitHub est inaccessible." });
+      }
+      const { error: unpublishError } = await admin.from("release_records").update({ published: false, updated_at: new Date().toISOString() }).eq("published", true).neq("version", version);
+      if (unpublishError) return json(origin, 500, { ok: false, error: unpublishError.message });
+    }
+    const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes: textOf(body.notes, 5000), published, updated_at: new Date().toISOString() });
+    if (!error) await audit("release.upsert", "release", version, { published });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, manifestUrl: `${supabaseUrl}/functions/v1/app-update` });
   }
   if (action === "team-list") {
     const users = await listAuthUsers(); const { data, error } = await admin.from("superadmin_access").select("*").order("created_at");

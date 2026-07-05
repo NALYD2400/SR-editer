@@ -1,11 +1,11 @@
 {
   "version": "0.3.1",
-  "notes": "Version v0.3.0 de production stable — Atelier d'Assets GTA V et FiveM avec Texture Studio et Explorateur RPF.",
-  "pub_date": "2026-07-05T12:44:02.044Z",
+  "notes": "Version v0.3.1 — mise à jour automatique, correctifs de stabilité et console administrateur.",
+  "pub_date": "2026-07-05T13:27:38.848Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT0hVSFlkV1Bzd1BvdEpnS0E3UkEyY1FqMTBVa2krdHlkUDIzWXhhTE54RDJCN1hxNVpUMDMrNGRiSHMzWXNEMHdLbFc3RURScWxDcndzOVFKazVGZHc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzMjU1NDQxCWZpbGU6U1IgRWRpdGVyXzAuMy4xX3g2NC1zZXR1cC5leGUKWWFmM3QzRkNNQjg3OGxJbTRsTUl1QmNRT0Qvdkg3UGZMQTJxcWxnQXh5NnFjRFB1MTdHL00wZSt2RXR4c1R2K2pBYzhBb1VWalFiZEdIYTJ6aUdrQlE9PQo=",
-      "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.3.1/SR.Editer_0.3.1_x64-setup.exe"
+      "url": "https://github.com/NALYD2400/SR-editer/releases/download/v0.3.1/SR.Editer_0.3.1_x64-setup.exe"
     }
   }
 }

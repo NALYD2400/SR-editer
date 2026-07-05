@@ -52,7 +52,19 @@
     const { data, error } = await supabase.functions.invoke(functionName, {
       body: { action, ...payload }
     });
-    if (error) throw new Error(error.message || "Service administrateur indisponible.");
+    if (error) {
+      let message = error.message || "Service administrateur indisponible.";
+      try {
+        const response = error.context;
+        if (response && typeof response.clone === "function") {
+          const payload = await response.clone().json();
+          if (payload?.error) message = payload.error;
+        }
+      } catch {
+        /* La réponse non JSON conserve le message Supabase. */
+      }
+      throw new Error(message);
+    }
     if (!data?.ok) throw new Error(data?.error || "Action administrateur refusée.");
     return data;
   }
@@ -660,7 +672,9 @@
     try {
       const started = performance.now();
       const health = await adminRequest("health");
-      const manifestResponse = await fetch(`update.json?health=${Date.now()}`, { cache: "no-store" });
+      const manifestUrl = config.updateManifestUrl || "/update.json";
+      const separator = manifestUrl.includes("?") ? "&" : "?";
+      const manifestResponse = await fetch(`${manifestUrl}${separator}health=${Date.now()}`, { cache: "no-store" });
       const latency = Math.round(performance.now() - started);
 
       // Update KPIs
@@ -801,8 +815,10 @@
 
   async function loadUpdateManifest() {
     try {
-      const res = await fetch("update.json?" + Date.now());
-      if (!res.ok) return;
+      const manifestUrl = config.updateManifestUrl || "/update.json";
+      const separator = manifestUrl.includes("?") ? "&" : "?";
+      const res = await fetch(`${manifestUrl}${separator}admin=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok || res.status === 204) return;
       const data = await res.json();
       const verInput = document.getElementById("release-version");
       const dateInput = document.getElementById("release-date");
@@ -813,6 +829,8 @@
       const platform = data.platforms?.["windows-x86_64"];
       if (urlInput && platform?.url) urlInput.value = platform.url;
       if (sigInput && platform?.signature) sigInput.value = platform.signature;
+      const notesInput = document.getElementById("release-notes");
+      if (notesInput && data.notes) notesInput.value = data.notes;
     } catch {
       /* ignore */
     }
@@ -853,10 +871,11 @@
         artifactUrl: document.getElementById("release-url").value.trim(),
         signature: document.getElementById("release-signature").value.trim(),
         notes: document.getElementById("release-notes").value.trim(),
-        published: false
+        published: document.getElementById("release-published").checked
       });
-      addLog("s", "Release enregistrée.");
+      addLog("s", document.getElementById("release-published").checked ? "Release publiée pour les clients." : "Release enregistrée en brouillon.");
       await loadReleases();
+      await loadUpdateManifest();
     } catch (reason) { addLog("e", String(reason)); }
   });
 

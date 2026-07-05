@@ -1,17 +1,34 @@
-# Backend sécurisé de la console admin
+# Backend Supabase — admin et mises à jour
 
-La console ne crée plus de comptes avec la clé publique du navigateur. Toutes les opérations privilégiées passent par la fonction Edge `admin-users`.
+## Première installation
 
-## Déploiement
+Depuis `website/SR editer` :
 
-1. Appliquer `migrations/20260704_secure_profiles.sql` dans le SQL Editor Supabase.
-2. Vérifier qu'au moins ton propre profil possède `role = 'admin'` et le bon `user_id`.
-3. Appliquer ensuite `20260705_superadmin_console.sql` pour les licences, appareils, tickets, contacts, releases, audit et délégations superadmin.
-4. Définir `ADMIN_ALLOWED_ORIGINS=https://sr-editer.vercel.app` dans les secrets de la fonction.
-5. Déployer la fonction : `supabase functions deploy admin-users`.
+```powershell
+npx supabase login
+npx supabase link --project-ref vcikzkfyjrcgvoiktagg
+npx supabase db push
+npx supabase functions deploy admin-users --no-verify-jwt
+npx supabase functions deploy app-update --no-verify-jwt
+```
 
-La première ligne `profiles` ayant le rôle `admin` devient propriétaire de la superconsole lors de la migration. Elle peut ensuite déléguer des permissions précises depuis l’onglet **Équipe superadmin**.
-4. Définir `ADMIN_ALLOWED_ORIGINS` avec le domaine Vercel de production (plusieurs origines séparées par des virgules).
-5. Laisser `demoMode: false` dans `js/config.js`.
+`--no-verify-jwt` est volontaire : `admin-users` vérifie lui-même le jeton et le rôle administrateur, tandis que `app-update` doit rester publiquement lisible par Tauri. La clé `SUPABASE_SERVICE_ROLE_KEY` reste uniquement dans les secrets automatiques des fonctions Edge.
 
-`SUPABASE_SERVICE_ROLE_KEY` reste exclusivement dans les secrets de la fonction Edge. Elle ne doit jamais être copiée dans le site.
+Si `db push` n'est pas utilisé, exécuter dans le SQL Editor, dans cet ordre :
+
+1. `migrations/20260704_secure_profiles.sql`
+2. `migrations/20260705_superadmin_console.sql`
+3. `migrations/20260705_update_pipeline.sql`
+
+Vérifier ensuite qu'au moins un profil possède `role = 'admin'` et le `user_id` correspondant à `auth.users.id`.
+
+## Publication d'une mise à jour
+
+1. Construire l'installateur signé avec `npm run tauri:build:signed`.
+2. Créer une GitHub Release publique taguée `vX.Y.Z`.
+3. Joindre l'installateur sous le nom `SR.Editer_X.Y.Z_x64-setup.exe`.
+4. Dans la console admin, ouvrir **Releases**, coller l'URL GitHub et la signature, cocher **Publier immédiatement**, puis enregistrer.
+
+La fonction `app-update` expose alors le manifeste public. Vercel redirige `/update.json` vers cette fonction : le site client et l'application installée utilisent donc exactement la même release.
+
+La création de comptes est protégée par `admin-users`. Elle utilise un `upsert` sur `profiles.user_id`, ce qui reste compatible avec un trigger Supabase qui crée déjà automatiquement le profil.

@@ -12,10 +12,10 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="js/theme.js?v=0.3.0"></script>
-    <link rel="stylesheet" href="styles/tokens.css?v=0.3.0" />
-    <link rel="stylesheet" href="styles/base.css?v=0.3.0" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.3.0-superadmin" />
+    <script src="js/theme.js?v=0.3.1"></script>
+    <link rel="stylesheet" href="styles/tokens.css?v=0.3.1" />
+    <link rel="stylesheet" href="styles/base.css?v=0.3.1" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.3.1-superadmin" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -213,7 +213,7 @@
               <div class="kpi-card">
                 <svg class="kpi-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
                 <span class="kpi-label">Version live</span>
-                <span class="kpi-value" id="kpi-version">v0.3.0</span>
+                <span class="kpi-value" id="kpi-version">v0.3.1</span>
                 <span class="kpi-trend">update.json</span>
               </div>
               <div class="kpi-card">
@@ -578,19 +578,19 @@
           <section class="admin-panel" id="panel-releases">
             <div class="glass-card panel-card">
               <div class="panel-card-header">
-                <h3>Générateur update.json</h3>
+                <h3>Publication des mises à jour</h3>
               </div>
               <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
                 <div class="field">
                   <label for="release-version">Version</label>
-                  <input type="text" id="release-version" value="0.3.0" />
+                  <input type="text" id="release-version" value="0.3.1" pattern="\d+\.\d+\.\d+" />
                 </div>
                 <div class="field">
                   <label for="release-date">Date ISO</label>
                   <input type="text" id="release-date" value="2026-07-04T14:00:00Z" />
                 </div>
                 <div class="field" style="grid-column: span 2;">
-                  <label for="release-url">URL archive .zip (GitHub Release)</label>
+                  <label for="release-url">URL de l’installateur .exe (GitHub Release)</label>
                   <input type="url" id="release-url" />
                 </div>
                 <div class="field" style="grid-column: span 2;">
@@ -601,10 +601,14 @@
                   <label for="release-notes">Notes de version</label>
                   <input type="text" id="release-notes" placeholder="Corrections et nouveautés..." />
                 </div>
+                <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; grid-column: span 2;">
+                  <input type="checkbox" id="release-published" />
+                  Publier immédiatement pour l’application et le site client
+                </label>
               </div>
               <div style="display: flex; gap: 12px; margin-top: 8px;">
                 <button type="button" class="btn btn-primary" id="generate-release-btn">Générer le manifeste</button>
-                <button type="button" class="btn btn-ghost" id="save-release-btn">Enregistrer dans l’audit releases</button>
+                <button type="button" class="btn btn-ghost" id="save-release-btn">Enregistrer / publier</button>
               </div>
               <div class="code-output" id="release-output" style="margin-top: 14px;" hidden>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
@@ -656,7 +660,7 @@
               </div>
               <div class="kpi-card">
                 <span class="kpi-label">Version live</span>
-                <span class="kpi-value" id="health-version">v0.3.0</span>
+                <span class="kpi-value" id="health-version">v0.3.1</span>
                 <span class="kpi-trend">update.json</span>
               </div>
               <div class="kpi-card">
@@ -723,9 +727,9 @@
       </div>
     </div>
 
-    <script src="js/wallpapers.js?v=0.3.0"></script>
-    <script src="js/config.js?v=0.3.0"></script>
-    <script src="js/admin.js?v=0.3.0-superadmin"></script>
+    <script src="js/wallpapers.js?v=0.3.1"></script>
+    <script src="js/config.js?v=0.3.1"></script>
+    <script src="js/admin.js?v=0.3.1-superadmin"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));
