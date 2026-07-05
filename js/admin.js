@@ -426,7 +426,9 @@
       document.getElementById("manage-password").value = "";
       await refreshUsers();
     } catch (reason) {
-      addLog("e", String(reason).replace(/^Error:\s*/i, ""));
+      const errMsg = String(reason).replace(/^Error:\s*/i, "");
+      addLog("e", errMsg);
+      alert("Erreur lors de la création : " + errMsg);
     }
   });
 
