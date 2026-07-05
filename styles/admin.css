@@ -26,6 +26,18 @@
   --font-body: "Plus Jakarta Sans", sans-serif;
 }
 
+html[data-theme="light"] {
+  --bg-deep: #f4f4f5;
+  --bg-app: #f4f4f5;
+  --bg-card: rgba(255, 255, 255, 0.7);
+  --bg-sidebar: #ffffff;
+  --border: #e4e4e7;
+  --border-hover: #d4d4d8;
+  --text-primary: #09090b;
+  --text-secondary: #71717a;
+  --text-muted: #a1a1aa;
+}
+
 [hidden] {
   display: none !important;
 }
