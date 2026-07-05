@@ -22,6 +22,9 @@
   --blue: #3b82f6;
   --blue-soft: rgba(59, 130, 246, 0.1);
 
+  --bg-hover: rgba(255, 255, 255, 0.03);
+  --bg-active: #18181b;
+
   --font-display: "Outfit", sans-serif;
   --font-body: "Plus Jakarta Sans", sans-serif;
 }
@@ -36,6 +39,8 @@ html[data-theme="light"] {
   --text-primary: #09090b;
   --text-secondary: #71717a;
   --text-muted: #a1a1aa;
+  --bg-hover: rgba(0, 0, 0, 0.03);
+  --bg-active: #e4e4e7;
 }
 
 [hidden] {
@@ -156,12 +161,12 @@ body {
 }
 
 .sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-hover);
   color: var(--text-primary);
 }
 
 .sidebar-link.is-active {
-  background: #18181b;
+  background: var(--bg-active);
   color: var(--text-primary);
   border-color: transparent;
 }
@@ -218,7 +223,7 @@ body {
   gap: 10px;
   padding: 8px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.01);
+  background: var(--bg-card);
   border: 1px solid var(--border);
 }
 
@@ -226,8 +231,8 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  background: #27272a;
-  border: 1px solid var(--border-hover);
+  background: var(--border-hover);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -515,6 +520,12 @@ body {
   border-color: var(--border-hover);
 }
 
+.quick-link-card:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  border-color: var(--border-hover);
+}
+
 .btn-sm {
   padding: 6px 12px;
   font-size: 11px;
@@ -557,7 +568,7 @@ body {
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.02em;
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-hover);
   color: var(--text-secondary);
 }
 
@@ -580,7 +591,7 @@ body {
 }
 
 .role-pill.suspendu {
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-hover);
   color: var(--text-muted);
 }
 
@@ -595,7 +606,7 @@ body {
 }
 
 .role-pill.closed {
-  background: rgba(255,255,255,0.05);
+  background: var(--bg-hover);
   color: var(--text-muted);
 }
 
@@ -762,7 +773,7 @@ body {
 }
 
 .quick-link-card:hover {
-  background: rgba(255,255,255,0.02);
+  background: var(--bg-hover);
   border-color: var(--border-hover);
   color: var(--text-primary);
 }
@@ -853,7 +864,7 @@ body {
 }
 
 .admin-list-item:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--bg-hover);
   border-color: var(--border-hover);
 }
 
