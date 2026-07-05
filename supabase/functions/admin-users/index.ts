@@ -123,7 +123,8 @@ Deno.serve(async (request) => {
   }
 
   if (action === "list") {
-    const users = await listAuthUsers();
+    const allUsers = await listAuthUsers();
+    const users = allUsers.filter((u) => !u.deleted_at);
     const [{ data: profiles, error }, { data: licenses }] = await Promise.all([
       admin.from("profiles").select("user_id,email,role,write_mode,created_at").order("created_at", { ascending: false }).limit(1000),
       admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at")
@@ -286,7 +287,15 @@ Deno.serve(async (request) => {
     if (target.id === caller.id) return json(origin, 409, { ok: false, error: "Tu ne peux pas supprimer ton propre compte." });
     if (targetProfile?.role === "admin" && (adminCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de supprimer le dernier administrateur." });
     const { error } = await admin.auth.admin.deleteUser(target.id);
-    if (!error) await audit("user.delete", "user", target.id, { email: targetEmail });
+    if (!error) {
+      await Promise.all([
+        admin.from("profiles").delete().eq("user_id", target.id),
+        admin.from("customer_licenses").delete().eq("user_id", target.id),
+        admin.from("device_activations").delete().eq("user_id", target.id),
+        admin.from("superadmin_access").delete().eq("user_id", target.id)
+      ]);
+      await audit("user.delete", "user", target.id, { email: targetEmail });
+    }
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   return json(origin, 400, { ok: false, error: "Action inconnue." });

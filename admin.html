@@ -527,13 +527,36 @@
 
           <!-- Support -->
           <section class="admin-panel" id="panel-support">
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Tickets support</h3>
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button>
+            <div class="dashboard-split" style="grid-template-columns: 350px 1fr; gap: 20px; display: grid;">
+              <!-- Left: Tickets List -->
+              <div class="glass-card panel-card" style="display: flex; flex-direction: column; min-height: 450px;">
+                <div class="panel-card-header" style="flex-shrink: 0; margin-bottom: 12px;">
+                  <h3>Tickets support</h3>
+                  <button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button>
+                </div>
+                <div id="support-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; max-height: 500px; padding-right: 4px;">
+                  <div class="empty-state">Chargement…</div>
+                </div>
               </div>
-              <div id="support-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="empty-state">Chargement…</div>
+
+              <!-- Right: Selected Ticket Chat -->
+              <div class="glass-card panel-card" id="support-chat-container" style="display: flex; flex-direction: column; min-height: 450px;">
+                <div class="panel-card-header" style="flex-shrink: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                  <div style="min-width: 0; flex: 1;">
+                    <h3 id="support-chat-subject" style="margin: 0;">Sélectionnez un ticket</h3>
+                    <p id="support-chat-meta" style="font-size: 11px; margin: 4px 0 0 0; color: var(--text-secondary);"></p>
+                  </div>
+                  <div id="support-chat-actions" style="display: none; gap: 8px;">
+                    <button type="button" class="btn btn-ghost btn-sm" id="support-close-btn" style="color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.15); padding: 4px 10px;">Clore</button>
+                  </div>
+                </div>
+                <div id="support-chat-messages" style="flex: 1; overflow-y: auto; max-height: 380px; padding: 4px 8px; display: flex; flex-direction: column; gap: 12px; min-height: 250px;">
+                  <div class="empty-state">Sélectionnez une conversation dans la liste pour échanger en direct.</div>
+                </div>
+                <form id="support-chat-form" style="display: none; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid var(--border); flex-shrink: 0; margin-top: 12px;">
+                  <input type="text" id="support-chat-input" placeholder="Écrire votre réponse..." required style="flex: 1; height: 36px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-deep); color: var(--text-primary); outline: none;" />
+                  <button type="submit" class="btn button primary" style="height: 36px; padding: 0 16px;">Envoyer</button>
+                </form>
               </div>
             </div>
           </section>

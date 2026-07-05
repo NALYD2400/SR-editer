@@ -3,6 +3,8 @@
   let supabase = null;
   let usersCache = [];
   let lastRefreshId = 0;
+  let activeTicketId = null;
+  let activeTicketSubscription = null;
   const demoMode = config.demoMode === true;
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
@@ -493,23 +495,136 @@
     } catch (reason) { addLog("e", String(reason)); }
   });
 
+  function appendChatMessage(message) {
+    const chatMessages = document.getElementById("support-chat-messages");
+    if (!chatMessages) return;
+
+    if (chatMessages.querySelector(`[data-message-id="${message.id}"]`)) return;
+
+    const emptyState = chatMessages.querySelector(".empty-state");
+    if (emptyState) emptyState.remove();
+
+    const isUser = message.author_kind === "user";
+    const bubble = document.createElement("div");
+    bubble.className = `chat-bubble ${isUser ? "user" : "admin"}`;
+    bubble.setAttribute("data-message-id", message.id);
+    bubble.innerHTML = `
+      <p style="margin: 0; white-space: pre-wrap; font-family: inherit;">${escapeHtml(message.content)}</p>
+      <span class="chat-bubble-time">${formatTime(message.created_at)}</span>
+    `;
+    chatMessages.appendChild(bubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function formatTime(isoString) {
+    try {
+      const d = new Date(isoString);
+      return d.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+    } catch { return ""; }
+  }
+
+  async function selectTicket(ticket) {
+    activeTicketId = ticket.id;
+    
+    if (activeTicketSubscription) {
+      supabase.removeChannel(activeTicketSubscription);
+      activeTicketSubscription = null;
+    }
+
+    document.getElementById("support-chat-subject").textContent = ticket.subject;
+    document.getElementById("support-chat-meta").textContent = `${ticket.email} · ${ticket.priority.toUpperCase()} · ${ticket.status.toUpperCase()}`;
+    
+    const actionsContainer = document.getElementById("support-chat-actions");
+    const chatForm = document.getElementById("support-chat-form");
+    
+    if (ticket.status !== "closed") {
+      actionsContainer.style.display = "flex";
+      chatForm.style.display = "flex";
+    } else {
+      actionsContainer.style.display = "none";
+      chatForm.style.display = "none";
+    }
+
+    const chatMessages = document.getElementById("support-chat-messages");
+    chatMessages.innerHTML = "";
+    if (ticket.support_messages && ticket.support_messages.length) {
+      const sorted = [...ticket.support_messages].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      sorted.forEach(appendChatMessage);
+    } else {
+      chatMessages.innerHTML = '<div class="empty-state">Aucun message dans cette discussion.</div>';
+    }
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    if (supabase) {
+      activeTicketSubscription = supabase
+        .channel(`admin-ticket-chat-${ticket.id}`)
+        .on(
+          "postgres_changes",
+          {
+            event: "INSERT",
+            schema: "public",
+            table: "support_messages",
+            filter: `ticket_id=eq.${ticket.id}`
+          },
+          (payload) => {
+            appendChatMessage(payload.new);
+          }
+        )
+        .on(
+          "postgres_changes",
+          {
+            event: "UPDATE",
+            schema: "public",
+            table: "support_tickets",
+            filter: `id=eq.${ticket.id}`
+          },
+          (payload) => {
+            const updated = payload.new;
+            document.getElementById("support-chat-meta").textContent = `${updated.email} · ${updated.priority.toUpperCase()} · ${updated.status.toUpperCase()}`;
+            if (updated.status === "closed") {
+              actionsContainer.style.display = "none";
+              chatForm.style.display = "none";
+            }
+          }
+        )
+        .subscribe();
+    }
+  }
+
   async function loadSupport() {
     const list = document.getElementById("support-list");
     if (!list) return;
     list.innerHTML = '<div class="empty-state">Chargement…</div>';
     try {
       const data = await adminRequest("support-list");
-      list.innerHTML = data.rows.length ? data.rows.map((row) => `<article class="admin-list-item"><div><strong>${escapeHtml(row.subject)}</strong><small>${escapeHtml(row.email)} · ${formatDate(row.updated_at)}</small><p>${escapeHtml(row.support_messages?.at(-1)?.content || "Aucun message")}</p></div><div class="admin-item-actions"><span class="role-pill">${escapeHtml(row.priority)} · ${escapeHtml(row.status)}</span><button class="btn btn-ghost btn-sm" data-ticket-reply="${escapeHtml(row.id)}">Répondre</button><button class="btn btn-ghost btn-sm" data-ticket-close="${escapeHtml(row.id)}">Clore</button></div></article>`).join("") : '<div class="empty-state">Aucun ticket.</div>';
-      list.querySelectorAll("[data-ticket-reply]").forEach((button) => button.addEventListener("click", async () => {
-        const content = prompt("Réponse au ticket :");
-        if (!content) return;
-        await adminRequest("support-reply", { id: button.dataset.ticketReply, content });
-        await loadSupport();
-      }));
-      list.querySelectorAll("[data-ticket-close]").forEach((button) => button.addEventListener("click", async () => {
-        await adminRequest("support-update", { id: button.dataset.ticketClose, status: "closed" });
-        await loadSupport();
-      }));
+      list.innerHTML = data.rows.length ? data.rows.map((row) => {
+        const lastMsg = row.support_messages?.at(-1)?.content || "Aucun message";
+        const isActive = row.id === activeTicketId;
+        return `
+          <button type="button" class="sidebar-link ${isActive ? 'is-active' : ''}" data-ticket-id="${escapeHtml(row.id)}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 12px; text-align: left; width: 100%;">
+            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
+              <strong style="color: var(--text-primary); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;">${escapeHtml(row.subject)}</strong>
+              <span class="role-pill ${row.status}" style="font-size: 8px; padding: 1px 4px;">${escapeHtml(row.status === 'open' ? 'Ouvert' : row.status === 'pending' ? 'Réponse' : 'Clos')}</span>
+            </div>
+            <span style="font-size: 9.5px; color: var(--text-secondary);">${escapeHtml(row.email)}</span>
+            <p style="margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">${escapeHtml(lastMsg)}</p>
+          </button>
+        `;
+      }).join("") : '<div class="empty-state">Aucun ticket.</div>';
+
+      list.querySelectorAll("[data-ticket-id]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          list.querySelectorAll(".sidebar-link").forEach((other) => other.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          const ticket = data.rows.find((row) => row.id === btn.dataset.ticketId);
+          if (ticket) selectTicket(ticket);
+        });
+      });
+
+      if (activeTicketId) {
+        const activeBtn = list.querySelector(`[data-ticket-id="${activeTicketId}"]`);
+        if (activeBtn) activeBtn.classList.add("is-active");
+      }
     } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
   }
 
@@ -750,10 +865,35 @@
     addLog("i", "update.json copié dans le presse-papiers.");
   });
 
-  document.getElementById("refresh-logs-btn")?.addEventListener("click", () => {
-    document.getElementById("log-terminal").innerHTML = "";
-    seedLogs();
-  });
+    document.getElementById("refresh-logs-btn")?.addEventListener("click", () => {
+      document.getElementById("log-terminal").innerHTML = "";
+      seedLogs();
+    });
+
+    document.getElementById("support-chat-form")?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const input = document.getElementById("support-chat-input");
+      if (!input || !input.value.trim() || !activeTicketId) return;
+      
+      const content = input.value.trim();
+      input.value = "";
+      
+      try {
+        await adminRequest("support-reply", { id: activeTicketId, content });
+        await loadSupport();
+      } catch (reason) { addLog("e", `Erreur d'envoi : ${String(reason)}`); }
+    });
+
+    document.getElementById("support-close-btn")?.addEventListener("click", async () => {
+      if (!activeTicketId) return;
+      if (!confirm("Voulez-vous clore ce ticket ?")) return;
+      try {
+        await adminRequest("support-update", { id: activeTicketId, status: "closed" });
+        await loadSupport();
+        document.getElementById("support-chat-actions").style.display = "none";
+        document.getElementById("support-chat-form").style.display = "none";
+      } catch (reason) { addLog("e", `Erreur de clôture : ${String(reason)}`); }
+    });
 
   function escapeHtml(value) {
     return String(value)

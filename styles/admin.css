@@ -321,7 +321,7 @@ body {
 }
 
 .admin-menu-btn {
-  display: none;
+  display: none !important;
   background: transparent;
   border: 1px solid var(--border);
   color: var(--text-secondary);
@@ -823,7 +823,7 @@ body {
     transform: translateX(0);
   }
   .admin-menu-btn {
-    display: inline-block;
+    display: inline-block !important;
   }
   .dashboard-split {
     grid-template-columns: 1fr;
@@ -900,4 +900,37 @@ body {
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
+}
+
+/* ── Support Live Chat bubbles ── */
+.chat-bubble {
+  max-width: 70%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+.chat-bubble.user {
+  align-self: flex-start;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-bottom-left-radius: 3px;
+}
+.chat-bubble.admin {
+  align-self: flex-end;
+  background: var(--accent-soft);
+  border: 1px solid rgba(255, 71, 126, 0.2);
+  color: var(--text-primary);
+  border-bottom-right-radius: 3px;
+}
+.chat-bubble-time {
+  display: block;
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.chat-bubble.admin .chat-bubble-time {
+  text-align: right;
 }
