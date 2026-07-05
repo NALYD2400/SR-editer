@@ -10,7 +10,7 @@
   const versionBadge = document.getElementById("app-version");
   const downloadLinks = ["download-btn", "download-btn-2", "download-nav"]
     .map((id) => document.getElementById(id))
-    .filter((el) => el !== null) as HTMLAnchorElement[];
+    .filter((el) => el !== null);
 
   fetch("update.json")
     .then((res) => res.json())

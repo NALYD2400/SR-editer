@@ -92,15 +92,27 @@ body {
   width: 32px;
   height: 32px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent) 0%, #7b2cbf 100%);
+  object-fit: contain;
+  box-shadow: 0 4px 12px rgba(255, 71, 126, 0.2);
+}
+
+.admin-login-logo {
+  width: 58px;
+  height: 58px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 24px rgba(0, 190, 255, 0.18));
+}
+
+.admin-login-card .client-brand {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  width: fit-content;
+  color: var(--text-primary);
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 16px;
-  color: #fff;
-  box-shadow: 0 4px 12px rgba(255, 71, 126, 0.2);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-decoration: none;
 }
 
 .sidebar-brand-text {

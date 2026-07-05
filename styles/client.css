@@ -30,7 +30,15 @@
 .client-brand {
   display: flex;
   align-items: center;
+  gap: 10px;
   text-decoration: none;
+}
+
+.client-brand-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 16px rgba(0, 190, 255, 0.16));
 }
 
 .client-brand span {
