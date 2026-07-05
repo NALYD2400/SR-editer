@@ -17,12 +17,19 @@
   const panels = document.querySelectorAll(".admin-panel");
   const navLinks = document.querySelectorAll(".sidebar-link[data-panel]");
   const pageTitle = document.getElementById("page-title");
+  const sidebar = document.querySelector(".admin-sidebar");
+  const menuButton = document.getElementById("admin-menu-btn");
 
   const panelTitles = {
     overview: "Vue d'ensemble",
     users: "Utilisateurs",
+    licenses: "Licences & appareils",
+    support: "Support",
+    contacts: "Contacts",
     releases: "Releases",
-    logs: "Journaux"
+    audit: "Audit global",
+    system: "Santé système",
+    team: "Équipe superadmin"
   };
 
   function showLogin() {
@@ -50,7 +57,8 @@
   async function requireAdminAccess(email) {
     try {
       const result = await adminRequest("me");
-      if (result.profile?.role !== "admin") throw new Error("Ce compte n'a pas le rôle administrateur.");
+      if (result.profile?.role !== "admin" && !result.level) throw new Error("Ce compte n'a pas accès à la superconsole.");
+      applyAccess(result);
       showDashboard(email);
       return true;
     } catch (reason) {
@@ -59,6 +67,15 @@
       showLoginError(String(reason).replace(/^Error:\s*/i, ""));
       return false;
     }
+  }
+
+  function applyAccess(access) {
+    const mapping = { overview: "console", users: "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team" };
+    navLinks.forEach((link) => {
+      const panel = link.getAttribute("data-panel");
+      const allowed = access.level === "owner" || Boolean(access.permissions?.[mapping[panel]]);
+      link.hidden = !allowed;
+    });
   }
 
   function showDashboard(email) {
@@ -115,14 +132,18 @@
         pageTitle.textContent = "Fiche Profil Membre";
       }
     }
+    void loadPanel(panelId);
   }
 
   navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       const panelId = link.getAttribute("data-panel");
       showPanel(panelId);
+      sidebar?.classList.remove("is-open");
     });
   });
+
+  menuButton?.addEventListener("click", () => sidebar?.classList.toggle("is-open"));
 
   document.getElementById("back-to-users-btn")?.addEventListener("click", () => {
     showPanel("users");
@@ -305,6 +326,37 @@
         }
       };
     }
+
+    const sensitiveOutput = document.getElementById("user-sensitive-output");
+    document.getElementById("reset-password-btn").onclick = async () => {
+      try {
+        const result = await adminRequest("reset-password", { email });
+        if (sensitiveOutput) {
+          sensitiveOutput.hidden = false;
+          sensitiveOutput.textContent = result.actionLink || "Lien généré, vérifie la configuration email Supabase.";
+        }
+        addLog("s", `Lien de récupération généré pour ${email}.`);
+      } catch (reason) { addLog("e", String(reason)); }
+    };
+    document.getElementById("confirm-email-btn").onclick = async () => {
+      try { await adminRequest("confirm-email", { email }); addLog("s", `Email confirmé : ${email}`); await refreshUsers(); }
+      catch (reason) { addLog("e", String(reason)); }
+    };
+    document.getElementById("toggle-ban-btn").onclick = async () => {
+      const banned = user.banned_until && new Date(user.banned_until) > new Date();
+      try { await adminRequest(banned ? "unban" : "ban", { email }); addLog("s", `${banned ? "Débanni" : "Banni"} : ${email}`); await refreshUsers(); }
+      catch (reason) { addLog("e", String(reason)); }
+    };
+    document.getElementById("show-devices-btn").onclick = async () => {
+      try {
+        const result = await adminRequest("devices-list", { email });
+        if (sensitiveOutput) {
+          sensitiveOutput.hidden = false;
+          sensitiveOutput.innerHTML = result.rows.length ? result.rows.map((row) => `<div class="device-row"><span>${escapeHtml(row.device_name || "Appareil")}</span><small>${escapeHtml(row.app_version || "version inconnue")} · ${formatDate(row.last_seen_at)}</small>${row.revoked ? '<em>Révoqué</em>' : `<button type="button" class="btn btn-ghost btn-sm" data-revoke-device="${escapeHtml(row.id)}">Révoquer</button>`}</div>`).join("") : '<div class="empty-state">Aucun appareil activé.</div>';
+          sensitiveOutput.querySelectorAll("[data-revoke-device]").forEach((button) => button.addEventListener("click", async () => { await adminRequest("device-revoke", { id: button.dataset.revokeDevice }); document.getElementById("show-devices-btn").click(); }));
+        }
+      } catch (reason) { addLog("e", String(reason)); }
+    };
   };
 
   // Delete user action
@@ -364,12 +416,171 @@
   // Search input handler
   document.getElementById("users-search")?.addEventListener("input", refreshUsers);
 
+  function formatDate(value) {
+    if (!value) return "—";
+    const date = new Date(value);
+    return Number.isNaN(date.getTime()) ? "—" : date.toLocaleString("fr-FR");
+  }
+
+  async function loadDashboard() {
+    try {
+      const data = await adminRequest("dashboard");
+      const metrics = data.metrics || {};
+      const values = {
+        "kpi-users": metrics.users,
+        "kpi-licenses": metrics.activeLicenses,
+        "kpi-tickets": metrics.openTickets,
+        "kpi-contacts": metrics.newContacts,
+        "kpi-banned": metrics.banned
+      };
+      Object.entries(values).forEach(([id, value]) => {
+        const element = document.getElementById(id);
+        if (element) element.textContent = String(value ?? "—");
+      });
+      const hint = document.getElementById("kpi-ticket-hint");
+      if (hint) hint.textContent = `${metrics.urgentTickets || 0} urgent(s)`;
+      const audit = document.getElementById("dashboard-audit");
+      if (audit) {
+        audit.innerHTML = (data.recentAudit || []).length
+          ? data.recentAudit.map((row) => `<div class="activity-item"><span class="activity-dot success"></span><div><p>${escapeHtml(row.action)} · ${escapeHtml(row.target_type)}</p><time>${escapeHtml(row.actor_email || "système")} · ${formatDate(row.created_at)}</time></div></div>`).join("")
+          : '<div class="empty-state">Aucune action enregistrée.</div>';
+      }
+    } catch (reason) {
+      addLog("e", String(reason));
+    }
+  }
+
+  async function loadLicenses() {
+    const tbody = document.getElementById("licenses-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Chargement…</td></tr>';
+    try {
+      const data = await adminRequest("license-list");
+      tbody.innerHTML = data.rows.length ? data.rows.map((row) => `<tr><td>${escapeHtml(row.email)}</td><td>${escapeHtml(row.plan)}</td><td><span class="role-pill">${escapeHtml(row.status)}</span></td><td>${Number(row.device_limit || 1)}</td><td>${formatDate(row.expires_at)}</td></tr>`).join("") : '<tr><td colspan="5" class="empty-state">Aucune licence personnalisée.</td></tr>';
+    } catch (reason) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-state">${escapeHtml(String(reason))}</td></tr>`;
+    }
+  }
+
+  document.getElementById("license-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      const expires = document.getElementById("license-expires").value;
+      await adminRequest("license-upsert", {
+        email: document.getElementById("license-email").value.trim(),
+        plan: document.getElementById("license-plan").value,
+        status: document.getElementById("license-status").value,
+        deviceLimit: Number(document.getElementById("license-devices").value),
+        expiresAt: expires ? new Date(expires).toISOString() : null
+      });
+      addLog("s", "Licence enregistrée.");
+      await loadLicenses();
+    } catch (reason) { addLog("e", String(reason)); }
+  });
+
+  async function loadSupport() {
+    const list = document.getElementById("support-list");
+    if (!list) return;
+    list.innerHTML = '<div class="empty-state">Chargement…</div>';
+    try {
+      const data = await adminRequest("support-list");
+      list.innerHTML = data.rows.length ? data.rows.map((row) => `<article class="admin-list-item"><div><strong>${escapeHtml(row.subject)}</strong><small>${escapeHtml(row.email)} · ${formatDate(row.updated_at)}</small><p>${escapeHtml(row.support_messages?.at(-1)?.content || "Aucun message")}</p></div><div class="admin-item-actions"><span class="role-pill">${escapeHtml(row.priority)} · ${escapeHtml(row.status)}</span><button class="btn btn-ghost btn-sm" data-ticket-reply="${escapeHtml(row.id)}">Répondre</button><button class="btn btn-ghost btn-sm" data-ticket-close="${escapeHtml(row.id)}">Clore</button></div></article>`).join("") : '<div class="empty-state">Aucun ticket.</div>';
+      list.querySelectorAll("[data-ticket-reply]").forEach((button) => button.addEventListener("click", async () => {
+        const content = prompt("Réponse au ticket :");
+        if (!content) return;
+        await adminRequest("support-reply", { id: button.dataset.ticketReply, content });
+        await loadSupport();
+      }));
+      list.querySelectorAll("[data-ticket-close]").forEach((button) => button.addEventListener("click", async () => {
+        await adminRequest("support-update", { id: button.dataset.ticketClose, status: "closed" });
+        await loadSupport();
+      }));
+    } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
+  }
+
+  async function loadContacts() {
+    const list = document.getElementById("contacts-list");
+    if (!list) return;
+    list.innerHTML = '<div class="empty-state">Chargement…</div>';
+    try {
+      const data = await adminRequest("contact-list");
+      list.innerHTML = data.rows.length ? data.rows.map((row) => `<article class="admin-list-item"><div><strong>${escapeHtml(row.subject || "Message")}</strong><small>${escapeHtml(row.name || "Visiteur")} · ${escapeHtml(row.email)} · ${formatDate(row.created_at)}</small><p>${escapeHtml(row.message)}</p></div><div class="admin-item-actions"><span class="role-pill">${escapeHtml(row.status)}</span><button class="btn btn-ghost btn-sm" data-contact-read="${escapeHtml(row.id)}">Lu</button><button class="btn btn-ghost btn-sm" data-contact-archive="${escapeHtml(row.id)}">Archiver</button></div></article>`).join("") : '<div class="empty-state">Aucun message.</div>';
+      list.querySelectorAll("[data-contact-read]").forEach((button) => button.addEventListener("click", async () => { await adminRequest("contact-update", { id: button.dataset.contactRead, status: "read" }); await loadContacts(); }));
+      list.querySelectorAll("[data-contact-archive]").forEach((button) => button.addEventListener("click", async () => { await adminRequest("contact-update", { id: button.dataset.contactArchive, status: "archived" }); await loadContacts(); }));
+    } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
+  }
+
+  async function loadAudit() {
+    const tbody = document.getElementById("audit-tbody");
+    if (!tbody) return;
+    try {
+      const data = await adminRequest("audit-list");
+      tbody.innerHTML = data.rows.length ? data.rows.map((row) => `<tr><td>${formatDate(row.created_at)}</td><td>${escapeHtml(row.actor_email || "système")}</td><td>${escapeHtml(row.action)}</td><td>${escapeHtml(row.target_type)} · ${escapeHtml(row.target_id || "—")}</td></tr>`).join("") : '<tr><td colspan="4" class="empty-state">Aucun événement.</td></tr>';
+    } catch (reason) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">${escapeHtml(String(reason))}</td></tr>`; }
+  }
+
+  async function loadSystem() {
+    const checks = document.getElementById("system-checks");
+    try {
+      const started = performance.now();
+      const health = await adminRequest("health");
+      const manifestResponse = await fetch(`update.json?health=${Date.now()}`, { cache: "no-store" });
+      const latency = Math.round(performance.now() - started);
+      document.getElementById("health-database").textContent = health.database === "online" ? "En ligne" : "Erreur";
+      document.getElementById("health-latency").textContent = `${health.latencyMs ?? latency} ms`;
+      document.getElementById("health-function").textContent = "Active";
+      if (checks) checks.innerHTML = `<article class="admin-list-item"><div><strong>Edge Function admin</strong><small>Authentification, permissions et base</small></div><span class="role-pill">OK</span></article><article class="admin-list-item"><div><strong>Manifeste de mise à jour</strong><small>HTTP ${manifestResponse.status}</small></div><span class="role-pill">${manifestResponse.ok ? "OK" : "Erreur"}</span></article>`;
+    } catch (reason) {
+      document.getElementById("health-function").textContent = "Erreur";
+      if (checks) checks.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`;
+    }
+  }
+
+  async function loadTeam() {
+    const tbody = document.getElementById("team-tbody");
+    if (!tbody) return;
+    try {
+      const data = await adminRequest("team-list");
+      tbody.innerHTML = data.rows.length ? data.rows.map((row) => `<tr><td>${escapeHtml(row.email)}</td><td>${escapeHtml(row.level)}</td><td>${escapeHtml(Object.entries(row.permissions || {}).filter(([, enabled]) => enabled).map(([key]) => key).join(", ") || "Aucune")}</td><td><button class="btn btn-ghost btn-sm" data-team-delete="${escapeHtml(row.email)}">Retirer</button></td></tr>`).join("") : '<tr><td colspan="4" class="empty-state">Aucun accès délégué.</td></tr>';
+      tbody.querySelectorAll("[data-team-delete]").forEach((button) => button.addEventListener("click", async () => { if (!confirm(`Retirer ${button.dataset.teamDelete} ?`)) return; await adminRequest("team-delete", { email: button.dataset.teamDelete }); await loadTeam(); }));
+    } catch (reason) { tbody.innerHTML = `<tr><td colspan="4" class="empty-state">${escapeHtml(String(reason))}</td></tr>`; }
+  }
+
+  async function loadReleases() {
+    const list = document.getElementById("releases-list");
+    if (!list) return;
+    try {
+      const data = await adminRequest("release-list");
+      list.innerHTML = data.rows.length ? data.rows.map((row) => `<article class="admin-list-item"><div><strong>v${escapeHtml(row.version)}</strong><small>${formatDate(row.updated_at)} · ${row.published ? "Publiée" : "Brouillon"}</small><p>${escapeHtml(row.notes || "Sans notes")}</p></div><a class="btn btn-ghost btn-sm" href="${escapeHtml(row.artifact_url)}" target="_blank" rel="noopener noreferrer">Artefact</a></article>`).join("") : '<div class="empty-state">Aucune release enregistrée.</div>';
+    } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
+  }
+
+  document.getElementById("team-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const permissions = {};
+    document.querySelectorAll('[name="team-permission"]').forEach((input) => { permissions[input.value] = input.checked; });
+    try {
+      await adminRequest("team-upsert", { email: document.getElementById("team-email").value.trim(), level: document.getElementById("team-level").value, permissions });
+      await loadTeam();
+    } catch (reason) { addLog("e", String(reason)); }
+  });
+
+  function loadPanel(panelId) {
+    const loaders = { overview: loadDashboard, licenses: loadLicenses, support: loadSupport, contacts: loadContacts, releases: loadReleases, audit: loadAudit, system: loadSystem, team: loadTeam };
+    return loaders[panelId]?.();
+  }
+
+  document.querySelectorAll("[data-refresh]").forEach((button) => button.addEventListener("click", () => void loadPanel(button.dataset.refresh)));
+  document.getElementById("refresh-releases-btn")?.addEventListener("click", () => void loadReleases());
+
 
 
   function refreshKpis() {
     const versionEl = document.getElementById("kpi-version");
+    const healthVersionEl = document.getElementById("health-version");
     const pingEl = document.getElementById("kpi-ping");
     if (versionEl) versionEl.textContent = `v${config.appVersion || "0.3.0"}`;
+    if (healthVersionEl) healthVersionEl.textContent = `v${config.appVersion || "0.3.0"}`;
     if (pingEl) pingEl.textContent = supabase ? "API active" : demoMode ? "Mode démo" : "Non configuré";
   }
 
@@ -392,6 +603,7 @@
   function refreshAll() {
     refreshKpis();
     refreshUsers();
+    loadDashboard();
     seedLogs();
     loadUpdateManifest();
   }
@@ -443,6 +655,20 @@
     addLog("s", `Manifeste v${version} généré.`);
   });
 
+  document.getElementById("save-release-btn")?.addEventListener("click", async () => {
+    try {
+      await adminRequest("release-upsert", {
+        version: document.getElementById("release-version").value.trim(),
+        artifactUrl: document.getElementById("release-url").value.trim(),
+        signature: document.getElementById("release-signature").value.trim(),
+        notes: document.getElementById("release-notes").value.trim(),
+        published: false
+      });
+      addLog("s", "Release enregistrée.");
+      await loadReleases();
+    } catch (reason) { addLog("e", String(reason)); }
+  });
+
   document.getElementById("copy-json-btn")?.addEventListener("click", async () => {
     const textarea = document.getElementById("release-json");
     if (!textarea) return;
@@ -468,6 +694,9 @@
     bg.style.backgroundImage = `url("${window.wallpaperUrl(window.SR_WALLPAPERS[12])}")`;
   }
 
-  checkSession();
+  const localPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+    && new URLSearchParams(window.location.search).get("preview") === "1";
+  if (localPreview) showDashboard("preview-local@sr-editer");
+  else checkSession();
   setInterval(refreshKpis, 8000);
 })();

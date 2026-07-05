@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.0"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.0" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.0" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.3.0" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.3.0-superadmin" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -76,14 +76,19 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             Utilisateurs
           </button>
+          <button type="button" class="sidebar-link" data-panel="licenses">Licences &amp; appareils</button>
+          <button type="button" class="sidebar-link" data-panel="support">Support</button>
+          <button type="button" class="sidebar-link" data-panel="contacts">Contacts</button>
           <button type="button" class="sidebar-link" data-panel="releases">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
             Releases
           </button>
-          <button type="button" class="sidebar-link" data-panel="logs">
+          <button type="button" class="sidebar-link" data-panel="audit">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-            Journaux
+            Audit global
           </button>
+          <button type="button" class="sidebar-link" data-panel="system">Santé système</button>
+          <button type="button" class="sidebar-link" data-panel="team">Équipe superadmin</button>
         </nav>
         <div class="sidebar-footer">
           <a href="index.html">← Site public</a>
@@ -92,7 +97,7 @@
 
       <div class="admin-main">
         <header class="admin-topbar">
-          <h2 id="page-title">Vue d'ensemble</h2>
+          <div class="admin-topbar-title"><button type="button" class="btn btn-ghost admin-menu-btn" id="admin-menu-btn" aria-label="Ouvrir le menu">☰</button><h2 id="page-title">Vue d'ensemble</h2></div>
           <div class="admin-topbar-actions">
             <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
               <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -133,6 +138,26 @@
                 <span class="kpi-value" style="font-size: 1.4rem">Windows</span>
                 <span class="kpi-trend is-warn">x86_64 · NSIS</span>
               </div>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Licences actives</span>
+                <span class="kpi-value" id="kpi-licenses">—</span>
+                <span class="kpi-trend">Actives + essais</span>
+              </div>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Support ouvert</span>
+                <span class="kpi-value" id="kpi-tickets">—</span>
+                <span class="kpi-trend" id="kpi-ticket-hint">Tickets à traiter</span>
+              </div>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Contacts nouveaux</span>
+                <span class="kpi-value" id="kpi-contacts">—</span>
+                <span class="kpi-trend">Boîte de réception</span>
+              </div>
+              <div class="glass-card kpi-card">
+                <span class="kpi-label">Comptes suspendus</span>
+                <span class="kpi-value" id="kpi-banned">—</span>
+                <span class="kpi-trend is-warn">Accès bloqués</span>
+              </div>
             </div>
 
             <div class="dashboard-split">
@@ -154,7 +179,7 @@
                 <div class="panel-card-header">
                   <h3>Activité récente</h3>
                 </div>
-                <div class="activity-list">
+                <div class="activity-list" id="dashboard-audit">
                   <div class="activity-item">
                     <span class="activity-dot success"></span>
                     <div>
@@ -280,7 +305,12 @@
                 <div style="display: flex; gap: 12px; flex-wrap: wrap;">
                   <button type="button" class="btn btn-primary" id="save-detail-btn" style="flex: 1; min-width: 120px;">Enregistrer</button>
                   <button type="button" class="btn btn-ghost" id="suspend-detail-btn" style="color: #ff4a5a; border-color: rgba(255,74,90,0.2); flex: 1; min-width: 120px;">Suspendre</button>
+                  <button type="button" class="btn btn-ghost" id="reset-password-btn">Lien de récupération</button>
+                  <button type="button" class="btn btn-ghost" id="confirm-email-btn">Confirmer l’email</button>
+                  <button type="button" class="btn btn-ghost" id="toggle-ban-btn">Bannir / débannir</button>
+                  <button type="button" class="btn btn-ghost" id="show-devices-btn">Appareils</button>
                 </div>
+                <div id="user-sensitive-output" class="code-output" hidden></div>
               </div>
 
               <!-- Permissions Card -->
@@ -335,6 +365,32 @@
             </div>
           </section>
 
+          <!-- Licences -->
+          <section class="admin-panel" id="panel-licenses">
+            <div class="glass-card panel-card">
+              <div class="panel-card-header"><h3>Attribuer une licence</h3></div>
+              <form id="license-form" class="admin-form-grid">
+                <div class="field"><label for="license-email">Compte</label><input id="license-email" type="email" required placeholder="membre@site.com" /></div>
+                <div class="field"><label for="license-plan">Offre</label><select id="license-plan"><option value="free">Free</option><option value="pro">Pro</option><option value="studio">Studio</option><option value="lifetime">Lifetime</option></select></div>
+                <div class="field"><label for="license-status">Statut</label><select id="license-status"><option value="trialing">Essai</option><option value="active">Active</option><option value="past_due">Paiement requis</option><option value="canceled">Annulée</option><option value="suspended">Suspendue</option></select></div>
+                <div class="field"><label for="license-devices">Appareils autorisés</label><input id="license-devices" type="number" min="1" max="25" value="1" required /></div>
+                <div class="field"><label for="license-expires">Expiration</label><input id="license-expires" type="datetime-local" /></div>
+                <button class="btn btn-primary" type="submit">Enregistrer</button>
+              </form>
+            </div>
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Licences clients</h3><button type="button" class="btn btn-ghost btn-sm" data-refresh="licenses">Actualiser</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Email</th><th>Offre</th><th>Statut</th><th>Appareils</th><th>Expiration</th></tr></thead><tbody id="licenses-tbody"></tbody></table></div></div>
+          </section>
+
+          <!-- Support -->
+          <section class="admin-panel" id="panel-support">
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Tickets support</h3><button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button></div><div id="support-list" class="admin-card-list"><div class="empty-state">Chargement…</div></div></div>
+          </section>
+
+          <!-- Contacts -->
+          <section class="admin-panel" id="panel-contacts">
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Messages du site</h3><button type="button" class="btn btn-ghost btn-sm" data-refresh="contacts">Actualiser</button></div><div id="contacts-list" class="admin-card-list"><div class="empty-state">Chargement…</div></div></div>
+          </section>
+
           <!-- Releases -->
           <section class="admin-panel" id="panel-releases">
             <div class="glass-card panel-card">
@@ -363,7 +419,10 @@
                   <input type="text" id="release-notes" placeholder="Corrections et nouveautés..." />
                 </div>
               </div>
-              <button type="button" class="btn btn-primary" id="generate-release-btn">Générer le manifeste</button>
+              <div class="admin-item-actions">
+                <button type="button" class="btn btn-primary" id="generate-release-btn">Générer le manifeste</button>
+                <button type="button" class="btn btn-ghost" id="save-release-btn">Enregistrer dans l’audit releases</button>
+              </div>
               <div class="code-output" id="release-output" hidden>
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
                   <span style="font-size: 11px; color: var(--muted-dim); font-weight: 700">update.json</span>
@@ -372,17 +431,42 @@
                 <textarea id="release-json" readonly></textarea>
               </div>
             </div>
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Historique des releases</h3><button type="button" class="btn btn-ghost btn-sm" id="refresh-releases-btn">Actualiser</button></div><div id="releases-list" class="admin-card-list"></div></div>
           </section>
 
-          <!-- Logs -->
-          <section class="admin-panel" id="panel-logs">
+          <!-- Audit -->
+          <section class="admin-panel" id="panel-audit">
             <div class="glass-card panel-card">
               <div class="panel-card-header">
-                <h3>Journaux système</h3>
-                <button type="button" class="btn btn-ghost btn-sm" id="refresh-logs-btn">Rafraîchir</button>
+                <h3>Journal d’audit permanent</h3>
+                <button type="button" class="btn btn-ghost btn-sm" data-refresh="audit">Rafraîchir</button>
               </div>
-              <div class="log-terminal" id="log-terminal"></div>
+              <div class="table-scroll"><table class="data-table"><thead><tr><th>Date</th><th>Administrateur</th><th>Action</th><th>Cible</th></tr></thead><tbody id="audit-tbody"></tbody></table></div>
             </div>
+          </section>
+
+          <!-- System -->
+          <section class="admin-panel" id="panel-system">
+            <div class="kpi-grid">
+              <div class="glass-card kpi-card"><span class="kpi-label">Base Supabase</span><span class="kpi-value" id="health-database">—</span><span class="kpi-trend" id="health-latency">— ms</span></div>
+              <div class="glass-card kpi-card"><span class="kpi-label">Version live</span><span class="kpi-value" id="health-version">v0.3.0</span><span class="kpi-trend">update.json</span></div>
+              <div class="glass-card kpi-card"><span class="kpi-label">Fonction admin</span><span class="kpi-value status-online" id="health-function">—</span><span class="kpi-trend">Edge Function</span></div>
+            </div>
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Points de contrôle</h3><button type="button" class="btn btn-primary btn-sm" data-refresh="system">Tester maintenant</button></div><div id="system-checks" class="admin-card-list"></div></div>
+          </section>
+
+          <!-- Team -->
+          <section class="admin-panel" id="panel-team">
+            <div class="glass-card panel-card">
+              <div class="panel-card-header"><h3>Déléguer la superconsole</h3></div>
+              <form id="team-form" class="admin-form-grid">
+                <div class="field"><label for="team-email">Compte administrateur</label><input id="team-email" type="email" required /></div>
+                <div class="field"><label for="team-level">Niveau</label><select id="team-level"><option value="collaborator">Collaborateur</option><option value="owner">Propriétaire</option></select></div>
+                <fieldset class="permission-grid"><legend>Permissions</legend><label><input type="checkbox" name="team-permission" value="console" checked /> Console</label><label><input type="checkbox" name="team-permission" value="users" /> Utilisateurs</label><label><input type="checkbox" name="team-permission" value="licenses" /> Licences</label><label><input type="checkbox" name="team-permission" value="support" /> Support</label><label><input type="checkbox" name="team-permission" value="contacts" /> Contacts</label><label><input type="checkbox" name="team-permission" value="releases" /> Releases</label><label><input type="checkbox" name="team-permission" value="audit" /> Audit</label><label><input type="checkbox" name="team-permission" value="system" /> Système</label></fieldset>
+                <button class="btn btn-primary" type="submit">Enregistrer l’accès</button>
+              </form>
+            </div>
+            <div class="glass-card panel-card"><div class="panel-card-header"><h3>Équipe autorisée</h3><button type="button" class="btn btn-ghost btn-sm" data-refresh="team">Actualiser</button></div><div class="table-scroll"><table class="data-table"><thead><tr><th>Email</th><th>Niveau</th><th>Permissions</th><th>Action</th></tr></thead><tbody id="team-tbody"></tbody></table></div></div>
           </section>
         </div>
       </div>
@@ -390,7 +474,7 @@
 
     <script src="js/wallpapers.js?v=0.3.0"></script>
     <script src="js/config.js?v=0.3.0"></script>
-    <script src="js/admin.js?v=0.3.0"></script>
+    <script src="js/admin.js?v=0.3.0-superadmin"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));
