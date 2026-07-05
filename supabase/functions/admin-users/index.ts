@@ -251,7 +251,7 @@ Deno.serve(async (request) => {
     if (!validRoles.has(role) || !validWriteModes.has(writeMode) || !targetEmail || target) return json(origin, 400, { ok: false, error: "Compte, rôle ou mode invalide." });
     const { data, error } = await admin.auth.admin.createUser({ email: targetEmail, password, email_confirm: true });
     if (error || !data.user) return json(origin, 400, { ok: false, error: error?.message ?? "Création impossible." });
-    const { error: profileError } = await admin.from("profiles").insert({ user_id: data.user.id, email: targetEmail, role, write_mode: writeMode });
+    const { error: profileError } = await admin.from("profiles").upsert({ user_id: data.user.id, email: targetEmail, role, write_mode: writeMode }, { onConflict: "user_id" });
     if (profileError) { await admin.auth.admin.deleteUser(data.user.id); return json(origin, 500, { ok: false, error: profileError.message }); }
     await audit("user.create", "user", data.user.id, { email: targetEmail, role });
     return json(origin, 200, { ok: true });

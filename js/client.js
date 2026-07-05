@@ -10,20 +10,45 @@
   const versionBadge = document.getElementById("app-version");
   const downloadLinks = ["download-btn", "download-btn-2", "download-nav"]
     .map((id) => document.getElementById(id))
-    .filter(Boolean);
+    .filter((el) => el !== null) as HTMLAnchorElement[];
 
-  if (versionBadge && config.appVersion) versionBadge.textContent = `v${config.appVersion}`;
-  downloadLinks.forEach((link) => {
-    if (config.downloadUrl) {
-      link.href = config.downloadUrl;
-      link.removeAttribute("aria-disabled");
-      return;
-    }
-    link.removeAttribute("href");
-    link.setAttribute("aria-disabled", "true");
-    link.title = "La release publique signée n'est pas encore disponible.";
-    link.textContent = "Bientôt disponible";
-  });
+  fetch("update.json")
+    .then((res) => res.json())
+    .then((data) => {
+      const dlUrl = data.platforms?.["windows-x86_64"]?.url;
+      const latestVersion = data.version;
+      
+      if (versionBadge && latestVersion) {
+        versionBadge.textContent = `v${latestVersion}`;
+      }
+
+      downloadLinks.forEach((link) => {
+        if (dlUrl) {
+          link.href = dlUrl;
+          link.removeAttribute("aria-disabled");
+          link.removeAttribute("title");
+          link.textContent = link.id === "download-nav" ? "Télécharger" : "Télécharger pour Windows";
+        } else {
+          link.removeAttribute("href");
+          link.setAttribute("aria-disabled", "true");
+          link.title = "La release publique signée n'est pas encore disponible.";
+          link.textContent = "Bientôt disponible";
+        }
+      });
+    })
+    .catch(() => {
+      downloadLinks.forEach((link) => {
+        if (config.downloadUrl) {
+          link.href = config.downloadUrl;
+          link.removeAttribute("aria-disabled");
+        } else {
+          link.removeAttribute("href");
+          link.setAttribute("aria-disabled", "true");
+          link.title = "La release publique signée n'est pas encore disponible.";
+          link.textContent = "Bientôt disponible";
+        }
+      });
+    });
 
   document.querySelectorAll(".bento-card[data-bg]").forEach((card) => {
     const file = card.getAttribute("data-bg");
