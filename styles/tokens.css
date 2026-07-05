@@ -18,26 +18,35 @@ html[data-theme="dark"] {
   --muted: #a699c2;
   --muted-dim: rgba(166, 153, 194, 0.55);
 
-  --accent: #ff477e;
-  --accent-soft: rgba(255, 71, 126, 0.14);
-  --blue: #00a8cc;
-  --purple: #8b5cf6;
-  --success: #58dba0;
-  --warning: #ff9f1c;
-  --danger: #ff477e;
+  --accent: #ff007f;
+  --accent-soft: rgba(255, 0, 127, 0.12);
+  --blue: #00f0ff;
+  --purple: #9d4edd;
+  --success: #390099;
+  --warning: #ffb703;
+  --danger: #ff007f;
 
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 71, 126, 0.28);
+  --neon-pink: #ff007f;
+  --neon-cyan: #00f0ff;
+  --neon-purple: #9d4edd;
 
-  --nav-bg: rgba(3, 2, 6, 0.35);
-  --nav-bg-scrolled: rgba(3, 2, 6, 0.78);
-  --ambient-overlay: linear-gradient(180deg, rgba(3, 2, 6, 0.35) 0%, rgba(3, 2, 6, 0.92) 72%, #030206 100%);
-  --ambient-blur-strength: 42px;
-  --hero-title-gradient: linear-gradient(180deg, #ffffff 0%, #ffffff 42%, rgba(214, 207, 227, 0.72) 100%);
-  --btn-primary-bg: #ffffff;
-  --btn-primary-text: #0a0812;
-  --btn-primary-shadow: 0 12px 40px rgba(255, 255, 255, 0.12);
-  --glass-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  --glow-pink: 0 0 20px rgba(255, 0, 127, 0.35);
+  --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.35);
+  --glow-purple: 0 0 25px rgba(157, 78, 221, 0.3);
+
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 0, 127, 0.35);
+  --border-neon: rgba(0, 240, 255, 0.2);
+
+  --nav-bg: rgba(5, 4, 9, 0.4);
+  --nav-bg-scrolled: rgba(5, 4, 9, 0.85);
+  --ambient-overlay: linear-gradient(180deg, rgba(5, 4, 9, 0.2) 0%, rgba(5, 4, 9, 0.85) 60%, #050409 100%);
+  --ambient-blur-strength: 50px;
+  --hero-title-gradient: linear-gradient(135deg, #ffffff 10%, #d6cfe3 60%, #ff007f 120%);
+  --btn-primary-bg: linear-gradient(135deg, #ff007f 0%, #9d4edd 100%);
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 8px 30px rgba(255, 0, 127, 0.3);
+  --glass-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
   --field-bg: rgba(255, 255, 255, 0.03);
   --field-focus-bg: rgba(255, 255, 255, 0.05);
   --field-focus-border: rgba(255, 255, 255, 0.22);

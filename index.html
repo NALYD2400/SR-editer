@@ -3,22 +3,22 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SR Editer — Atelier GTA V & FiveM</title>
+    <title>SR Editer — Atelier GTA V & FiveM (Premium Desktop App)</title>
     <meta
       name="description"
-      content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM."
+      content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM. Interface moderne, fluide et optimisée."
     />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="SR Editer — Atelier GTA V & FiveM" />
     <meta property="og:description" content="Explore, prévisualise et édite tes assets GTA V et FiveM dans un atelier desktop local." />
-    <meta property="og:image" content="https://sr-editer.vercel.app/assets/image_modifiee%20(2).png" />
+    <meta property="og:image" content="assets/image_modifiee%20(2).png" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="canonical" href="https://sr-editer.vercel.app/" />
     <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <script src="js/theme.js?v=0.3.2"></script>
@@ -27,35 +27,33 @@
     <link rel="stylesheet" href="styles/client.css?v=0.3.2-logo" />
   </head>
   <body class="client-page">
-    <div class="ambient-layer" id="ambient-layer"></div>
-    <div class="ambient-vignette"></div>
-    <div class="ambient-blur"></div>
 
+
+
+
+    <!-- Background Layers -->
+    <div id="ambient-wrapper" style="position: fixed; inset: -4%; z-index: -2; pointer-events: none; will-change: transform;">
+      <div class="ambient-layer active" id="ambient-layer-1"></div>
+      <div class="ambient-layer" id="ambient-layer-2"></div>
+    </div>
+    <div class="ambient-vignette"></div>
+
+    <!-- Navigation Header -->
     <header class="client-nav">
       <a href="#" class="client-brand">
-        <img class="client-brand-logo" src="assets/logo_small.png?v=20260705-logo" alt="" />
-        <span>SR Editer</span>
+        <img class="client-brand-logo" src="assets/logo_small.png" alt="SR Editer" />
       </a>
       <nav class="client-nav-links">
-        <a href="#studio">Studio</a>
+        <a href="#studio">Showcase</a>
         <a href="#galerie">Galerie</a>
-        <a href="#fonctionnalites">Fonctionnalités</a>
-        <a href="admin.html">Admin</a>
-        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-          </svg>
-          <span data-theme-label>Clair</span>
-        </button>
+        <a href="#fonctionnalites">Bento</a>
+
         <a href="#telecharger" class="btn btn-primary btn-sm" id="download-nav">Télécharger</a>
       </nav>
     </header>
 
     <main>
+      <!-- Hero Section -->
       <section class="client-hero">
         <div class="hero-content">
           <div class="hero-eyebrow">
@@ -64,11 +62,19 @@
           <h1 class="hero-title">L'atelier d'assets<br />pour GTA V & FiveM</h1>
           <p class="hero-lead">
             Textures, modèles et archives RPF — décodage natif RSC7, édition par calques et viewport 3D synchronisé.
-            Un workflow pro, entièrement local.
+            Un workflow pro, entièrement local et ultra-rapide.
           </p>
           <div class="hero-actions" id="telecharger">
-            <a href="#" class="btn btn-primary" id="download-btn">Télécharger pour Windows</a>
-            <a href="https://github.com/NALYD2400/SR-editer" class="btn btn-ghost" target="_blank" rel="noreferrer">GitHub</a>
+            <div class="download-wrapper">
+              <a href="#" class="btn btn-download" id="download-btn">Télécharger pour Windows</a>
+            </div>
+            <div class="download-meta-info">
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg> 42.1 Mo</span>
+              <span>·</span>
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Signé localement</span>
+              <span>·</span>
+              <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> SHA-256 vérifié</span>
+            </div>
           </div>
           <div class="hero-meta">
             <div><span>Formats</span><strong>YTD · YDR · YFT · ODR</strong></div>
@@ -78,164 +84,253 @@
         </div>
       </section>
 
-
-      <section class="client-showcase reveal" id="studio" style="padding: 60px 0 100px 0; overflow: hidden; width: 100%;">
-        <div style="text-align: center; margin-bottom: 30px;">
-          <span style="font-size: 11px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:0.15em;">Aperçu du Studio</span>
-          <h2 style="font-family: 'Outfit', sans-serif; font-size: clamp(24px, 4vw, 36px); font-weight:700; margin-top:8px; color:#fff; letter-spacing: -0.02em;">Découvrez l'interface en action</h2>
+      <!-- Interactive OS Mockup Showcase -->
+      <section class="client-showcase reveal reveal-scale" id="studio">
+        <div class="showcase-header">
+          <span>Aperçu de l'Application</span>
+          <h2>Découvrez le studio en action</h2>
         </div>
 
-        <div style="position: relative; width: 100%;">
-          <!-- Floating Left Arrow -->
-          <button type="button" id="scroll-prev" style="position: absolute; left: 40px; top: 50%; transform: translateY(-50%); z-index: 20; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 11, 28, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(-50%) scale(1.08)';" onmouseout="this.style.background='rgba(15, 11, 28, 0.5)'; this.style.transform='translateY(-50%) scale(1)';" aria-label="Défiler vers la gauche">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-
-          <div class="apple-scroll-track" style="display: flex; gap: 40px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 20px 10%; width: 100%; box-sizing: border-box; -webkit-overflow-scrolling: touch; mask-image: linear-gradient(to right, transparent, black 15%, black 85%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, #000 15%, #000 85%, transparent);">
+        <div class="mockup-window">
+          <!-- Left Window Sidebar -->
+          <div class="mockup-sidebar">
+            <div class="mockup-header-action">
+              <div class="mockup-dots">
+                <span class="mockup-dot red"></span>
+                <span class="mockup-dot yellow"></span>
+                <span class="mockup-dot green"></span>
+              </div>
+              <span class="mockup-window-title">SR Editer</span>
+            </div>
             
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 163113.png" alt="Texture Studio" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
+            <div class="showcase-tabs">
+              <button type="button" class="showcase-tab active" data-tab="studio">
+                <svg class="showcase-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="9" y1="9" x2="21" y2="9"/></svg>
+                Texture Studio
+              </button>
+              <button type="button" class="showcase-tab" data-tab="explorer">
+                <svg class="showcase-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                Explorateur RPF
+              </button>
+              <button type="button" class="showcase-tab" data-tab="viewport">
+                <svg class="showcase-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                Viewport 3D
+              </button>
+              <button type="button" class="showcase-tab" data-tab="workspace">
+                <svg class="showcase-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                Projet & Éditions
+              </button>
+              <button type="button" class="showcase-tab" data-tab="settings">
+                <svg class="showcase-tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.5 1z"/></svg>
+                Paramètres Studio
+              </button>
             </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 163236.png" alt="Explorateur RPF" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162223.png" alt="Viewport 3D" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162306.png" alt="Édition Texture" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162341.png" alt="Gestionnaire de Fichiers" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162357.png" alt="Paramètres" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162433.png" alt="Workspace" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162644.png" alt="Texture Editor Suite" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
-            <div class="apple-scroll-item" style="flex: 0 0 80%; max-width: 850px; scroll-snap-align: center; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.08); background: rgba(15, 11, 28, 0.3); padding: 8px; box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5); transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);">
-              <div style="border-radius: 14px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04);">
-                <img src="assets/photo app/Capture d’écran 2026-07-04 162925.png" alt="File Manager List" loading="lazy" decoding="async" style="width: 100%; height: auto; aspect-ratio: 16/9; object-fit: cover; display: block;" />
-              </div>
-            </div>
-
           </div>
 
-          <!-- Floating Right Arrow -->
-          <button type="button" id="scroll-next" style="position: absolute; right: 40px; top: 50%; transform: translateY(-50%); z-index: 20; width: 48px; height: 48px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.08); background: rgba(15, 11, 28, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; box-shadow: 0 10px 30px rgba(0,0,0,0.3);" onmouseover="this.style.background='rgba(255,255,255,0.1)'; this.style.transform='translateY(-50%) scale(1.08)';" onmouseout="this.style.background='rgba(15, 11, 28, 0.5)'; this.style.transform='translateY(-50%) scale(1)';" aria-label="Défiler vers la droite">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-          </button>
+          <!-- Right Viewport -->
+          <div class="mockup-viewport">
+            <div class="mockup-image-wrapper">
+              <img src="assets/photo app/Capture d’écran 2026-07-04 163113.png" alt="Texture Studio" class="mockup-img active" data-content="studio" loading="lazy" />
+              <img src="assets/photo app/Capture d’écran 2026-07-04 163236.png" alt="Explorateur RPF" class="mockup-img" data-content="explorer" loading="lazy" />
+              <img src="assets/photo app/Capture d’écran 2026-07-04 162223.png" alt="Viewport 3D" class="mockup-img" data-content="viewport" loading="lazy" />
+              <img src="assets/photo app/Capture d’écran 2026-07-04 162433.png" alt="Gestionnaire de Workspace" class="mockup-img" data-content="workspace" loading="lazy" />
+              <img src="assets/photo app/Capture d’écran 2026-07-04 162357.png" alt="Paramètres" class="mockup-img" data-content="settings" loading="lazy" />
+            </div>
+
+            <!-- Hotspots layer -->
+            <div class="hotspots-layer">
+              <!-- Studio Hotspots -->
+              <div class="hotspot visible" id="hotspot-studio-1" data-tab="studio">
+                <button type="button" class="hotspot-btn" aria-label="Infos calques"></button>
+                <div class="hotspot-tooltip">
+                  <h4>Atelier de Calques</h4>
+                  <p>Ajustez l'opacité, l'alpha, les masques et exportez directement au format DDS sans perte.</p>
+                </div>
+              </div>
+              <div class="hotspot visible" id="hotspot-studio-2" data-tab="studio">
+                <button type="button" class="hotspot-btn" aria-label="Infos IA"></button>
+                <div class="hotspot-tooltip">
+                  <h4>Intégration d'IA Générative</h4>
+                  <p>Optimisez vos textures en un clic avec OpenAI & Gemini configurables en local.</p>
+                </div>
+              </div>
+
+              <!-- Explorer Hotspots -->
+              <div class="hotspot" id="hotspot-explorer-1" data-tab="explorer">
+                <button type="button" class="hotspot-btn" aria-label="Navigation archives"></button>
+                <div class="hotspot-tooltip">
+                  <h4>RPF Native Parser</h4>
+                  <p>Explorez les fichiers cryptés du jeu sans les extraire, avec notre moteur d'indexation ultra-rapide.</p>
+                </div>
+              </div>
+              <div class="hotspot" id="hotspot-explorer-2" data-tab="explorer">
+                <button type="button" class="hotspot-btn" aria-label="Infos format"></button>
+                <div class="hotspot-tooltip">
+                  <h4>Validation RSC7</h4>
+                  <p>Chaque asset est analysé en temps réel. Les fichiers corrompus lèvent une erreur claire.</p>
+                </div>
+              </div>
+
+              <!-- Viewport Hotspots -->
+              <div class="hotspot" id="hotspot-viewport-1" data-tab="viewport">
+                <button type="button" class="hotspot-btn" aria-label="Rendu 3D"></button>
+                <div class="hotspot-tooltip">
+                  <h4>Moteur WebGL PBR</h4>
+                  <p>Visualisation des shaders GTA sous forme d'approximation physique pour ajuster vos textures.</p>
+                </div>
+              </div>
+              <div class="hotspot" id="hotspot-viewport-2" data-tab="viewport">
+                <button type="button" class="hotspot-btn" aria-label="Shader Settings"></button>
+                <div class="hotspot-tooltip">
+                  <h4>Ajustement des Matériaux</h4>
+                  <p>Modifiez en direct le grain, la rugosité et l'usure métallique des shaders.</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
+      <!-- Infinite Scroll Wallpapers Gallery -->
       <section class="client-mosaic reveal" id="galerie">
         <div class="mosaic-header">
           <h2>Ambiance Vice City</h2>
           <p>
-            Visuels officiels GTA VI intégrés à l'identité du studio — fonds translucides, glassmorphism et contrastes
-            cinématiques.
+            Visuels officiels GTA VI intégrés à l'identité du studio — fonds translucides, glassmorphism et contrastes cinématiques.
           </p>
         </div>
-        <div class="mosaic-track" id="mosaic-track"></div>
+        
+        <div class="mosaic-scroller">
+          <div class="mosaic-track" id="mosaic-track-left"></div>
+        </div>
       </section>
 
-      <section class="client-features reveal" id="fonctionnalites">
-        <div class="features-bento">
-          <article
-            class="glass-card bento-card bento-a"
-            data-bg="ULTIMATE_EDITION_SARAS_SALON_01.0gn7dwlvcgz17.avif"
-          >
+      <!-- Features Bento Section -->
+      <section class="client-features reveal reveal-scale" id="fonctionnalites">
+        <div class="features-bento stagger-in">
+          <article class="bento-card bento-a">
+            <div class="bento-card-bg" style="background-image: url('assets/wallpapers/ULTIMATE_EDITION_SARAS_SALON_01.0gn7dwlvcgz17.avif');"></div>
+            <div class="bento-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 16a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/></svg>
+            </div>
             <span class="bento-tag">Texture Studio</span>
             <h3>Édition par calques 2D</h3>
-            <p>Masques alpha, export PNG/DDS et aperçu 3D en direct sur le modèle cible.</p>
+            <p>Masques alpha complets, export PNG/DDS et aperçu 3D en direct sur le modèle cible.</p>
           </article>
-          <article
-            class="glass-card bento-card bento-b"
-            data-bg="ULTIMATE_EDITION_RIDEOUT_CUSTOMS_02.0u9jg4xxbm_yd.avif"
-          >
+          
+          <article class="bento-card bento-b">
+            <div class="bento-card-bg" style="background-image: url('assets/wallpapers/ULTIMATE_EDITION_RIDEOUT_CUSTOMS_02.0u9jg4xxbm_yd.avif');"></div>
+            <div class="bento-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+            </div>
             <span class="bento-tag">Explorateur</span>
             <h3>Parcours RPF & mods</h3>
-            <p>Installation GTA, dossiers FiveM et archives — indexation locale rapide.</p>
+            <p>Installation GTA V, dossiers de mods FiveM et archives locales — indexation rapide.</p>
           </article>
-          <article
-            class="glass-card bento-card bento-c"
-            data-bg="ULTIMATE_EDITION_GROTTI_CHEETAH_01.0a.wy3s_ogjey.avif"
-          >
+          
+          <article class="bento-card bento-c">
+            <div class="bento-card-bg" style="background-image: url('assets/wallpapers/ULTIMATE_EDITION_GROTTI_CHEETAH_01.0a.wy3s_ogjey.avif');"></div>
+            <div class="bento-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/></svg>
+            </div>
             <span class="bento-tag">Viewport</span>
             <h3>WebGL synchronisé</h3>
-            <p>Prévisualisation PBR approximative des shaders GTA.</p>
+            <p>Prévisualisation PBR avancée et fidèle des shaders originaux GTA.</p>
           </article>
-          <article
-            class="glass-card bento-card bento-d"
-            data-bg="ULTIMATE_EDITION_WEAPON_VARIANTS_01.12licq0_o7mb5.avif"
-          >
+          
+          <article class="bento-card bento-d">
+            <div class="bento-card-bg" style="background-image: url('assets/wallpapers/ULTIMATE_EDITION_WEAPON_VARIANTS_01.12licq0_o7mb5.avif');"></div>
+            <div class="bento-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+            </div>
             <span class="bento-tag">Moteur</span>
             <h3>RSC7 natif</h3>
-            <p>Décodage BCn/DDS sans faux aperçu — erreurs explicites sur Gen9.</p>
+            <p>Décodage direct BCn/DDS sans mesh factice ou conversion destructive.</p>
           </article>
-          <article
-            class="glass-card bento-card bento-e"
-            data-bg="ULTIMATE_EDITION_VICE_CITY_STYLE_03.08.sic8sgqk4u.avif"
-          >
-            <span class="bento-tag">IA</span>
+          
+          <article class="bento-card bento-e">
+            <div class="bento-card-bg" style="background-image: url('assets/wallpapers/ULTIMATE_EDITION_VICE_CITY_STYLE_03.08.sic8sgqk4u.avif');"></div>
+            <div class="bento-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            </div>
+            <span class="bento-tag">Intelligence Artificielle</span>
             <h3>Retouches assistées</h3>
-            <p>OpenAI & Gemini optionnels pour accélérer les itérations texture.</p>
+            <p>Connecteurs API OpenAI & Gemini intégrés pour accélérer la création de textures.</p>
           </article>
         </div>
       </section>
 
-      <section class="glass-card client-cta reveal">
-        <h2>Prêt à modder ?</h2>
-        <p>Installe SR Editer, connecte-toi avec ton compte et ouvre ton premier dossier de mods.</p>
-        <a href="#" class="btn btn-primary" id="download-btn-2">Obtenir l'application</a>
+      <!-- CTA Section -->
+      <section class="client-cta reveal reveal-scale">
+        <div class="client-cta-content">
+          <h2>Prêt à modder ?</h2>
+          <p>Ouvre tes archives RPF, connecte ton atelier local et commence à éditer tes textures GTA V en temps réel.</p>
+          
+          <a href="#" class="cta-download-btn" id="download-btn-2" aria-disabled="true">
+            Télécharger l'application
+          </a>
+
+          <div class="client-cta-meta">
+            <span>Windows 10 / 11 x64</span>
+            <span>8 Go RAM minimum</span>
+            <span>DirectX 11 / WebGL 2.0</span>
+          </div>
+        </div>
+
+        <div class="cta-graphic" aria-hidden="true">
+          <div class="cta-blueprint">
+            <div class="blueprint-header">
+              <div class="blueprint-dot"></div>
+              <div class="blueprint-dot"></div>
+              <div class="blueprint-dot"></div>
+            </div>
+            <div class="blueprint-body">
+              <div class="blueprint-sidebar">
+                <div class="blueprint-line accent medium"></div>
+                <div class="blueprint-line short"></div>
+                <div class="blueprint-line short"></div>
+                <div class="blueprint-line medium"></div>
+              </div>
+              <div class="blueprint-main">
+                <div class="blueprint-grid">
+                  <div class="blueprint-target"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
+    <!-- Footer -->
     <footer class="client-footer">
       <nav>
-        <a href="admin.html">Console admin</a>
         <a href="update.json" target="_blank">update.json</a>
-        <a href="https://github.com/NALYD2400/SR-editer" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
-      <p>© 2026 SR Editer · Non affilié à Rockstar Games, Take-Two ou Cfx.re</p>
+      <p>© 2026 SR Editer · Outil indépendant non affilié à Rockstar Games, Take-Two ou Cfx.re</p>
     </footer>
 
-    <button type="button" class="ambiance-btn" id="cycle-ambiance" aria-label="Changer l'ambiance">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="4" />
-        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-      </svg>
-      Ambiance
-    </button>
+    <!-- Floating Cyber Controls -->
+    <div class="floating-controls">
+      <button type="button" class="audio-btn" id="audio-toggle" aria-label="Musique d'ambiance">
+        <div class="sound-bars" id="sound-bars">
+          <span class="bar" style="height: 30%"></span>
+          <span class="bar" style="height: 60%"></span>
+          <span class="bar" style="height: 40%"></span>
+          <span class="bar" style="height: 20%"></span>
+        </div>
+        <span>Radio Synth</span>
+      </button>
+      <button type="button" class="ambiance-btn" id="cycle-ambiance" aria-label="Changer l'ambiance">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4" />
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        Ambiance
+      </button>
+    </div>
 
+    <!-- Scripts -->
     <script src="js/wallpapers.js?v=0.3.2"></script>
     <script src="js/config.js?v=0.3.2"></script>
     <script>
@@ -269,62 +364,6 @@
     <script src="js/client.js?v=0.3.2"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
-    </script>
-    <script>
-      (function setupScrollGallery() {
-        const track = document.querySelector('.apple-scroll-track');
-        const btnPrev = document.getElementById('scroll-prev');
-        const btnNext = document.getElementById('scroll-next');
-
-        if (track) {
-          // Arrow button clicks
-          btnPrev?.addEventListener('click', () => {
-            const itemWidth = track.firstElementChild?.getBoundingClientRect().width || 400;
-            track.scrollBy({ left: -(itemWidth + 40), behavior: 'smooth' });
-          });
-
-          btnNext?.addEventListener('click', () => {
-            const itemWidth = track.firstElementChild?.getBoundingClientRect().width || 400;
-            track.scrollBy({ left: itemWidth + 40, behavior: 'smooth' });
-          });
-
-          // Grab and drag-to-scroll with mouse
-          let isDown = false;
-          let startX;
-          let scrollLeft;
-
-          track.addEventListener('mousedown', (e) => {
-            isDown = true;
-            track.style.cursor = 'grabbing';
-            track.style.scrollBehavior = 'auto'; // Disable transitions for real-time drag response
-            startX = e.pageX - track.offsetLeft;
-            scrollLeft = track.scrollLeft;
-          });
-
-          track.addEventListener('mouseleave', () => {
-            isDown = false;
-            track.style.cursor = 'grab';
-            track.style.scrollBehavior = 'smooth';
-          });
-
-          track.addEventListener('mouseup', () => {
-            isDown = false;
-            track.style.cursor = 'grab';
-            track.style.scrollBehavior = 'smooth';
-          });
-
-          track.addEventListener('mousemove', (e) => {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - track.offsetLeft;
-            const walk = (x - startX) * 1.5; // Drag speed modifier
-            track.scrollLeft = scrollLeft - walk;
-          });
-
-          // Set default grab cursor
-          track.style.cursor = 'grab';
-        }
-      })();
     </script>
   </body>
 </html>

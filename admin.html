@@ -25,39 +25,26 @@
 
     <!-- Login -->
     <div id="login-view" class="admin-login">
-      <button type="button" class="theme-toggle" id="theme-toggle-login" style="position: fixed; top: 20px; right: 20px; z-index: 10" aria-label="Changer le thème">
-        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-        </svg>
-        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <circle cx="12" cy="12" r="4" />
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-        </svg>
-        <span data-theme-label>Clair</span>
-      </button>
       <div class="glass-card admin-login-card">
-        <div>
-          <a href="index.html" class="client-brand" style="margin-bottom: 8px">
-            <img class="admin-login-logo" src="assets/logo_small.png?v=20260705-logo" alt="SR Editer" />
-            <span>SR Editer</span>
-          </a>
+        <div class="admin-login-header">
+          <img class="admin-login-logo" src="assets/logo_small.png" alt="SR Logo" />
           <h1>Console Admin</h1>
-          <p>Accès réservé aux administrateurs via Supabase Auth.</p>
+          <p>Accès sécurisé pour l'administration de SR Editer.</p>
         </div>
         <div class="alert-error" id="login-error" hidden></div>
-        <form id="login-form" class="field" style="gap: 16px">
-          <div class="field">
-            <label for="login-email">Email</label>
+        <form id="login-form">
+          <div>
+            <label for="login-email">Adresse Email</label>
             <input type="email" id="login-email" autocomplete="email" required placeholder="admin@exemple.com" />
           </div>
-          <div class="field">
+          <div>
             <label for="login-password">Mot de passe</label>
             <input type="password" id="login-password" autocomplete="current-password" required />
           </div>
-          <button type="submit" class="btn btn-primary" style="width: 100%">Se connecter</button>
+          <button type="submit">Se connecter</button>
         </form>
-        <p style="margin: 0; font-size: 12px; color: var(--muted-dim); text-align: center">
-          <a href="index.html" style="color: var(--muted)">← Retour au site</a>
+        <p style="margin: 0; font-size: 11px; text-align: center">
+          <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-family: monospace;">← Retour au site</a>
         </p>
       </div>
     </div>
