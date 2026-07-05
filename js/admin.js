@@ -838,10 +838,20 @@
 
   document.getElementById("refresh-users-btn")?.addEventListener("click", refreshUsers);
 
+  function directReleaseUrl(value, version) {
+    const url = value.trim();
+    const releasePage = url.match(/^(https:\/\/github\.com\/[^/]+\/[^/]+\/releases)\/tag\/([^/?#]+)\/?$/i);
+    if (releasePage) {
+      return `${releasePage[1]}/download/${releasePage[2]}/SR.Editer_${version}_x64-setup.exe`;
+    }
+    return url;
+  }
+
   document.getElementById("generate-release-btn")?.addEventListener("click", () => {
     const version = document.getElementById("release-version").value.trim();
     const pubDate = document.getElementById("release-date").value.trim();
-    const zipUrl = document.getElementById("release-url").value.trim();
+    const zipUrl = directReleaseUrl(document.getElementById("release-url").value, version);
+    document.getElementById("release-url").value = zipUrl;
     const signature = document.getElementById("release-signature").value.trim();
     const notes = document.getElementById("release-notes").value.trim() || `Release v${version}`;
 
@@ -866,9 +876,12 @@
 
   document.getElementById("save-release-btn")?.addEventListener("click", async () => {
     try {
+      const version = document.getElementById("release-version").value.trim();
+      const artifactUrl = directReleaseUrl(document.getElementById("release-url").value, version);
+      document.getElementById("release-url").value = artifactUrl;
       await adminRequest("release-upsert", {
-        version: document.getElementById("release-version").value.trim(),
-        artifactUrl: document.getElementById("release-url").value.trim(),
+        version,
+        artifactUrl,
         signature: document.getElementById("release-signature").value.trim(),
         notes: document.getElementById("release-notes").value.trim(),
         published: document.getElementById("release-published").checked

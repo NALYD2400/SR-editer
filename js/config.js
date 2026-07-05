@@ -7,5 +7,5 @@ window.SR_CONFIG = {
   updateManifestUrl: "/update.json",
   demoMode: false,
   // URL de secours uniquement ; le site charge normalement updateManifestUrl.
-  downloadUrl: "https://github.com/NALYD2400/SR-editer/releases/download/v0.3.2/SR.Editer_0.3.2_x64-setup.exe"
+  downloadUrl: "https://github.com/NALYD2400/SR-editer/releases/download/0.3.2/SR.Editer_0.3.2_x64-setup.exe"
 };

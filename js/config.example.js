@@ -5,5 +5,5 @@ window.SR_CONFIG = {
   adminFunctionName: "admin-users",
   demoMode: false,
   downloadUrl:
-    "https://github.com/NALYD2400/SR-editer/releases/download/v0.3.2/SR.Editer_0.3.2_x64-setup.exe"
+    "https://github.com/NALYD2400/SR-editer/releases/download/0.3.2/SR.Editer_0.3.2_x64-setup.exe"
 };

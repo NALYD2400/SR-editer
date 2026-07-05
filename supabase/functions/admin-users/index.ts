@@ -214,7 +214,7 @@ Deno.serve(async (request) => {
   }
   if (action === "release-upsert") {
     const version = textOf(body.version, 32); const artifactUrl = textOf(body.artifactUrl, 2048); const signature = textOf(body.signature, 8192); const published = Boolean(body.published);
-    if (!/^\d+\.\d+\.\d+$/.test(version) || !artifactUrl.startsWith("https://") || signature.length < 20) return json(origin, 400, { ok: false, error: "Release incomplète ou non signée." });
+    if (!/^\d+\.\d+\.\d+$/.test(version) || !artifactUrl.startsWith("https://") || !artifactUrl.includes("/releases/download/") || !artifactUrl.toLowerCase().endsWith(".exe") || signature.length < 20) return json(origin, 400, { ok: false, error: "Utilise le lien direct GitHub vers l'installateur .exe signé." });
     if (published) {
       try {
         const artifact = await fetch(artifactUrl, { method: "HEAD", redirect: "follow" });

@@ -25,7 +25,7 @@ Vérifier ensuite qu'au moins un profil possède `role = 'admin'` et le `user_id
 ## Publication d'une mise à jour
 
 1. Construire l'installateur signé avec `npm run tauri:build:signed`.
-2. Créer une GitHub Release publique taguée `vX.Y.Z`.
+2. Créer une GitHub Release publique taguée `X.Y.Z`.
 3. Joindre l'installateur sous le nom `SR.Editer_X.Y.Z_x64-setup.exe`.
 4. Dans la console admin, ouvrir **Releases**, coller l'URL GitHub et la signature, cocher **Publier immédiatement**, puis enregistrer.
 
