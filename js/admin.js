@@ -2,6 +2,7 @@
   const config = window.SR_CONFIG || {};
   let supabase = null;
   let usersCache = [];
+  let lastRefreshId = 0;
   const demoMode = config.demoMode === true;
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
@@ -82,7 +83,16 @@
     loginView.hidden = true;
     dashboardView.hidden = false;
     if (userLabel) userLabel.textContent = email;
+
+    // Set sidebar profile details
+    const sidebarAvatar = document.getElementById("sidebar-avatar");
+    const sidebarEmail = document.getElementById("sidebar-user-email");
+    if (sidebarAvatar) sidebarAvatar.textContent = email.slice(0, 2).toUpperCase();
+    if (sidebarEmail) sidebarEmail.textContent = email;
+
     refreshAll();
+    // Load system integrity checks in the background
+    void loadSystem();
   }
 
   async function checkSession() {
@@ -150,18 +160,20 @@
   });
 
   async function refreshUsers() {
+    const currentRefreshId = ++lastRefreshId;
     const tbody = document.getElementById("users-tbody");
     const countEl = document.getElementById("kpi-users");
     if (!tbody) return;
 
-    tbody.innerHTML = "";
     let users = [];
 
     if (supabase) {
       try {
         const result = await adminRequest("list");
+        if (currentRefreshId !== lastRefreshId) return;
         users = result.users || [];
       } catch (reason) {
+        if (currentRefreshId !== lastRefreshId) return;
         tbody.innerHTML = `<tr><td colspan="5" class="empty-state">${escapeHtml(String(reason).replace(/^Error:\s*/i, ""))}</td></tr>`;
         if (countEl) countEl.textContent = "—";
         return;
@@ -194,6 +206,9 @@
         (u.write_mode && u.write_mode.toLowerCase().includes(searchVal))
       );
     }
+
+    if (currentRefreshId !== lastRefreshId) return;
+    tbody.innerHTML = "";
 
     if (users.length === 0) {
       tbody.innerHTML =
@@ -521,18 +536,77 @@
 
   async function loadSystem() {
     const checks = document.getElementById("system-checks");
+    const diagDb = document.getElementById("diag-db");
+    const diagFunction = document.getElementById("diag-function");
+    const diagManifest = document.getElementById("diag-manifest");
+
     try {
       const started = performance.now();
       const health = await adminRequest("health");
       const manifestResponse = await fetch(`update.json?health=${Date.now()}`, { cache: "no-store" });
       const latency = Math.round(performance.now() - started);
-      document.getElementById("health-database").textContent = health.database === "online" ? "En ligne" : "Erreur";
-      document.getElementById("health-latency").textContent = `${health.latencyMs ?? latency} ms`;
-      document.getElementById("health-function").textContent = "Active";
-      if (checks) checks.innerHTML = `<article class="admin-list-item"><div><strong>Edge Function admin</strong><small>Authentification, permissions et base</small></div><span class="role-pill">OK</span></article><article class="admin-list-item"><div><strong>Manifeste de mise à jour</strong><small>HTTP ${manifestResponse.status}</small></div><span class="role-pill">${manifestResponse.ok ? "OK" : "Erreur"}</span></article>`;
+
+      // Update KPIs
+      const dbLabel = document.getElementById("health-database");
+      const latencyLabel = document.getElementById("health-latency");
+      const functionLabel = document.getElementById("health-function");
+      if (dbLabel) dbLabel.textContent = health.database === "online" ? "En ligne" : "Erreur";
+      if (latencyLabel) latencyLabel.textContent = `${health.latencyMs ?? latency} ms`;
+      if (functionLabel) functionLabel.textContent = "Active";
+
+      // Update Diagnostics in overview
+      if (diagDb) {
+        diagDb.textContent = health.database === "online" ? "CONFORME" : "ERREUR";
+        diagDb.parentElement.className = health.database === "online" ? "diagnostic-card" : "diagnostic-card error";
+      }
+      if (diagFunction) {
+        diagFunction.textContent = "CONFORME";
+        diagFunction.parentElement.className = "diagnostic-card";
+      }
+      if (diagManifest) {
+        diagManifest.textContent = manifestResponse.ok ? "CONFORME" : "ERREUR";
+        diagManifest.parentElement.className = manifestResponse.ok ? "diagnostic-card" : "diagnostic-card error";
+      }
+
+      // Update checks list in system tab
+      if (checks) {
+        checks.innerHTML = `
+          <div class="diagnostic-card" style="width: 100%; max-width: 100%;">
+            <div class="diagnostic-info">
+              <span class="diagnostic-title">Edge Function admin-users</span>
+              <span class="diagnostic-sub">Authentification, permissions et base</span>
+            </div>
+            <span class="diagnostic-status">OK</span>
+          </div>
+          <div class="diagnostic-card ${manifestResponse.ok ? "" : "error"}" style="width: 100%; max-width: 100%;">
+            <div class="diagnostic-info">
+              <span class="diagnostic-title">Manifeste de mise à jour</span>
+              <span class="diagnostic-sub">Code HTTP ${manifestResponse.status}</span>
+            </div>
+            <span class="diagnostic-status">${manifestResponse.ok ? "OK" : "Erreur"}</span>
+          </div>
+        `;
+      }
     } catch (reason) {
-      document.getElementById("health-function").textContent = "Erreur";
-      if (checks) checks.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`;
+      const functionLabel = document.getElementById("health-function");
+      if (functionLabel) functionLabel.textContent = "Erreur";
+
+      if (diagDb) {
+        diagDb.textContent = "ERREUR";
+        diagDb.parentElement.className = "diagnostic-card error";
+      }
+      if (diagFunction) {
+        diagFunction.textContent = "ERREUR";
+        diagFunction.parentElement.className = "diagnostic-card error";
+      }
+      if (diagManifest) {
+        diagManifest.textContent = "ERREUR";
+        diagManifest.parentElement.className = "diagnostic-card error";
+      }
+
+      if (checks) {
+        checks.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`;
+      }
     }
   }
 
