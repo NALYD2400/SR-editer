@@ -278,24 +278,15 @@
     if (roleSelect) roleSelect.value = user.role;
     if (modeSelect) modeSelect.value = user.write_mode;
 
-    // Checkboxes permissions matrix
-    const permWrite = document.getElementById("perm-write");
-    const permAi = document.getElementById("perm-ai");
-    const permAdmin = document.getElementById("perm-admin");
+    const permissionInputs = [...document.querySelectorAll("[data-app-permission]")];
+    const storedPermissions = user.app_permissions || {};
+    permissionInputs.forEach((input) => {
+      input.checked = storedPermissions[input.dataset.appPermission] !== false;
+    });
 
-    const updateCheckboxes = (role) => {
-      if (permWrite) permWrite.checked = role !== "suspendu";
-      if (permAi) permAi.checked = role === "admin" || role === "moderateur";
-      if (permAdmin) permAdmin.checked = role === "admin";
-    };
-
-    updateCheckboxes(user.role);
-
-    if (roleSelect) {
-      roleSelect.onchange = (e) => {
-        updateCheckboxes(e.target.value);
-      };
-    }
+    const readAppPermissions = () => Object.fromEntries(
+      permissionInputs.map((input) => [input.dataset.appPermission, input.checked])
+    );
 
     // Profile facts only: never fabricate user activity in a production console.
     const detailLogs = document.getElementById("detail-logs");
@@ -326,7 +317,7 @@
 
         try {
           if (supabase) {
-            await adminRequest("update", { email, role: rVal, writeMode: mVal });
+            await adminRequest("update", { email, role: rVal, writeMode: mVal, appPermissions: readAppPermissions() });
           } else if (demoMode) {
             const mockStorage = sessionStorage.getItem("sr_mock_profiles");
             const mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
@@ -350,7 +341,6 @@
       suspendBtn.onclick = () => {
         if (roleSelect) {
           roleSelect.value = "suspendu";
-          updateCheckboxes("suspendu");
           saveBtn?.click();
         }
       };

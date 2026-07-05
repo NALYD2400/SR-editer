@@ -13,6 +13,12 @@ const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
 const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team"];
+const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "ai", "settings"];
+
+function appPermissionsOf(value: unknown) {
+  const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
+  return Object.fromEntries(appPermissionKeys.map((key) => [key, requested[key] !== false]));
+}
 
 function headers(origin: string | null): HeadersInit {
   return {
@@ -71,7 +77,7 @@ Deno.serve(async (request) => {
   if (userError || !caller?.id || !caller.email) return json(origin, 401, { ok: false, error: "Session invalide." });
 
   const { data: callerProfile } = await admin.from("profiles")
-    .select("user_id,email,role,write_mode,created_at").eq("user_id", caller.id).maybeSingle();
+    .select("user_id,email,role,write_mode,app_permissions,created_at").eq("user_id", caller.id).maybeSingle();
   const { data: access } = await admin.from("superadmin_access")
     .select("level,permissions").eq("user_id", caller.id).maybeSingle();
   if (callerProfile?.role !== "admin" && !access) return json(origin, 403, { ok: false, error: "Accès administrateur requis." });
@@ -126,7 +132,7 @@ Deno.serve(async (request) => {
     const allUsers = await listAuthUsers();
     const users = allUsers.filter((u) => !u.deleted_at);
     const [{ data: profiles, error }, { data: licenses }] = await Promise.all([
-      admin.from("profiles").select("user_id,email,role,write_mode,created_at").order("created_at", { ascending: false }).limit(1000),
+      admin.from("profiles").select("user_id,email,role,write_mode,app_permissions,created_at").order("created_at", { ascending: false }).limit(1000),
       admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at")
     ]);
     if (error) return json(origin, 500, { ok: false, error: error.message });
@@ -138,6 +144,7 @@ Deno.serve(async (request) => {
         user_id: user.id, email: user.email ?? profile?.email ?? "", created_at: profile?.created_at ?? user.created_at,
         last_sign_in_at: user.last_sign_in_at, confirmed: Boolean(user.email_confirmed_at), banned_until: user.banned_until,
         role: profile?.role ?? "membre", write_mode: profile?.write_mode ?? "direct",
+        app_permissions: appPermissionsOf(profile?.app_permissions),
         plan: license?.plan ?? "free", license_status: license?.status ?? "active", device_limit: license?.device_limit ?? 1,
         expires_at: license?.expires_at ?? null
       };
@@ -257,11 +264,12 @@ Deno.serve(async (request) => {
   const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
   if (action === "create") {
     const password = typeof body.password === "string" ? body.password : ""; const role = textOf(body.role, 16) || "membre"; const writeMode = textOf(body.writeMode, 16) || "direct";
+    const appPermissions = appPermissionsOf(body.appPermissions);
     if (password.length < 10) return json(origin, 400, { ok: false, error: "Le mot de passe doit contenir au moins 10 caractères." });
     if (!validRoles.has(role) || !validWriteModes.has(writeMode) || !targetEmail || target) return json(origin, 400, { ok: false, error: "Compte, rôle ou mode invalide." });
     const { data, error } = await admin.auth.admin.createUser({ email: targetEmail, password, email_confirm: true });
     if (error || !data.user) return json(origin, 400, { ok: false, error: error?.message ?? "Création impossible." });
-    const { error: profileError } = await admin.from("profiles").upsert({ user_id: data.user.id, email: targetEmail, role, write_mode: writeMode }, { onConflict: "user_id" });
+    const { error: profileError } = await admin.from("profiles").upsert({ user_id: data.user.id, email: targetEmail, role, write_mode: writeMode, app_permissions: appPermissions }, { onConflict: "user_id" });
     if (profileError) { await admin.auth.admin.deleteUser(data.user.id); return json(origin, 500, { ok: false, error: profileError.message }); }
     await audit("user.create", "user", data.user.id, { email: targetEmail, role });
     return json(origin, 200, { ok: true });
@@ -271,10 +279,11 @@ Deno.serve(async (request) => {
   const { count: adminCount } = await admin.from("profiles").select("user_id", { count: "exact", head: true }).eq("role", "admin");
   if (action === "update") {
     const role = textOf(body.role, 16); const writeMode = textOf(body.writeMode, 16);
+    const appPermissions = appPermissionsOf(body.appPermissions);
     if (!validRoles.has(role) || !validWriteModes.has(writeMode)) return json(origin, 400, { ok: false, error: "Rôle ou mode invalide." });
     if (targetProfile?.role === "admin" && role !== "admin" && (adminCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de retirer le dernier administrateur." });
-    const { error } = await admin.from("profiles").upsert({ user_id: target.id, email: targetEmail, role, write_mode: writeMode }, { onConflict: "user_id" });
-    if (!error) await audit("user.update", "user", target.id, { role, writeMode });
+    const { error } = await admin.from("profiles").upsert({ user_id: target.id, email: targetEmail, role, write_mode: writeMode, app_permissions: appPermissions }, { onConflict: "user_id" });
+    if (!error) await audit("user.update", "user", target.id, { role, writeMode, appPermissions });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "ban" || action === "unban") {

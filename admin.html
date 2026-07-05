@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.2"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.2" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.2" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.3.2-superadmin" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.3.2-page-access" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -440,41 +440,18 @@
 
               <!-- Permissions Card -->
               <div class="glass-card panel-card" style="padding: 30px;">
-                <div class="panel-card-header" style="margin-bottom: 20px;">
-                  <h3>Droits &amp; Permissions</h3>
+                <div class="panel-card-header" style="margin-bottom: 12px;">
+                  <h3>Accès aux pages de l’app</h3>
                 </div>
-                <div style="display: flex; flex-direction: column; gap: 16px;">
-                  <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px;">
-                    <input type="checkbox" id="perm-read" checked disabled style="width: 18px; height: 18px; border-radius: 4px; margin-top: 2px;" />
-                    <div>
-                      <strong style="color: #fff;">Lecture RPF</strong>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Accès en lecture seule aux textures et modèles GTA.</div>
-                    </div>
-                  </label>
-                  
-                  <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px;">
-                    <input type="checkbox" id="perm-write" style="width: 18px; height: 18px; border-radius: 4px; margin-top: 2px;" />
-                    <div>
-                      <strong style="color: #fff;">Modification &amp; Export</strong>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Droit d'écrire des fichiers modifiés et de les exporter.</div>
-                    </div>
-                  </label>
-
-                  <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px;">
-                    <input type="checkbox" id="perm-ai" style="width: 18px; height: 18px; border-radius: 4px; margin-top: 2px;" />
-                    <div>
-                      <strong style="color: #fff;">Outils IA</strong>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Accès aux fonctionnalités de retouche IA (Gemini/OpenAI).</div>
-                    </div>
-                  </label>
-
-                  <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer; font-size: 13.5px;">
-                    <input type="checkbox" id="perm-admin" style="width: 18px; height: 18px; border-radius: 4px; margin-top: 2px;" />
-                    <div>
-                      <strong style="color: #fff;">Console Admin</strong>
-                      <div style="font-size: 11px; color: var(--text-secondary); margin-top: 2px;">Autorise l'accès à ce tableau de bord d'administration.</div>
-                    </div>
-                  </label>
+                <p style="margin: 0 0 18px; color: var(--text-secondary); font-size: 12px;">Décoche une zone pour la masquer et en bloquer l’accès.</p>
+                <div id="app-permissions-grid" style="display: flex; flex-direction: column; gap: 16px;">
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="project" /><div><strong>Projet</strong><small>Vue d’ensemble et gestion du projet.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="explorer" /><div><strong>Explorateur GTA</strong><small>Navigation dans les fichiers GTA et RPF.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="assets" /><div><strong>Assets</strong><small>Liste et consultation des ressources.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="materials" /><div><strong>Matériaux</strong><small>Inspection et modification des matériaux.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="textures" /><div><strong>Texture Studio</strong><small>Édition et export des textures.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="ai" /><div><strong>Outils IA</strong><small>Fonctionnalités de retouche assistée par IA.</small></div></label>
+                  <label class="app-permission-row"><input type="checkbox" data-app-permission="settings" /><div><strong>Réglages</strong><small>Configuration, documentation et support.</small></div></label>
                 </div>
               </div>
 
@@ -729,7 +706,7 @@
 
     <script src="js/wallpapers.js?v=0.3.2"></script>
     <script src="js/config.js?v=0.3.2"></script>
-    <script src="js/admin.js?v=0.3.2-superadmin"></script>
+    <script src="js/admin.js?v=0.3.2-page-access"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));

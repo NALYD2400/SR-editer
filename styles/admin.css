@@ -934,3 +934,32 @@ body {
 .chat-bubble.admin .chat-bubble-time {
   text-align: right;
 }
+.app-permission-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  font-size: 13.5px;
+}
+
+.app-permission-row input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--accent);
+}
+
+.app-permission-row strong,
+.app-permission-row small {
+  display: block;
+}
+
+.app-permission-row strong {
+  color: var(--text-primary);
+}
+
+.app-permission-row small {
+  margin-top: 2px;
+  color: var(--text-secondary);
+  font-size: 11px;
+}

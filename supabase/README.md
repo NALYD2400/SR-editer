@@ -32,3 +32,6 @@ Vérifier ensuite qu'au moins un profil possède `role = 'admin'` et le `user_id
 La fonction `app-update` expose alors le manifeste public. Vercel redirige `/update.json` vers cette fonction : le site client et l'application installée utilisent donc exactement la même release.
 
 La création de comptes est protégée par `admin-users`. Elle utilise un `upsert` sur `profiles.user_id`, ce qui reste compatible avec un trigger Supabase qui crée déjà automatiquement le profil.
+# Accès aux pages de l’application
+
+La migration `migrations/20260705_app_page_permissions.sql` ajoute la matrice `app_permissions` aux profils. Après modification depuis la fiche utilisateur de la console admin, redéploie la fonction `admin-users` si son code a changé.
