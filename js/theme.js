@@ -1,24 +1,36 @@
 (function initThemeEarly() {
-  // Always force dark theme for gaming/studio immersion
-  document.documentElement.dataset.theme = "dark";
-  localStorage.setItem("sr_theme", "dark");
+  const savedTheme = localStorage.getItem("sr_theme");
+  const theme = savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+  document.documentElement.dataset.theme = theme;
 })();
+
+function applyTheme(theme) {
+  const nextTheme = theme === "light" ? "light" : "dark";
+  document.documentElement.dataset.theme = nextTheme;
+  localStorage.setItem("sr_theme", nextTheme);
+  document.querySelectorAll("[data-theme-toggle-bound]").forEach((button) => {
+    button.setAttribute("aria-pressed", String(nextTheme === "light"));
+    button.setAttribute("title", nextTheme === "dark" ? "Activer le thème clair" : "Activer le thème sombre");
+  });
+  window.dispatchEvent(new CustomEvent("sr-theme-change", { detail: { theme: nextTheme } }));
+  return nextTheme;
+}
 
 window.SRTheme = {
   get() {
-    return "dark";
+    return document.documentElement.dataset.theme === "light" ? "light" : "dark";
   },
-  set() {
-    document.documentElement.dataset.theme = "dark";
-    localStorage.setItem("sr_theme", "dark");
-    return "dark";
+  set(theme) {
+    return applyTheme(theme);
   },
   toggle() {
-    return "dark";
+    return applyTheme(this.get() === "dark" ? "light" : "dark");
   },
   bindToggle(button) {
-    if (button) {
-      button.style.display = "none";
-    }
+    if (!button || button.dataset.themeToggleBound) return;
+    button.dataset.themeToggleBound = "true";
+    button.setAttribute("aria-pressed", String(this.get() === "light"));
+    button.setAttribute("title", this.get() === "dark" ? "Activer le thème clair" : "Activer le thème sombre");
+    button.addEventListener("click", () => this.toggle());
   }
 };

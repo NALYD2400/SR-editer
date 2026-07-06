@@ -6,6 +6,10 @@
   let activeTicketId = null;
   let activeTicketSubscription = null;
   const demoMode = config.demoMode === true;
+  let localPreview = false;
+  let currentTickets = [];
+  let ticketFilter = "all";
+  let ticketSearch = "";
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
     supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
@@ -35,6 +39,28 @@
     team: "Équipe superadmin"
   };
 
+  const panelDescriptions = {
+    overview: "Surveillez l’activité, l’infrastructure et les accès depuis un seul endroit.",
+    users: "Créez les comptes et contrôlez précisément leurs droits dans l’application.",
+    "user-detail": "Gérez le rôle, l’accès et les appareils associés à ce membre.",
+    licenses: "Pilotez les offres, les statuts et les quotas d’appareils.",
+    support: "Traitez les demandes et échangez directement avec vos utilisateurs.",
+    contacts: "Centralisez et qualifiez les messages reçus depuis le site public.",
+    releases: "Préparez, signez et publiez les nouvelles versions de SR Editer.",
+    audit: "Consultez la trace immuable des actions sensibles de la console.",
+    system: "Contrôlez en temps réel la disponibilité des services critiques.",
+    team: "Déléguez la console avec des permissions adaptées à chaque administrateur."
+  };
+
+  panels.forEach((panel) => {
+    const panelId = panel.id.replace(/^panel-/, "");
+    const title = panelTitles[panelId] || (panelId === "user-detail" ? "Fiche membre" : "Console");
+    const intro = document.createElement("header");
+    intro.className = "page-intro";
+    intro.innerHTML = `<div><span class="page-eyebrow">SR Editer / Console</span><h1>${escapeHtml(title)}</h1><p>${escapeHtml(panelDescriptions[panelId] || "Administration SR Editer.")}</p></div><span class="page-status"><i></i> Production</span>`;
+    panel.prepend(intro);
+  });
+
   function showLogin() {
     loginView.hidden = false;
     dashboardView.hidden = true;
@@ -47,6 +73,142 @@
   }
 
   async function adminRequest(action, payload = {}) {
+    if (localPreview || demoMode || !supabase) {
+      console.log(`[Preview Mock API] Action: ${action}`, payload);
+      
+      if (action === "me") {
+        return {
+          ok: true,
+          profile: { role: "owner", write_mode: "direct", email: "preview-local@sr-editer" },
+          level: "owner",
+          permissions: { console: true, users: true, licenses: true, support: true, contacts: true, releases: true, audit: true, system: true, team: true }
+        };
+      }
+      
+      if (action === "health") {
+        return { ok: true, database: "online", latencyMs: 14 };
+      }
+      
+      if (action === "dashboard") {
+        return {
+          ok: true,
+          metrics: {
+            users: 142,
+            activeLicenses: 88,
+            openTickets: 3,
+            urgentTickets: 1,
+            newContacts: 2,
+            banned: 4
+          },
+          recentAudit: [
+            { actor_email: "d.robert.2400@gmail.com", action: "user.update", target_type: "user", created_at: new Date().toISOString() },
+            { actor_email: "d.robert.2400@gmail.com", action: "team.upsert", target_type: "user", created_at: new Date(Date.now() - 3600000).toISOString() },
+            { actor_email: "system", action: "app.boot", target_type: "system", created_at: new Date(Date.now() - 86400000).toISOString() }
+          ]
+        };
+      }
+      
+      if (action === "list") {
+        return {
+          ok: true,
+          users: [
+            { user_id: "u1", email: "d.robert.2400@gmail.com", role: "owner", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*10).toISOString(), plan: "lifetime", license_status: "active", device_limit: 5, expires_at: null },
+            { user_id: "u2", email: "moderateur@sr-editer.fr", role: "moderateur", write_mode: "draft", confirmed: true, created_at: new Date(Date.now() - 86400000*5).toISOString(), plan: "pro", license_status: "active", device_limit: 2, expires_at: new Date(Date.now() + 86400000*30).toISOString() },
+            { user_id: "u3", email: "testeur@sr-editer.fr", role: "membre", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*2).toISOString(), plan: "free", license_status: "active", device_limit: 1, expires_at: null },
+            { user_id: "u4", email: "banni@gta5-studio.com", role: "membre", write_mode: "direct", confirmed: false, created_at: new Date().toISOString(), banned_until: new Date(Date.now() + 86400000*365).toISOString(), plan: "free", license_status: "suspended", device_limit: 1 }
+          ]
+        };
+      }
+      
+      if (action === "license-list") {
+        return {
+          ok: true,
+          rows: [
+            { email: "d.robert.2400@gmail.com", plan: "lifetime", status: "active", device_limit: 5, expires_at: null },
+            { email: "moderateur@sr-editer.fr", plan: "pro", status: "active", device_limit: 2, expires_at: new Date(Date.now() + 86400000*30).toISOString() }
+          ]
+        };
+      }
+      
+      if (action === "support-list") {
+        return {
+          ok: true,
+          rows: [
+            {
+              id: "t1",
+              subject: "Bug de texture sur YFT",
+              status: "open",
+              priority: "high",
+              email: "testeur@sr-editer.fr",
+              support_messages: [
+                { id: "m1", author_kind: "user", content: "Bonjour, j'ai une texture qui s'affiche en noir sur mon modèle YFT.", created_at: new Date(Date.now() - 1800000).toISOString() }
+              ]
+            },
+            {
+              id: "t2",
+              subject: "Besoin de réinitialiser mes PC",
+              status: "pending",
+              priority: "normal",
+              email: "moderateur@sr-editer.fr",
+              support_messages: [
+                { id: "m2", author_kind: "user", content: "Bonjour, j'ai changé d'ordinateur. Pouvez-vous réinitialiser ma limite d'appareils ?", created_at: new Date(Date.now() - 7200000).toISOString() },
+                { id: "m3", author_kind: "admin", content: "Bonjour, c'est fait. Vous pouvez vous reconnecter !", created_at: new Date(Date.now() - 3600000).toISOString() }
+              ]
+            }
+          ]
+        };
+      }
+      
+      if (action === "contact-list") {
+        return {
+          ok: true,
+          rows: [
+            { id: "c1", subject: "Question pré-vente", name: "Marc", email: "marc@outlook.com", message: "Bonjour, la licence Studio permet-elle d'exporter en DDS ?", status: "new", created_at: new Date(Date.now() - 7200000).toISOString() }
+          ]
+        };
+      }
+      
+      if (action === "release-list") {
+        return {
+          ok: true,
+          rows: [
+            { version: "0.3.2", published: true, notes: "Correctif sur les shaders de matériaux GTA V.", artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.3.2/SR.Editer_0.3.2_x64-setup.exe", updated_at: new Date(Date.now() - 86400000*3).toISOString() }
+          ]
+        };
+      }
+      
+      if (action === "audit-list") {
+        return {
+          ok: true,
+          rows: [
+            { created_at: new Date().toISOString(), actor_email: "preview-local@sr-editer", action: "user.update", target_type: "user", target_id: "u2" },
+            { created_at: new Date(Date.now() - 3600000).toISOString(), actor_email: "preview-local@sr-editer", action: "team.upsert", target_type: "user", target_id: "u1" },
+            { created_at: new Date(Date.now() - 86400000).toISOString(), actor_email: "system", action: "app.boot", target_type: "system", target_id: null }
+          ]
+        };
+      }
+      
+      if (action === "team-list") {
+        return {
+          ok: true,
+          rows: [
+            { email: "d.robert.2400@gmail.com", level: "owner", permissions: { console: true, users: true, licenses: true, support: true, contacts: true, releases: true, audit: true, system: true, team: true } }
+          ]
+        };
+      }
+      
+      if (action === "devices-list") {
+        return {
+          ok: true,
+          rows: [
+            { id: "d1", device_name: "Desktop-DYLAN", app_version: "0.3.2", last_seen_at: new Date().toISOString(), revoked: false }
+          ]
+        };
+      }
+      
+      return { ok: true };
+    }
+
     if (!supabase) throw new Error("Supabase n'est pas configuré.");
     const functionName = config.adminFunctionName || "admin-users";
     const { data, error } = await supabase.functions.invoke(functionName, {
@@ -240,8 +402,8 @@
         <td>${escapeHtml(user.write_mode || "direct")}</td>
         <td><span class="role-pill ${user.role || "membre"}">${escapeHtml(user.role || "membre")}</span></td>
         <td style="text-align: right;">
-          <button type="button" class="btn btn-ghost btn-sm view-user-btn" style="padding: 4px 10px; margin-right: 6px; border: 1px solid rgba(255,255,255,0.06); font-weight:600;">Consulter</button>
-          <button type="button" class="btn btn-ghost btn-sm delete-user-btn" style="padding: 4px 10px; color: #ff4a5a; border: 1px solid rgba(255,74,90,0.15);">Supprimer</button>
+          <button type="button" class="btn-action-view view-user-btn">Consulter</button>
+          <button type="button" class="btn-action-delete delete-user-btn">Supprimer</button>
         </td>
       `;
       tr.querySelector(".view-user-btn")?.addEventListener("click", () => window.viewUserDetail(user.email));
@@ -289,20 +451,56 @@
     );
 
     // Profile facts only: never fabricate user activity in a production console.
+    // Profile facts and dynamic audit logs display
     const detailLogs = document.getElementById("detail-logs");
     if (detailLogs) {
       const createdAt = user.created_at ? new Date(user.created_at).toLocaleString("fr-FR") : "Date inconnue";
-      const activities = [
-        { time: "Profil", description: `Créé le ${createdAt}` },
-        { time: "Rôle", description: user.role || "membre" },
-        { time: "Mode", description: user.write_mode === "direct" ? "Production" : "Brouillon" }
-      ];
-      if (user.role === "suspendu") {
-        activities.push({ time: "Accès", description: "Compte suspendu" });
-      }
-      detailLogs.innerHTML = activities.map((activity) => {
-        return `<div class="log-line"><span class="t">${escapeHtml(activity.time)}</span> ${escapeHtml(activity.description)}</div>`;
-      }).join("");
+      detailLogs.innerHTML = `
+        <div class="log-line"><span class="t">[System]</span> Initialisation du profil de ${escapeHtml(email)}...</div>
+        <div class="log-line"><span class="t">[Profil]</span> Créé le ${createdAt}</div>
+        <div class="log-line"><span class="t">[Rôle]</span> ${escapeHtml(user.role || "membre")}</div>
+        <div class="log-line"><span class="t">[Mode]</span> ${escapeHtml(user.write_mode === "direct" ? "Production" : "Brouillon")}</div>
+        <div class="log-line"><span class="t">[System]</span> Chargement du journal d'activité...</div>
+      `;
+
+      void (async () => {
+        try {
+          const auditData = await adminRequest("audit-list");
+          const userLogs = (auditData.rows || []).filter(row => 
+            (row.actor_email && row.actor_email.toLowerCase() === email.toLowerCase()) ||
+            (row.target_id === user.user_id) ||
+            (row.metadata && row.metadata.email && row.metadata.email.toLowerCase() === email.toLowerCase())
+          );
+          
+          // Clear loading line
+          detailLogs.innerHTML = `
+            <div class="log-line"><span class="t">[System]</span> Profil de ${escapeHtml(email)} chargé.</div>
+            <div class="log-line"><span class="t">[Profil]</span> Créé le ${createdAt}</div>
+            <div class="log-line"><span class="t">[Rôle]</span> ${escapeHtml(user.role || "membre")}</div>
+            <div class="log-line"><span class="t">[Mode]</span> ${escapeHtml(user.write_mode === "direct" ? "Production" : "Brouillon")}</div>
+          `;
+
+          if (userLogs.length > 0) {
+            userLogs.forEach(row => {
+              const time = new Date(row.created_at).toLocaleString("fr-FR");
+              const line = document.createElement("div");
+              line.className = "log-line";
+              line.innerHTML = `<span class="t">[${time}]</span> <span class="action-highlight">${escapeHtml(row.action)}</span> sur ${escapeHtml(row.target_type)} ${row.target_id ? `(cible: ${escapeHtml(row.target_id.slice(0, 8))})` : ''}`;
+              detailLogs.appendChild(line);
+            });
+          } else {
+            const line = document.createElement("div");
+            line.className = "log-line info";
+            line.innerHTML = `<span class="t">[Info]</span> Aucun événement d'audit enregistré pour ce membre.`;
+            detailLogs.appendChild(line);
+          }
+        } catch (err) {
+          const line = document.createElement("div");
+          line.className = "log-line error";
+          line.innerHTML = `<span class="t">[Erreur]</span> Impossible de charger les logs d'activité : ${escapeHtml(err.message)}`;
+          detailLogs.appendChild(line);
+        }
+      })();
     }
 
     // Buttons actions
@@ -357,13 +555,29 @@
         addLog("s", `Lien de récupération généré pour ${email}.`);
       } catch (reason) { addLog("e", String(reason)); }
     };
-    document.getElementById("confirm-email-btn").onclick = async () => {
+    const confirmEmailBtn = document.getElementById("confirm-email-btn");
+    confirmEmailBtn.disabled = Boolean(user.confirmed);
+    confirmEmailBtn.textContent = user.confirmed ? "E-mail confirmé" : "Confirmer l'e-mail";
+    confirmEmailBtn.onclick = async () => {
       try { await adminRequest("confirm-email", { email }); addLog("s", `Email confirmé : ${email}`); await refreshUsers(); }
       catch (reason) { addLog("e", String(reason)); }
     };
-    document.getElementById("toggle-ban-btn").onclick = async () => {
-      const banned = user.banned_until && new Date(user.banned_until) > new Date();
-      try { await adminRequest(banned ? "unban" : "ban", { email }); addLog("s", `${banned ? "Débanni" : "Banni"} : ${email}`); await refreshUsers(); }
+    const toggleBanBtn = document.getElementById("toggle-ban-btn");
+    let banned = Boolean(user.banned_until && new Date(user.banned_until) > new Date());
+    const syncBanButton = () => {
+      toggleBanBtn.textContent = banned ? "Débannir le compte" : "Bannir le compte";
+      toggleBanBtn.classList.toggle("is-danger", !banned);
+    };
+    syncBanButton();
+    toggleBanBtn.onclick = async () => {
+      const nextAction = banned ? "unban" : "ban";
+      try {
+        await adminRequest(nextAction, { email });
+        banned = !banned;
+        syncBanButton();
+        addLog("s", `${banned ? "Banni" : "Débanni"} : ${email}`);
+        await refreshUsers();
+      }
       catch (reason) { addLog("e", String(reason)); }
     };
     document.getElementById("show-devices-btn").onclick = async () => {
@@ -462,8 +676,46 @@
       if (hint) hint.textContent = `${metrics.urgentTickets || 0} urgent(s)`;
       const audit = document.getElementById("dashboard-audit");
       if (audit) {
+        const formatAction = (row) => {
+          const act = row.action || "";
+          let label = act;
+          let letter = "A";
+          let cls = "audit";
+          if (act.startsWith("user.")) {
+            letter = "U"; cls = "user";
+            if (act === "user.create") label = "Création de membre";
+            else if (act === "user.delete") label = "Suppression de membre";
+            else if (act === "user.update") label = "Mise à jour membre";
+            else if (act === "user.ban") label = "Bannissement membre";
+          } else if (act.startsWith("license.")) {
+            letter = "L"; cls = "license";
+            if (act === "license.upsert") label = "Attribution licence";
+          } else if (act.startsWith("support.")) {
+            letter = "S"; cls = "support";
+            if (act === "support.reply") label = "Réponse ticket";
+            else if (act === "support.close") label = "Clôture ticket";
+            else if (act === "support.update") label = "Mise à jour ticket";
+          } else if (act.startsWith("release.")) {
+            letter = "R"; cls = "release";
+            if (act === "release.upsert") label = "Publication mise à jour";
+          }
+          return { label, letter, cls };
+        };
+
         audit.innerHTML = (data.recentAudit || []).length
-          ? data.recentAudit.map((row) => `<div class="activity-item"><span class="activity-dot success"></span><div><p>${escapeHtml(row.action)} · ${escapeHtml(row.target_type)}</p><time>${escapeHtml(row.actor_email || "système")} · ${formatDate(row.created_at)}</time></div></div>`).join("")
+          ? data.recentAudit.map((row) => {
+              const details = formatAction(row);
+              return `
+                <div class="activity-feed-row">
+                  <div class="feed-icon-circle ${details.cls}">${details.letter}</div>
+                  <div class="feed-body">
+                    <span class="feed-action-text">${escapeHtml(details.label)}</span>
+                    <span class="feed-actor-email">${escapeHtml(row.actor_email || "système")}</span>
+                  </div>
+                  <div class="feed-time">${formatDate(row.created_at)}</div>
+                </div>
+              `;
+            }).join("")
           : '<div class="empty-state">Aucune action enregistrée.</div>';
       }
     } catch (reason) {
@@ -513,7 +765,7 @@
     bubble.className = `chat-bubble ${isUser ? "user" : "admin"}`;
     bubble.setAttribute("data-message-id", message.id);
     bubble.innerHTML = `
-      <p style="margin: 0; white-space: pre-wrap; font-family: inherit;">${escapeHtml(message.content)}</p>
+      <p class="chat-bubble-content">${escapeHtml(message.content)}</p>
       <span class="chat-bubble-time">${formatTime(message.created_at)}</span>
     `;
     chatMessages.appendChild(bubble);
@@ -535,18 +787,33 @@
       activeTicketSubscription = null;
     }
 
-    document.getElementById("support-chat-subject").textContent = ticket.subject;
-    document.getElementById("support-chat-meta").textContent = `${ticket.email} · ${ticket.priority.toUpperCase()} · ${ticket.status.toUpperCase()}`;
+    const emptyState = document.getElementById("chat-empty-state");
+    const viewport = document.getElementById("chat-viewport");
+    if (emptyState) emptyState.style.display = "none";
+    if (viewport) viewport.style.display = "flex";
+
+    const subjectEl = document.getElementById("support-chat-subject");
+    const metaEl = document.getElementById("support-chat-meta");
+    const avatarEl = document.getElementById("support-avatar");
+    const statusPill = document.getElementById("support-status-pill");
+
+    if (subjectEl) subjectEl.textContent = ticket.subject;
+    if (metaEl) metaEl.textContent = ticket.email;
+    if (avatarEl) avatarEl.textContent = ticket.email.charAt(0).toUpperCase();
+    if (statusPill) {
+      statusPill.textContent = ticket.status === "open" ? "Ouvert" : ticket.status === "pending" ? "Réponse" : "Clos";
+      statusPill.className = `role-pill ${ticket.status} ticket-status-pill`;
+    }
     
     const actionsContainer = document.getElementById("support-chat-actions");
     const chatForm = document.getElementById("support-chat-form");
     
     if (ticket.status !== "closed") {
-      actionsContainer.style.display = "flex";
-      chatForm.style.display = "flex";
+      if (actionsContainer) actionsContainer.style.display = "flex";
+      if (chatForm) chatForm.style.display = "flex";
     } else {
-      actionsContainer.style.display = "none";
-      chatForm.style.display = "none";
+      if (actionsContainer) actionsContainer.style.display = "none";
+      if (chatForm) chatForm.style.display = "none";
     }
 
     const chatMessages = document.getElementById("support-chat-messages");
@@ -584,14 +851,72 @@
           },
           (payload) => {
             const updated = payload.new;
-            document.getElementById("support-chat-meta").textContent = `${updated.email} · ${updated.priority.toUpperCase()} · ${updated.status.toUpperCase()}`;
+            const metaEl = document.getElementById("support-chat-meta");
+            const statusPill = document.getElementById("support-status-pill");
+            if (metaEl) metaEl.textContent = updated.email;
+            if (statusPill) {
+              statusPill.textContent = updated.status === "open" ? "Ouvert" : updated.status === "pending" ? "Réponse" : "Clos";
+              statusPill.className = `role-pill ${updated.status} ticket-status-pill`;
+            }
             if (updated.status === "closed") {
-              actionsContainer.style.display = "none";
-              chatForm.style.display = "none";
+              if (actionsContainer) actionsContainer.style.display = "none";
+              if (chatForm) chatForm.style.display = "none";
             }
           }
         )
         .subscribe();
+    }
+  }
+
+  function renderTickets() {
+    const list = document.getElementById("support-list");
+    if (!list) return;
+    
+    let filtered = currentTickets;
+    
+    // Filter by status
+    if (ticketFilter === "open") {
+      filtered = filtered.filter(t => t.status === "open" || t.status === "pending");
+    } else if (ticketFilter === "closed") {
+      filtered = filtered.filter(t => t.status === "closed" || t.status === "clos");
+    }
+    
+    // Filter by search query
+    if (ticketSearch) {
+      filtered = filtered.filter(t => 
+        t.email.toLowerCase().includes(ticketSearch) || 
+        t.subject.toLowerCase().includes(ticketSearch)
+      );
+    }
+    
+    list.innerHTML = filtered.length ? filtered.map((row) => {
+      const lastMsg = row.support_messages?.at(-1)?.content || "Aucun message";
+      const isActive = row.id === activeTicketId;
+      return `
+        <button type="button" class="ticket-list-item ${isActive ? 'is-active' : ''}" data-ticket-id="${escapeHtml(row.id)}">
+          <div class="ticket-header">
+            <strong class="ticket-subject">${escapeHtml(row.subject)}</strong>
+            <span class="role-pill ${row.status} ticket-status-pill">${escapeHtml(row.status === 'open' ? 'Ouvert' : row.status === 'pending' ? 'Réponse' : 'Clos')}</span>
+          </div>
+          <span class="ticket-email">${escapeHtml(row.email)}</span>
+          <p class="ticket-preview">${escapeHtml(lastMsg)}</p>
+        </button>
+      `;
+    }).join("") : '<div class="empty-state">Aucun ticket correspondant.</div>';
+
+    // Rebind click events
+    list.querySelectorAll("[data-ticket-id]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        list.querySelectorAll(".ticket-list-item").forEach((other) => other.classList.remove("is-active"));
+        btn.classList.add("is-active");
+        const ticket = currentTickets.find((row) => row.id === btn.dataset.ticketId);
+        if (ticket) selectTicket(ticket);
+      });
+    });
+    
+    if (activeTicketId) {
+      const activeBtn = list.querySelector(`[data-ticket-id="${activeTicketId}"]`);
+      if (activeBtn) activeBtn.classList.add("is-active");
     }
   }
 
@@ -601,34 +926,8 @@
     list.innerHTML = '<div class="empty-state">Chargement…</div>';
     try {
       const data = await adminRequest("support-list");
-      list.innerHTML = data.rows.length ? data.rows.map((row) => {
-        const lastMsg = row.support_messages?.at(-1)?.content || "Aucun message";
-        const isActive = row.id === activeTicketId;
-        return `
-          <button type="button" class="sidebar-link ${isActive ? 'is-active' : ''}" data-ticket-id="${escapeHtml(row.id)}" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px 12px; text-align: left; width: 100%;">
-            <div style="display: flex; width: 100%; justify-content: space-between; align-items: center;">
-              <strong style="color: var(--text-primary); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 180px;">${escapeHtml(row.subject)}</strong>
-              <span class="role-pill ${row.status}" style="font-size: 8px; padding: 1px 4px;">${escapeHtml(row.status === 'open' ? 'Ouvert' : row.status === 'pending' ? 'Réponse' : 'Clos')}</span>
-            </div>
-            <span style="font-size: 9.5px; color: var(--text-secondary);">${escapeHtml(row.email)}</span>
-            <p style="margin: 2px 0 0 0; font-size: 10px; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; width: 100%;">${escapeHtml(lastMsg)}</p>
-          </button>
-        `;
-      }).join("") : '<div class="empty-state">Aucun ticket.</div>';
-
-      list.querySelectorAll("[data-ticket-id]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          list.querySelectorAll(".sidebar-link").forEach((other) => other.classList.remove("is-active"));
-          btn.classList.add("is-active");
-          const ticket = data.rows.find((row) => row.id === btn.dataset.ticketId);
-          if (ticket) selectTicket(ticket);
-        });
-      });
-
-      if (activeTicketId) {
-        const activeBtn = list.querySelector(`[data-ticket-id="${activeTicketId}"]`);
-        if (activeBtn) activeBtn.classList.add("is-active");
-      }
+      currentTickets = data.rows || [];
+      renderTickets();
     } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
   }
 
@@ -932,9 +1231,55 @@
     bg.style.backgroundImage = `url("${window.wallpaperUrl(window.SR_WALLPAPERS[12])}")`;
   }
 
-  const localPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+  localPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
     && new URLSearchParams(window.location.search).get("preview") === "1";
   if (localPreview) showDashboard("preview-local@sr-editer");
   else checkSession();
+
+  // Vercel-style sidebar filter search & shortcut
+  const sidebarFilter = document.getElementById("sidebar-filter-input");
+  if (sidebarFilter) {
+    sidebarFilter.addEventListener("input", (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      document.querySelectorAll(".vercel-vertical-links .sidebar-link").forEach((link) => {
+        const text = link.querySelector(".nav-title").textContent.toLowerCase();
+        if (text.includes(query)) {
+          link.style.display = "flex";
+        } else {
+          link.style.display = "none";
+        }
+      });
+    });
+
+    document.addEventListener("keydown", (e) => {
+      const activeElement = document.activeElement;
+      const isInput = activeElement && (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA" || activeElement.isContentEditable);
+      if (!isInput && (e.key === "f" || e.key === "F" || e.key === "/")) {
+        e.preventDefault();
+        sidebarFilter.focus();
+        sidebarFilter.select();
+      }
+    });
+  }
+
+  // Support Inbox Filters
+  const ticketSearchInput = document.getElementById("ticket-search-input");
+  if (ticketSearchInput) {
+    ticketSearchInput.addEventListener("input", (e) => {
+      ticketSearch = e.target.value.toLowerCase().trim();
+      renderTickets();
+    });
+  }
+
+  const filterTabs = document.querySelectorAll(".filter-tab");
+  filterTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      filterTabs.forEach((t) => t.classList.remove("is-active"));
+      tab.classList.add("is-active");
+      ticketFilter = tab.dataset.filter;
+      renderTickets();
+    });
+  });
+
   setInterval(refreshKpis, 8000);
 })();

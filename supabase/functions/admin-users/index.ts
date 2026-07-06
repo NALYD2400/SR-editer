@@ -5,6 +5,10 @@ const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
 const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
 const allowedOrigins = new Set([
   "https://sr-editer.vercel.app",
+  "http://localhost:5000",
+  "http://127.0.0.1:5000",
+  "http://localhost:4313",
+  "http://127.0.0.1:4313",
   ...(Deno.env.get("ADMIN_ALLOWED_ORIGINS") ?? "")
     .split(",").map((value) => value.trim()).filter(Boolean)
 ]);
@@ -80,13 +84,15 @@ Deno.serve(async (request) => {
     .select("user_id,email,role,write_mode,app_permissions,created_at").eq("user_id", caller.id).maybeSingle();
   const { data: access } = await admin.from("superadmin_access")
     .select("level,permissions").eq("user_id", caller.id).maybeSingle();
-  if (callerProfile?.role !== "admin" && !access) return json(origin, 403, { ok: false, error: "Accès administrateur requis." });
+  if (!callerProfile) return json(origin, 403, { ok: false, error: "Profil administrateur actif requis." });
+  if (callerProfile.role === "suspendu") return json(origin, 403, { ok: false, error: "Ce compte administrateur est suspendu." });
+  if (!access) return json(origin, 403, { ok: false, error: "Accès à la superconsole requis." });
 
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return json(origin, 400, { ok: false, error: "Requête JSON invalide." }); }
   const action = textOf(body.action, 64);
-  const level = access?.level === "collaborator" ? "collaborator" : "owner";
-  const permissions = access?.permissions && typeof access.permissions === "object" ? access.permissions as Record<string, boolean> : {};
+  const level = access.level === "owner" ? "owner" : "collaborator";
+  const permissions = access.permissions && typeof access.permissions === "object" ? access.permissions as Record<string, boolean> : {};
   const requiredPermission = permissionFor(action);
   if (level === "collaborator" && !permissions[requiredPermission]) return json(origin, 403, { ok: false, error: "Permission superadmin manquante." });
   if (requiredPermission === "team" && level !== "owner") return json(origin, 403, { ok: false, error: "Réservé au propriétaire." });
@@ -131,19 +137,26 @@ Deno.serve(async (request) => {
   if (action === "list") {
     const allUsers = await listAuthUsers();
     const users = allUsers.filter((u) => !u.deleted_at);
-    const [{ data: profiles, error }, { data: licenses }] = await Promise.all([
+    const [{ data: profiles, error }, { data: licenses }, { data: superadmins }] = await Promise.all([
       admin.from("profiles").select("user_id,email,role,write_mode,app_permissions,created_at").order("created_at", { ascending: false }).limit(1000),
-      admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at")
+      admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at"),
+      admin.from("superadmin_access").select("user_id,level")
     ]);
     if (error) return json(origin, 500, { ok: false, error: error.message });
     const byUser = new Map((profiles ?? []).map((row) => [row.user_id, row]));
     const licensesByUser = new Map((licenses ?? []).map((row) => [row.user_id, row]));
+    const superadminLevelByUser = new Map((superadmins ?? []).map((row) => [row.user_id, row.level]));
     return json(origin, 200, { ok: true, users: users.map((user) => {
       const profile = byUser.get(user.id); const license = licensesByUser.get(user.id);
+      const superadminLevel = superadminLevelByUser.get(user.id);
+      let role = profile?.role ?? "membre";
+      if (role === "admin" && superadminLevel === "owner") {
+        role = "owner";
+      }
       return {
         user_id: user.id, email: user.email ?? profile?.email ?? "", created_at: profile?.created_at ?? user.created_at,
         last_sign_in_at: user.last_sign_in_at, confirmed: Boolean(user.email_confirmed_at), banned_until: user.banned_until,
-        role: profile?.role ?? "membre", write_mode: profile?.write_mode ?? "direct",
+        role, write_mode: profile?.write_mode ?? "direct",
         app_permissions: appPermissionsOf(profile?.app_permissions),
         plan: license?.plan ?? "free", license_status: license?.status ?? "active", device_limit: license?.device_limit ?? 1,
         expires_at: license?.expires_at ?? null
@@ -200,6 +213,8 @@ Deno.serve(async (request) => {
     const targetEmail = emailOf(body.email); const users = await listAuthUsers(); const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
     const plan = textOf(body.plan, 16); const status = textOf(body.status, 16); const deviceLimit = Number(body.deviceLimit ?? 1);
     if (!target || !validPlans.has(plan) || !validLicenseStatuses.has(status) || !Number.isInteger(deviceLimit) || deviceLimit < 1 || deviceLimit > 25) return json(origin, 400, { ok: false, error: "Licence invalide." });
+    const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
+    if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut modifier la licence d'un administrateur." });
     const { error } = await admin.from("customer_licenses").upsert({ user_id: target.id, plan, status, device_limit: deviceLimit, expires_at: body.expiresAt || null, notes: textOf(body.notes, 2000), updated_at: new Date().toISOString() });
     if (!error) await audit("license.upsert", "user", target.id, { plan, status, deviceLimit });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
@@ -207,11 +222,18 @@ Deno.serve(async (request) => {
   if (action === "devices-list") {
     const targetEmail = emailOf(body.email); const users = await listAuthUsers(); const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
     if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
+    const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
+    if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut consulter les appareils d'un administrateur." });
     const { data, error } = await admin.from("device_activations").select("id,device_name,app_version,revoked,first_seen_at,last_seen_at").eq("user_id", target.id).order("last_seen_at", { ascending: false });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
   }
   if (action === "device-revoke") {
-    const id = textOf(body.id, 64); const { error } = await admin.from("device_activations").update({ revoked: true }).eq("id", id);
+    const id = textOf(body.id, 64);
+    const { data: device } = await admin.from("device_activations").select("user_id").eq("id", id).maybeSingle();
+    if (!device) return json(origin, 404, { ok: false, error: "Appareil introuvable." });
+    const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", device.user_id).maybeSingle();
+    if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut révoquer l'appareil d'un administrateur." });
+    const { error } = await admin.from("device_activations").update({ revoked: true }).eq("id", id);
     if (!error) await audit("device.revoke", "device", id);
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
@@ -246,14 +268,27 @@ Deno.serve(async (request) => {
     const requested = body.permissions && typeof body.permissions === "object" ? body.permissions as Record<string, unknown> : {};
     const nextPermissions = Object.fromEntries(permissionKeys.map((key) => [key, Boolean(requested[key])]));
     if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
-    const { error } = await admin.from("superadmin_access").upsert({ user_id: target.id, level: body.level === "owner" ? "owner" : "collaborator", permissions: nextPermissions, updated_at: new Date().toISOString() });
-    if (!error) await audit("team.upsert", "user", target.id, { email: targetEmail });
-    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+    if (target.id === caller.id) return json(origin, 409, { ok: false, error: "Modifie ton propre accès depuis un autre compte propriétaire." });
+    const nextLevel = body.level === "owner" ? "owner" : "collaborator";
+    const { data: currentAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
+    const { count: ownerCount } = await admin.from("superadmin_access").select("user_id", { count: "exact", head: true }).eq("level", "owner");
+    if (currentAccess?.level === "owner" && nextLevel !== "owner" && (ownerCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de rétrograder le dernier propriétaire." });
+    const { error } = await admin.from("superadmin_access").upsert({ user_id: target.id, level: nextLevel, permissions: nextPermissions, updated_at: new Date().toISOString() });
+    if (error) return json(origin, 500, { ok: false, error: error.message });
+    if (nextLevel === "owner") {
+      const { error: profileError } = await admin.from("profiles").update({ role: "admin" }).eq("user_id", target.id);
+      if (profileError) return json(origin, 500, { ok: false, error: profileError.message });
+    }
+    await audit("team.upsert", "user", target.id, { email: targetEmail, level: nextLevel });
+    return json(origin, 200, { ok: true });
   }
   if (action === "team-delete") {
     const targetEmail = emailOf(body.email); if (targetEmail === caller.email.toLowerCase()) return json(origin, 409, { ok: false, error: "Impossible de retirer ton propre accès." });
     const users = await listAuthUsers(); const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
     if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
+    const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
+    const { count: ownerCount } = await admin.from("superadmin_access").select("user_id", { count: "exact", head: true }).eq("level", "owner");
+    if (targetAccess?.level === "owner" && (ownerCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de retirer le dernier propriétaire." });
     const { error } = await admin.from("superadmin_access").delete().eq("user_id", target.id);
     if (!error) await audit("team.delete", "user", target.id, { email: targetEmail });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
@@ -263,31 +298,61 @@ Deno.serve(async (request) => {
   const targetEmail = emailOf(body.email);
   const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
   if (action === "create") {
-    const password = typeof body.password === "string" ? body.password : ""; const role = textOf(body.role, 16) || "membre"; const writeMode = textOf(body.writeMode, 16) || "direct";
+    const password = typeof body.password === "string" ? body.password : ""; const requestedRole = textOf(body.role, 16) || "membre"; const writeMode = textOf(body.writeMode, 16) || "direct";
     const appPermissions = appPermissionsOf(body.appPermissions);
+    const isOwner = requestedRole === "owner";
+    const role = isOwner ? "admin" : requestedRole;
     if (password.length < 10) return json(origin, 400, { ok: false, error: "Le mot de passe doit contenir au moins 10 caractères." });
     if (!validRoles.has(role) || !validWriteModes.has(writeMode) || !targetEmail || target) return json(origin, 400, { ok: false, error: "Compte, rôle ou mode invalide." });
+    if (["admin", "owner"].includes(requestedRole) && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut créer un administrateur." });
     const { data, error } = await admin.auth.admin.createUser({ email: targetEmail, password, email_confirm: true });
     if (error || !data.user) return json(origin, 400, { ok: false, error: error?.message ?? "Création impossible." });
     const { error: profileError } = await admin.from("profiles").upsert({ user_id: data.user.id, email: targetEmail, role, write_mode: writeMode, app_permissions: appPermissions }, { onConflict: "user_id" });
     if (profileError) { await admin.auth.admin.deleteUser(data.user.id); return json(origin, 500, { ok: false, error: profileError.message }); }
-    await audit("user.create", "user", data.user.id, { email: targetEmail, role });
+    if (isOwner) {
+      const nextPermissions = Object.fromEntries(permissionKeys.map((key) => [key, true]));
+      const { error: accessError } = await admin.from("superadmin_access").upsert({ user_id: data.user.id, level: "owner", permissions: nextPermissions, updated_at: new Date().toISOString() });
+      if (accessError) {
+        await admin.auth.admin.deleteUser(data.user.id);
+        return json(origin, 500, { ok: false, error: accessError.message });
+      }
+    }
+    await audit("user.create", "user", data.user.id, { email: targetEmail, role: isOwner ? "owner" : role });
     return json(origin, 200, { ok: true });
   }
   if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
   const { data: targetProfile } = await admin.from("profiles").select("role").eq("user_id", target.id).maybeSingle();
+  const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
   const { count: adminCount } = await admin.from("profiles").select("user_id", { count: "exact", head: true }).eq("role", "admin");
+  const { count: ownerCount } = await admin.from("superadmin_access").select("user_id", { count: "exact", head: true }).eq("level", "owner");
+  if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut gérer un autre administrateur." });
   if (action === "update") {
-    const role = textOf(body.role, 16); const writeMode = textOf(body.writeMode, 16);
+    const requestedRole = textOf(body.role, 16); const writeMode = textOf(body.writeMode, 16);
     const appPermissions = appPermissionsOf(body.appPermissions);
+    const isOwner = requestedRole === "owner";
+    const role = isOwner ? "admin" : requestedRole;
     if (!validRoles.has(role) || !validWriteModes.has(writeMode)) return json(origin, 400, { ok: false, error: "Rôle ou mode invalide." });
+    if (["admin", "owner"].includes(requestedRole) && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut attribuer ce rôle." });
+    if (target.id === caller.id && !isOwner) return json(origin, 409, { ok: false, error: "Tu ne peux pas retirer ton propre rôle propriétaire." });
+    if (targetAccess?.level === "owner" && !isOwner && (ownerCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de rétrograder ou suspendre le dernier propriétaire." });
     if (targetProfile?.role === "admin" && role !== "admin" && (adminCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de retirer le dernier administrateur." });
     const { error } = await admin.from("profiles").upsert({ user_id: target.id, email: targetEmail, role, write_mode: writeMode, app_permissions: appPermissions }, { onConflict: "user_id" });
-    if (!error) await audit("user.update", "user", target.id, { role, writeMode, appPermissions });
+    if (!error) {
+      if (isOwner) {
+        const nextPermissions = Object.fromEntries(permissionKeys.map((key) => [key, true]));
+        const { error: accessError } = await admin.from("superadmin_access").upsert({ user_id: target.id, level: "owner", permissions: nextPermissions, updated_at: new Date().toISOString() });
+        if (accessError) return json(origin, 500, { ok: false, error: accessError.message });
+      } else if (targetAccess?.level === "owner") {
+        const { error: accessError } = await admin.from("superadmin_access").delete().eq("user_id", target.id);
+        if (accessError) return json(origin, 500, { ok: false, error: accessError.message });
+      }
+      await audit("user.update", "user", target.id, { role: isOwner ? "owner" : role, writeMode, appPermissions });
+    }
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "ban" || action === "unban") {
     if (target.id === caller.id) return json(origin, 409, { ok: false, error: "Action impossible sur ton propre compte." });
+    if (action === "ban" && targetAccess?.level === "owner" && (ownerCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de bannir le dernier propriétaire." });
     const { error } = await admin.auth.admin.updateUserById(target.id, { ban_duration: action === "ban" ? "876000h" : "none" });
     if (!error) await audit(`user.${action}`, "user", target.id);
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
@@ -304,6 +369,7 @@ Deno.serve(async (request) => {
   }
   if (action === "delete") {
     if (target.id === caller.id) return json(origin, 409, { ok: false, error: "Tu ne peux pas supprimer ton propre compte." });
+    if (targetAccess?.level === "owner" && (ownerCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de supprimer le dernier propriétaire." });
     if (targetProfile?.role === "admin" && (adminCount ?? 0) <= 1) return json(origin, 409, { ok: false, error: "Impossible de supprimer le dernier administrateur." });
     const { error } = await admin.auth.admin.deleteUser(target.id);
     if (!error) {

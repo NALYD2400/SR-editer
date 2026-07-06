@@ -12,10 +12,10 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="js/theme.js?v=0.3.2"></script>
+    <script src="js/theme.js?v=0.3.2-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.2" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.2" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.3.2-logo" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.3.2-vercel" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -25,150 +25,118 @@
 
     <!-- Login -->
     <div id="login-view" class="admin-login">
-      <div class="glass-card admin-login-card">
-        <div class="admin-login-header">
-          <img class="admin-login-logo" src="assets/logo_small.png" alt="SR Logo" />
-          <h1>Console Admin</h1>
-          <p>Accès sécurisé pour l'administration de SR Editer.</p>
-        </div>
-        <div class="alert-error" id="login-error" hidden></div>
-        <form id="login-form">
-          <div>
-            <label for="login-email">Adresse Email</label>
-            <input type="email" id="login-email" autocomplete="email" required placeholder="admin@exemple.com" />
+      <header class="login-topbar">
+        <a href="index.html" class="login-brand" aria-label="Retour au site SR Editer">
+          <span class="login-brand-mark"><img src="assets/logo_small.png" alt="" /></span>
+          <span>SR Editer</span>
+          <span class="login-brand-divider"></span>
+          <span class="login-brand-product">Admin</span>
+        </a>
+        <button type="button" class="theme-toggle login-theme-toggle" id="theme-toggle-login" aria-label="Changer le thème">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
+        </button>
+      </header>
+
+      <main class="login-stage">
+        <section class="admin-login-card" aria-labelledby="login-title">
+          <div class="admin-login-header">
+            <div class="admin-login-logo"><img src="assets/logo_small.png" alt="" /></div>
+            <span class="login-kicker"><span></span> Espace protégé</span>
+            <h1 id="login-title">Bienvenue dans la console</h1>
+            <p>Connectez-vous avec votre compte administrateur SR Editer.</p>
           </div>
-          <div>
-            <label for="login-password">Mot de passe</label>
-            <input type="password" id="login-password" autocomplete="current-password" required />
-          </div>
-          <button type="submit">Se connecter</button>
-        </form>
-        <p style="margin: 0; font-size: 11px; text-align: center">
-          <a href="index.html" style="color: var(--text-secondary); text-decoration: none; font-family: monospace;">← Retour au site</a>
-        </p>
-      </div>
+          <div class="alert-error" id="login-error" role="alert" hidden></div>
+          <form id="login-form">
+            <div class="login-field">
+              <label for="login-email">Adresse e-mail</label>
+              <input type="email" id="login-email" autocomplete="email" required placeholder="vous@exemple.com" />
+            </div>
+            <div class="login-field">
+              <div class="login-label-row"><label for="login-password">Mot de passe</label><span>Compte administrateur</span></div>
+              <input type="password" id="login-password" autocomplete="current-password" required placeholder="••••••••••••" />
+            </div>
+            <button type="submit" class="login-submit">Se connecter <span aria-hidden="true">→</span></button>
+          </form>
+          <div class="login-security-note"><span class="security-dot"></span> Authentification sécurisée par Supabase</div>
+        </section>
+      </main>
+
+      <footer class="login-footer">
+        <span>© 2026 SR Editer</span>
+        <a href="index.html">Retour au site</a>
+      </footer>
     </div>
 
     <!-- Dashboard -->
     <div id="dashboard-view" class="admin-shell" hidden>
-      <aside class="admin-sidebar">
+      <!-- Vercel-style Left Sidebar Navigation -->
+      <aside class="admin-sidebar vercel-sidebar">
         <div class="sidebar-header">
           <a href="index.html" class="sidebar-brand">
-            <img class="sidebar-brand-logo" src="assets/logo_small.png?v=20260705-logo" alt="SR" />
+            <img class="sidebar-logo-img" src="assets/logo_small.png" alt="SR Editer" />
             <div class="sidebar-brand-text">
-              <p class="brand-sub">Console</p>
-              <p class="brand-main">SR Editer</p>
+              <span class="brand-name">SR Editer</span>
+              <span class="brand-badge">Console</span>
             </div>
           </a>
-          <button type="button" class="theme-toggle" id="theme-toggle" style="border:none; background:transparent; padding:6px; cursor:pointer; color:var(--text-secondary);" aria-label="Changer le thème">
-            <svg class="icon-moon" style="width:14px; height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-            </svg>
-            <svg class="icon-sun" style="width:14px; height:14px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="4" />
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-            </svg>
-          </button>
         </div>
 
-        <nav class="sidebar-nav">
+        <div class="sidebar-search-wrapper">
+          <input type="text" class="sidebar-search-input" placeholder="Find..." id="sidebar-filter-input" />
+          <span class="sidebar-search-shortcut">F</span>
+        </div>
+
+        <nav class="sidebar-nav vercel-vertical-links">
           <button type="button" class="sidebar-link is-active" data-panel="overview">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Console</span>
-              <span class="nav-desc">Vue globale</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Console</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="users">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Utilisateurs</span>
-              <span class="nav-desc">Auth &amp; rôles</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Utilisateurs</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="licenses">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Licences</span>
-              <span class="nav-desc">Attributions &amp; clés</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Licences</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="support">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Support</span>
-              <span class="nav-desc">Tickets d'aide</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Support</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="contacts">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Contacts</span>
-              <span class="nav-desc">Messages site</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Contacts</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="releases">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Releases</span>
-              <span class="nav-desc">Tauri update.json</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Releases</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="audit">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Journal d'audit</span>
-              <span class="nav-desc">Permanent &amp; sécurité</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Audit</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="system">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Système</span>
-              <span class="nav-desc">Diagnostics &amp; santé</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Système</span>
           </button>
-
           <button type="button" class="sidebar-link" data-panel="team">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-            <div class="nav-text">
-              <span class="nav-title">Équipe</span>
-              <span class="nav-desc">Accès console</span>
-            </div>
-            <svg class="nav-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            <span class="nav-title">Équipe</span>
           </button>
         </nav>
-
-        <div style="padding: 0 20px 8px 20px;">
-          <a href="index.html" style="font-size: 11px; text-decoration: none; color: var(--text-secondary); display: flex; align-items: center; gap: 6px;">
-            <span>← Site public</span>
-          </a>
-        </div>
 
         <div class="sidebar-footer">
           <div class="sidebar-footer-profile" id="profile-card">
             <div class="profile-avatar" id="sidebar-avatar">SA</div>
             <div class="profile-info">
-              <span class="profile-role">Superadmin</span>
               <span class="profile-email" id="sidebar-user-email">email@site.com</span>
+              <span class="profile-role">Superadmin</span>
             </div>
             <button type="button" class="btn-logout" id="logout-btn" title="Déconnexion">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -177,8 +145,30 @@
       <div class="admin-main">
         <header class="admin-topbar">
           <div class="admin-topbar-title">
-            <button type="button" class="btn btn-ghost admin-menu-btn" id="admin-menu-btn" aria-label="Ouvrir le menu">☰</button>
-            <h2 id="page-title">Vue d'ensemble</h2>
+            <button type="button" class="btn btn-ghost btn-menu-mobile" id="admin-menu-btn" aria-label="Menu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+            </button>
+            <div class="breadcrumb-nav">
+              <span class="breadcrumb-label">Console</span>
+              <span class="breadcrumb-separator">/</span>
+              <span id="page-title" class="breadcrumb-current">Vue d'ensemble</span>
+            </div>
+          </div>
+          <div class="admin-topbar-actions">
+            <!-- Theme toggle button -->
+            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              </svg>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+              </svg>
+            </button>
           </div>
         </header>
 
@@ -322,39 +312,44 @@
           <!-- Users -->
           <section class="admin-panel" id="panel-users">
             <!-- User management form -->
-            <div class="glass-card panel-card" style="margin-bottom: 24px;">
-              <div class="panel-card-header">
-                <h3>Créer un nouveau compte d'accès</h3>
+            <form id="user-manage-form" class="glass-card panel-card vercel-card-form" style="margin-bottom: 24px;">
+              <div class="vercel-card-body">
+                <div class="panel-card-header">
+                  <h3>Créer un nouveau compte d'accès</h3>
+                  <p class="section-desc">Enregistrez un nouvel utilisateur de la plateforme avec les rôles correspondants.</p>
+                </div>
+                <div class="horizontal-form-grid">
+                  <div class="field">
+                    <label for="manage-email">Adresse e-mail</label>
+                    <input type="email" id="manage-email" required placeholder="membre@site.com" />
+                  </div>
+                  <div class="field">
+                    <label for="manage-password">Mot de passe</label>
+                    <input type="password" id="manage-password" required minlength="10" autocomplete="new-password" placeholder="Min. 10 caractères" />
+                  </div>
+                  <div class="field">
+                    <label for="manage-role">Rôle</label>
+                    <select id="manage-role">
+                      <option value="membre">Membre</option>
+                      <option value="moderateur">Modérateur</option>
+                      <option value="admin">Administrateur</option>
+                      <option value="owner">Propriétaire (Owner)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="manage-mode">Mode d'écriture</label>
+                    <select id="manage-mode">
+                      <option value="direct">Direct (Production)</option>
+                      <option value="draft">Brouillon (Review)</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <form id="user-manage-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: end;">
-                <div class="field">
-                  <label for="manage-email">Adresse e-mail</label>
-                  <input type="email" id="manage-email" required placeholder="membre@site.com" />
-                </div>
-                <div class="field">
-                  <label for="manage-password">Mot de passe</label>
-                  <input type="password" id="manage-password" required minlength="10" autocomplete="new-password" placeholder="Min. 10 caractères" />
-                </div>
-                <div class="field">
-                  <label for="manage-role">Rôle</label>
-                  <select id="manage-role">
-                    <option value="membre">Membre</option>
-                    <option value="moderateur">Modérateur</option>
-                    <option value="admin">Administrateur</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="manage-mode">Mode d'écriture</label>
-                  <select id="manage-mode">
-                    <option value="direct">Direct (Production)</option>
-                    <option value="draft">Brouillon (Review)</option>
-                  </select>
-                </div>
-                <div>
-                  <button type="submit" class="btn btn-primary" style="width: 100%; height: 38px;">Créer le membre</button>
-                </div>
-              </form>
-            </div>
+              <div class="vercel-card-footer">
+                <span class="footer-desc">Le mot de passe doit comporter au moins 10 caractères.</span>
+                <button type="submit" class="btn btn-primary btn-sm">Créer le membre</button>
+              </div>
+            </form>
 
             <!-- Users List card -->
             <div class="glass-card panel-card">
@@ -384,72 +379,121 @@
 
           <!-- User Detail Panel -->
           <section class="admin-panel" id="panel-user-detail">
-            <button type="button" class="btn btn-ghost btn-sm" id="back-to-users-btn" style="margin-bottom: 20px;">← Retour à la liste</button>
+            <div class="detail-header-nav" style="margin-bottom: 20px;">
+              <button type="button" class="btn btn-ghost btn-sm" id="back-to-users-btn">← Retour à la liste</button>
+            </div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-              <!-- User Info Card -->
-              <div class="glass-card panel-card" style="padding: 30px;">
-                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
-                  <div style="width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--accent) 0%, #7b2cbf 100%); display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; color: #fff;" id="detail-avatar">U</div>
-                  <div>
-                    <h3 id="detail-email" style="margin: 0; font-size: 18px; font-weight: 700; color: #fff; word-break: break-all;">membre@exemple.com</h3>
-                    <span class="role-pill" id="detail-role-pill" style="margin-top: 6px; display: inline-block;">Membre</span>
+            <div class="user-detail-grid">
+              <!-- Left Column: User Info & Actions -->
+              <div class="glass-card panel-card user-profile-card">
+                <div class="user-profile-header">
+                  <div class="user-detail-avatar" id="detail-avatar">U</div>
+                  <div class="user-detail-meta">
+                    <h3 id="detail-email">membre@exemple.com</h3>
+                    <span class="role-pill" id="detail-role-pill">Membre</span>
                   </div>
                 </div>
 
-                <div class="field" style="margin-bottom: 16px;">
-                  <label>Rôle administrateur</label>
-                  <select id="detail-role">
-                    <option value="membre">Membre</option>
-                    <option value="moderateur">Modérateur</option>
-                    <option value="admin">Administrateur</option>
-                    <option value="suspendu">Suspendu</option>
-                  </select>
+                <div class="user-detail-fields">
+                  <div class="field">
+                    <label>Rôle du compte</label>
+                    <select id="detail-role">
+                      <option value="membre">Membre</option>
+                      <option value="moderateur">Modérateur</option>
+                      <option value="admin">Administrateur</option>
+                      <option value="owner">Propriétaire (Owner)</option>
+                      <option value="suspendu">Suspendu</option>
+                    </select>
+                  </div>
+
+                  <div class="field">
+                    <label>Mode d'écriture</label>
+                    <select id="detail-mode">
+                      <option value="direct">Direct (Production)</option>
+                      <option value="draft">Brouillon (Review)</option>
+                    </select>
+                  </div>
                 </div>
 
-                <div class="field" style="margin-bottom: 20px;">
-                  <label>Mode d'écriture</label>
-                  <select id="detail-mode">
-                    <option value="direct">Direct (Production)</option>
-                    <option value="draft">Brouillon (Review)</option>
-                  </select>
+                <div class="action-buttons-title">Actions administratives</div>
+                <div class="user-action-grid">
+                  <button type="button" class="btn btn-primary" id="save-detail-btn">Enregistrer</button>
+                  <button type="button" class="btn btn-secondary" id="reset-password-btn">Lien de récupération</button>
+                  <button type="button" class="btn btn-secondary" id="confirm-email-btn">Confirmer l'e-mail</button>
+                  <button type="button" class="btn btn-secondary" id="toggle-ban-btn">Bannir / Débannir</button>
+                  <button type="button" class="btn btn-secondary" id="show-devices-btn">Appareils</button>
+                  <button type="button" class="btn btn-danger-outline" id="suspend-detail-btn">Suspendre l'accès</button>
                 </div>
 
-                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                  <button type="button" class="btn btn-primary" id="save-detail-btn" style="flex: 1; min-width: 120px;">Enregistrer</button>
-                  <button type="button" class="btn btn-ghost" id="suspend-detail-btn" style="color: #ff4a5a; border-color: rgba(255,74,90,0.2); flex: 1; min-width: 120px;">Suspendre</button>
-                  <button type="button" class="btn btn-ghost" id="reset-password-btn">Lien de récupération</button>
-                  <button type="button" class="btn btn-ghost" id="confirm-email-btn">Confirmer l’email</button>
-                  <button type="button" class="btn btn-ghost" id="toggle-ban-btn">Bannir / débannir</button>
-                  <button type="button" class="btn btn-ghost" id="show-devices-btn">Appareils</button>
-                </div>
-                <div id="user-sensitive-output" class="log-terminal" style="margin-top: 14px;" hidden></div>
+                <div id="user-sensitive-output" class="log-terminal" hidden></div>
               </div>
 
-              <!-- Permissions Card -->
-              <div class="glass-card panel-card" style="padding: 30px;">
-                <div class="panel-card-header" style="margin-bottom: 12px;">
-                  <h3>Accès aux pages de l’app</h3>
+              <!-- Center Column: Permissions -->
+              <div class="glass-card panel-card user-permissions-card">
+                <div class="panel-card-header">
+                  <h3>Accès aux fonctionnalités</h3>
                 </div>
-                <p style="margin: 0 0 18px; color: var(--text-secondary); font-size: 12px;">Décoche une zone pour la masquer et en bloquer l’accès.</p>
-                <div id="app-permissions-grid" style="display: flex; flex-direction: column; gap: 16px;">
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="project" /><div><strong>Projet</strong><small>Vue d’ensemble et gestion du projet.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="explorer" /><div><strong>Explorateur GTA</strong><small>Navigation dans les fichiers GTA et RPF.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="assets" /><div><strong>Assets</strong><small>Liste et consultation des ressources.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="materials" /><div><strong>Matériaux</strong><small>Inspection et modification des matériaux.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="textures" /><div><strong>Texture Studio</strong><small>Édition et export des textures.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="ai" /><div><strong>Outils IA</strong><small>Fonctionnalités de retouche assistée par IA.</small></div></label>
-                  <label class="app-permission-row"><input type="checkbox" data-app-permission="settings" /><div><strong>Réglages</strong><small>Configuration, documentation et support.</small></div></label>
+                <p class="section-desc">Gérer les zones de l'application autorisées pour ce profil.</p>
+                <div id="app-permissions-grid" class="permissions-list">
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="project" />
+                    <div class="perm-text">
+                      <strong>Projet</strong>
+                      <small>Vue d’ensemble et gestion du projet.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="explorer" />
+                    <div class="perm-text">
+                      <strong>Explorateur GTA</strong>
+                      <small>Navigation dans les fichiers GTA et RPF.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="assets" />
+                    <div class="perm-text">
+                      <strong>Assets</strong>
+                      <small>Liste et consultation des ressources.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="materials" />
+                    <div class="perm-text">
+                      <strong>Matériaux</strong>
+                      <small>Inspection et modification des matériaux.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="textures" />
+                    <div class="perm-text">
+                      <strong>Texture Studio</strong>
+                      <small>Édition et export des textures.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="ai" />
+                    <div class="perm-text">
+                      <strong>Outils IA</strong>
+                      <small>Fonctionnalités de retouche par IA.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="settings" />
+                    <div class="perm-text">
+                      <strong>Réglages</strong>
+                      <small>Configuration et support.</small>
+                    </div>
+                  </label>
                 </div>
               </div>
 
-              <!-- User Logs Card -->
-              <div class="glass-card panel-card" style="grid-column: span 2; padding: 30px;">
-                <div class="panel-card-header" style="margin-bottom: 20px;">
-                  <h3>Dernière activité du membre</h3>
+              <!-- Full Width Column: User Activity Logs -->
+              <div class="glass-card panel-card user-logs-card" style="grid-column: span 2;">
+                <div class="panel-card-header">
+                  <h3>Journal d'activité du membre</h3>
                 </div>
-                <div id="detail-logs" style="font-family: monospace; font-size: 12px; padding: 14px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); min-height: 120px; display: flex; flex-direction: column; gap: 8px;">
-                  <!-- Logs generated dynamically -->
+                <div id="detail-logs" class="log-terminal-output" style="font-family: monospace; font-size: 12px; padding: 14px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); min-height: 120px; display: flex; flex-direction: column; gap: 8px;">
+                  <!-- Chargé dynamiquement -->
                 </div>
               </div>
             </div>
@@ -457,17 +501,25 @@
 
           <!-- Licences -->
           <section class="admin-panel" id="panel-licenses">
-            <div class="glass-card panel-card">
-              <div class="panel-card-header"><h3>Attribuer une licence</h3></div>
-              <form id="license-form" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; align-items: end;">
-                <div class="field"><label for="license-email">Compte</label><input id="license-email" type="email" required placeholder="membre@site.com" /></div>
-                <div class="field"><label for="license-plan">Offre</label><select id="license-plan"><option value="free">Free</option><option value="pro">Pro</option><option value="studio">Studio</option><option value="lifetime">Lifetime</option></select></div>
-                <div class="field"><label for="license-status">Statut</label><select id="license-status"><option value="trialing">Essai</option><option value="active">Active</option><option value="past_due">Paiement requis</option><option value="canceled">Annulée</option><option value="suspended">Suspendue</option></select></div>
-                <div class="field"><label for="license-devices">Appareils autorisés</label><input id="license-devices" type="number" min="1" max="25" value="1" required /></div>
-                <div class="field"><label for="license-expires">Expiration</label><input id="license-expires" type="datetime-local" /></div>
-                <button class="btn btn-primary" type="submit" style="height: 38px;">Enregistrer</button>
-              </form>
-            </div>
+            <form id="license-form" class="glass-card panel-card vercel-card-form">
+              <div class="vercel-card-body">
+                <div class="panel-card-header">
+                  <h3>Attribuer une licence</h3>
+                  <p class="section-desc">Définissez l'offre de licence et les quotas d'appareils de l'utilisateur.</p>
+                </div>
+                <div class="horizontal-form-grid">
+                  <div class="field"><label for="license-email">Compte</label><input id="license-email" type="email" required placeholder="membre@site.com" /></div>
+                  <div class="field"><label for="license-plan">Offre</label><select id="license-plan"><option value="free">Free</option><option value="pro">Pro</option><option value="studio">Studio</option><option value="lifetime">Lifetime</option></select></div>
+                  <div class="field"><label for="license-status">Statut</label><select id="license-status"><option value="trialing">Essai</option><option value="active">Active</option><option value="past_due">Paiement requis</option><option value="canceled">Annulée</option><option value="suspended">Suspendue</option></select></div>
+                  <div class="field"><label for="license-devices">Appareils autorisés</label><input id="license-devices" type="number" min="1" max="25" value="1" required /></div>
+                  <div class="field"><label for="license-expires">Expiration</label><input id="license-expires" type="datetime-local" /></div>
+                </div>
+              </div>
+              <div class="vercel-card-footer">
+                <span class="footer-desc">Laissez la date d'expiration vide pour une validité illimitée.</span>
+                <button class="btn btn-primary btn-sm" type="submit">Enregistrer</button>
+              </div>
+            </form>
             <div class="glass-card panel-card">
               <div class="panel-card-header">
                 <h3>Licences clients</h3>
@@ -492,36 +544,65 @@
 
           <!-- Support -->
           <section class="admin-panel" id="panel-support">
-            <div class="dashboard-split" style="grid-template-columns: 350px 1fr; gap: 20px; display: grid;">
+            <div class="support-inbox-grid">
               <!-- Left: Tickets List -->
-              <div class="glass-card panel-card" style="display: flex; flex-direction: column; min-height: 450px;">
-                <div class="panel-card-header" style="flex-shrink: 0; margin-bottom: 12px;">
-                  <h3>Tickets support</h3>
-                  <button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button>
+              <div class="glass-card panel-card support-sidebar-card">
+                <div class="support-sidebar-header">
+                  <h3>
+                    <span>Tickets support</span>
+                    <button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button>
+                  </h3>
+                  <input type="text" class="ticket-search-input" id="ticket-search-input" placeholder="Filtrer les tickets..." />
+                  <div class="ticket-filter-tabs">
+                    <button type="button" class="filter-tab is-active" data-filter="all">Tous</button>
+                    <button type="button" class="filter-tab" data-filter="open">Ouverts</button>
+                    <button type="button" class="filter-tab" data-filter="closed">Clos</button>
+                  </div>
                 </div>
-                <div id="support-list" style="display: flex; flex-direction: column; gap: 10px; overflow-y: auto; flex: 1; max-height: 500px; padding-right: 4px;">
+                <div id="support-list" class="support-tickets-list">
                   <div class="empty-state">Chargement…</div>
                 </div>
               </div>
 
               <!-- Right: Selected Ticket Chat -->
-              <div class="glass-card panel-card" id="support-chat-container" style="display: flex; flex-direction: column; min-height: 450px;">
-                <div class="panel-card-header" style="flex-shrink: 0; border-bottom: 1px solid var(--border); padding-bottom: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
-                  <div style="min-width: 0; flex: 1;">
-                    <h3 id="support-chat-subject" style="margin: 0;">Sélectionnez un ticket</h3>
-                    <p id="support-chat-meta" style="font-size: 11px; margin: 4px 0 0 0; color: var(--text-secondary);"></p>
-                  </div>
-                  <div id="support-chat-actions" style="display: none; gap: 8px;">
-                    <button type="button" class="btn btn-ghost btn-sm" id="support-close-btn" style="color: var(--danger); border: 1px solid rgba(239, 68, 68, 0.15); padding: 4px 10px;">Clore</button>
-                  </div>
+              <div class="glass-card panel-card support-chat-card">
+                <!-- Empty State -->
+                <div class="chat-empty-state" id="chat-empty-state">
+                  <svg class="chat-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                  </svg>
+                  <h4>Aucune conversation active</h4>
+                  <p>Sélectionnez un ticket dans la liste de gauche pour lire les messages et répondre en direct.</p>
                 </div>
-                <div id="support-chat-messages" style="flex: 1; overflow-y: auto; max-height: 380px; padding: 4px 8px; display: flex; flex-direction: column; gap: 12px; min-height: 250px;">
-                  <div class="empty-state">Sélectionnez une conversation dans la liste pour échanger en direct.</div>
+
+                <!-- Active Chat Viewport -->
+                <div class="chat-viewport" id="chat-viewport" style="display: none;">
+                  <div class="chat-header">
+                    <div class="chat-header-user">
+                      <div class="user-avatar" id="support-avatar">U</div>
+                      <div class="user-meta">
+                        <h4 id="support-chat-subject">Sujet du ticket</h4>
+                        <span id="support-chat-meta">client@email.com</span>
+                      </div>
+                    </div>
+                    <div class="chat-header-actions">
+                      <span class="role-pill ticket-status-pill" id="support-status-pill">OUVERT</span>
+                      <div id="support-chat-actions" style="display: none;">
+                        <button type="button" class="btn btn-secondary btn-sm" id="support-close-btn" style="color: var(--danger); border-color: rgba(255, 0, 0, 0.2);">Clore le ticket</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="chat-messages-container" id="support-chat-messages">
+                    <!-- Messages loaded here -->
+                  </div>
+                  <form id="support-chat-form" class="chat-input-editor" style="display: none;">
+                    <textarea id="support-chat-input" placeholder="Répondre au client..." required></textarea>
+                    <div class="editor-toolbar">
+                      <span class="editor-hint">Support Direct · Production</span>
+                      <button type="submit" class="btn btn-primary btn-sm">Envoyer</button>
+                    </div>
+                  </form>
                 </div>
-                <form id="support-chat-form" style="display: none; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid var(--border); flex-shrink: 0; margin-top: 12px;">
-                  <input type="text" id="support-chat-input" placeholder="Écrire votre réponse..." required style="flex: 1; height: 36px; padding: 0 12px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-deep); color: var(--text-primary); outline: none;" />
-                  <button type="submit" class="btn button primary" style="height: 36px; padding: 0 16px;">Envoyer</button>
-                </form>
               </div>
             </div>
           </section>
@@ -645,29 +726,36 @@
 
           <!-- Team -->
           <section class="admin-panel" id="panel-team">
-            <div class="glass-card panel-card">
-              <div class="panel-card-header"><h3>Déléguer la superconsole</h3></div>
-              <form id="team-form" style="display: grid; gap: 16px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <!-- Team Form -->
+            <form id="team-form" class="glass-card panel-card vercel-card-form">
+              <div class="vercel-card-body">
+                <div class="panel-card-header">
+                  <h3>Déléguer la superconsole</h3>
+                  <p class="section-desc">Invitez d'autres administrateurs et accordez-leur des autorisations spécifiques.</p>
+                </div>
+                <div class="horizontal-form-grid" style="grid-template-columns: 1fr 1fr;">
                   <div class="field"><label for="team-email">Compte administrateur</label><input id="team-email" type="email" required placeholder="admin@site.com" /></div>
                   <div class="field"><label for="team-level">Niveau de contrôle</label><select id="team-level"><option value="collaborator">Collaborateur</option><option value="owner">Propriétaire (Total)</option></select></div>
                 </div>
-                <div class="field">
+                <div class="field" style="margin-top: 12px;">
                   <label>Permissions d'accès</label>
-                  <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin-top: 4px;">
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="console" checked /> Console</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="users" /> Utilisateurs</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="licenses" /> Licences</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="support" /> Support</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="contacts" /> Contacts</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="releases" /> Releases</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="audit" /> Audit</label>
-                    <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer;"><input type="checkbox" name="team-permission" value="system" /> Système</label>
+                  <div class="permissions-checkbox-grid">
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="console" checked /> <span>Console</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="users" /> <span>Utilisateurs</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="licenses" /> <span>Licences</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="support" /> <span>Support</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="contacts" /> <span>Contacts</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="releases" /> <span>Releases</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="audit" /> <span>Audit</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="system" /> <span>Système</span></label>
                   </div>
                 </div>
-                <button class="btn btn-primary" type="submit" style="margin-top: 8px; width: fit-content; align-self: flex-start;">Enregistrer l’accès</button>
-              </form>
-            </div>
+              </div>
+              <div class="vercel-card-footer">
+                <span class="footer-desc">Les collaborateurs ne peuvent pas retirer d'autres administrateurs.</span>
+                <button class="btn btn-primary btn-sm" type="submit">Enregistrer l’accès</button>
+              </div>
+            </form>
             <div class="glass-card panel-card">
               <div class="panel-card-header">
                 <h3>Équipe autorisée</h3>
@@ -694,7 +782,7 @@
 
     <script src="js/wallpapers.js?v=0.3.2"></script>
     <script src="js/config.js?v=0.3.2"></script>
-    <script src="js/admin.js?v=0.3.2-page-access"></script>
+    <script src="js/admin.js?v=0.3.2-vercel"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));
