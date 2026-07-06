@@ -94,7 +94,7 @@
   });
 
   // Magnetic attraction for download buttons
-  const magneticButtons = document.querySelectorAll(".btn-download, .cta-download-btn, .ambiance-btn, .audio-btn");
+  const magneticButtons = document.querySelectorAll(".btn-download, .cta-download-btn, .ambiance-btn, .audio-btn, .theme-btn");
   magneticButtons.forEach((btn) => {
     btn.addEventListener("mousemove", (e) => {
       const rect = btn.getBoundingClientRect();
@@ -331,106 +331,170 @@
   let synthFilter = null;
   let synthInterval = null;
   let synthOscillators = [];
+  let synthLfo = null;
   let isPlayingSynth = false;
 
+  const synthProfiles = {
+    dark: { master: 0.22, filter: 520, lfoDepth: 220, oscGain: 0.018 },
+    light: { master: 0.16, filter: 920, lfoDepth: 140, oscGain: 0.014 }
+  };
+
   const chords = [
-    [130.81, 164.81, 196.00, 246.94], // Cmaj7 (C3, E3, G3, B3)
-    [123.47, 155.56, 185.00, 233.08], // Bmaj7
-    [110.00, 138.59, 164.81, 207.65], // Amaj7
-    [116.54, 146.83, 174.61, 220.00]  // Bbmaj7
+    [130.81, 164.81, 196.0, 246.94],
+    [123.47, 155.56, 185.0, 233.08],
+    [110.0, 138.59, 164.81, 207.65],
+    [116.54, 146.83, 174.61, 220.0]
   ];
   let currentChord = 0;
+
+  function getSynthProfile() {
+    return window.SRTheme?.get() === "light" ? synthProfiles.light : synthProfiles.dark;
+  }
+
+  function applySynthProfile() {
+    if (!audioCtx || !synthGain || !synthFilter) return;
+    const profile = getSynthProfile();
+    const now = audioCtx.currentTime;
+    synthGain.gain.cancelScheduledValues(now);
+    synthGain.gain.setTargetAtTime(isPlayingSynth ? profile.master : 0, now, 0.35);
+    synthFilter.frequency.cancelScheduledValues(now);
+    synthFilter.frequency.setTargetAtTime(profile.filter, now, 0.45);
+  }
+
+  function stopSynthLfo() {
+    if (!synthLfo) return;
+    try {
+      synthLfo.stop();
+      synthLfo.disconnect();
+    } catch {
+      /* already stopped */
+    }
+    synthLfo = null;
+  }
 
   function initSynth() {
     if (audioCtx) return;
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContextClass();
-    
+
     synthGain = audioCtx.createGain();
     synthGain.gain.setValueAtTime(0, audioCtx.currentTime);
-    
+
     synthFilter = audioCtx.createBiquadFilter();
     synthFilter.type = "lowpass";
-    synthFilter.frequency.setValueAtTime(600, audioCtx.currentTime);
-    synthFilter.Q.setValueAtTime(1, audioCtx.currentTime);
-    
+    synthFilter.Q.setValueAtTime(0.9, audioCtx.currentTime);
+
     synthGain.connect(synthFilter);
     synthFilter.connect(audioCtx.destination);
-    
-    // Slow sweeping low frequency modulation
+    applySynthProfile();
+  }
+
+  function startSynthLfo() {
+    if (!audioCtx || synthLfo) return;
+    const profile = getSynthProfile();
     const lfo = audioCtx.createOscillator();
-    lfo.frequency.setValueAtTime(0.08, audioCtx.currentTime);
-    
+    lfo.frequency.setValueAtTime(0.07, audioCtx.currentTime);
+
     const lfoGain = audioCtx.createGain();
-    lfoGain.gain.setValueAtTime(250, audioCtx.currentTime);
-    
+    lfoGain.gain.setValueAtTime(profile.lfoDepth, audioCtx.currentTime);
+
     lfo.connect(lfoGain);
     lfoGain.connect(synthFilter.frequency);
     lfo.start();
+    synthLfo = lfo;
   }
 
-  function playChord(chord) {
+  function clearSynthOscillators() {
     synthOscillators.forEach((osc) => {
-      try { osc.stop(); } catch { /* ignore stop error */ }
+      try {
+        osc.stop();
+        osc.disconnect();
+      } catch {
+        /* ignore stop error */
+      }
     });
     synthOscillators = [];
-    
+  }
+
+  function playChord(chord, fadeIn = 0.9) {
+    clearSynthOscillators();
+    const profile = getSynthProfile();
+    const now = audioCtx.currentTime;
+
     chord.forEach((freq) => {
       const osc1 = audioCtx.createOscillator();
       osc1.type = "sawtooth";
-      osc1.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      
+      osc1.frequency.setValueAtTime(freq, now);
+
       const osc2 = audioCtx.createOscillator();
       osc2.type = "triangle";
-      osc2.frequency.setValueAtTime(freq * 1.006, audioCtx.currentTime);
-      
+      osc2.frequency.setValueAtTime(freq * 1.004, now);
+
       const oscGain = audioCtx.createGain();
-      oscGain.gain.setValueAtTime(0.035, audioCtx.currentTime);
-      
+      oscGain.gain.setValueAtTime(0, now);
+      oscGain.gain.linearRampToValueAtTime(profile.oscGain, now + fadeIn);
+
       osc1.connect(oscGain);
       osc2.connect(oscGain);
       oscGain.connect(synthGain);
-      
-      osc1.start();
-      osc2.start();
-      
-      synthOscillators.push(osc1, osc2);
+
+      osc1.start(now);
+      osc2.start(now);
+
+      synthOscillators.push(osc1, osc2, oscGain);
     });
   }
 
-  function toggleSynth() {
+  async function toggleSynth() {
     if (isPlayingSynth) {
       isPlayingSynth = false;
       audioToggle.classList.remove("playing");
       clearInterval(synthInterval);
-      if (synthGain) {
-        synthGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.8);
+      if (synthGain && audioCtx) {
+        const now = audioCtx.currentTime;
+        synthGain.gain.cancelScheduledValues(now);
+        synthGain.gain.setTargetAtTime(0, now, 0.25);
       }
       setTimeout(() => {
         if (!isPlayingSynth) {
-          synthOscillators.forEach(osc => { try { osc.stop(); } catch { /* ignore stop error */ } });
-          synthOscillators = [];
+          clearSynthOscillators();
+          stopSynthLfo();
         }
-      }, 900);
-    } else {
-      initSynth();
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
-      }
-      isPlayingSynth = true;
-      audioToggle.classList.add("playing");
-      
-      synthGain.gain.linearRampToValueAtTime(0.8, audioCtx.currentTime + 1.2);
-      
-      playChord(chords[currentChord]);
-      synthInterval = setInterval(() => {
-        currentChord = (currentChord + 1) % chords.length;
-        playChord(chords[currentChord]);
-      }, 6000);
+      }, 700);
+      return;
     }
+
+    initSynth();
+    if (audioCtx.state === "suspended") {
+      await audioCtx.resume();
+    }
+
+    isPlayingSynth = true;
+    audioToggle.classList.add("playing");
+    applySynthProfile();
+    startSynthLfo();
+
+    playChord(chords[currentChord], 1.1);
+    synthInterval = setInterval(() => {
+      currentChord = (currentChord + 1) % chords.length;
+      playChord(chords[currentChord], 0.65);
+    }, 6000);
   }
 
   if (audioToggle) {
-    audioToggle.addEventListener("click", toggleSynth);
+    audioToggle.addEventListener("click", () => {
+      toggleSynth().catch(() => {
+        isPlayingSynth = false;
+        audioToggle.classList.remove("playing");
+      });
+    });
   }
+
+  window.addEventListener("sr-theme-change", () => {
+    applySynthProfile();
+    if (isPlayingSynth) {
+      stopSynthLfo();
+      startSynthLfo();
+    }
+  });
 })();

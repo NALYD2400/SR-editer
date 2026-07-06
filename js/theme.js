@@ -12,6 +12,9 @@ function applyTheme(theme) {
     button.setAttribute("aria-pressed", String(nextTheme === "light"));
     button.setAttribute("title", nextTheme === "dark" ? "Activer le thème clair" : "Activer le thème sombre");
   });
+  document.querySelectorAll("[data-theme-label]").forEach((label) => {
+    label.textContent = nextTheme === "dark" ? "Clair" : "Sombre";
+  });
   window.dispatchEvent(new CustomEvent("sr-theme-change", { detail: { theme: nextTheme } }));
   return nextTheme;
 }
@@ -29,8 +32,11 @@ window.SRTheme = {
   bindToggle(button) {
     if (!button || button.dataset.themeToggleBound) return;
     button.dataset.themeToggleBound = "true";
-    button.setAttribute("aria-pressed", String(this.get() === "light"));
-    button.setAttribute("title", this.get() === "dark" ? "Activer le thème clair" : "Activer le thème sombre");
+    const theme = this.get();
+    button.setAttribute("aria-pressed", String(theme === "light"));
+    button.setAttribute("title", theme === "dark" ? "Activer le thème clair" : "Activer le thème sombre");
+    const label = button.querySelector("[data-theme-label]");
+    if (label) label.textContent = theme === "dark" ? "Clair" : "Sombre";
     button.addEventListener("click", () => this.toggle());
   }
 };

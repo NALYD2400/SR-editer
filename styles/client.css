@@ -9,12 +9,12 @@
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #050409;
+  background: var(--bg-deep);
 }
 ::-webkit-scrollbar-thumb {
   background: rgba(255, 0, 127, 0.15);
   border-radius: var(--radius-pill);
-  border: 2px solid #050409;
+  border: 2px solid var(--bg-deep);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--neon-pink);
@@ -1058,12 +1058,12 @@
 
 /* ── Footer ── */
 .client-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-top: 1px solid var(--border);
   padding: 60px 24px 64px;
   text-align: center;
   color: var(--muted-dim);
   font-size: 13px;
-  background: rgba(4, 3, 7, 0.85);
+  background: var(--nav-bg-scrolled);
   position: relative;
   z-index: 10;
 }
@@ -1113,7 +1113,8 @@
   }
 
   .ambiance-btn,
-  .audio-btn {
+  .audio-btn,
+  .theme-btn {
     width: 42px;
     height: 42px;
     padding: 0;
@@ -1123,14 +1124,15 @@
 }
 
 .ambiance-btn,
-.audio-btn {
+.audio-btn,
+.theme-btn {
   padding: 12px 22px;
   border-radius: var(--radius-pill);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(10, 8, 18, 0.65);
+  border: 1px solid var(--border);
+  background: var(--bg-glass-strong);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  color: #ffffff;
+  color: var(--text);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1139,7 +1141,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-panel);
   transition: all 0.3s var(--ease-out);
 }
 
@@ -1159,7 +1161,26 @@
 
 .ambiance-btn svg {
   color: var(--neon-pink);
-  animation: rotate-spin 12s linear infinite;
+}
+
+.theme-btn svg {
+  color: var(--neon-purple);
+}
+
+.theme-btn .icon-sun,
+html[data-theme="light"] .theme-btn .icon-moon {
+  display: none;
+}
+
+html[data-theme="light"] .theme-btn .icon-sun {
+  display: block;
+}
+
+.theme-btn:hover {
+  background: rgba(157, 78, 221, 0.1);
+  border-color: rgba(157, 78, 221, 0.35);
+  box-shadow: 0 15px 35px rgba(157, 78, 221, 0.2);
+  transform: translateY(-2px);
 }
 
 @keyframes rotate-spin {
@@ -1266,7 +1287,8 @@
 
 @media (max-width: 640px) {
   .ambiance-btn,
-  .audio-btn {
+  .audio-btn,
+  .theme-btn {
     width: 42px;
     height: 42px;
     padding: 0;

@@ -21,10 +21,10 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Outfit:wght@400;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <script src="js/theme.js?v=0.3.3"></script>
+    <script src="js/theme.js?v=0.3.3-theme-audio"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/client.css?v=0.3.3-responsive-2" />
+    <link rel="stylesheet" href="styles/client.css?v=0.3.3-theme-audio" />
   </head>
   <body class="client-page">
 
@@ -44,7 +44,16 @@
         <img class="client-brand-logo" src="assets/logo_small.png" alt="SR Editer" />
       </a>
       <nav class="client-nav-links">
-
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <span data-theme-label>Clair</span>
+        </button>
         <a href="#telecharger" class="btn btn-primary btn-sm" id="download-nav">Télécharger</a>
       </nav>
     </header>
@@ -315,10 +324,21 @@
         </div>
         <span>Radio Synth</span>
       </button>
-      <button type="button" class="ambiance-btn" id="cycle-ambiance" aria-label="Changer l'ambiance">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <button type="button" class="theme-btn" id="theme-toggle-float" aria-label="Changer le thème clair ou sombre">
+        <svg class="icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+        <svg class="icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="4" />
           <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+        </svg>
+        <span data-theme-label>Thème</span>
+      </button>
+      <button type="button" class="ambiance-btn" id="cycle-ambiance" aria-label="Changer le fond d'ambiance">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="5" width="18" height="14" rx="2" />
+          <circle cx="8.5" cy="10.5" r="1.5" />
+          <path d="M21 16l-5.5-5.5L5 21" />
         </svg>
         Ambiance
       </button>
@@ -355,9 +375,10 @@
         })
         .catch(() => undefined);
     </script>
-    <script src="js/client.js?v=0.3.3"></script>
+    <script src="js/client.js?v=0.3.3-theme-audio"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
+      window.SRTheme.bindToggle(document.getElementById("theme-toggle-float"));
     </script>
   </body>
 </html>
