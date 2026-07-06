@@ -9,52 +9,66 @@
   const nav = document.querySelector(".client-nav");
   const cycleBtn = document.getElementById("cycle-ambiance");
   const versionBadge = document.getElementById("app-version");
+  const fileSizeBadge = document.getElementById("download-file-size");
   const downloadLinks = ["download-btn", "download-btn-2", "download-nav"]
     .map((id) => document.getElementById(id))
     .filter((el) => el !== null);
 
-  // ── 1. App Version & Download Links ──
-  fetch("update.json")
-    .then((res) => res.json())
-    .then((data) => {
-      const dlUrl = data.platforms?.["windows-x86_64"]?.url;
-      const latestVersion = data.version;
-      
-      if (versionBadge && latestVersion) {
-        versionBadge.textContent = `v${latestVersion}`;
+  function formatFileSize(bytes) {
+    if (!Number.isFinite(bytes) || bytes <= 0) return null;
+    const mb = bytes / (1024 * 1024);
+    return `${mb >= 10 ? mb.toFixed(0) : mb.toFixed(1)} Mo`;
+  }
+
+  function applyDownload(url, version) {
+    if (versionBadge && version) versionBadge.textContent = `v${version}`;
+
+    if (url) {
+      downloadLinks.forEach((link) => {
+        link.href = url;
+        link.removeAttribute("aria-disabled");
+        link.removeAttribute("title");
+        if (link.id === "download-btn" || link.id === "download-btn-2") {
+          link.textContent = link.id === "download-btn" ? "Télécharger pour Windows" : "Télécharger l'application";
+        }
+      });
+      if (fileSizeBadge) {
+        fetch(url, { method: "HEAD" })
+          .then((response) => {
+            const size = formatFileSize(Number(response.headers.get("content-length")));
+            if (size) fileSizeBadge.textContent = size;
+          })
+          .catch(() => undefined);
       }
+      return;
+    }
 
-      downloadLinks.forEach((link) => {
-        if (dlUrl) {
-          link.href = dlUrl;
-          link.removeAttribute("aria-disabled");
-          link.removeAttribute("title");
-        } else if (config.downloadUrl) {
-          link.href = config.downloadUrl;
-          link.removeAttribute("aria-disabled");
-        } else {
-          link.removeAttribute("href");
-          link.setAttribute("aria-disabled", "true");
-          link.title = "La release publique signée n'est pas encore disponible.";
-          link.textContent = "Bientôt disponible";
-        }
-      });
-    })
-    .catch(() => {
-      downloadLinks.forEach((link) => {
-        if (config.downloadUrl) {
-          link.href = config.downloadUrl;
-          link.removeAttribute("aria-disabled");
-        } else {
-          link.removeAttribute("href");
-          link.setAttribute("aria-disabled", "true");
-          link.title = "La release publique signée n'est pas encore disponible.";
-          link.textContent = "Bientôt disponible";
-        }
-      });
+    downloadLinks.forEach((link) => {
+      link.removeAttribute("href");
+      link.setAttribute("aria-disabled", "true");
+      link.title = "La release publique signée n'est pas encore disponible.";
+      if (link.id === "download-btn" || link.id === "download-btn-2") {
+        link.textContent = "Bientôt disponible";
+      }
     });
+  }
 
+  downloadLinks.forEach((link) => {
+    link.setAttribute("aria-disabled", "true");
+    link.addEventListener("click", (event) => {
+      if (link.getAttribute("aria-disabled") === "true") event.preventDefault();
+    });
+  });
 
+  applyDownload(config.downloadUrl, config.appVersion);
+
+  fetch(`${config.updateManifestUrl || "/update.json"}?site=${Date.now()}`, { cache: "no-store" })
+    .then((response) => (response.ok ? response.json() : null))
+    .then((manifest) => {
+      const windows = manifest?.platforms?.["windows-x86_64"];
+      applyDownload(windows?.url ?? config.downloadUrl, manifest?.version ?? config.appVersion);
+    })
+    .catch(() => applyDownload(config.downloadUrl, config.appVersion));
 
   // ── 3. Interactive 3D Card Tilt, Magnetic Buttons & Spotlight Glow ──
   const tiltElements = document.querySelectorAll(".bento-card, .mockup-window");
