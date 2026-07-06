@@ -94,8 +94,8 @@ html[data-theme="light"] {
 
   --nav-bg: rgba(242, 239, 246, 0.65);
   --nav-bg-scrolled: rgba(242, 239, 246, 0.92);
-  --ambient-overlay: linear-gradient(180deg, rgba(242, 239, 246, 0.55) 0%, rgba(234, 231, 238, 0.88) 72%, #eae7ee 100%);
-  --ambient-blur-strength: 36px;
+  --ambient-overlay: linear-gradient(180deg, rgba(242, 239, 246, 0.18) 0%, rgba(234, 231, 238, 0.42) 72%, rgba(234, 231, 238, 0.55) 100%);
+  --ambient-blur-strength: 28px;
   --hero-title-gradient: linear-gradient(180deg, #1b1725 0%, #1b1725 50%, #4b415a 100%);
   --btn-primary-bg: #1b1725;
   --btn-primary-text: #f6f4fa;

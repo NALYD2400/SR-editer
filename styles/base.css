@@ -59,9 +59,14 @@ select {
   will-change: opacity, transform;
 }
 
+.ambient-layer {
+  opacity: 0;
+  transform: scale(1.04);
+}
+
 .ambient-layer.active {
-  opacity: 0.45;
-  transform: scale(1.05) translate3d(0, 0, 0);
+  opacity: 0.38;
+  transform: scale(1.02) translate3d(0, 0, 0);
 }
 
 .ambient-layer:not(.active) {
@@ -83,9 +88,9 @@ select {
 
 html[data-theme="light"] .ambient-vignette {
   background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.35) 0%, rgba(234, 231, 238, 0.82) 90%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.45) 0%, rgba(234, 231, 238, 0.72) 60%, #eae7ee 100%),
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 71, 126, 0.08), transparent 50%);
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.05) 0%, rgba(234, 231, 238, 0.42) 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(234, 231, 238, 0.38) 55%, rgba(234, 231, 238, 0.58) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 71, 126, 0.05), transparent 50%);
 }
 
 .btn {
@@ -120,14 +125,21 @@ html[data-theme="light"] .ambient-vignette {
 }
 
 .btn-primary {
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  box-shadow: var(--btn-primary-shadow);
+  background: var(--text);
+  color: var(--bg-deep);
+  box-shadow: none;
+  font-weight: 600;
+}
+
+html[data-theme="light"] .btn-primary {
+  background: #1b1725;
+  color: #f6f4fa;
 }
 
 .btn-primary:hover {
-  filter: brightness(1.05);
-  box-shadow: var(--btn-primary-shadow);
+  filter: none;
+  opacity: 0.9;
+  transform: translateY(-1px);
 }
 
 .btn-ghost {
