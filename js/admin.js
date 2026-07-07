@@ -218,14 +218,27 @@
     });
     if (error) {
       let message = error.message || "Service administrateur indisponible.";
+      let status = 0;
       try {
         const response = error.context;
-        if (response && typeof response.clone === "function") {
-          const payload = await response.clone().json();
-          if (payload?.error) message = payload.error;
+        if (response) {
+          status = response.status;
+          if (typeof response.clone === "function") {
+            const payloadData = await response.clone().json();
+            if (payloadData?.error) message = payloadData.error;
+          }
         }
       } catch {
         /* La réponse non JSON conserve le message Supabase. */
+      }
+      if (status === 401 || message.includes("Session requise") || message.includes("Session invalide")) {
+        console.warn("Session expirée ou invalide. Déconnexion...");
+        if (supabase) {
+          void supabase.auth.signOut().then(() => {
+            showLogin();
+            showLoginError("Votre session a expiré. Veuillez vous reconnecter.");
+          });
+        }
       }
       throw new Error(message);
     }
