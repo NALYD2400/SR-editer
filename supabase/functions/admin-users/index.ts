@@ -17,7 +17,7 @@ const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
 const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team", "library"];
-const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "library", "ai", "settings"];
+const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "modeling", "library", "ai", "settings"];
 
 function appPermissionsOf(value: unknown) {
   const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
