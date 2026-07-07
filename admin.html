@@ -124,6 +124,10 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span class="nav-title">Équipe</span>
           </button>
+          <button type="button" class="sidebar-link" data-panel="library">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span class="nav-title">Bibliothèque</span>
+          </button>
         </nav>
 
         <div class="sidebar-footer">
@@ -471,6 +475,13 @@
                     </div>
                   </label>
                   <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="library" />
+                    <div class="perm-text">
+                      <strong>Bibliothèque</strong>
+                      <small>Bibliothèque de textures de base.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
                     <input type="checkbox" data-app-permission="ai" />
                     <div class="perm-text">
                       <strong>Outils IA</strong>
@@ -748,6 +759,7 @@
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="releases" /> <span>Releases</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="audit" /> <span>Audit</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="system" /> <span>Système</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="library" /> <span>Bibliothèque</span></label>
                   </div>
                 </div>
               </div>
@@ -772,6 +784,122 @@
                     </tr>
                   </thead>
                   <tbody id="team-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Textures Library -->
+          <section class="admin-panel" id="panel-library">
+            <!-- Upload / Add Form -->
+            <form id="library-form" class="glass-card panel-card vercel-card-form">
+              <div class="vercel-card-body">
+                <div class="panel-card-header">
+                  <h3>Ajouter une texture à la bibliothèque</h3>
+                  <p class="section-desc">Téléversez un fichier image (il sera automatiquement converti en WebP, puissance de deux, max 1024px) ou saisissez directement une URL.</p>
+                </div>
+                
+                <input type="hidden" id="library-id" />
+                
+                <div class="horizontal-form-grid" style="grid-template-columns: 2fr 1fr 1fr; gap: 15px;">
+                  <div class="field">
+                    <label for="library-name">Nom de la texture</label>
+                    <input id="library-name" type="text" required placeholder="Ex: Carbon_Fiber_Gloss" />
+                  </div>
+                  <div class="field">
+                    <label for="library-category">Catégorie</label>
+                    <select id="library-category" required>
+                      <option value="Métal">Métal</option>
+                      <option value="Bois">Bois</option>
+                      <option value="Brique">Brique</option>
+                      <option value="Béton">Béton</option>
+                      <option value="Plâtre">Plâtre</option>
+                      <option value="Tissu/Cuir">Tissu/Cuir</option>
+                      <option value="Carbone/Plastique">Carbone/Plastique</option>
+                      <option value="Verre">Verre</option>
+                      <option value="Pierre">Pierre</option>
+                      <option value="Néon/Lumière">Néon/Lumière</option>
+                      <option value="Peinture">Peinture</option>
+                      <option value="Sol/Asphalte">Sol/Asphalte</option>
+                      <option value="Autre">Autre</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="library-color">Couleur dominante</label>
+                    <select id="library-color" required>
+                      <option value="Noir">Noir</option>
+                      <option value="Blanc">Blanc</option>
+                      <option value="Gris">Gris</option>
+                      <option value="Rouge">Rouge</option>
+                      <option value="Bleu">Bleu</option>
+                      <option value="Vert">Vert</option>
+                      <option value="Jaune">Jaune</option>
+                      <option value="Orange">Orange</option>
+                      <option value="Violet">Violet</option>
+                      <option value="Rose">Rose</option>
+                      <option value="Marron">Marron</option>
+                      <option value="Beige">Beige</option>
+                      <option value="Multicolore">Multicolore</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="horizontal-form-grid" style="grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 12px; align-items: flex-end;">
+                  <div class="field">
+                    <label for="library-url">URL de l'image</label>
+                    <input id="library-url" type="url" required placeholder="Saisir ou coller un lien direct..." />
+                  </div>
+                  <div class="field">
+                    <label for="library-file" class="btn btn-ghost btn-sm" style="display: flex; align-items: center; justify-content: center; height: 38px; cursor: pointer; border: 1px dashed var(--border); margin: 0; padding: 0;">
+                      <span>📁 Importer &amp; Optimiser</span>
+                    </label>
+                    <input id="library-file" type="file" accept="image/*" style="display: none;" />
+                  </div>
+                </div>
+
+                <div id="library-upload-progress" class="field" style="margin-top: 10px; display: none;">
+                  <div style="font-size: 11px; color: var(--accent); margin-bottom: 4px;" id="upload-status-text">Optimisation en cours...</div>
+                  <div style="height: 4px; background: var(--bg-elevated); border-radius: var(--radius-pill); overflow: hidden;">
+                    <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--gradient-sunset); transition: width 0.2s;"></div>
+                  </div>
+                </div>
+
+                <!-- Texture Preview Box -->
+                <div class="field" style="margin-top: 14px;">
+                  <label>Aperçu de la texture</label>
+                  <div class="texture-preview-box" style="border: 1px solid var(--border); border-radius: var(--radius-md); height: 128px; width: 128px; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); overflow: hidden; position: relative;">
+                    <img id="library-preview-img" src="" alt="Aperçu" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;" />
+                    <span id="library-preview-placeholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 10px;">Sélectionnez ou collez un lien pour afficher l'aperçu</span>
+                  </div>
+                </div>
+              </div>
+              <div class="vercel-card-footer">
+                <span class="footer-desc" id="library-form-desc">Création d'une nouvelle texture.</span>
+                <div style="display: flex; gap: 8px;">
+                  <button class="btn btn-ghost btn-sm" type="button" id="library-cancel-btn" style="display: none;">Annuler</button>
+                  <button class="btn btn-primary btn-sm" type="submit" id="library-submit-btn">Enregistrer la texture</button>
+                </div>
+              </div>
+            </form>
+
+            <!-- Textures List -->
+            <div class="glass-card panel-card">
+              <div class="panel-card-header">
+                <h3>Textures enregistrées</h3>
+                <button type="button" class="btn btn-ghost btn-sm" data-refresh="library">Actualiser</button>
+              </div>
+              <div style="overflow-x: auto;">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th style="width: 64px;">Miniature</th>
+                      <th>Nom</th>
+                      <th>Catégorie</th>
+                      <th>Couleur dominante</th>
+                      <th style="text-align: right; width: 180px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="library-list-tbody"></tbody>
                 </table>
               </div>
             </div>

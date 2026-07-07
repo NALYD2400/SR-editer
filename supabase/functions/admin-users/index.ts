@@ -16,8 +16,8 @@ const validRoles = new Set(["membre", "moderateur", "admin", "suspendu"]);
 const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
-const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team"];
-const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "ai", "settings"];
+const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team", "library"];
+const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "library", "ai", "settings"];
 
 function appPermissionsOf(value: unknown) {
   const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
@@ -58,6 +58,7 @@ function permissionFor(action: string) {
   if (action.startsWith("audit")) return "audit";
   if (action.startsWith("health")) return "system";
   if (action.startsWith("team")) return "team";
+  if (action.startsWith("library")) return "library";
   return "console";
 }
 
@@ -257,6 +258,31 @@ Deno.serve(async (request) => {
     const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes: textOf(body.notes, 5000), published, updated_at: new Date().toISOString() });
     if (!error) await audit("release.upsert", "release", version, { published });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, manifestUrl: `${supabaseUrl}/functions/v1/app-update` });
+  }
+  if (action === "library-list") {
+    const { data, error } = await admin.from("library_textures").select("*").order("created_at", { ascending: false });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
+  }
+  if (action === "library-upsert") {
+    const id = body.id ? textOf(body.id, 64) : undefined;
+    const name = textOf(body.name, 256);
+    const category = textOf(body.category, 64);
+    const color = textOf(body.color, 64);
+    const url = textOf(body.url, 2048);
+    if (!name || !category || !color || !url) return json(origin, 400, { ok: false, error: "Tous les champs (nom, catégorie, couleur, URL) sont requis." });
+    const payload: Record<string, string | undefined> = { name, category, color, url };
+    if (id) payload.id = id;
+    const { data: upsertedData, error } = await admin.from("library_textures").upsert(payload).select().single();
+    if (error) return json(origin, 500, { ok: false, error: error.message });
+    await audit(id ? "library.update" : "library.create", "library_texture", upsertedData.id, { name });
+    return json(origin, 200, { ok: true, data: upsertedData });
+  }
+  if (action === "library-delete") {
+    const id = textOf(body.id, 64);
+    if (!id) return json(origin, 400, { ok: false, error: "ID requis." });
+    const { error } = await admin.from("library_textures").delete().eq("id", id);
+    if (!error) await audit("library.delete", "library_texture", id);
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "team-list") {
     const users = await listAuthUsers(); const { data, error } = await admin.from("superadmin_access").select("*").order("created_at");

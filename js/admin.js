@@ -36,7 +36,8 @@
     releases: "Releases",
     audit: "Audit global",
     system: "Santé système",
-    team: "Équipe superadmin"
+    team: "Équipe superadmin",
+    library: "Bibliothèque de Textures"
   };
 
   const panelDescriptions = {
@@ -49,7 +50,8 @@
     releases: "Préparez, signez et publiez les nouvelles versions de SR Editer.",
     audit: "Consultez la trace immuable des actions sensibles de la console.",
     system: "Contrôlez en temps réel la disponibilité des services critiques.",
-    team: "Déléguez la console avec des permissions adaptées à chaque administrateur."
+    team: "Déléguez la console avec des permissions adaptées à chaque administrateur.",
+    library: "Gérez la bibliothèque de textures de base (ajouter, supprimer, modifier)."
   };
 
   panels.forEach((panel) => {
@@ -247,7 +249,7 @@
   }
 
   function applyAccess(access) {
-    const mapping = { overview: "console", users: "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team" };
+    const mapping = { overview: "console", users: "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team", library: "library" };
     navLinks.forEach((link) => {
       const panel = link.getAttribute("data-panel");
       const allowed = access.level === "owner" || Boolean(access.permissions?.[mapping[panel]]);
@@ -1060,9 +1062,260 @@
   });
 
   function loadPanel(panelId) {
-    const loaders = { overview: loadDashboard, licenses: loadLicenses, support: loadSupport, contacts: loadContacts, releases: loadReleases, audit: loadAudit, system: loadSystem, team: loadTeam };
+    const loaders = { overview: loadDashboard, licenses: loadLicenses, support: loadSupport, contacts: loadContacts, releases: loadReleases, audit: loadAudit, system: loadSystem, team: loadTeam, library: loadLibrary };
     return loaders[panelId]?.();
   }
+
+  // --- Textures Library CRUD ---
+  let libraryTextures = [];
+
+  function getColorHex(colorName) {
+    const map = {
+      "blanc": "#ffffff",
+      "noir": "#1a1a1a",
+      "gris": "#808080",
+      "rouge": "#ef4444",
+      "bleu": "#3b82f6",
+      "vert": "#10b981",
+      "jaune": "#eab308",
+      "orange": "#f97316",
+      "violet": "#8b5cf6",
+      "rose": "#ec4899",
+      "marron": "#78350f",
+      "beige": "#f5f5dc",
+      "multicolore": "linear-gradient(45deg, red, orange, yellow, green, blue, purple)"
+    };
+    return map[colorName.toLowerCase()] || "#4b5563";
+  }
+
+  function getColorText(colorName) {
+    const isLight = ["blanc", "beige", "jaune"].includes(colorName.toLowerCase());
+    return isLight ? "#000000" : "#ffffff";
+  }
+
+  async function loadLibrary() {
+    const list = document.getElementById("library-list-tbody");
+    if (!list) return;
+    list.innerHTML = '<tr><td colspan="5" class="loading-state" style="text-align: center; padding: 20px; color: var(--muted);">Chargement des textures...</td></tr>';
+    try {
+      const data = await adminRequest("library-list");
+      if (!data.ok) throw new Error(data.error);
+      libraryTextures = data.rows ?? [];
+      renderLibraryList();
+    } catch (reason) {
+      list.innerHTML = `<tr><td colspan="5" class="empty-state" style="color: var(--danger); text-align: center; padding: 20px;">Erreur : ${escapeHtml(reason.message || reason)}</td></tr>`;
+    }
+  }
+
+  function renderLibraryList() {
+    const list = document.getElementById("library-list-tbody");
+    if (!list) return;
+
+    if (libraryTextures.length === 0) {
+      list.innerHTML = '<tr><td colspan="5" class="empty-state" style="text-align: center; padding: 20px; color: var(--muted);">Aucune texture enregistrée.</td></tr>';
+      return;
+    }
+
+    list.innerHTML = libraryTextures.map((row) => `
+      <tr data-id="${row.id}">
+        <td>
+          <div class="texture-thumb-container">
+            <img src="${escapeHtml(row.url)}" alt="${escapeHtml(row.name)}" class="texture-thumbnail-img" onerror="this.src='assets/logo_small.png'" />
+          </div>
+        </td>
+        <td><strong>${escapeHtml(row.name)}</strong></td>
+        <td><span class="badge badge-category">${escapeHtml(row.category)}</span></td>
+        <td><span class="badge badge-color" style="background: ${getColorHex(row.color)}; color: ${getColorText(row.color)};">${escapeHtml(row.color)}</span></td>
+        <td style="text-align: right;">
+          <div class="btn-group" style="justify-content: flex-end;">
+            <button type="button" class="btn btn-ghost btn-sm" data-edit-texture="${escapeHtml(row.id)}">Modifier</button>
+            <button type="button" class="btn btn-ghost btn-sm text-danger" data-delete-texture="${escapeHtml(row.id)}">Supprimer</button>
+          </div>
+        </td>
+      </tr>
+    `).join("");
+
+    list.querySelectorAll("[data-edit-texture]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const item = libraryTextures.find((t) => t.id === btn.dataset.editTexture);
+        if (item) editTexture(item);
+      });
+    });
+
+    list.querySelectorAll("[data-delete-texture]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        void deleteTexture(btn.dataset.deleteTexture);
+      });
+    });
+  }
+
+  function editTexture(item) {
+    document.getElementById("library-id").value = item.id;
+    document.getElementById("library-name").value = item.name;
+    document.getElementById("library-category").value = item.category;
+    document.getElementById("library-color").value = item.color;
+    document.getElementById("library-url").value = item.url;
+    
+    updatePreviewImage(item.url);
+
+    document.getElementById("library-cancel-btn").style.display = "inline-block";
+    document.getElementById("library-form-desc").textContent = "Modification de la texture active.";
+    
+    const panel = document.getElementById("panel-library");
+    if (panel) panel.scrollTop = 0;
+  }
+
+  function resetLibraryForm() {
+    document.getElementById("library-id").value = "";
+    document.getElementById("library-form").reset();
+    updatePreviewImage("");
+    document.getElementById("library-cancel-btn").style.display = "none";
+    document.getElementById("library-form-desc").textContent = "Création d'une nouvelle texture.";
+  }
+
+  async function deleteTexture(id) {
+    if (!confirm("Voulez-vous vraiment supprimer cette texture de la bibliothèque ?")) return;
+    try {
+      const res = await adminRequest("library-delete", { id });
+      if (!res.ok) throw new Error(res.error);
+      addLog("s", "Texture supprimée de la bibliothèque");
+      await loadLibrary();
+    } catch (err) {
+      alert(`Erreur lors de la suppression : ${err.message}`);
+      addLog("e", `Erreur suppression texture : ${err.message}`);
+    }
+  }
+
+  function nearestPowerOfTwo(value) {
+    return Math.pow(2, Math.round(Math.log(value) / Math.log(2)));
+  }
+
+  function optimizeTexture(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let w = nearestPowerOfTwo(img.width);
+          let h = nearestPowerOfTwo(img.height);
+          w = Math.min(w, 1024);
+          h = Math.min(h, 1024);
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
+          ctx.drawImage(img, 0, 0, w, h);
+          canvas.toBlob((blob) => {
+            if (blob) {
+              resolve({ blob, w, h });
+            } else {
+              reject(new Error("Erreur de compression."));
+            }
+          }, "image/webp", 0.85);
+        };
+        img.onerror = () => reject(new Error("Impossible de charger l'image."));
+        img.src = e.target.result;
+      };
+      reader.onerror = () => reject(new Error("Impossible de lire le fichier."));
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function handleTextureUpload(file) {
+    const progressDiv = document.getElementById("library-upload-progress");
+    const progressBar = document.getElementById("upload-progress-bar");
+    const progressText = document.getElementById("upload-status-text");
+    if (!progressDiv || !progressBar || !progressText) return;
+
+    progressDiv.style.display = "block";
+    progressBar.style.width = "20%";
+    progressText.textContent = "Optimisation de l'image (Puissance de 2, WebP)...";
+
+    try {
+      const { blob, w, h } = await optimizeTexture(file);
+      progressBar.style.width = "50%";
+      progressText.textContent = `Image optimisée en ${w}x${h} (WebP). Envoi vers le stockage...`;
+
+      if (!supabase) throw new Error("Supabase n'est pas configuré.");
+      const path = `texture-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.webp`;
+      const { error } = await supabase.storage.from("textures-library").upload(path, blob, {
+        contentType: "image/webp",
+        cacheControl: "31536000"
+      });
+
+      if (error) throw error;
+      progressBar.style.width = "90%";
+      progressText.textContent = "Envoi terminé. Génération du lien...";
+
+      const { data: urlData } = supabase.storage.from("textures-library").getPublicUrl(path);
+      const publicUrl = urlData.publicUrl;
+
+      document.getElementById("library-url").value = publicUrl;
+      updatePreviewImage(publicUrl);
+
+      progressBar.style.width = "100%";
+      progressText.textContent = "Téléchargé et optimisé avec succès !";
+      setTimeout(() => { progressDiv.style.display = "none"; }, 2000);
+      addLog("s", `Texture téléversée : ${w}x${h} WebP`);
+    } catch (err) {
+      progressBar.style.width = "0%";
+      progressText.textContent = `Erreur : ${err.message}`;
+      addLog("e", `Erreur d'envoi texture : ${err.message}`);
+    }
+  }
+
+  function updatePreviewImage(url) {
+    const previewImg = document.getElementById("library-preview-img");
+    const previewPlaceholder = document.getElementById("library-preview-placeholder");
+    if (!previewImg || !previewPlaceholder) return;
+    if (url && url.startsWith("http")) {
+      previewImg.src = url;
+      previewImg.style.display = "block";
+      previewPlaceholder.style.display = "none";
+    } else {
+      previewImg.src = "";
+      previewImg.style.display = "none";
+      previewPlaceholder.style.display = "block";
+    }
+  }
+
+  // Bind library events once loaded
+  document.getElementById("library-url")?.addEventListener("input", (e) => {
+    updatePreviewImage(e.target.value.trim());
+  });
+
+  document.getElementById("library-file")?.addEventListener("change", (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      void handleTextureUpload(file);
+    }
+  });
+
+  document.getElementById("library-form")?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const id = document.getElementById("library-id").value.trim() || undefined;
+    const name = document.getElementById("library-name").value.trim();
+    const category = document.getElementById("library-category").value;
+    const color = document.getElementById("library-color").value;
+    const url = document.getElementById("library-url").value.trim();
+
+    try {
+      const res = await adminRequest("library-upsert", { id, name, category, color, url });
+      if (!res.ok) throw new Error(res.error);
+      addLog("s", id ? `Texture « ${name} » modifiée` : `Texture « ${name} » créée`);
+      resetLibraryForm();
+      await loadLibrary();
+    } catch (err) {
+      alert(`Erreur d'enregistrement : ${err.message}`);
+      addLog("e", `Erreur enregistrement texture : ${err.message}`);
+    }
+  });
+
+  document.getElementById("library-cancel-btn")?.addEventListener("click", () => {
+    resetLibraryForm();
+  });
 
   document.querySelectorAll("[data-refresh]").forEach((button) => button.addEventListener("click", () => void loadPanel(button.dataset.refresh)));
   document.getElementById("refresh-releases-btn")?.addEventListener("click", () => void loadReleases());
