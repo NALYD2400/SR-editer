@@ -315,8 +315,9 @@
 
           <!-- Users -->
           <section class="admin-panel" id="panel-users">
+            <div class="users-management-grid">
             <!-- User management form -->
-            <form id="user-manage-form" class="glass-card panel-card vercel-card-form" style="margin-bottom: 24px;">
+            <form id="user-manage-form" class="glass-card panel-card vercel-card-form users-create-card" style="margin-bottom: 24px;">
               <div class="vercel-card-body">
                 <div class="panel-card-header">
                   <h3>Créer un nouveau compte d'accès</h3>
@@ -356,7 +357,7 @@
             </form>
 
             <!-- Users List card -->
-            <div class="glass-card panel-card">
+            <div class="glass-card panel-card users-list-card">
               <div class="panel-card-header" style="display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
                   <h3>Utilisateurs</h3>
@@ -378,6 +379,7 @@
                   <tbody id="users-tbody"></tbody>
                 </table>
               </div>
+            </div>
             </div>
           </section>
 
@@ -422,7 +424,7 @@
                 <div class="action-buttons-title">Actions administratives</div>
                 <div class="user-action-grid">
                   <button type="button" class="btn btn-primary" id="save-detail-btn">Enregistrer</button>
-                  <button type="button" class="btn btn-secondary" id="reset-password-btn">Lien de récupération</button>
+                  <button type="button" class="btn btn-secondary" id="reset-password-btn">Envoyer un e-mail de récupération</button>
                   <button type="button" class="btn btn-secondary" id="confirm-email-btn">Confirmer l'e-mail</button>
                   <button type="button" class="btn btn-secondary" id="toggle-ban-btn">Bannir / Débannir</button>
                   <button type="button" class="btn btn-secondary" id="show-devices-btn">Appareils</button>
@@ -451,6 +453,13 @@
                     <div class="perm-text">
                       <strong>Explorateur GTA</strong>
                       <small>Navigation dans les fichiers GTA et RPF.</small>
+                    </div>
+                  </label>
+                  <label class="app-permission-row">
+                    <input type="checkbox" data-app-permission="converter" />
+                    <div class="perm-text">
+                      <strong>Import & conversion</strong>
+                      <small>Import des assets dans GTA/FiveM et conversion des formats.</small>
                     </div>
                   </label>
                   <label class="app-permission-row">
@@ -799,7 +808,7 @@
           <!-- Textures Library -->
           <section class="admin-panel" id="panel-library">
             <!-- Upload / Add Form -->
-            <form id="library-form" class="glass-card panel-card vercel-card-form">
+            <form id="library-form" class="glass-card panel-card vercel-card-form library-create-card">
               <div class="vercel-card-body">
                 <div class="panel-card-header">
                   <h3>Ajouter une texture à la bibliothèque</h3>
@@ -808,7 +817,7 @@
                 
                 <input type="hidden" id="library-id" />
                 
-                <div class="horizontal-form-grid" style="grid-template-columns: 2fr 1fr 1fr; gap: 15px;">
+                <div class="horizontal-form-grid library-meta-grid">
                   <div class="field">
                     <label for="library-name">Nom de la texture</label>
                     <input id="library-name" type="text" required placeholder="Ex: Carbon_Fiber_Gloss" />
@@ -851,16 +860,17 @@
                   </div>
                 </div>
 
-                <div class="horizontal-form-grid" style="grid-template-columns: 2fr 1fr; gap: 15px; margin-top: 12px; align-items: flex-end;">
+                <div class="horizontal-form-grid library-source-grid">
                   <div class="field">
                     <label for="library-url">URL de l'image</label>
                     <input id="library-url" type="url" required placeholder="Saisir ou coller un lien direct..." />
                   </div>
                   <div class="field">
-                    <label for="library-file" class="btn btn-ghost btn-sm" style="display: flex; align-items: center; justify-content: center; height: 38px; cursor: pointer; border: 1px dashed var(--border); margin: 0; padding: 0;">
-                      <span>📁 Importer &amp; Optimiser</span>
+                    <label for="library-file" class="library-upload-dropzone">
+                      <span>📁 Importer plusieurs images</span>
+                      <small>PNG, JPG, WEBP · conversion automatique</small>
                     </label>
-                    <input id="library-file" type="file" accept="image/*" style="display: none;" />
+                    <input id="library-file" type="file" accept="image/*" multiple style="display: none;" />
                   </div>
                 </div>
 
@@ -872,12 +882,13 @@
                 </div>
 
                 <!-- Texture Preview Box -->
-                <div class="field" style="margin-top: 14px;">
+                <div class="field library-preview-field">
                   <label>Aperçu de la texture</label>
-                  <div class="texture-preview-box" style="border: 1px solid var(--border); border-radius: var(--radius-md); height: 128px; width: 128px; display: flex; align-items: center; justify-content: center; background: var(--bg-elevated); overflow: hidden; position: relative;">
+                  <div class="texture-preview-box">
                     <img id="library-preview-img" src="" alt="Aperçu" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;" />
                     <span id="library-preview-placeholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 10px;">Sélectionnez ou collez un lien pour afficher l'aperçu</span>
                   </div>
+                  <div id="library-batch-preview" class="library-batch-preview" aria-live="polite"></div>
                 </div>
               </div>
               <div class="vercel-card-footer">
@@ -890,25 +901,13 @@
             </form>
 
             <!-- Textures List -->
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
+            <div class="glass-card panel-card library-list-card">
+              <div class="panel-card-header library-list-header">
                 <h3>Textures enregistrées</h3>
+                <input type="search" id="library-search" placeholder="Rechercher une texture..." aria-label="Rechercher une texture" />
                 <button type="button" class="btn btn-ghost btn-sm" data-refresh="library">Actualiser</button>
               </div>
-              <div style="overflow-x: auto;">
-                <table class="data-table">
-                  <thead>
-                    <tr>
-                      <th style="width: 64px;">Miniature</th>
-                      <th>Nom</th>
-                      <th>Catégorie</th>
-                      <th>Couleur dominante</th>
-                      <th style="text-align: right; width: 180px;">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="library-list-tbody"></tbody>
-                </table>
-              </div>
+              <div id="library-list-tbody" class="texture-library-grid"></div>
             </div>
           </section>
         </div>
@@ -917,7 +916,7 @@
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.3.3"></script>
-    <script src="js/admin.js?v=0.3.3-vercel"></script>
+    <script src="js/admin.js?v=0.3.5-storage-fix"></script>
     <script>
       window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
       window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));

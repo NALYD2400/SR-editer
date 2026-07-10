@@ -9,6 +9,8 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:5000",
   "http://localhost:4313",
   "http://127.0.0.1:4313",
+  "http://localhost:8787",
+  "http://127.0.0.1:8787",
   ...(Deno.env.get("ADMIN_ALLOWED_ORIGINS") ?? "")
     .split(",").map((value) => value.trim()).filter(Boolean)
 ]);
@@ -17,7 +19,7 @@ const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
 const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team", "library"];
-const appPermissionKeys = ["project", "explorer", "assets", "materials", "textures", "modeling", "library", "ai", "settings"];
+const appPermissionKeys = ["project", "explorer", "converter", "assets", "materials", "textures", "modeling", "library", "ai", "settings"];
 
 function appPermissionsOf(value: unknown) {
   const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
@@ -60,6 +62,11 @@ function permissionFor(action: string) {
   if (action.startsWith("team")) return "team";
   if (action.startsWith("library")) return "library";
   return "console";
+}
+
+function isManagedLibraryUrl(value: string) {
+  const prefix = `${supabaseUrl}/storage/v1/object/public/textures-library/`;
+  return value.startsWith(prefix) && value.length <= 2048;
 }
 
 Deno.serve(async (request) => {
@@ -269,13 +276,23 @@ Deno.serve(async (request) => {
     const category = textOf(body.category, 64);
     const color = textOf(body.color, 64);
     const url = textOf(body.url, 2048);
-    if (!name || !category || !color || !url) return json(origin, 400, { ok: false, error: "Tous les champs (nom, catégorie, couleur, URL) sont requis." });
+    if (!name || !category || !color || !isManagedLibraryUrl(url)) return json(origin, 400, { ok: false, error: "Utilise une image de la bibliothèque Supabase gérée par la console." });
     const payload: Record<string, string | undefined> = { name, category, color, url };
     if (id) payload.id = id;
     const { data: upsertedData, error } = await admin.from("library_textures").upsert(payload).select().single();
     if (error) return json(origin, 500, { ok: false, error: error.message });
     await audit(id ? "library.update" : "library.create", "library_texture", upsertedData.id, { name });
     return json(origin, 200, { ok: true, data: upsertedData });
+  }
+  if (action === "library-upload-audit") {
+    const path = textOf(body.path, 512);
+    const width = Number(body.width);
+    const height = Number(body.height);
+    if (!path || !/^texture-[a-z0-9-]+\.webp$/i.test(path) || !Number.isInteger(width) || !Number.isInteger(height)) {
+      return json(origin, 400, { ok: false, error: "Métadonnées de téléversement invalides." });
+    }
+    await audit("library.upload", "storage_object", path, { width, height });
+    return json(origin, 200, { ok: true });
   }
   if (action === "library-delete") {
     const id = textOf(body.id, 64);
@@ -389,9 +406,11 @@ Deno.serve(async (request) => {
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "reset-password") {
-    const { data, error } = await admin.auth.admin.generateLink({ type: "recovery", email: targetEmail });
+    const { error } = await admin.auth.resetPasswordForEmail(targetEmail, {
+      redirectTo: Deno.env.get("PUBLIC_SITE_URL") ?? "https://sr-editer.vercel.app/"
+    });
     if (!error) await audit("user.password_recovery", "user", target.id);
-    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, actionLink: data.properties?.action_link ?? null });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "delete") {
     if (target.id === caller.id) return json(origin, 409, { ok: false, error: "Tu ne peux pas supprimer ton propre compte." });

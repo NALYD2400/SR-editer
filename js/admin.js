@@ -10,6 +10,7 @@
   let currentTickets = [];
   let ticketFilter = "all";
   let ticketSearch = "";
+  let consoleAccess = null;
 
   if (window.supabase && config.supabaseUrl && config.supabaseAnonKey) {
     supabase = window.supabase.createClient(config.supabaseUrl, config.supabaseAnonKey);
@@ -262,7 +263,8 @@
   }
 
   function applyAccess(access) {
-    const mapping = { overview: "console", users: "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team", library: "library" };
+    const mapping = { overview: "console", users: "users", "user-detail": "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team", library: "library" };
+    consoleAccess = { access, mapping };
     navLinks.forEach((link) => {
       const panel = link.getAttribute("data-panel");
       const allowed = access.level === "owner" || Boolean(access.permissions?.[mapping[panel]]);
@@ -282,6 +284,8 @@
     if (sidebarEmail) sidebarEmail.textContent = email;
 
     refreshAll();
+    const requestedPanel = window.location.hash.replace(/^#/, "");
+    if (requestedPanel) showPanel(requestedPanel);
     // Load system integrity checks in the background
     void loadSystem();
   }
@@ -324,6 +328,12 @@
   });
 
   function showPanel(panelId) {
+    const requiredPermission = consoleAccess?.mapping?.[panelId];
+    const isAllowed = consoleAccess
+      && (consoleAccess.access.level === "owner" || Boolean(consoleAccess.access.permissions?.[requiredPermission]));
+    if (!isAllowed || !document.getElementById(`panel-${panelId}`)) {
+      panelId = "overview";
+    }
     panels.forEach((p) => p.classList.toggle("is-active", p.id === `panel-${panelId}`));
     navLinks.forEach((l) => l.classList.toggle("is-active", l.getAttribute("data-panel") === panelId));
     if (pageTitle) {
@@ -333,6 +343,7 @@
         pageTitle.textContent = "Fiche Profil Membre";
       }
     }
+    if (window.location.hash !== `#${panelId}`) history.replaceState(null, "", `#${panelId}`);
     void loadPanel(panelId);
   }
 
@@ -562,12 +573,9 @@
     const sensitiveOutput = document.getElementById("user-sensitive-output");
     document.getElementById("reset-password-btn").onclick = async () => {
       try {
-        const result = await adminRequest("reset-password", { email });
-        if (sensitiveOutput) {
-          sensitiveOutput.hidden = false;
-          sensitiveOutput.textContent = result.actionLink || "Lien généré, vérifie la configuration email Supabase.";
-        }
-        addLog("s", `Lien de récupération généré pour ${email}.`);
+        await adminRequest("reset-password", { email });
+        if (sensitiveOutput) sensitiveOutput.hidden = true;
+        addLog("s", `E-mail de récupération envoyé à ${email}.`);
       } catch (reason) { addLog("e", String(reason)); }
     };
     const confirmEmailBtn = document.getElementById("confirm-email-btn");
@@ -1264,6 +1272,7 @@
 
       const { data: urlData } = supabase.storage.from("textures-library").getPublicUrl(path);
       const publicUrl = urlData.publicUrl;
+      await adminRequest("library-upload-audit", { path, width: w, height: h });
 
       document.getElementById("library-url").value = publicUrl;
       updatePreviewImage(publicUrl);
@@ -1294,17 +1303,178 @@
     }
   }
 
+  // Compact library renderer and batch upload workflow.
+  function renderLibraryList() {
+    const list = document.getElementById("library-list-tbody");
+    if (!list) return;
+    const query = (document.getElementById("library-search")?.value || "").trim().toLowerCase();
+    const rows = query
+      ? libraryTextures.filter((row) => [row.name, row.category, row.color].some((value) => String(value || "").toLowerCase().includes(query)))
+      : libraryTextures;
+
+    if (rows.length === 0) {
+      list.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1; padding: 28px; color: var(--muted); text-align: center;">${query ? "Aucune texture ne correspond à votre recherche." : "Aucune texture enregistrée."}</div>`;
+      return;
+    }
+
+    list.innerHTML = rows.map((row) => `
+      <article class="texture-library-card" data-id="${escapeHtml(row.id)}">
+        <div class="texture-card-media">
+          <img src="${escapeHtml(row.url)}" alt="${escapeHtml(row.name)}" loading="lazy" onerror="this.src='assets/logo_small.png'" />
+        </div>
+        <div class="texture-card-body">
+          <div class="texture-card-name" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>
+          <div class="texture-card-meta">
+            <span class="badge badge-category">${escapeHtml(row.category)}</span>
+            <span class="badge badge-color" style="background: ${getColorHex(row.color)}; color: ${getColorText(row.color)};">${escapeHtml(row.color)}</span>
+          </div>
+          <div class="texture-card-actions">
+            <button type="button" class="btn btn-ghost btn-sm" data-edit-texture="${escapeHtml(row.id)}">Modifier</button>
+            <button type="button" class="btn btn-ghost btn-sm text-danger" data-delete-texture="${escapeHtml(row.id)}">Supprimer</button>
+          </div>
+        </div>
+      </article>
+    `).join("");
+
+    list.querySelectorAll("[data-edit-texture]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const item = libraryTextures.find((texture) => texture.id === btn.dataset.editTexture);
+        if (item) editTexture(item);
+      });
+    });
+    list.querySelectorAll("[data-delete-texture]").forEach((btn) => {
+      btn.addEventListener("click", () => void deleteTexture(btn.dataset.deleteTexture));
+    });
+  }
+
+  async function loadLibrary() {
+    const list = document.getElementById("library-list-tbody");
+    if (!list) return;
+    list.innerHTML = '<div class="loading-state" style="grid-column: 1 / -1; padding: 28px; color: var(--muted); text-align: center;">Chargement des textures...</div>';
+    try {
+      const data = await adminRequest("library-list");
+      if (!data.ok) throw new Error(data.error);
+      libraryTextures = data.rows ?? [];
+      renderLibraryList();
+    } catch (reason) {
+      list.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1; padding: 28px; color: var(--danger); text-align: center;">Erreur : ${escapeHtml(reason.message || reason)}</div>`;
+    }
+  }
+
+  function renderBatchPreview(files) {
+    const preview = document.getElementById("library-batch-preview");
+    if (!preview) return;
+    preview.innerHTML = Array.from(files).slice(0, 12).map((file) => `
+      <div class="library-batch-thumb" title="${escapeHtml(file.name)}">
+        <img src="${URL.createObjectURL(file)}" alt="" />
+        <span>${escapeHtml(file.name)}</span>
+      </div>
+    `).join("");
+  }
+
+  async function uploadTextureFile(file, reportProgress) {
+    const { blob, w, h } = await optimizeTexture(file);
+    reportProgress?.(50, `Image optimisée en ${w}×${h}. Envoi vers le stockage...`);
+    if (!supabase) throw new Error("Supabase n'est pas configuré.");
+    const path = `texture-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.webp`;
+    const { error } = await supabase.storage.from("textures-library").upload(path, blob, {
+      contentType: "image/webp",
+      cacheControl: "31536000"
+    });
+    if (error) throw error;
+    const { data: urlData } = supabase.storage.from("textures-library").getPublicUrl(path);
+    const publicUrl = urlData.publicUrl;
+    await adminRequest("library-upload-audit", { path, width: w, height: h });
+    reportProgress?.(100, "Image enregistrée.");
+    return { publicUrl, path, w, h };
+  }
+
+  function libraryErrorMessage(error) {
+    const message = String(error?.message || error || "Erreur inconnue");
+    if (/bucket not found|bucket introuvable/i.test(message)) {
+      return "Le bucket Storage « textures-library » est introuvable. Crée-le dans Supabase Storage, puis exécute la migration 20260710_storage_library_access_fix.sql.";
+    }
+    if (/superadmin_access|row-level security|permission denied/i.test(message)) {
+      return "La policy Storage Supabase refuse cet utilisateur. Exécute la migration 20260710_storage_library_access_fix.sql puis reconnecte-toi.";
+    }
+    return message;
+  }
+
+  async function handleTextureUpload(file) {
+    const progressDiv = document.getElementById("library-upload-progress");
+    const progressBar = document.getElementById("upload-progress-bar");
+    const progressText = document.getElementById("upload-status-text");
+    if (!progressDiv || !progressBar || !progressText) return;
+    progressDiv.style.display = "block";
+    progressBar.style.width = "20%";
+    progressText.textContent = "Optimisation de l'image...";
+    try {
+      const result = await uploadTextureFile(file, (percent, message) => {
+        progressBar.style.width = `${percent}%`;
+        progressText.textContent = message;
+      });
+      document.getElementById("library-url").value = result.publicUrl;
+      updatePreviewImage(result.publicUrl);
+      progressText.textContent = `Téléchargé et optimisé (${result.w}×${result.h}).`;
+      addLog("s", `Texture téléversée : ${result.w}×${result.h} WebP`);
+      setTimeout(() => { progressDiv.style.display = "none"; }, 1800);
+    } catch (err) {
+      progressBar.style.width = "0%";
+      const message = libraryErrorMessage(err);
+      progressText.textContent = `Erreur : ${message}`;
+      addLog("e", `Erreur d'envoi texture : ${message}`);
+    }
+  }
+
+  async function handleTextureBatchUpload(files) {
+    const selected = Array.from(files || []).filter((file) => file.type.startsWith("image/"));
+    if (selected.length < 2) {
+      if (selected[0]) void handleTextureUpload(selected[0]);
+      return;
+    }
+    const progressDiv = document.getElementById("library-upload-progress");
+    const progressBar = document.getElementById("upload-progress-bar");
+    const progressText = document.getElementById("upload-status-text");
+    const category = document.getElementById("library-category").value;
+    const color = document.getElementById("library-color").value;
+    if (!progressDiv || !progressBar || !progressText) return;
+    renderBatchPreview(selected);
+    progressDiv.style.display = "block";
+    let completed = 0;
+    const failures = [];
+    for (const file of selected) {
+      try {
+        progressText.textContent = `Import ${completed + 1}/${selected.length} : ${file.name}`;
+        const result = await uploadTextureFile(file, (percent) => {
+          progressBar.style.width = `${Math.round(((completed + percent / 100) / selected.length) * 100)}%`;
+        });
+        const baseName = file.name.replace(/\.[^/.]+$/, "").trim() || `Texture ${completed + 1}`;
+        const res = await adminRequest("library-upsert", { name: baseName, category, color, url: result.publicUrl });
+        if (!res.ok) throw new Error(res.error);
+        completed += 1;
+      } catch (error) {
+        failures.push(`${file.name} : ${libraryErrorMessage(error)}`);
+      }
+    }
+    progressBar.style.width = "100%";
+    progressText.textContent = failures.length
+      ? `${completed}/${selected.length} images importées. ${failures.length} échec(s).`
+      : `${completed} images importées et publiées.`;
+    addLog(failures.length ? "e" : "s", `Import multiple : ${completed}/${selected.length} texture(s)`);
+    document.getElementById("library-file").value = "";
+    await loadLibrary();
+  }
+
   // Bind library events once loaded
   document.getElementById("library-url")?.addEventListener("input", (e) => {
     updatePreviewImage(e.target.value.trim());
   });
 
   document.getElementById("library-file")?.addEventListener("change", (e) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      void handleTextureUpload(file);
-    }
+    if (e.target.files?.length) void handleTextureBatchUpload(e.target.files);
   });
+
+  document.getElementById("library-search")?.addEventListener("input", () => renderLibraryList());
 
   document.getElementById("library-form")?.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1497,7 +1667,7 @@
     bg.style.backgroundImage = `url("${window.wallpaperUrl(window.SR_WALLPAPERS[12])}")`;
   }
 
-  localPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
+  localPreview = demoMode && ["127.0.0.1", "localhost"].includes(window.location.hostname)
     && new URLSearchParams(window.location.search).get("preview") === "1";
   if (localPreview) showDashboard("preview-local@sr-editer");
   else checkSession();
