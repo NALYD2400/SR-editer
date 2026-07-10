@@ -1114,7 +1114,7 @@
     return isLight ? "#000000" : "#ffffff";
   }
 
-  async function loadLibrary() {
+  async function loadLibraryLegacy() {
     const list = document.getElementById("library-list-tbody");
     if (!list) return;
     list.innerHTML = '<tr><td colspan="5" class="loading-state" style="text-align: center; padding: 20px; color: var(--muted);">Chargement des textures...</td></tr>';
@@ -1128,7 +1128,7 @@
     }
   }
 
-  function renderLibraryList() {
+  function renderLibraryListLegacy() {
     const list = document.getElementById("library-list-tbody");
     if (!list) return;
 
@@ -1244,7 +1244,7 @@
     });
   }
 
-  async function handleTextureUpload(file) {
+  async function handleTextureUploadLegacy(file) {
     const progressDiv = document.getElementById("library-upload-progress");
     const progressBar = document.getElementById("upload-progress-bar");
     const progressText = document.getElementById("upload-status-text");
@@ -1302,6 +1302,10 @@
       previewPlaceholder.style.display = "block";
     }
   }
+
+  void loadLibraryLegacy;
+  void renderLibraryListLegacy;
+  void handleTextureUploadLegacy;
 
   // Compact library renderer and batch upload workflow.
   function renderLibraryList() {
