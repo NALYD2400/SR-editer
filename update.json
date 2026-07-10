@@ -1,10 +1,10 @@
 {
   "version": "0.4.0",
   "notes": "SR Editer 0.4.0 — nouvelle version stable.",
-  "pub_date": "2026-07-06T20:25:27.639Z",
+  "pub_date": "2026-07-10T16:13:08.660Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT0tSSUV6U1A5N3pFVXRwekpwaEMwQ0xDekMzTnRWRy8zMlBsbTEzS3JIRGN6Nm1Kb005SE5VdkFJQ1J4TEozeTFxaS95M3dpVlArWHllY0NwYjlyckFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzMzY5NTI3CWZpbGU6U1IgRWRpdGVyXzAuMy40X3g2NC1zZXR1cC5leGUKV00vbkFkTG5DcnI2SU01emxHR3BqU1l3UitTbjRUcTgrbHM3anRCRk9XM1NLQTRMb1N4QlZ3OGxQWjRoTGJtQWl2V0lDUjA1TGdJY2dVcmNKQXpUQUE9PQo=",
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT09wV1ZXdmtFcm1IM1VjNWgzM1YyRnJOQ0plQWxhTjZuNkcyNE1ySTlNam9wQ0NzRXI5dExDU1FmbllOMU5OQ2ltci9Zd0dUby83TW5RNzFpTEg4SGc0PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNjk5OTg4CWZpbGU6U1IgRWRpdGVyXzAuNC4wX3g2NC1zZXR1cC5leGUKeUV1VHlSZC9BdTBmMHdVQnlOeVZuaVE0K3RsSHBHSXlvL1ZSMGlyd25Rb1loeWlLa3ZwNk1IRk1SaE5ObUtLTWg0ci9BT3FRK1V6cDY0VXhBeUpsQ0E9PQo=",
       "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.4.0/SR.Editer_0.4.0_x64-setup.exe"
     }
   }
