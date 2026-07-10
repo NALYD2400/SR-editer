@@ -1,11 +1,11 @@
 {
-  "version": "0.3.4",
-  "notes": "SR Editer 0.3.4 — nouvelle version stable.",
+  "version": "0.4.0",
+  "notes": "SR Editer 0.4.0 — nouvelle version stable.",
   "pub_date": "2026-07-06T20:25:27.639Z",
   "platforms": {
     "windows-x86_64": {
       "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT0tSSUV6U1A5N3pFVXRwekpwaEMwQ0xDekMzTnRWRy8zMlBsbTEzS3JIRGN6Nm1Kb005SE5VdkFJQ1J4TEozeTFxaS95M3dpVlArWHllY0NwYjlyckFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzMzY5NTI3CWZpbGU6U1IgRWRpdGVyXzAuMy40X3g2NC1zZXR1cC5leGUKV00vbkFkTG5DcnI2SU01emxHR3BqU1l3UitTbjRUcTgrbHM3anRCRk9XM1NLQTRMb1N4QlZ3OGxQWjRoTGJtQWl2V0lDUjA1TGdJY2dVcmNKQXpUQUE9PQo=",
-      "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.3.4/SR.Editer_0.3.4_x64-setup.exe"
+      "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.4.0/SR.Editer_0.4.0_x64-setup.exe"
     }
   }
 }

@@ -1089,6 +1089,7 @@
 
   // --- Textures Library CRUD ---
   let libraryTextures = [];
+  let selectedBatchFiles = [];
 
   function getColorHex(colorName) {
     const map = {
@@ -1192,6 +1193,8 @@
     updatePreviewImage("");
     document.getElementById("library-cancel-btn").style.display = "none";
     document.getElementById("library-form-desc").textContent = "Création d'une nouvelle texture.";
+    selectedBatchFiles = [];
+    renderBatchPreview();
   }
 
   async function deleteTexture(id) {
@@ -1365,16 +1368,6 @@
     }
   }
 
-  function renderBatchPreview(files) {
-    const preview = document.getElementById("library-batch-preview");
-    if (!preview) return;
-    preview.innerHTML = Array.from(files).slice(0, 12).map((file) => `
-      <div class="library-batch-thumb" title="${escapeHtml(file.name)}">
-        <img src="${URL.createObjectURL(file)}" alt="" />
-        <span>${escapeHtml(file.name)}</span>
-      </div>
-    `).join("");
-  }
 
   async function uploadTextureFile(file, reportProgress) {
     const { blob, w, h } = await optimizeTexture(file);
@@ -1404,69 +1397,163 @@
     return message;
   }
 
-  async function handleTextureUpload(file) {
-    const progressDiv = document.getElementById("library-upload-progress");
-    const progressBar = document.getElementById("upload-progress-bar");
-    const progressText = document.getElementById("upload-status-text");
-    if (!progressDiv || !progressBar || !progressText) return;
-    progressDiv.style.display = "block";
-    progressBar.style.width = "20%";
-    progressText.textContent = "Optimisation de l'image...";
-    try {
-      const result = await uploadTextureFile(file, (percent, message) => {
-        progressBar.style.width = `${percent}%`;
-        progressText.textContent = message;
+
+  function addFilesToBatch(files) {
+    const selected = Array.from(files || []).filter((file) => file.type.startsWith("image/"));
+    if (selected.length === 0) return;
+    
+    const defaultCategory = document.getElementById("library-category").value;
+    const defaultColor = document.getElementById("library-color").value;
+    
+    selected.forEach(file => {
+      selectedBatchFiles.push({
+        id: Math.random().toString(36).substring(2, 9),
+        file,
+        name: file.name.replace(/\.[^/.]+$/, "").trim() || "Sans titre",
+        category: defaultCategory,
+        color: defaultColor
       });
-      document.getElementById("library-url").value = result.publicUrl;
-      updatePreviewImage(result.publicUrl);
-      progressText.textContent = `Téléchargé et optimisé (${result.w}×${result.h}).`;
-      addLog("s", `Texture téléversée : ${result.w}×${result.h} WebP`);
-      setTimeout(() => { progressDiv.style.display = "none"; }, 1800);
-    } catch (err) {
-      progressBar.style.width = "0%";
-      const message = libraryErrorMessage(err);
-      progressText.textContent = `Erreur : ${message}`;
-      addLog("e", `Erreur d'envoi texture : ${message}`);
-    }
+    });
+    
+    renderBatchPreview();
+    updatePreviewImage("");
   }
 
-  async function handleTextureBatchUpload(files) {
-    const selected = Array.from(files || []).filter((file) => file.type.startsWith("image/"));
-    if (selected.length < 2) {
-      if (selected[0]) void handleTextureUpload(selected[0]);
+  function renderBatchPreview() {
+    const preview = document.getElementById("library-batch-preview");
+    if (!preview) return;
+    
+    const submitBtn = document.getElementById("library-submit-btn");
+    const cancelBtn = document.getElementById("library-cancel-btn");
+    
+    if (selectedBatchFiles.length === 0) {
+      preview.innerHTML = "";
+      if (submitBtn) {
+        submitBtn.textContent = "Enregistrer la texture";
+        submitBtn.disabled = false;
+      }
       return;
     }
+    
+    if (submitBtn) {
+      submitBtn.textContent = `Enregistrer les textures (${selectedBatchFiles.length})`;
+      submitBtn.disabled = false;
+    }
+    if (cancelBtn) {
+      cancelBtn.style.display = "inline-block";
+    }
+    
+    const categories = ["Métal", "Bois", "Brique", "Béton", "Plâtre", "Tissu/Cuir", "Carbone/Plastique", "Verre", "Pierre", "Néon/Lumière", "Peinture", "Sol/Asphalte", "Motif", "Autre"];
+    const colors = ["Noir", "Blanc", "Gris", "Rouge", "Bleu", "Vert", "Jaune", "Orange", "Violet", "Rose", "Marron", "Beige", "Multicolore"];
+    
+    preview.innerHTML = selectedBatchFiles.map((item, index) => {
+      const categoryOptions = categories.map(cat => 
+        `<option value="${cat}" ${item.category === cat ? "selected" : ""}>${cat}</option>`
+      ).join("");
+      
+      const colorOptions = colors.map(col => 
+        `<option value="${col}" ${item.color === col ? "selected" : ""}>${col}</option>`
+      ).join("");
+      
+      return `
+        <div class="library-batch-item" data-index="${index}">
+          <div class="batch-item-preview">
+            <img src="${URL.createObjectURL(item.file)}" alt="" />
+          </div>
+          <div class="batch-item-fields">
+            <input type="text" class="batch-item-name" value="${escapeHtml(item.name)}" placeholder="Nom de la texture" />
+            <div class="batch-item-selects">
+              <select class="batch-item-category">
+                ${categoryOptions}
+              </select>
+              <select class="batch-item-color">
+                ${colorOptions}
+              </select>
+            </div>
+          </div>
+          <button type="button" class="batch-item-remove-btn" data-remove="${index}" title="Supprimer">×</button>
+        </div>
+      `;
+    }).join("");
+    
+    preview.querySelectorAll(".library-batch-item").forEach(itemEl => {
+      const index = parseInt(itemEl.dataset.index);
+      
+      itemEl.querySelector(".batch-item-name").addEventListener("input", (e) => {
+        selectedBatchFiles[index].name = e.target.value.trim();
+      });
+      
+      itemEl.querySelector(".batch-item-category").addEventListener("change", (e) => {
+        selectedBatchFiles[index].category = e.target.value;
+      });
+      
+      itemEl.querySelector(".batch-item-color").addEventListener("change", (e) => {
+        selectedBatchFiles[index].color = e.target.value;
+      });
+      
+      itemEl.querySelector(".batch-item-remove-btn").addEventListener("click", () => {
+        selectedBatchFiles.splice(index, 1);
+        renderBatchPreview();
+      });
+    });
+  }
+
+  async function uploadBatchFiles() {
     const progressDiv = document.getElementById("library-upload-progress");
     const progressBar = document.getElementById("upload-progress-bar");
     const progressText = document.getElementById("upload-status-text");
-    const category = document.getElementById("library-category").value;
-    const color = document.getElementById("library-color").value;
-    if (!progressDiv || !progressBar || !progressText) return;
-    renderBatchPreview(selected);
+    const submitBtn = document.getElementById("library-submit-btn");
+    
+    if (!progressDiv || !progressBar || !progressText || !submitBtn) return;
+    
+    submitBtn.disabled = true;
     progressDiv.style.display = "block";
+    progressBar.style.width = "0%";
+    
     let completed = 0;
     const failures = [];
-    for (const file of selected) {
+    const total = selectedBatchFiles.length;
+    const remainingBatch = [];
+    
+    for (let i = 0; i < selectedBatchFiles.length; i++) {
+      const item = selectedBatchFiles[i];
       try {
-        progressText.textContent = `Import ${completed + 1}/${selected.length} : ${file.name}`;
-        const result = await uploadTextureFile(file, (percent) => {
-          progressBar.style.width = `${Math.round(((completed + percent / 100) / selected.length) * 100)}%`;
+        progressText.textContent = `Import ${completed + 1}/${total} : ${item.name}`;
+        const result = await uploadTextureFile(item.file, (percent) => {
+          progressBar.style.width = `${Math.round(((completed + percent / 100) / total) * 100)}%`;
         });
-        const baseName = file.name.replace(/\.[^/.]+$/, "").trim() || `Texture ${completed + 1}`;
-        const res = await adminRequest("library-upsert", { name: baseName, category, color, url: result.publicUrl });
+        const res = await adminRequest("library-upsert", {
+          name: item.name,
+          category: item.category,
+          color: item.color,
+          url: result.publicUrl
+        });
         if (!res.ok) throw new Error(res.error);
         completed += 1;
       } catch (error) {
-        failures.push(`${file.name} : ${libraryErrorMessage(error)}`);
+        failures.push(`${item.file.name} : ${libraryErrorMessage(error)}`);
+        remainingBatch.push(item);
       }
     }
+    
+    selectedBatchFiles = remainingBatch;
     progressBar.style.width = "100%";
     progressText.textContent = failures.length
-      ? `${completed}/${selected.length} images importées. ${failures.length} échec(s).`
+      ? `${completed}/${total} images importées. ${failures.length} échec(s).`
       : `${completed} images importées et publiées.`;
-    addLog(failures.length ? "e" : "s", `Import multiple : ${completed}/${selected.length} texture(s)`);
-    document.getElementById("library-file").value = "";
-    await loadLibrary();
+      
+    addLog(failures.length ? "e" : "s", `Import multiple : ${completed}/${total} texture(s)`);
+    
+    setTimeout(() => {
+      progressDiv.style.display = "none";
+      submitBtn.disabled = false;
+      if (failures.length === 0) {
+        resetLibraryForm();
+      } else {
+        renderBatchPreview();
+      }
+      void loadLibrary();
+    }, 2000);
   }
 
   // Bind library events once loaded
@@ -1475,13 +1562,50 @@
   });
 
   document.getElementById("library-file")?.addEventListener("change", (e) => {
-    if (e.target.files?.length) void handleTextureBatchUpload(e.target.files);
+    if (e.target.files?.length) {
+      addFilesToBatch(e.target.files);
+      e.target.value = "";
+    }
   });
+
+  // Bind Drag & Drop
+  const dropzone = document.querySelector(".library-upload-dropzone");
+  if (dropzone) {
+    ["dragenter", "dragover"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.add("drag-over");
+      }, false);
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dropzone.classList.remove("drag-over");
+      }, false);
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files?.length) {
+        addFilesToBatch(files);
+      }
+    }, false);
+  }
 
   document.getElementById("library-search")?.addEventListener("input", () => renderLibraryList());
 
   document.getElementById("library-form")?.addEventListener("submit", async (event) => {
     event.preventDefault();
+    
+    if (selectedBatchFiles.length > 0) {
+      void uploadBatchFiles();
+      return;
+    }
+    
     const id = document.getElementById("library-id").value.trim() || undefined;
     const name = document.getElementById("library-name").value.trim();
     const category = document.getElementById("library-category").value;

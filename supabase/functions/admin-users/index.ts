@@ -9,6 +9,8 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:5000",
   "http://localhost:4313",
   "http://127.0.0.1:4313",
+  "http://localhost:8080",
+  "http://127.0.0.1:8080",
   "http://localhost:8787",
   "http://127.0.0.1:8787",
   ...(Deno.env.get("ADMIN_ALLOWED_ORIGINS") ?? "")
@@ -66,7 +68,8 @@ function permissionFor(action: string) {
 
 function isManagedLibraryUrl(value: string) {
   const prefix = `${supabaseUrl}/storage/v1/object/public/textures-library/`;
-  return value.startsWith(prefix) && value.length <= 2048;
+  const vercelPrefix = "https://sr-editer.vercel.app/assets/textures/";
+  return (value.startsWith(prefix) || value.startsWith(vercelPrefix)) && value.length <= 2048;
 }
 
 Deno.serve(async (request) => {
