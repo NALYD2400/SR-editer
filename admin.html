@@ -96,6 +96,14 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span class="nav-title">Utilisateurs</span>
           </button>
+          <button type="button" class="sidebar-link" data-panel="subscriptions">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+            <span class="nav-title">Abonnements</span>
+          </button>
+          <button type="button" class="sidebar-link" data-panel="coupons">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            <span class="nav-title">Coupons</span>
+          </button>
           <button type="button" class="sidebar-link" data-panel="licenses">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
             <span class="nav-title">Licences</span>
@@ -527,6 +535,61 @@
           </section>
 
           <!-- Licences -->
+          <section class="admin-panel" id="panel-subscriptions">
+            <header class="panel-header">
+              <h2>Abonnements</h2>
+              <p>Gérez les abonnements Stripe de vos utilisateurs.</p>
+            </header>
+            <div class="panel-body">
+              <div class="table-container">
+                <table class="data-table" id="subscriptions-table">
+                  <thead>
+                    <tr>
+                      <th>Email</th>
+                      <th>Plan</th>
+                      <th>Statut</th>
+                      <th>Client ID</th>
+                    </tr>
+                  </thead>
+                  <tbody id="subscriptions-tbody">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="admin-panel" id="panel-coupons">
+            <header class="panel-header">
+              <h2>Coupons Stripe</h2>
+              <p>Créez et gérez vos codes de réduction.</p>
+              <div class="panel-actions">
+                <button type="button" class="btn btn-primary" id="btn-create-coupon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Nouveau Coupon
+                </button>
+              </div>
+            </header>
+            <div class="panel-body">
+              <div class="table-container">
+                <table class="data-table" id="coupons-table">
+                  <thead>
+                    <tr>
+                      <th>Code Promo</th>
+                      <th>Réduction</th>
+                      <th>Durée</th>
+                      <th>Utilisations max</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="coupons-tbody">
+                    <!-- Loaded dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
           <section class="admin-panel" id="panel-licenses">
             <form id="license-form" class="glass-card panel-card vercel-card-form">
               <div class="vercel-card-body">

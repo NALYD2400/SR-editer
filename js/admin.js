@@ -31,6 +31,8 @@
   const panelTitles = {
     overview: "Vue d'ensemble",
     users: "Utilisateurs",
+    subscriptions: "Abonnements",
+    coupons: "Coupons Stripe",
     licenses: "Licences & appareils",
     support: "Support",
     contacts: "Contacts",
@@ -44,15 +46,17 @@
   const panelDescriptions = {
     overview: "Surveillez l’activité, l’infrastructure et les accès depuis un seul endroit.",
     users: "Créez les comptes et contrôlez précisément leurs droits dans l’application.",
+    subscriptions: "Consultez les abonnements Stripe actifs et leur statut.",
+    coupons: "Générez des codes promotionnels pour vos produits Stripe.",
     "user-detail": "Gérez le rôle, l’accès et les appareils associés à ce membre.",
     licenses: "Pilotez les offres, les statuts et les quotas d’appareils.",
     support: "Traitez les demandes et échangez directement avec vos utilisateurs.",
     contacts: "Centralisez et qualifiez les messages reçus depuis le site public.",
-    releases: "Préparez, signez et publiez les nouvelles versions de SR Editer.",
-    audit: "Consultez la trace immuable des actions sensibles de la console.",
-    system: "Contrôlez en temps réel la disponibilité des services critiques.",
-    team: "Déléguez la console avec des permissions adaptées à chaque administrateur.",
-    library: "Gérez la bibliothèque de textures de base (ajouter, supprimer, modifier)."
+    releases: "Diffusez les nouvelles versions du logiciel, gérez les patch notes.",
+    audit: "Tracez l'intégralité des événements d'administration et de sécurité.",
+    system: "Surveillez les logs serveurs, les Edge Functions et le statut de la DB.",
+    team: "Gérez les permissions des administrateurs et modérateurs.",
+    library: "Configurez les catégories et l'ordre des textures dans l'application."
   };
 
   panels.forEach((panel) => {
@@ -1083,9 +1087,137 @@
   });
 
   function loadPanel(panelId) {
-    const loaders = { overview: loadDashboard, licenses: loadLicenses, support: loadSupport, contacts: loadContacts, releases: loadReleases, audit: loadAudit, system: loadSystem, team: loadTeam, library: loadLibrary };
+    const loaders = { overview: loadDashboard, users: refreshUsers, subscriptions: loadSubscriptions, coupons: loadCoupons, licenses: loadLicenses, support: loadSupport, contacts: loadContacts, releases: loadReleases, audit: loadAudit, system: loadSystem, team: loadTeam, library: loadLibrary };
     return loaders[panelId]?.();
   }
+
+  // --- Abonnements ---
+  async function loadSubscriptions() {
+    const tbody = document.getElementById("subscriptions-tbody");
+    if (!tbody || !supabase) return;
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-state">Chargement des abonnements...</td></tr>';
+    try {
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("email, subscription_tier, stripe_customer_id")
+        .neq("subscription_tier", "free")
+        .not("subscription_tier", "is", null);
+
+      if (error) throw error;
+      
+      tbody.innerHTML = "";
+      if (!data || data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Aucun abonnement payant actif.</td></tr>';
+        return;
+      }
+
+      data.forEach(sub => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(sub.email || "—")}</strong></td>
+          <td><span class="role-pill ${sub.subscription_tier}">${escapeHtml(sub.subscription_tier.toUpperCase())}</span></td>
+          <td><span style="color: #10b981;">Actif</span></td>
+          <td style="font-family: monospace; font-size: 12px; color: var(--muted);">${escapeHtml(sub.stripe_customer_id || "—")}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="4" class="empty-state" style="color: var(--danger);">Erreur : ${escapeHtml(err.message)}</td></tr>`;
+    }
+  }
+
+  // --- Coupons Stripe ---
+  async function loadCoupons() {
+    const tbody = document.getElementById("coupons-tbody");
+    if (!tbody || !supabase) return;
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-state">Chargement des coupons depuis Stripe...</td></tr>';
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('stripe-coupons', {
+        body: { action: 'list' }
+      });
+      if (error) throw error;
+
+      tbody.innerHTML = "";
+      if (!data.coupons || data.coupons.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Aucun coupon n\\'a été créé.</td></tr>';
+        return;
+      }
+
+      data.coupons.forEach(coupon => {
+        const tr = document.createElement("tr");
+        const isPercent = coupon.percent_off !== null;
+        const discount = isPercent ? \`\${coupon.percent_off}%\` : \`\${(coupon.amount_off / 100).toFixed(2)}€\`;
+        
+        tr.innerHTML = \`
+          <td><strong>\${escapeHtml(coupon.name || coupon.id)}</strong></td>
+          <td>\${discount}</td>
+          <td>\${escapeHtml(coupon.duration)}</td>
+          <td>\${coupon.max_redemptions ? \`\${coupon.times_redeemed} / \${coupon.max_redemptions}\` : "Illimité"}</td>
+          <td style="text-align: right;">
+            <button class="btn-action-delete delete-coupon-btn" data-id="\${coupon.id}">Supprimer</button>
+          </td>
+        \`;
+        
+        tr.querySelector(".delete-coupon-btn").addEventListener("click", async (e) => {
+          if (!confirm("Voulez-vous vraiment supprimer ce coupon ?")) return;
+          const btn = e.target;
+          btn.textContent = "...";
+          btn.disabled = true;
+          try {
+            await supabase.functions.invoke('stripe-coupons', {
+              body: { action: 'delete', couponId: coupon.id }
+            });
+            loadCoupons();
+          } catch(err) {
+            alert("Erreur lors de la suppression : " + err.message);
+            btn.textContent = "Supprimer";
+            btn.disabled = false;
+          }
+        });
+        
+        tbody.appendChild(tr);
+      });
+    } catch (err) {
+      tbody.innerHTML = \`<tr><td colspan="5" class="empty-state" style="color: var(--danger);">Erreur Stripe : \${escapeHtml(err.message)}</td></tr>\`;
+    }
+  }
+
+  document.getElementById("btn-create-coupon")?.addEventListener("click", async () => {
+    const name = prompt("Nom du coupon (ex: PROMO50) :");
+    if (!name) return;
+    
+    const type = prompt("Type de réduction (tapez '1' pour Pourcentage, '2' pour Montant fixe) :");
+    if (type !== '1' && type !== '2') return;
+
+    const value = prompt(type === '1' ? "Pourcentage de réduction (ex: 50 pour 50%) :" : "Montant de réduction en centimes (ex: 500 pour 5.00€) :");
+    if (!value || isNaN(value)) return;
+
+    try {
+      document.getElementById("btn-create-coupon").textContent = "Création...";
+      const body = {
+        action: 'create',
+        coupon: {
+          name,
+          duration: 'once',
+        }
+      };
+      
+      if (type === '1') {
+        body.coupon.percent_off = parseFloat(value);
+      } else {
+        body.coupon.amount_off = parseInt(value, 10);
+        body.coupon.currency = 'eur';
+      }
+
+      await supabase.functions.invoke('stripe-coupons', { body });
+      loadCoupons();
+    } catch (err) {
+      alert("Erreur : " + err.message);
+    } finally {
+      document.getElementById("btn-create-coupon").innerHTML = \`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nouveau Coupon\`;
+    }
+  });
 
   // --- Textures Library CRUD ---
   let libraryTextures = [];

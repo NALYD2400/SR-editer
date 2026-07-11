@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Espace Client - SR Editer</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/portal.css">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+</head>
+<body class="portal-body">
+  <div class="portal-container dashboard-container">
+    <div class="portal-card">
+      <div class="portal-header">
+        <h1>Mon Compte</h1>
+        <p>Gère ton abonnement et ton profil.</p>
+      </div>
+
+      <div id="loading" class="portal-loading">Chargement...</div>
+
+      <div id="dashboard-content" style="display: none;">
+        <div class="dashboard-section">
+          <h2>Profil</h2>
+          <div class="profile-info">
+            <p><strong>Email :</strong> <span id="user-email">...</span></p>
+            <p><strong>Abonnement :</strong> <span id="user-tier" class="tier-badge">...</span></p>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h2>Abonnement Stripe</h2>
+          <p class="text-muted">Modifie ta carte bancaire, consulte tes factures ou annule ton abonnement via le portail sécurisé Stripe.</p>
+          <button id="manage-billing-btn" class="portal-btn primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            Gérer mon abonnement
+          </button>
+          <p id="billing-error" class="portal-error" style="display: none;"></p>
+        </div>
+
+        <div class="portal-divider"></div>
+
+        <button id="logout-btn" class="portal-btn outline">Se déconnecter</button>
+      </div>
+      
+      <p class="portal-footer">
+        <a href="index.html">← Retour au site</a>
+      </p>
+    </div>
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/portal-dashboard.js"></script>
+</body>
+</html>
