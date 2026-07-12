@@ -1,0 +1,303 @@
+/* Ported from src/styles/components/auth.css — same login UI as the desktop app */
+
+.auth-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.auth-card {
+  width: min(420px, calc(100vw - 32px));
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid rgba(166, 181, 209, 0.16);
+  background: rgba(18, 23, 32, 0.55);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 0 auto 12px;
+  display: block;
+}
+
+.auth-title {
+  display: block;
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #f5f7fb;
+}
+
+.auth-subtitle {
+  margin: 8px 0 0;
+  color: #94a1b5;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.auth-form {
+  display: grid;
+  gap: 14px;
+}
+
+.auth-field {
+  display: grid;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: #c5cedd;
+  text-align: left;
+}
+
+.auth-field span {
+  font-size: 0.82rem;
+  color: #c5cedd;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(166, 181, 209, 0.16);
+  background: rgba(19, 25, 35, 0.88);
+  color: #f5f7fb;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.auth-field input::placeholder {
+  color: rgba(148, 161, 181, 0.7);
+}
+
+.auth-field input:focus {
+  border-color: #7d97ff;
+  box-shadow: 0 0 0 2px rgba(125, 151, 255, 0.12);
+}
+
+.auth-field[hidden] {
+  display: none !important;
+}
+
+.auth-card .password-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.auth-card .password-input-wrapper input {
+  padding-right: 40px;
+}
+
+.auth-card .password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #c5cedd;
+  cursor: pointer;
+  padding: 4px;
+  width: auto;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: color 0.2s ease, background 0.2s ease;
+  z-index: 5;
+}
+
+.auth-card .password-toggle-btn:hover {
+  color: #f5f7fb;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.auth-card .password-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.auth-error {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(255, 71, 126, 0.12);
+  color: #ffb3c7;
+  font-size: 0.86rem;
+  display: none;
+}
+
+.auth-error.is-visible {
+  display: block;
+}
+
+.auth-success {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: rgba(34, 197, 94, 0.12);
+  color: #86efac;
+  font-size: 0.86rem;
+  display: none;
+}
+
+.auth-success.is-visible {
+  display: block;
+}
+
+.auth-submit {
+  margin-top: 4px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #7d97ff 0%, #9a7dff 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.auth-submit:hover:not(:disabled) {
+  opacity: 0.94;
+  transform: translateY(-1px);
+}
+
+.auth-submit:disabled {
+  opacity: 0.65;
+  cursor: wait;
+  transform: none;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+  color: #c5cedd;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.auth-divider span {
+  padding: 0 10px;
+}
+
+.auth-discord-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 12px;
+  background: #5865f2;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.auth-discord-btn:hover:not(:disabled) {
+  background: #4752c4;
+}
+
+.auth-discord-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.auth-switch-mode {
+  text-align: center;
+  margin: 24px 0 0;
+  font-size: 13px;
+  color: #c5cedd;
+}
+
+.auth-switch-mode button {
+  background: none;
+  border: none;
+  color: #7d97ff;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 6px;
+  padding: 0;
+  font-size: 13px;
+}
+
+.auth-switch-mode button:hover {
+  text-decoration: underline;
+}
+
+.auth-back-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: rgba(148, 161, 181, 0.75);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.auth-back-link:hover {
+  color: #c5cedd;
+}
+
+/* Login page: bright wallpaper like the app (no heavy dark body fill) */
+body.auth-body {
+  background: transparent !important;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+body.auth-body .ambient-background {
+  z-index: 0;
+  background: radial-gradient(circle at 50% 50%, #12161f 0%, #090b10 100%);
+}
+
+body.auth-body .ambient-wallpaper-stack {
+  opacity: 1;
+  inset: -2%;
+}
+
+body.auth-body .ambient-wallpaper-layer {
+  filter: contrast(1.06) saturate(1.08) brightness(1.08);
+}
+
+body.auth-body .ambient-vignette {
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 40%, transparent 0%, rgba(9, 11, 16, 0.18) 70%, rgba(9, 11, 16, 0.42) 100%),
+    linear-gradient(180deg, rgba(9, 11, 16, 0.08) 0%, rgba(9, 11, 16, 0.22) 100%);
+}

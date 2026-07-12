@@ -23,49 +23,19 @@
     <div class="ambient-vignette"></div>
     <div class="ambient-blur"></div>
 
-    <!-- Login -->
+    <!-- Redirect gate (plus de login admin dédié) -->
     <div id="login-view" class="admin-login">
-      <header class="login-topbar">
-        <a href="index.html" class="login-brand" aria-label="Retour au site SR Editer">
-          <span class="login-brand-mark"><img src="assets/logo_small.png" alt="" /></span>
-          <span>SR Editer</span>
-          <span class="login-brand-divider"></span>
-          <span class="login-brand-product">Admin</span>
-        </a>
-        <button type="button" class="theme-toggle login-theme-toggle" id="theme-toggle-login" aria-label="Changer le thème">
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41"/></svg>
-        </button>
-      </header>
-
       <main class="login-stage">
         <section class="admin-login-card" aria-labelledby="login-title">
           <div class="admin-login-header">
             <div class="admin-login-logo"><img src="assets/logo_small.png" alt="" /></div>
             <span class="login-kicker"><span></span> Espace protégé</span>
-            <h1 id="login-title">Bienvenue dans la console</h1>
-            <p>Connectez-vous avec votre compte administrateur SR Editer.</p>
+            <h1 id="login-title">Vérification de session…</h1>
+            <p id="login-redirect-hint">Redirection vers la connexion si besoin.</p>
           </div>
           <div class="alert-error" id="login-error" role="alert" hidden></div>
-          <form id="login-form">
-            <div class="login-field">
-              <label for="login-email">Adresse e-mail</label>
-              <input type="email" id="login-email" autocomplete="email" required placeholder="vous@exemple.com" />
-            </div>
-            <div class="login-field">
-              <div class="login-label-row"><label for="login-password">Mot de passe</label><span>Compte administrateur</span></div>
-              <input type="password" id="login-password" autocomplete="current-password" required placeholder="••••••••••••" />
-            </div>
-            <button type="submit" class="login-submit">Se connecter <span aria-hidden="true">→</span></button>
-          </form>
-          <div class="login-security-note"><span class="security-dot"></span> Authentification sécurisée par Supabase</div>
         </section>
       </main>
-
-      <footer class="login-footer">
-        <span>© 2026 SR Editer</span>
-        <a href="index.html">Retour au site</a>
-      </footer>
     </div>
 
     <!-- Dashboard -->
@@ -171,16 +141,8 @@
             </div>
           </div>
           <div class="admin-topbar-actions">
-            <!-- Theme toggle button -->
-            <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Changer le thème">
-              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              </svg>
-              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-              </svg>
-            </button>
+            <a href="dashboard.html" class="btn btn-ghost btn-sm">Espace client</a>
+            <a href="index.html" class="btn btn-ghost btn-sm">Retour au site</a>
           </div>
         </header>
 
@@ -595,7 +557,7 @@
               <div class="vercel-card-body">
                 <div class="panel-card-header">
                   <h3>Attribuer une licence</h3>
-                  <p class="section-desc">Définissez l'offre de licence et les quotas d'appareils de l'utilisateur.</p>
+                  <p class="section-desc">Override manuel. Miroir vers <code>subscription_tier</code> desktop/portail : Free→free, Pro→pro, Studio/Lifetime→premium.</p>
                 </div>
                 <div class="horizontal-form-grid">
                   <div class="field"><label for="license-email">Compte</label><input id="license-email" type="email" required placeholder="membre@site.com" /></div>
@@ -833,6 +795,7 @@
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="console" checked /> <span>Console</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="users" /> <span>Utilisateurs</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="licenses" /> <span>Licences</span></label>
+                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="billing" /> <span>Abonnements & Coupons</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="support" /> <span>Support</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="contacts" /> <span>Contacts</span></label>
                     <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="releases" /> <span>Releases</span></label>
@@ -980,10 +943,6 @@
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.3.3"></script>
-    <script src="js/admin.js?v=0.3.5-storage-fix"></script>
-    <script>
-      window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
-      window.SRTheme.bindToggle(document.getElementById("theme-toggle-login"));
-    </script>
+    <script src="js/admin.js?v=0.3.6-no-admin-login"></script>
   </body>
 </html>

@@ -1107,112 +1107,7 @@ html[data-theme="light"] .theme-toggle .icon-moon {
   flex-shrink: 0;
 }
 
-/* Login Panel Vercel style */
-.admin-login {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-deep) !important;
-  padding: 20px;
-}
-
-.admin-login-card {
-  width: 100%;
-  max-width: 400px;
-  padding: 40px;
-  border-radius: var(--radius-lg) !important;
-  border: 1px solid var(--border) !important;
-  background: var(--bg-card) !important;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4) !important;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.admin-login-header {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.admin-login-logo {
-  width: 48px;
-  height: 48px;
-  object-fit: contain;
-  margin-bottom: 16px;
-  filter: none !important;
-  color: var(--text-primary);
-}
-
-.admin-login-card h1 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 8px;
-  text-align: center;
-}
-
-.admin-login-card p {
-  font-size: 13px;
-  color: var(--text-secondary);
-  line-height: 1.5;
-  text-align: center;
-}
-
-.admin-login-card form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.admin-login-card label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  margin-bottom: 6px;
-  display: block;
-}
-
-.admin-login-card input {
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: var(--bg-input);
-  color: var(--text-primary);
-  font-size: 13px;
-  outline: none;
-  transition: all 0.15s ease;
-}
-
-.admin-login-card input:focus {
-  border-color: var(--text-primary);
-}
-
-.admin-login-card button[type="submit"] {
-  width: 100%;
-  background: var(--text-primary) !important;
-  color: var(--bg-deep) !important;
-  font-weight: 600;
-  padding: 10px 24px !important;
-  font-size: 13px !important;
-  border-radius: var(--radius) !important;
-  border: 1px solid var(--text-primary) !important;
-  cursor: pointer;
-  margin-top: 8px;
-  transition: all 0.15s ease !important;
-}
-
-.admin-login-card button[type="submit"]:hover {
-  background: transparent !important;
-  color: var(--text-primary) !important;
-  border-color: var(--border-strong) !important;
-  transform: none !important;
-  box-shadow: none !important;
-}
+/* Login styles have been cleaned up and consolidated at the end of the file. */
 
 /* Mobile responsive menu header */
 .btn-menu-mobile {
@@ -1812,7 +1707,8 @@ html[data-theme="light"] .theme-toggle .icon-moon {
 }
 
 /* ── 2026 console refresh: Vercel-inspired workspace ───────────────────── */
-:root {
+:root,
+html[data-theme="dark"] {
   --bg-deep: #000;
   --bg-app: #050505;
   --bg-card: #0a0a0a;
@@ -2075,19 +1971,10 @@ html[data-theme="light"] .panel-card {
 }
 
 .kpi-card::after {
-  content: "";
-  position: absolute;
-  right: -35px;
-  bottom: -45px;
-  width: 115px;
-  height: 115px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  opacity: 0.5;
+  display: none !important;
 }
 
 .kpi-card:hover {
-  transform: translateY(-2px);
   border-color: var(--border-hover);
   background: var(--bg-card-raised);
 }
@@ -2695,153 +2582,216 @@ html[data-theme="light"] .theme-toggle .icon-sun {
 }
 
 /* Login is intentionally separate from the preserved console sidebar. */
+/* ========================================== */
+/* Vercel Geist Login Design System           */
+/* ========================================== */
 .admin-login {
+  /* Scoped variables for Vercel/Geist theme */
+  --bg-vercel-deep: #000000;
+  --bg-vercel-card: #0a0a0a;
+  --border-vercel: #1f1f1f;
+  --border-vercel-hover: #333333;
+  --border-vercel-focus: #ffffff;
+  --text-vercel-primary: #ffffff;
+  --text-vercel-secondary: #888888;
+  --text-vercel-muted: #666666;
+  --btn-vercel-bg: #ffffff;
+  --btn-vercel-text: #000000;
+  --btn-vercel-hover-bg: #e6e6e6;
+  --input-vercel-bg: #000000;
+
   min-height: 100vh;
   display: grid;
-  grid-template-rows: 72px 1fr 64px;
-  grid-template-columns: minmax(0, 1fr);
-  align-items: stretch;
-  justify-content: stretch;
-  padding: 0;
-  background:
-    linear-gradient(var(--border) 1px, transparent 1px),
-    linear-gradient(90deg, var(--border) 1px, transparent 1px),
-    var(--bg-deep);
-  background-size: 56px 56px;
-  background-position: center;
+  place-items: center;
+  padding: 24px;
+  background-color: var(--bg-vercel-deep) !important;
+  /* Very subtle, neat grid background */
+  background-image: 
+    radial-gradient(at 50% 50%, transparent 40%, var(--bg-vercel-deep) 90%),
+    linear-gradient(var(--border-vercel) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-vercel) 1px, transparent 1px) !important;
+  background-size: 100% 100%, 48px 48px, 48px 48px !important;
+  background-position: center !important;
+  color: var(--text-vercel-primary);
+  font-family: var(--font-body), sans-serif;
+  position: relative;
+  overflow: hidden;
 }
 
-.admin-login::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--bg-deep) 72%, transparent) 0, var(--bg-deep) 47%);
+/* Light theme overrides for Vercel login */
+html[data-theme="light"] .admin-login {
+  --bg-vercel-deep: #ffffff;
+  --bg-vercel-card: #ffffff;
+  --border-vercel: #eaeaea;
+  --border-vercel-hover: #cccccc;
+  --border-vercel-focus: #000000;
+  --text-vercel-primary: #000000;
+  --text-vercel-secondary: #666666;
+  --text-vercel-muted: #888888;
+  --btn-vercel-bg: #000000;
+  --btn-vercel-text: #ffffff;
+  --btn-vercel-hover-bg: #1f1f1f;
+  --input-vercel-bg: #ffffff;
 }
 
 .login-topbar,
 .login-footer {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 clamp(20px, 4vw, 48px);
-  border-color: var(--border);
-  background: color-mix(in srgb, var(--bg-deep) 86%, transparent);
-  backdrop-filter: blur(14px);
+  background: var(--bg-vercel-deep) !important;
+  border-color: var(--border-vercel) !important;
 }
 
 .login-topbar {
-  border-bottom: 1px solid var(--border);
+  border-bottom: 1px solid var(--border-vercel) !important;
+  height: 72px;
 }
 
 .login-footer {
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 10px;
+  border-top: 1px solid var(--border-vercel) !important;
+  height: 64px;
+  color: var(--text-vercel-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
 }
 
 .login-footer a {
-  color: var(--text-secondary);
+  color: var(--text-vercel-secondary);
   text-decoration: none;
+  transition: color 0.15s ease;
 }
 
 .login-footer a:hover {
-  color: var(--text-primary);
+  color: var(--text-vercel-primary);
 }
 
 .login-brand {
   display: inline-flex;
   align-items: center;
-  gap: 9px;
-  color: var(--text-primary);
+  gap: 8px;
+  color: var(--text-vercel-primary);
   font-size: 13px;
-  font-weight: 550;
+  font-weight: 600;
   text-decoration: none;
 }
 
 .login-brand-mark {
-  width: 23px;
-  height: 23px;
+  width: 24px;
+  height: 24px;
   display: grid;
   place-items: center;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-vercel);
   border-radius: 6px;
-  background: var(--bg-card);
+  background: var(--bg-vercel-card);
 }
 
 .login-brand-mark img {
-  width: 17px;
-  height: 17px;
+  width: 16px;
+  height: 16px;
   object-fit: contain;
 }
 
 .login-brand-divider {
   width: 1px;
-  height: 16px;
-  margin-left: 3px;
-  background: var(--border-hover);
+  height: 14px;
+  margin-left: 2px;
+  background: var(--border-vercel);
 }
 
 .login-brand-product {
-  color: var(--text-secondary);
-  font-weight: 450;
+  color: var(--text-vercel-secondary);
+  font-weight: 400;
+}
+
+/* Theme toggle button specific for login */
+.login-theme-toggle {
+  background: transparent;
+  border: 1px solid var(--border-vercel);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  color: var(--text-vercel-secondary);
+  cursor: pointer;
+  transition: color 0.12s, border-color 0.12s, background-color 0.12s;
+}
+
+.login-theme-toggle:hover {
+  color: var(--text-vercel-primary);
+  border-color: var(--border-vercel-hover);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+html[data-theme="light"] .login-theme-toggle:hover {
+  background: rgba(0, 0, 0, 0.02);
 }
 
 .login-stage {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   place-items: center;
-  padding: 48px 20px;
+  width: 100%;
+  max-width: 420px;
+  padding: 0;
 }
 
+/* Minimalist Vercel Card */
 .admin-login-card {
-  width: min(100%, 420px);
-  max-width: 420px;
-  padding: clamp(28px, 5vw, 42px);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: color-mix(in srgb, var(--bg-card) 94%, transparent);
-  box-shadow: var(--shadow-float);
+  width: 100%;
+  max-width: 380px;
+  padding: 32px;
+  border: 1px solid var(--border-vercel) !important;
+  border-radius: 8px !important;
+  background: var(--bg-vercel-card) !important;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+}
+
+html[data-theme="light"] .admin-login-card {
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.04) !important;
 }
 
 .admin-login-header {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
   text-align: left;
+  margin-bottom: 24px;
 }
 
 .admin-login-logo {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  margin: 0 0 24px;
-  overflow: hidden;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  background: var(--bg-card-raised);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  width: 32px;
+  height: 32px;
+  margin-bottom: 20px;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-login-logo img {
-  width: 28px;
-  height: 28px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
 }
 
 .login-kicker {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 10px;
-  color: var(--text-secondary);
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.065em;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--text-vercel-secondary);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
@@ -2849,124 +2799,184 @@ html[data-theme="light"] .theme-toggle .icon-sun {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--success);
-  box-shadow: 0 0 0 3px var(--success-soft);
+  background: #0070f3; /* Vercel Blue status indicator */
+  box-shadow: 0 0 0 3px rgba(0, 112, 243, 0.2);
 }
 
 .admin-login-card h1 {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 25px;
-  font-weight: 580;
-  letter-spacing: -0.04em;
-  line-height: 1.15;
+  margin: 0 0 6px 0;
+  color: var(--text-vercel-primary);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
 }
 
 .admin-login-card .admin-login-header p {
-  margin: 10px 0 0;
-  color: var(--text-secondary);
+  margin: 0;
+  color: var(--text-vercel-secondary);
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.5;
 }
 
 .admin-login-card form {
-  display: grid;
-  gap: 18px;
-  margin-top: 30px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 20px !important;
+  margin-top: 0 !important;
 }
 
 .login-field {
-  display: grid;
-  gap: 8px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 6px !important;
 }
 
-.login-field label,
-.login-label-row span {
-  color: var(--text-secondary);
+.login-field label {
+  color: var(--text-vercel-secondary);
   font-size: 11px;
   font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
 }
 
 .login-label-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  width: 100%;
 }
 
 .login-label-row span {
-  color: var(--text-muted);
-  font-family: var(--font-mono);
+  color: var(--text-vercel-muted);
+  font-family: var(--font-mono), monospace;
   font-size: 9px;
+  text-transform: none;
 }
 
+/* Minimalist Vercel input */
 .admin-login-card input {
   width: 100%;
-  height: 44px;
-  padding: 0 13px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg-input);
-  color: var(--text-primary);
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--border-vercel) !important;
+  border-radius: 6px !important;
+  background: var(--input-vercel-bg) !important;
+  color: var(--text-vercel-primary) !important;
   font-size: 13px;
   outline: none;
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.025) inset;
+  box-shadow: none !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.admin-login-card input::placeholder {
+  color: var(--text-vercel-muted);
+  opacity: 0.8;
 }
 
 .admin-login-card input:hover {
-  border-color: var(--border-hover);
+  border-color: var(--border-vercel-hover) !important;
 }
 
 .admin-login-card input:focus {
-  border-color: var(--border-strong);
-  box-shadow: 0 0 0 3px var(--bg-hover);
+  border-color: var(--border-vercel-focus) !important;
+  box-shadow: 0 0 0 1px var(--border-vercel-focus) !important;
 }
 
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-wrapper input {
+  padding-right: 36px !important;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--text-vercel-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s;
+  z-index: 5;
+}
+
+.password-toggle-btn:hover {
+  color: var(--text-vercel-primary);
+}
+
+.password-toggle-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Minimalist contrast button Vercel style */
 .admin-login-card .login-submit {
   width: 100%;
-  min-height: 44px;
+  height: 38px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  margin-top: 2px;
-  border: 1px solid var(--accent);
-  border-radius: 8px;
-  background: var(--accent);
-  color: var(--accent-text);
-  font-size: 12px;
-  font-weight: 600;
+  gap: 8px;
+  margin-top: 6px;
+  border: 1px solid var(--btn-vercel-bg) !important;
+  border-radius: 6px !important;
+  background: var(--btn-vercel-bg) !important;
+  color: var(--btn-vercel-text) !important;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: opacity 0.16s ease, transform 0.16s ease;
+  transition: background-color 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
 }
 
 .admin-login-card .login-submit:hover {
-  opacity: 0.86;
-  transform: translateY(-1px);
+  background: var(--btn-vercel-hover-bg) !important;
+  border-color: var(--btn-vercel-hover-bg) !important;
+  color: var(--btn-vercel-text) !important;
+  transform: none !important;
 }
 
 .login-security-note {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   margin-top: 24px;
-  padding-top: 22px;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 9px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-vercel) !important;
+  color: var(--text-vercel-muted);
+  font-family: var(--font-mono), monospace;
+  font-size: 10px;
+}
+
+.login-security-note .security-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #0070f3;
 }
 
 .alert-error {
-  margin-top: 20px;
-  padding: 11px 12px;
-  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--border));
-  border-radius: 8px;
-  background: var(--danger-soft);
-  color: var(--danger);
-  font-size: 11px;
-  line-height: 1.5;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 26, 26, 0.15) !important;
+  border-radius: 6px !important;
+  background: rgba(255, 26, 26, 0.04) !important;
+  color: #ff1a1a !important;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: left;
 }
 
 @media (max-width: 1120px) {

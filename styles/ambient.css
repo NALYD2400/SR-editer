@@ -1,0 +1,96 @@
+/* Shared ambient Ken Burns wallpaper — same as desktop app / login */
+
+.ambient-background {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 50%, #12161f 0%, #090b10 100%);
+}
+
+.ambient-wallpaper-stack {
+  position: absolute;
+  inset: -2%;
+  z-index: 0;
+  overflow: hidden;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+.ambient-wallpaper-layer {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: contrast(1.06) saturate(1.08) brightness(1.1);
+  will-change: transform, opacity;
+}
+
+.ambient-wallpaper-layer.current {
+  z-index: 1;
+}
+
+.ambient-wallpaper-layer.incoming {
+  z-index: 2;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.ambient-wallpaper-layer.incoming.fade-in {
+  opacity: 1;
+}
+
+.ambient-wallpaper-layer.ambient-kb-0 {
+  animation: kenburns-1 10s ease-out forwards !important;
+}
+
+.ambient-wallpaper-layer.ambient-kb-1 {
+  animation: kenburns-3 10.5s ease-out forwards !important;
+}
+
+.ambient-wallpaper-layer.ambient-kb-2 {
+  animation: kenburns-2 9.8s ease-out forwards !important;
+}
+
+@keyframes kenburns-1 {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.22) translate(-3.5%, -2.5%); }
+}
+
+@keyframes kenburns-2 {
+  0% { transform: scale(1.22) translate(3.5%, 2.5%); }
+  100% { transform: scale(1) translate(0, 0); }
+}
+
+@keyframes kenburns-3 {
+  0% { transform: scale(1) translate(0, -3.5%); }
+  100% { transform: scale(1.22) translate(-2.5%, 3.5%); }
+}
+
+.ambient-vignette {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 40%, transparent 0%, rgba(9, 11, 16, 0.2) 72%, rgba(9, 11, 16, 0.48) 100%),
+    linear-gradient(180deg, rgba(9, 11, 16, 0.1) 0%, rgba(9, 11, 16, 0.28) 55%, rgba(9, 11, 16, 0.55) 100%);
+  transition: background 0.35s ease;
+}
+
+html[data-theme="light"] .ambient-vignette {
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, rgba(234, 231, 238, 0.28) 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(234, 231, 238, 0.35) 55%, rgba(234, 231, 238, 0.52) 100%);
+}
+
+html[data-theme="light"] .ambient-wallpaper-layer {
+  filter: contrast(1.02) saturate(1.04) brightness(1.05);
+}
+
+/* Landing: keep page bg transparent so wallpaper shows */
+.client-page {
+  background: transparent !important;
+}

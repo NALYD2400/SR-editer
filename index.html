@@ -26,34 +26,34 @@
     <script src="js/theme.js?v=0.3.4-pro"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
-    <link rel="stylesheet" href="styles/client.css?v=0.3.4-pro-light-bg" />
+    <link rel="stylesheet" href="styles/ambient.css?v=1" />
+    <link rel="stylesheet" href="styles/site-pages.css?v=4" />
+    <link rel="stylesheet" href="styles/client.css?v=0.3.6-pricing" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
-  <body class="client-page">
-    <div id="ambient-wrapper" class="ambient-wrapper" aria-hidden="true">
-      <div class="ambient-layer active" id="ambient-layer-1"></div>
-      <div class="ambient-layer" id="ambient-layer-2"></div>
+  <body class="client-page" data-site-page="home">
+    <div class="ambient-background" aria-hidden="true">
+      <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
     </div>
     <div class="ambient-vignette" aria-hidden="true"></div>
 
-    <header class="client-nav">
-      <a href="#" class="client-brand" aria-label="SR Editer">
-        <img class="client-brand-logo" src="assets/logo_small.png" alt="" />
-        <span class="client-brand-name">SR Editer</span>
+    <header class="site-topnav">
+      <a href="index.html" class="site-topnav-brand" aria-label="SR Editer">
+        <img src="assets/logo_small.png" alt="" />
+        <span>SR Editer</span>
       </a>
-      <nav class="client-nav-links" aria-label="Navigation principale">
-        <a href="#studio">Aperçu</a>
-        <a href="#fonctionnalites">Fonctions</a>
-        <button type="button" class="theme-toggle theme-toggle-icon" id="theme-toggle" aria-label="Changer le thème">
-          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2" />
-          </svg>
-        </button>
-        <a href="#telecharger" class="btn btn-primary btn-sm" id="download-nav">Télécharger</a>
+      <nav class="site-nav-tabs" aria-label="Sections du site">
+        <a href="index.html" data-nav="home" class="is-active">Accueil</a>
+        <a href="docs.html" data-nav="docs">Docs</a>
+        <a href="library.html" data-nav="library">Bibliothèque</a>
+        <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
+        <a href="dashboard.html" data-nav="account">Espace client</a>
       </nav>
+      <div class="site-nav-actions">
+        <a href="admin.html" id="site-nav-admin" class="site-nav-admin" hidden>Admin</a>
+        <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+        <a href="#telecharger" class="btn btn-primary btn-sm" id="download-nav">Télécharger</a>
+      </div>
     </header>
 
     <main>
@@ -120,12 +120,58 @@
         </ul>
       </section>
 
+      <section class="pricing-section reveal" id="abonnements">
+        <div class="section-head">
+          <h2>Abonnements</h2>
+          <p>Choisis la licence adaptée à tes besoins. L’activation est immédiate dans l’app après connexion.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="pricing-card">
+            <h3>Standard</h3>
+            <p class="pricing-amount">9,99€ <span>/ mois</span></p>
+            <ul>
+              <li>Enregistrement des mods</li>
+              <li>Export standard (PNG)</li>
+              <li>Support par e-mail</li>
+            </ul>
+            <a class="btn pricing-btn" href="login.html">S’abonner Standard</a>
+          </article>
+          <article class="pricing-card pricing-card--featured">
+            <span class="pricing-badge">Recommandé</span>
+            <h3>Pro</h3>
+            <p class="pricing-amount">19,99€ <span>/ mois</span></p>
+            <ul>
+              <li>Tout Standard</li>
+              <li>Rendu &amp; textures 4K</li>
+              <li>Outils d’édition IA</li>
+            </ul>
+            <a class="btn pricing-btn pricing-btn--primary" href="login.html">S’abonner Pro</a>
+          </article>
+          <article class="pricing-card">
+            <h3>Premium</h3>
+            <p class="pricing-amount">29,99€ <span>/ mois</span></p>
+            <ul>
+              <li>Tout Pro</li>
+              <li>IA avancée &amp; illimitée</li>
+              <li>Priorité support (Discord)</li>
+            </ul>
+            <a class="btn pricing-btn" href="login.html">S’abonner Premium</a>
+          </article>
+        </div>
+        <p class="pricing-note">Déjà un compte ? <a href="dashboard.html">Gère ton abonnement dans l’espace client</a>.</p>
+      </section>
+
       <section class="client-cta-pro reveal" id="demarrer">
         <div class="cta-inner">
           <h2>Prêt à modder ?</h2>
           <p>Télécharge SR Editer, connecte-toi et ouvre un dossier extrait (YDR + YTD ou ODR).</p>
           <a href="#" class="btn btn-hero" id="download-btn-2" aria-disabled="true">Télécharger l'application</a>
           <p class="cta-req">Windows 10/11 x64 · 8 Go RAM · GTA V Legacy / FiveM</p>
+          <p class="pricing-note" style="margin-top:20px;">
+            <a href="docs.html">Documentation</a>
+            <span aria-hidden="true"> · </span>
+            <a href="library.html">Bibliothèque de textures</a>
+          </p>
         </div>
       </section>
     </main>
@@ -137,9 +183,10 @@
     <script src="js/wallpapers.js?v=0.3.4"></script>
     <script src="js/screenshots.js?v=0.3.4"></script>
     <script src="js/config.js?v=0.3.4"></script>
-    <script src="js/client.js?v=0.3.4-pro"></script>
-    <script>
-      window.SRTheme.bindToggle(document.getElementById("theme-toggle"));
-    </script>
+    <script src="js/sr-supabase.js?v=1"></script>
+    <script src="js/ambient.js?v=6"></script>
+    <script src="js/client.js?v=0.3.6"></script>
+    <script src="js/site-nav.js?v=3"></script>
+    <script src="js/site-soft-nav.js?v=1"></script>
   </body>
 </html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Documentation — SR Editer</title>
+  <link rel="icon" type="image/png" href="assets/logo_small.png">
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/ambient.css?v=1">
+  <link rel="stylesheet" href="styles/auth.css?v=2">
+  <link rel="stylesheet" href="styles/site-pages.css?v=4">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="portal-body auth-body" data-site-page="docs">
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+  </div>
+  <div class="ambient-vignette" aria-hidden="true"></div>
+
+  <div class="site-shell">
+    <header class="site-topnav">
+      <a href="index.html" class="site-topnav-brand">
+        <img src="assets/logo_small.png" alt="">
+        <span>SR Editer</span>
+      </a>
+      <nav class="site-nav-tabs" aria-label="Sections du site">
+        <a href="index.html" data-nav="home">Accueil</a>
+        <a href="docs.html" data-nav="docs" class="is-active">Docs</a>
+        <a href="library.html" data-nav="library">Bibliothèque</a>
+        <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
+        <a href="dashboard.html" data-nav="account">Espace client</a>
+      </nav>
+      <div class="site-nav-actions">
+        <a href="admin.html" id="site-nav-admin" class="site-nav-admin" hidden>Admin</a>
+        <a href="login.html?next=docs.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <div class="site-hero-block">
+        <h1>Documentation</h1>
+        <p>Guide rapide pour comprendre SR Editer : installation, workflow textures, explorateur RPF, viewport 3D et compte.</p>
+      </div>
+
+      <div class="docs-layout">
+        <aside class="docs-toc site-glass">
+          <h2>Sommaire</h2>
+          <a href="#demarrer">Démarrer</a>
+          <a href="#interface">Interface</a>
+          <a href="#textures">Texture Studio</a>
+          <a href="#explorateur">Explorateur RPF</a>
+          <a href="#viewport">Viewport 3D</a>
+          <a href="#bibliotheque">Bibliothèque</a>
+          <a href="#compte">Compte &amp; abonnements</a>
+          <a href="#faq">FAQ</a>
+        </aside>
+
+        <article class="docs-content site-glass">
+          <section id="demarrer">
+            <h2>Démarrer</h2>
+            <ol>
+              <li>Télécharge l’installateur Windows depuis la <a href="index.html#telecharger" style="color:#7d97ff">page d’accueil</a>.</li>
+              <li>Crée un compte (e-mail ou Discord) sur <a href="login.html" style="color:#7d97ff">login.html</a>.</li>
+              <li>Ouvre SR Editer et connecte-toi avec le même compte.</li>
+              <li>Ouvre un dossier de mods extrait (fichiers <code>YDR</code> + <code>YTD</code>, ou OpenFormats <code>ODR</code>).</li>
+            </ol>
+            <div class="docs-callout">
+              Prérequis : Windows 10/11 x64, ~8 Go RAM, GTA V Legacy et/ou FiveM. Le rendu et le décodage restent en local.
+            </div>
+          </section>
+
+          <section id="interface">
+            <h2>Interface</h2>
+            <p>L’app est organisée en zones :</p>
+            <ul>
+              <li><strong>Explorateur</strong> — fichiers, RPF, dossiers de mods.</li>
+              <li><strong>Texture Studio</strong> — édition 2D (calques, masques, pinceaux).</li>
+              <li><strong>Viewport 3D</strong> — prévisualisation live du mesh.</li>
+              <li><strong>Bibliothèque</strong> — textures cloud prêtes à appliquer.</li>
+              <li><strong>Réglages / Compte</strong> — thème, abonnement, administration.</li>
+            </ul>
+          </section>
+
+          <section id="textures">
+            <h2>Texture Studio</h2>
+            <p>Édite une texture embarquée ou externe :</p>
+            <ul>
+              <li>Ouvre un drawable / fragment et sélectionne une texture.</li>
+              <li>Travaille en calques (peint, gomme, opacité, masque alpha).</li>
+              <li>Exporte en PNG / DDS selon ton offre.</li>
+              <li>L’aperçu 3D se met à jour pendant l’édition.</li>
+            </ul>
+            <h3>Bonnes pratiques</h3>
+            <ul>
+              <li>Garde toujours un backup : l’app crée une sauvegarde avant écriture directe.</li>
+              <li>Travaille d’abord sur une copie du mod FiveM.</li>
+              <li>Vérifie la résolution (HD / 4K selon ton plan).</li>
+            </ul>
+          </section>
+
+          <section id="explorateur">
+            <h2>Explorateur RPF</h2>
+            <p>Parcours :</p>
+            <ul>
+              <li>l’installation GTA V,</li>
+              <li>les ressources FiveM,</li>
+              <li>des archives / dossiers locaux.</li>
+            </ul>
+            <p>Tu peux ouvrir des assets RAGE (<code>YTD</code>, <code>YDR</code>, <code>YFT</code>, <code>YDD</code>) et des formats OpenFormats. Le moteur RSC7 décode nativement — pas de faux aperçu.</p>
+          </section>
+
+          <section id="viewport">
+            <h2>Viewport 3D</h2>
+            <p>Le viewport WebGL affiche le modèle et synchronise les textures éditées. Utilise-le pour valider les UV, les seams et le rendu avant d’exporter / d’installer le mod.</p>
+          </section>
+
+          <section id="bibliotheque">
+            <h2>Bibliothèque de textures</h2>
+            <p>La bibliothèque cloud contient des textures classées (métal, bois, tissu, néon…).</p>
+            <ul>
+              <li>Dans l’app : section Bibliothèque → appliquer sur le projet.</li>
+              <li>Sur le site : page <a href="library.html" style="color:#7d97ff">Bibliothèque</a> pour parcourir et télécharger.</li>
+            </ul>
+            <div class="docs-callout">
+              Accès bibliothèque (site) : connexion obligatoire. Sans compte, tu ne peux ni voir le catalogue ni télécharger.
+            </div>
+          </section>
+
+          <section id="compte">
+            <h2>Compte &amp; abonnements</h2>
+            <p>Les paiements et la gestion d’offre se font sur le site (espace client), pas dans l’app.</p>
+            <ul>
+              <li><strong>Gratuit</strong> — découverte limitée.</li>
+              <li><strong>Standard</strong> — enregistrement mods, export PNG.</li>
+              <li><strong>Pro</strong> — 4K + outils IA.</li>
+              <li><strong>Premium</strong> — IA avancée + support prioritaire.</li>
+            </ul>
+            <p>Voir <a href="index.html#abonnements" style="color:#7d97ff">les tarifs</a> ou <a href="dashboard.html" style="color:#7d97ff">ton espace client</a>.</p>
+          </section>
+
+          <section id="faq">
+            <h2>FAQ</h2>
+            <h3>L’app demande un compte</h3>
+            <p>Oui pour synchroniser l’offre et la bibliothèque. Sans auth configurée en dev, certaines portes restent ouvertes.</p>
+            <h3>Mes fichiers restent-ils en local ?</h3>
+            <p>Oui. Le décodage et le rendu sont locaux. Seuls compte, abonnement et bibliothèque cloud passent par Supabase.</p>
+            <h3>Où gérer Stripe ?</h3>
+            <p>Dans le dashboard web → Facturation (portail Stripe client).</p>
+          </section>
+        </article>
+      </div>
+    </main>
+  </div>
+
+  <script src="js/wallpapers.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/sr-supabase.js?v=1"></script>
+  <script src="js/ambient.js?v=6"></script>
+  <script src="js/site-nav.js?v=3"></script>
+  <script src="js/site-soft-nav.js?v=1"></script>
+</body>
+</html>

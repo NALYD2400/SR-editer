@@ -68,13 +68,22 @@
     panel.prepend(intro);
   });
 
-  function showLogin() {
-    loginView.hidden = false;
-    dashboardView.hidden = true;
+  function redirectToSiteLogin(message) {
+    const params = new URLSearchParams();
+    params.set("next", "admin.html");
+    if (message) params.set("notice", message);
+    window.location.href = "login.html?" + params.toString();
+  }
+
+  function showLogin(message) {
+    redirectToSiteLogin(message || null);
   }
 
   function showLoginError(message) {
-    if (!loginError) return;
+    if (!loginError) {
+      redirectToSiteLogin(message);
+      return;
+    }
     loginError.textContent = message;
     loginError.hidden = false;
   }
@@ -240,9 +249,10 @@
         console.warn("Session expirée ou invalide. Déconnexion...");
         if (supabase) {
           void supabase.auth.signOut().then(() => {
-            showLogin();
-            showLoginError("Votre session a expiré. Veuillez vous reconnecter.");
+            redirectToSiteLogin("Votre session a expiré. Veuillez vous reconnecter.");
           });
+        } else {
+          redirectToSiteLogin("Votre session a expiré. Veuillez vous reconnecter.");
         }
       }
       throw new Error(message);
@@ -259,15 +269,29 @@
       showDashboard(email);
       return true;
     } catch (reason) {
-      await supabase?.auth.signOut();
-      showLogin();
-      showLoginError(String(reason).replace(/^Error:\s*/i, ""));
+      const message = String(reason).replace(/^Error:\s*/i, "");
+      // Garde la session utilisateur : renvoie vers l'espace client
+      window.location.href = "dashboard.html?notice=" + encodeURIComponent(message || "Accès admin refusé.");
       return false;
     }
   }
 
   function applyAccess(access) {
-    const mapping = { overview: "console", users: "users", "user-detail": "users", licenses: "licenses", support: "support", contacts: "contacts", releases: "releases", audit: "audit", system: "system", team: "team", library: "library" };
+    const mapping = {
+      overview: "console",
+      users: "users",
+      "user-detail": "users",
+      subscriptions: "billing",
+      coupons: "billing",
+      licenses: "licenses",
+      support: "support",
+      contacts: "contacts",
+      releases: "releases",
+      audit: "audit",
+      system: "system",
+      team: "team",
+      library: "library"
+    };
     consoleAccess = { access, mapping };
     navLinks.forEach((link) => {
       const panel = link.getAttribute("data-panel");
@@ -296,39 +320,20 @@
 
   async function checkSession() {
     if (!supabase) {
-      showLogin();
+      redirectToSiteLogin("Supabase non configuré — édite js/config.js");
       return;
     }
     const { data } = await supabase.auth.getSession();
     if (data.session?.user?.email) {
       await requireAdminAccess(data.session.user.email);
     } else {
-      showLogin();
+      redirectToSiteLogin();
     }
   }
 
-  loginForm?.addEventListener("submit", async (event) => {
-    event.preventDefault();
-    loginError.hidden = true;
-    const email = document.getElementById("login-email").value.trim();
-    const password = document.getElementById("login-password").value;
-
-    if (!supabase) {
-      showLoginError("Supabase non configuré — édite js/config.js");
-      return;
-    }
-
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error || !data.session) {
-      showLoginError(error?.message || "Connexion refusée.");
-      return;
-    }
-    if (await requireAdminAccess(data.session.user.email)) addLog("s", `Connexion admin : ${email}`);
-  });
-
   logoutBtn?.addEventListener("click", async () => {
     if (supabase) await supabase.auth.signOut();
-    showLogin();
+    window.location.href = "index.html";
   });
 
   function showPanel(panelId) {
@@ -1094,29 +1099,31 @@
   // --- Abonnements ---
   async function loadSubscriptions() {
     const tbody = document.getElementById("subscriptions-tbody");
-    if (!tbody || !supabase) return;
+    if (!tbody) return;
     tbody.innerHTML = '<tr><td colspan="4" class="loading-state">Chargement des abonnements...</td></tr>';
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("email, subscription_tier, stripe_customer_id")
-        .neq("subscription_tier", "free")
-        .not("subscription_tier", "is", null);
+      const result = await adminRequest("subscription-list");
+      const data = result.rows || [];
 
-      if (error) throw error;
-      
       tbody.innerHTML = "";
-      if (!data || data.length === 0) {
+      if (data.length === 0) {
         tbody.innerHTML = '<tr><td colspan="4" class="empty-state">Aucun abonnement payant actif.</td></tr>';
         return;
       }
 
-      data.forEach(sub => {
+      data.forEach((sub) => {
         const tr = document.createElement("tr");
+        const status = sub.subscription_status || "—";
+        const statusColor =
+          status === "active" || status === "trialing"
+            ? "#10b981"
+            : status === "canceled" || status === "unpaid"
+              ? "var(--danger)"
+              : "var(--muted)";
         tr.innerHTML = `
           <td><strong>${escapeHtml(sub.email || "—")}</strong></td>
-          <td><span class="role-pill ${sub.subscription_tier}">${escapeHtml(sub.subscription_tier.toUpperCase())}</span></td>
-          <td><span style="color: #10b981;">Actif</span></td>
+          <td><span class="role-pill ${escapeHtml(sub.subscription_tier || "free")}">${escapeHtml(String(sub.subscription_tier || "free").toUpperCase())}</span></td>
+          <td><span style="color: ${statusColor};">${escapeHtml(status)}</span></td>
           <td style="font-family: monospace; font-size: 12px; color: var(--muted);">${escapeHtml(sub.stripe_customer_id || "—")}</td>
         `;
         tbody.appendChild(tr);
@@ -1131,91 +1138,101 @@
     const tbody = document.getElementById("coupons-tbody");
     if (!tbody || !supabase) return;
     tbody.innerHTML = '<tr><td colspan="5" class="loading-state">Chargement des coupons depuis Stripe...</td></tr>';
-    
+
     try {
-      const { data, error } = await supabase.functions.invoke('stripe-coupons', {
-        body: { action: 'list' }
+      const { data, error } = await supabase.functions.invoke("stripe-coupons", {
+        body: { action: "list" }
       });
       if (error) throw error;
 
       tbody.innerHTML = "";
       if (!data.coupons || data.coupons.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Aucun coupon n\\'a été créé.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Aucun coupon n\u2019a \u00e9t\u00e9 cr\u00e9\u00e9.</td></tr>';
         return;
       }
 
-      data.coupons.forEach(coupon => {
+      data.coupons.forEach((coupon) => {
         const tr = document.createElement("tr");
         const isPercent = coupon.percent_off !== null;
-        const discount = isPercent ? \`\${coupon.percent_off}%\` : \`\${(coupon.amount_off / 100).toFixed(2)}€\`;
-        
-        tr.innerHTML = \`
-          <td><strong>\${escapeHtml(coupon.name || coupon.id)}</strong></td>
-          <td>\${discount}</td>
-          <td>\${escapeHtml(coupon.duration)}</td>
-          <td>\${coupon.max_redemptions ? \`\${coupon.times_redeemed} / \${coupon.max_redemptions}\` : "Illimité"}</td>
+        const discount = isPercent
+          ? `${coupon.percent_off}%`
+          : `${(coupon.amount_off / 100).toFixed(2)}EUR`;
+        const usage = coupon.max_redemptions
+          ? `${coupon.times_redeemed} / ${coupon.max_redemptions}`
+          : "Illimite";
+
+        tr.innerHTML = `
+          <td><strong>${escapeHtml(coupon.name || coupon.id)}</strong></td>
+          <td>${discount}</td>
+          <td>${escapeHtml(coupon.duration)}</td>
+          <td>${usage}</td>
           <td style="text-align: right;">
-            <button class="btn-action-delete delete-coupon-btn" data-id="\${coupon.id}">Supprimer</button>
+            <button class="btn-action-delete delete-coupon-btn" data-id="${coupon.id}">Supprimer</button>
           </td>
-        \`;
-        
+        `;
+
         tr.querySelector(".delete-coupon-btn").addEventListener("click", async (e) => {
           if (!confirm("Voulez-vous vraiment supprimer ce coupon ?")) return;
           const btn = e.target;
           btn.textContent = "...";
           btn.disabled = true;
           try {
-            await supabase.functions.invoke('stripe-coupons', {
-              body: { action: 'delete', couponId: coupon.id }
+            await supabase.functions.invoke("stripe-coupons", {
+              body: { action: "delete", couponId: coupon.id }
             });
             loadCoupons();
-          } catch(err) {
+          } catch (err) {
             alert("Erreur lors de la suppression : " + err.message);
             btn.textContent = "Supprimer";
             btn.disabled = false;
           }
         });
-        
+
         tbody.appendChild(tr);
       });
     } catch (err) {
-      tbody.innerHTML = \`<tr><td colspan="5" class="empty-state" style="color: var(--danger);">Erreur Stripe : \${escapeHtml(err.message)}</td></tr>\`;
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-state" style="color: var(--danger);">Erreur Stripe : ${escapeHtml(err.message)}</td></tr>`;
     }
   }
 
   document.getElementById("btn-create-coupon")?.addEventListener("click", async () => {
     const name = prompt("Nom du coupon (ex: PROMO50) :");
     if (!name) return;
-    
-    const type = prompt("Type de réduction (tapez '1' pour Pourcentage, '2' pour Montant fixe) :");
-    if (type !== '1' && type !== '2') return;
 
-    const value = prompt(type === '1' ? "Pourcentage de réduction (ex: 50 pour 50%) :" : "Montant de réduction en centimes (ex: 500 pour 5.00€) :");
+    const type = prompt("Type de reduction (tapez '1' pour Pourcentage, '2' pour Montant fixe) :");
+    if (type !== "1" && type !== "2") return;
+
+    const value = prompt(
+      type === "1"
+        ? "Pourcentage de reduction (ex: 50 pour 50%) :"
+        : "Montant de reduction en centimes (ex: 500 pour 5.00 EUR) :"
+    );
     if (!value || isNaN(value)) return;
 
     try {
-      document.getElementById("btn-create-coupon").textContent = "Création...";
+      document.getElementById("btn-create-coupon").textContent = "Creation...";
       const body = {
-        action: 'create',
+        action: "create",
         coupon: {
           name,
-          duration: 'once',
+          duration: "once"
         }
       };
-      
-      if (type === '1') {
+
+      if (type === "1") {
         body.coupon.percent_off = parseFloat(value);
       } else {
         body.coupon.amount_off = parseInt(value, 10);
-        body.coupon.currency = 'eur';
+        body.coupon.currency = "eur";
       }
 
-      await supabase.functions.invoke('stripe-coupons', { body });
+      await supabase.functions.invoke("stripe-coupons", { body });
       loadCoupons();
     } catch (err) {
       alert("Erreur : " + err.message);
     } finally {
-      document.getElementById("btn-create-coupon").innerHTML = \`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nouveau Coupon\`;
+      document.getElementById("btn-create-coupon").innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Nouveau Coupon';
     }
   });
 
@@ -1245,62 +1262,6 @@
   function getColorText(colorName) {
     const isLight = ["blanc", "beige", "jaune"].includes(colorName.toLowerCase());
     return isLight ? "#000000" : "#ffffff";
-  }
-
-  async function loadLibraryLegacy() {
-    const list = document.getElementById("library-list-tbody");
-    if (!list) return;
-    list.innerHTML = '<tr><td colspan="5" class="loading-state" style="text-align: center; padding: 20px; color: var(--muted);">Chargement des textures...</td></tr>';
-    try {
-      const data = await adminRequest("library-list");
-      if (!data.ok) throw new Error(data.error);
-      libraryTextures = data.rows ?? [];
-      renderLibraryList();
-    } catch (reason) {
-      list.innerHTML = `<tr><td colspan="5" class="empty-state" style="color: var(--danger); text-align: center; padding: 20px;">Erreur : ${escapeHtml(reason.message || reason)}</td></tr>`;
-    }
-  }
-
-  function renderLibraryListLegacy() {
-    const list = document.getElementById("library-list-tbody");
-    if (!list) return;
-
-    if (libraryTextures.length === 0) {
-      list.innerHTML = '<tr><td colspan="5" class="empty-state" style="text-align: center; padding: 20px; color: var(--muted);">Aucune texture enregistrée.</td></tr>';
-      return;
-    }
-
-    list.innerHTML = libraryTextures.map((row) => `
-      <tr data-id="${row.id}">
-        <td>
-          <div class="texture-thumb-container">
-            <img src="${escapeHtml(row.url)}" alt="${escapeHtml(row.name)}" class="texture-thumbnail-img" onerror="this.src='assets/logo_small.png'" />
-          </div>
-        </td>
-        <td><strong>${escapeHtml(row.name)}</strong></td>
-        <td><span class="badge badge-category">${escapeHtml(row.category)}</span></td>
-        <td><span class="badge badge-color" style="background: ${getColorHex(row.color)}; color: ${getColorText(row.color)};">${escapeHtml(row.color)}</span></td>
-        <td style="text-align: right;">
-          <div class="btn-group" style="justify-content: flex-end;">
-            <button type="button" class="btn btn-ghost btn-sm" data-edit-texture="${escapeHtml(row.id)}">Modifier</button>
-            <button type="button" class="btn btn-ghost btn-sm text-danger" data-delete-texture="${escapeHtml(row.id)}">Supprimer</button>
-          </div>
-        </td>
-      </tr>
-    `).join("");
-
-    list.querySelectorAll("[data-edit-texture]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const item = libraryTextures.find((t) => t.id === btn.dataset.editTexture);
-        if (item) editTexture(item);
-      });
-    });
-
-    list.querySelectorAll("[data-delete-texture]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        void deleteTexture(btn.dataset.deleteTexture);
-      });
-    });
   }
 
   function editTexture(item) {
@@ -1379,50 +1340,6 @@
     });
   }
 
-  async function handleTextureUploadLegacy(file) {
-    const progressDiv = document.getElementById("library-upload-progress");
-    const progressBar = document.getElementById("upload-progress-bar");
-    const progressText = document.getElementById("upload-status-text");
-    if (!progressDiv || !progressBar || !progressText) return;
-
-    progressDiv.style.display = "block";
-    progressBar.style.width = "20%";
-    progressText.textContent = "Optimisation de l'image (Puissance de 2, WebP)...";
-
-    try {
-      const { blob, w, h } = await optimizeTexture(file);
-      progressBar.style.width = "50%";
-      progressText.textContent = `Image optimisée en ${w}x${h} (WebP). Envoi vers le stockage...`;
-
-      if (!supabase) throw new Error("Supabase n'est pas configuré.");
-      const path = `texture-${Date.now()}-${Math.random().toString(36).substring(2, 7)}.webp`;
-      const { error } = await supabase.storage.from("textures-library").upload(path, blob, {
-        contentType: "image/webp",
-        cacheControl: "31536000"
-      });
-
-      if (error) throw error;
-      progressBar.style.width = "90%";
-      progressText.textContent = "Envoi terminé. Génération du lien...";
-
-      const { data: urlData } = supabase.storage.from("textures-library").getPublicUrl(path);
-      const publicUrl = urlData.publicUrl;
-      await adminRequest("library-upload-audit", { path, width: w, height: h });
-
-      document.getElementById("library-url").value = publicUrl;
-      updatePreviewImage(publicUrl);
-
-      progressBar.style.width = "100%";
-      progressText.textContent = "Téléchargé et optimisé avec succès !";
-      setTimeout(() => { progressDiv.style.display = "none"; }, 2000);
-      addLog("s", `Texture téléversée : ${w}x${h} WebP`);
-    } catch (err) {
-      progressBar.style.width = "0%";
-      progressText.textContent = `Erreur : ${err.message}`;
-      addLog("e", `Erreur d'envoi texture : ${err.message}`);
-    }
-  }
-
   function updatePreviewImage(url) {
     const previewImg = document.getElementById("library-preview-img");
     const previewPlaceholder = document.getElementById("library-preview-placeholder");
@@ -1437,10 +1354,6 @@
       previewPlaceholder.style.display = "block";
     }
   }
-
-  void loadLibraryLegacy;
-  void renderLibraryListLegacy;
-  void handleTextureUploadLegacy;
 
   // Compact library renderer and batch upload workflow.
   function renderLibraryList() {

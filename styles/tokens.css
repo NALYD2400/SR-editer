@@ -18,34 +18,34 @@ html[data-theme="dark"] {
   --muted: #a699c2;
   --muted-dim: rgba(166, 153, 194, 0.55);
 
-  --accent: #ff007f;
-  --accent-soft: rgba(255, 0, 127, 0.12);
+  --accent: #8b5cf6;
+  --accent-soft: rgba(139, 92, 246, 0.14);
   --blue: #00f0ff;
-  --purple: #9d4edd;
-  --success: #390099;
+  --purple: #7c3aed;
+  --success: #22c55e;
   --warning: #ffb703;
-  --danger: #ff007f;
+  --danger: #f43f5e;
 
-  --neon-pink: #ff007f;
+  --neon-pink: #a78bfa;
   --neon-cyan: #00f0ff;
-  --neon-purple: #9d4edd;
+  --neon-purple: #8b5cf6;
 
-  --glow-pink: 0 0 20px rgba(255, 0, 127, 0.35);
+  --glow-pink: 0 0 20px rgba(167, 139, 250, 0.35);
   --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.35);
-  --glow-purple: 0 0 25px rgba(157, 78, 221, 0.3);
+  --glow-purple: 0 0 25px rgba(139, 92, 246, 0.4);
 
   --border: rgba(255, 255, 255, 0.06);
-  --border-strong: rgba(255, 0, 127, 0.35);
+  --border-strong: rgba(139, 92, 246, 0.4);
   --border-neon: rgba(0, 240, 255, 0.2);
 
   --nav-bg: rgba(5, 4, 9, 0.4);
   --nav-bg-scrolled: rgba(5, 4, 9, 0.85);
   --ambient-overlay: linear-gradient(180deg, rgba(5, 4, 9, 0.2) 0%, rgba(5, 4, 9, 0.85) 60%, #050409 100%);
   --ambient-blur-strength: 50px;
-  --hero-title-gradient: linear-gradient(135deg, #ffffff 10%, #d6cfe3 60%, #ff007f 120%);
-  --btn-primary-bg: linear-gradient(135deg, #ff007f 0%, #9d4edd 100%);
+  --hero-title-gradient: linear-gradient(135deg, #ffffff 10%, #d6cfe3 60%, #8b5cf6 120%);
+  --btn-primary-bg: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
   --btn-primary-text: #ffffff;
-  --btn-primary-shadow: 0 8px 30px rgba(255, 0, 127, 0.3);
+  --btn-primary-shadow: 0 8px 30px rgba(139, 92, 246, 0.35);
   --glass-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01));
   --field-bg: rgba(255, 255, 255, 0.03);
   --field-focus-bg: rgba(255, 255, 255, 0.05);
@@ -81,8 +81,8 @@ html[data-theme="light"] {
   --muted: #7b728b;
   --muted-dim: rgba(123, 114, 139, 0.75);
 
-  --accent: #ff477e;
-  --accent-soft: rgba(255, 71, 126, 0.1);
+  --accent: #7c3aed;
+  --accent-soft: rgba(124, 58, 237, 0.12);
   --blue: #0087a3;
   --purple: #6d28d9;
   --success: #0f9d6b;
@@ -90,7 +90,7 @@ html[data-theme="light"] {
   --danger: #e11d48;
 
   --border: rgba(139, 92, 246, 0.16);
-  --border-strong: rgba(255, 71, 126, 0.28);
+  --border-strong: rgba(124, 58, 237, 0.28);
 
   --nav-bg: rgba(242, 239, 246, 0.65);
   --nav-bg-scrolled: rgba(242, 239, 246, 0.92);
