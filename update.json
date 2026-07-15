@@ -1,11 +1,11 @@
 {
-  "version": "0.4.0",
-  "notes": "SR Editer 0.4.0 — nouvelle version stable.",
-  "pub_date": "2026-07-10T18:44:21.446Z",
+  "version": "0.4.1",
+  "notes": "SR Editer 0.4.1 — nouvelle version stable.",
+  "pub_date": "2026-07-15T18:56:34.160Z",
   "platforms": {
     "windows-x86_64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT1BQUDAvaFlmdnNpNENhN3lVMnlCVW96aFhYYTBpRU1DVGI5WVhtT0FYVWV2bGV0dXNsejgyRHl4Y2NMWDJDUmQrZEhpSVdMZnV2TVB0bXRNNWpnZVFJPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzgzNzA5MDYxCWZpbGU6U1IgRWRpdGVyXzAuNC4wX3g2NC1zZXR1cC5leGUKQVhRaWVYZ3RGU3B5Vllmamd3OFRHcEFJVmk0eEEvMnhxeVkvclgycUNBa2pSKzNXNm41SW5zejRqTmxIZCtMcWFEZU85NldOais4eXRLdHQxZVpHQ0E9PQo=",
-      "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.4.0/SR.Editer_0.4.0_x64-setup.exe"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVSM2M1ckxtZlYyT09GOWhyWTVjZmVhZk5FRWZmL3JVbmtoSUJmL1JYS0M4bXE5VmhURS9XeUtlV2xsT2N6TWUvYWN1TkxrcTZMMURZenYzWE03K0JpUlJDVHNiVmhKWndRPQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzg0MTQxNzk0CWZpbGU6U1IgRWRpdGVyXzAuNC4xX3g2NC1zZXR1cC5leGUKb2dyVFB4SEVLM0F4SitWUmpVcnlETFFnb0YvRlZEbnRqK1doVVBHbUUzT0g1TnRBSUNNV05ZZytPUFhHK0FYOGNyTE8wT3JRSloyS1B4YzkwVzhPQnc9PQo=",
+      "url": "https://github.com/NALYD2400/SR-editer/releases/download/0.4.1/SR.Editer_0.4.1_x64-setup.exe"
     }
   }
 }
