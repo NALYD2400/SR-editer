@@ -22,4 +22,21 @@ verify_jwt = true
 verify_jwt = true
 
 [auth]
+site_url = "https://sr-editer.vercel.app"
+additional_redirect_urls = [
+  "https://sr-editer.vercel.app/dashboard.html",
+  "https://sr-editer.vercel.app/login.html",
+  "srediter://auth/callback",
+  "http://127.0.0.1:4313",
+  "http://localhost:4313"
+]
 enable_manual_linking = true
+
+[auth.email]
+enable_confirmations = true
+max_frequency = "1m"
+otp_length = 8
+
+[auth.mfa.totp]
+enroll_enabled = true
+verify_enabled = true
