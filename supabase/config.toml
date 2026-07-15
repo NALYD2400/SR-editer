@@ -32,6 +32,11 @@ additional_redirect_urls = [
 ]
 enable_manual_linking = true
 
+[auth.external.discord]
+enabled = true
+client_id = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_DISCORD_SECRET)"
+
 [auth.email]
 enable_confirmations = true
 max_frequency = "1m"

@@ -111,13 +111,17 @@ Deno.serve(async (request) => {
     .select("user_id,email,role,write_mode,app_permissions,created_at").eq("user_id", caller.id).maybeSingle();
   const { data: access } = await admin.from("superadmin_access")
     .select("level,permissions").eq("user_id", caller.id).maybeSingle();
-  if (!callerProfile) return json(origin, 403, { ok: false, error: "Profil administrateur actif requis." });
-  if (callerProfile.role === "suspendu") return json(origin, 403, { ok: false, error: "Ce compte administrateur est suspendu." });
-  if (!access) return json(origin, 403, { ok: false, error: "Accès à la superconsole requis." });
 
   let body: Record<string, unknown>;
   try { body = await request.json(); } catch { return json(origin, 400, { ok: false, error: "Requête JSON invalide." }); }
   const action = textOf(body.action, 64);
+  if (!callerProfile) return json(origin, 403, { ok: false, error: "Profil SR Editer actif requis." });
+  if (callerProfile.role === "suspendu") return json(origin, 403, { ok: false, error: "Ce compte est suspendu." });
+  if (action === "me" && !access) {
+    return json(origin, 200, { ok: true, profile: callerProfile, level: null, permissions: {} });
+  }
+  if (!access) return json(origin, 403, { ok: false, error: "Accès à la superconsole requis." });
+
   const level = access.level === "owner" ? "owner" : "collaborator";
   const permissions = access.permissions && typeof access.permissions === "object" ? access.permissions as Record<string, boolean> : {};
   const requiredPermission = permissionFor(action);

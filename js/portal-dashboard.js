@@ -42,6 +42,7 @@
   let currentTier = "free";
   let currentEmail = "";
   let currentIdentities = [];
+  let discordActionInFlight = false;
 
   function showShell() {
     if (loadingEl) loadingEl.style.display = "none";
@@ -68,6 +69,14 @@
 
   function discordIdentity() {
     return currentIdentities.find((identity) => identity.provider === "discord") || null;
+  }
+
+  function getDiscordErrorMessage(error) {
+    const message = error && error.message ? error.message : "";
+    if (/unsupported provider|provider is not enabled/i.test(message)) {
+      return "La connexion Discord n'est pas encore activée sur le serveur.";
+    }
+    return message || "Impossible de gérer la liaison Discord.";
   }
 
   function showAccountMessage(message, state) {
@@ -337,6 +346,8 @@
 
   if (discordLinkBtn) {
     discordLinkBtn.addEventListener("click", async () => {
+      if (discordActionInFlight) return;
+      discordActionInFlight = true;
       const identity = discordIdentity();
       discordLinkBtn.disabled = true;
       showAccountMessage("", "info");
@@ -363,7 +374,9 @@
         showAccountMessage("Compte Discord délié et rôles retirés.", "success");
       } catch (error) {
         window.localStorage.removeItem("sr-editer:discord-link-pending");
-        showAccountMessage(error.message || "Impossible de gérer la liaison Discord.", "error");
+        showAccountMessage(getDiscordErrorMessage(error), "error");
+      } finally {
+        discordActionInFlight = false;
         renderDiscordConnection();
       }
     });
