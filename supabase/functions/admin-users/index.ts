@@ -20,8 +20,23 @@ const validRoles = new Set(["membre", "moderateur", "admin", "suspendu"]);
 const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
-const permissionKeys = ["console", "users", "licenses", "support", "contacts", "releases", "audit", "system", "team", "library"];
+const permissionKeys = ["console", "users", "licenses", "billing", "support", "contacts", "releases", "audit", "system", "team", "library"];
 const appPermissionKeys = ["project", "explorer", "converter", "assets", "materials", "textures", "modeling", "library", "ai", "settings"];
+
+/** Manual license plan → profiles.subscription_tier (desktop/portal source of truth). */
+function tierFromLicensePlan(plan: string): string {
+  switch (plan) {
+    case "pro":
+      return "pro";
+    case "studio":
+    case "lifetime":
+      return "premium";
+    case "standard":
+      return "standard";
+    default:
+      return "free";
+  }
+}
 
 function appPermissionsOf(value: unknown) {
   const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
@@ -56,6 +71,7 @@ function permissionFor(action: string) {
   if (["dashboard", "me"].includes(action)) return "console";
   if (["list", "create", "update", "delete", "ban", "unban", "confirm-email", "reset-password", "devices-list", "device-revoke"].includes(action)) return "users";
   if (action.startsWith("license")) return "licenses";
+  if (action.startsWith("subscription") || action === "billing") return "billing";
   if (action.startsWith("support")) return "support";
   if (action.startsWith("contact")) return "contacts";
   if (action.startsWith("release")) return "releases";
@@ -220,6 +236,16 @@ Deno.serve(async (request) => {
     const emailById = new Map(users.map((user) => [user.id, user.email ?? ""]));
     return json(origin, 200, { ok: true, rows: (data ?? []).map((row) => ({ ...row, email: emailById.get(row.user_id) ?? "" })) });
   }
+  if (action === "subscription-list") {
+    const { data, error } = await admin
+      .from("profiles")
+      .select("user_id,email,subscription_tier,subscription_status,stripe_customer_id,role")
+      .order("email", { ascending: true })
+      .limit(2000);
+    if (error) return json(origin, 500, { ok: false, error: error.message });
+    const rows = (data ?? []).filter((row) => (row.subscription_tier && row.subscription_tier !== "free") || row.stripe_customer_id);
+    return json(origin, 200, { ok: true, rows });
+  }
   if (action === "license-upsert") {
     const targetEmail = emailOf(body.email); const users = await listAuthUsers(); const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
     const plan = textOf(body.plan, 16); const status = textOf(body.status, 16); const deviceLimit = Number(body.deviceLimit ?? 1);
@@ -227,7 +253,16 @@ Deno.serve(async (request) => {
     const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
     if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut modifier la licence d'un administrateur." });
     const { error } = await admin.from("customer_licenses").upsert({ user_id: target.id, plan, status, device_limit: deviceLimit, expires_at: body.expiresAt || null, notes: textOf(body.notes, 2000), updated_at: new Date().toISOString() });
-    if (!error) await audit("license.upsert", "user", target.id, { plan, status, deviceLimit });
+    if (!error) {
+      // Mirror into profiles.subscription_tier so desktop + portal stay in sync
+      const tier = ["active", "trialing"].includes(status) ? tierFromLicensePlan(plan) : "free";
+      const profileUpdate: Record<string, unknown> = {
+        subscription_tier: tier,
+        subscription_status: status === "active" || status === "trialing" ? status : status || "canceled",
+      };
+      await admin.from("profiles").update(profileUpdate).eq("user_id", target.id);
+      await audit("license.upsert", "user", target.id, { plan, status, deviceLimit, subscription_tier: tier });
+    }
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "devices-list") {

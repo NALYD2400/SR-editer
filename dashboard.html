@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/ambient.css?v=1">
-  <link rel="stylesheet" href="styles/portal.css?v=6">
+  <link rel="stylesheet" href="styles/portal.css?v=7">
   <link rel="stylesheet" href="styles/site-pages.css?v=4">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -51,6 +51,10 @@
         <button type="button" class="sidebar-link" data-panel="downloads">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span class="nav-title">Téléchargements</span>
+        </button>
+        <button type="button" class="sidebar-link" data-panel="account">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+          <span class="nav-title">Compte</span>
         </button>
       </nav>
 
@@ -134,7 +138,7 @@
               <h2>Abonnements disponibles</h2>
               <p class="text-muted">Choisis la licence adaptée à tes besoins de modding. La mise à niveau est immédiate dans ton application.</p>
             </div>
-            
+
             <div class="plan-grid" id="plan-grid">
               <article class="plan-card-web" data-plan="standard">
                 <div class="plan-badge-area"></div>
@@ -147,7 +151,7 @@
                 </ul>
                 <button type="button" class="portal-btn primary" data-upgrade-tier="standard">S’abonner Standard</button>
               </article>
-              
+
               <article class="plan-card-web highlighted" data-plan="pro">
                 <div class="plan-badge-area"><span class="recommended-badge">Recommandé</span></div>
                 <h3>Pro</h3>
@@ -159,7 +163,7 @@
                 </ul>
                 <button type="button" class="portal-btn primary" data-upgrade-tier="pro">S’abonner Pro</button>
               </article>
-              
+
               <article class="plan-card-web" data-plan="premium">
                 <div class="plan-badge-area"></div>
                 <h3>Premium</h3>
@@ -202,6 +206,48 @@
             </div>
           </div>
         </section>
+
+        <!-- Panel 5: Account -->
+        <section class="portal-panel" id="panel-account">
+          <div class="portal-card portal-account-card">
+            <div class="section-header">
+              <h2>Compte & connexions</h2>
+              <p class="text-muted">Gère la liaison Discord et les données de ton compte SR Editer.</p>
+            </div>
+
+            <div class="portal-account-block portal-discord-block">
+              <div>
+                <span class="summary-label">Discord</span>
+                <strong id="discord-account-name">Aucun compte lié</strong>
+                <p class="text-muted" id="discord-account-note">Lie Discord pour synchroniser automatiquement ton rôle avec ton abonnement.</p>
+              </div>
+              <span class="portal-connection-status" id="discord-account-status" data-state="idle">Non lié</span>
+              <div class="portal-account-actions">
+                <button type="button" class="portal-btn outline" id="discord-sync-btn" hidden>Synchroniser le rôle</button>
+                <button type="button" class="portal-btn primary" id="discord-link-btn">Lier Discord</button>
+              </div>
+            </div>
+
+            <div class="portal-account-block portal-danger-zone">
+              <div>
+                <span class="summary-label">Zone sensible</span>
+                <strong>Supprimer définitivement le compte</strong>
+                <p class="text-muted">L'abonnement sera arrêté, le rôle Discord retiré et les données associées supprimées.</p>
+              </div>
+              <button type="button" class="portal-btn danger" id="delete-account-start">Supprimer mon compte</button>
+              <div class="portal-delete-confirmation" id="delete-account-confirmation" hidden>
+                <label for="delete-account-email">Saisis ton adresse e-mail pour confirmer</label>
+                <input id="delete-account-email" type="email" autocomplete="off">
+                <div class="portal-account-actions">
+                  <button type="button" class="portal-btn outline" id="delete-account-cancel">Annuler</button>
+                  <button type="button" class="portal-btn danger" id="delete-account-confirm" disabled>Supprimer définitivement</button>
+                </div>
+              </div>
+            </div>
+
+            <p id="account-action-message" class="portal-account-message" role="status" hidden></p>
+          </div>
+        </section>
         </div>
       </div>
     </div>
@@ -211,7 +257,7 @@
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/portal-dashboard.js?v=2"></script>
+  <script src="js/portal-dashboard.js?v=3"></script>
   <script>
     (function initTabNavigation() {
       const links = document.querySelectorAll(".sidebar-link[data-panel]");
@@ -224,7 +270,8 @@
         overview: "Accueil",
         plans: "Abonnements",
         billing: "Facturation",
-        downloads: "Téléchargements"
+        downloads: "Téléchargements",
+        account: "Compte"
       };
 
       function showPanel(panelId) {

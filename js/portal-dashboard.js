@@ -19,6 +19,17 @@
   const downloadLink = document.getElementById("download-app-link");
   const avatarEl = document.getElementById("profile-avatar-char");
   const appVersionEls = document.querySelectorAll("[data-app-version]");
+  const discordNameEl = document.getElementById("discord-account-name");
+  const discordNoteEl = document.getElementById("discord-account-note");
+  const discordStatusEl = document.getElementById("discord-account-status");
+  const discordLinkBtn = document.getElementById("discord-link-btn");
+  const discordSyncBtn = document.getElementById("discord-sync-btn");
+  const accountMessageEl = document.getElementById("account-action-message");
+  const deleteStartBtn = document.getElementById("delete-account-start");
+  const deleteConfirmationEl = document.getElementById("delete-account-confirmation");
+  const deleteEmailInput = document.getElementById("delete-account-email");
+  const deleteCancelBtn = document.getElementById("delete-account-cancel");
+  const deleteConfirmBtn = document.getElementById("delete-account-confirm");
 
   const TIER_LABELS = {
     free: "Gratuit",
@@ -29,6 +40,8 @@
 
   let currentSession = null;
   let currentTier = "free";
+  let currentEmail = "";
+  let currentIdentities = [];
 
   function showShell() {
     if (loadingEl) loadingEl.style.display = "none";
@@ -53,6 +66,61 @@
     billingErrorEl.style.display = "block";
   }
 
+  function discordIdentity() {
+    return currentIdentities.find((identity) => identity.provider === "discord") || null;
+  }
+
+  function showAccountMessage(message, state) {
+    if (!accountMessageEl) return;
+    accountMessageEl.textContent = message;
+    accountMessageEl.dataset.state = state || "info";
+    accountMessageEl.hidden = !message;
+  }
+
+  function renderDiscordConnection() {
+    const identity = discordIdentity();
+    const data = (identity && identity.identity_data) || {};
+    const displayName = data.full_name || data.name || data.user_name || "Compte Discord";
+    const canUnlink = Boolean(identity && currentIdentities.length > 1);
+
+    if (discordNameEl) discordNameEl.textContent = identity ? displayName : "Aucun compte lié";
+    if (discordStatusEl) {
+      discordStatusEl.textContent = identity ? "Lié" : "Non lié";
+      discordStatusEl.dataset.state = identity ? "active" : "idle";
+    }
+    if (discordNoteEl) {
+      discordNoteEl.textContent = identity
+        ? canUnlink
+          ? "Ton rôle est synchronisé avec ton offre. Tu peux délier Discord à tout moment."
+          : "Ton rôle est synchronisé. Discord reste lié car il s'agit de ton unique moyen de connexion."
+        : "Lie Discord pour synchroniser automatiquement ton rôle avec ton abonnement.";
+    }
+    if (discordLinkBtn) {
+      discordLinkBtn.textContent = identity ? "Délier Discord" : "Lier Discord";
+      discordLinkBtn.disabled = false;
+      discordLinkBtn.title = identity && !canUnlink
+        ? "Discord est ton unique moyen de connexion et ne peut pas être délié."
+        : "";
+    }
+    if (discordSyncBtn) discordSyncBtn.hidden = !identity;
+  }
+
+  async function invokeAccountAction(action, confirmation) {
+    const { data, error } = await client.functions.invoke("account-management", {
+      body: Object.assign({ action: action }, confirmation ? { confirmation: confirmation } : {}),
+    });
+    if (error) {
+      let message = error.message || "Action impossible.";
+      if (error.context && typeof error.context.json === "function") {
+        const payload = await error.context.json().catch(() => null);
+        if (payload && payload.error) message = payload.error;
+      }
+      throw new Error(message);
+    }
+    if (data && data.error) throw new Error(data.error);
+    return data;
+  }
+
   function syncPlanButtons() {
     upgradeButtons.forEach((btn) => {
       const tier = btn.getAttribute("data-upgrade-tier");
@@ -71,6 +139,8 @@
 
   function applyProfile(email, profile, user) {
     currentTier = profile.subscription_tier || "free";
+    currentEmail = email;
+    currentIdentities = (user && user.identities) || [];
     const tierLabel = TIER_LABELS[currentTier] || currentTier;
 
     if (userEmailEl) userEmailEl.textContent = email;
@@ -126,6 +196,7 @@
     }
 
     syncPlanButtons();
+    renderDiscordConnection();
   }
 
   async function init() {
@@ -168,8 +239,22 @@
       return;
     }
 
-    applyProfile(session.user.email || "", profile, session.user);
+    const { data: identityData } = await client.auth.getUserIdentities();
+    const freshUser = Object.assign({}, session.user, {
+      identities: (identityData && identityData.identities) || session.user.identities || [],
+    });
+    applyProfile(session.user.email || "", profile, freshUser);
     showShell();
+
+    if (window.localStorage.getItem("sr-editer:discord-link-pending") === "1" && discordIdentity()) {
+      try {
+        await invokeAccountAction("sync-discord");
+        window.localStorage.removeItem("sr-editer:discord-link-pending");
+        showAccountMessage("Compte Discord lié et rôle synchronisé.", "success");
+      } catch (syncError) {
+        showAccountMessage(syncError.message || "Discord est lié, mais le rôle n'a pas pu être synchronisé.", "error");
+      }
+    }
 
     // Affiche Admin aussi pour les superadmins sans role=admin
     const adminLink = document.getElementById("portal-admin-link");
@@ -249,6 +334,95 @@
       }
     });
   });
+
+  if (discordLinkBtn) {
+    discordLinkBtn.addEventListener("click", async () => {
+      const identity = discordIdentity();
+      discordLinkBtn.disabled = true;
+      showAccountMessage("", "info");
+      try {
+        if (!identity) {
+          window.localStorage.setItem("sr-editer:discord-link-pending", "1");
+          const { error } = await client.auth.linkIdentity({
+            provider: "discord",
+            options: { redirectTo: window.location.origin + "/dashboard.html" },
+          });
+          if (error) throw error;
+          return;
+        }
+
+        if (currentIdentities.length <= 1) {
+          throw new Error("Discord est ton unique moyen de connexion : cette identité ne peut pas être déliée.");
+        }
+        await invokeAccountAction("prepare-discord-unlink");
+        const { error } = await client.auth.unlinkIdentity(identity);
+        if (error) throw error;
+        const { data } = await client.auth.getUserIdentities();
+        currentIdentities = (data && data.identities) || [];
+        renderDiscordConnection();
+        showAccountMessage("Compte Discord délié et rôles retirés.", "success");
+      } catch (error) {
+        window.localStorage.removeItem("sr-editer:discord-link-pending");
+        showAccountMessage(error.message || "Impossible de gérer la liaison Discord.", "error");
+        renderDiscordConnection();
+      }
+    });
+  }
+
+  if (discordSyncBtn) {
+    discordSyncBtn.addEventListener("click", async () => {
+      discordSyncBtn.disabled = true;
+      showAccountMessage("Synchronisation en cours...", "info");
+      try {
+        await invokeAccountAction("sync-discord");
+        showAccountMessage("Rôle Discord synchronisé avec ton offre.", "success");
+      } catch (error) {
+        showAccountMessage(error.message || "Impossible de synchroniser le rôle Discord.", "error");
+      } finally {
+        discordSyncBtn.disabled = false;
+      }
+    });
+  }
+
+  if (deleteStartBtn && deleteConfirmationEl && deleteEmailInput) {
+    deleteStartBtn.addEventListener("click", () => {
+      deleteStartBtn.hidden = true;
+      deleteConfirmationEl.hidden = false;
+      deleteEmailInput.focus();
+    });
+    deleteEmailInput.addEventListener("input", () => {
+      if (deleteConfirmBtn) {
+        deleteConfirmBtn.disabled = deleteEmailInput.value.trim().toLowerCase() !== currentEmail.toLowerCase();
+      }
+    });
+  }
+
+  if (deleteCancelBtn && deleteConfirmationEl && deleteStartBtn && deleteEmailInput) {
+    deleteCancelBtn.addEventListener("click", () => {
+      deleteConfirmationEl.hidden = true;
+      deleteStartBtn.hidden = false;
+      deleteEmailInput.value = "";
+      if (deleteConfirmBtn) deleteConfirmBtn.disabled = true;
+    });
+  }
+
+  if (deleteConfirmBtn && deleteEmailInput) {
+    deleteConfirmBtn.addEventListener("click", async () => {
+      if (deleteEmailInput.value.trim().toLowerCase() !== currentEmail.toLowerCase()) return;
+      deleteConfirmBtn.disabled = true;
+      deleteConfirmBtn.textContent = "Suppression...";
+      showAccountMessage("Annulation de l'abonnement et suppression du compte...", "info");
+      try {
+        await invokeAccountAction("delete-account", deleteEmailInput.value.trim());
+        await client.auth.signOut({ scope: "local" });
+        window.location.href = "login.html?notice=" + encodeURIComponent("Ton compte a été supprimé.");
+      } catch (error) {
+        showAccountMessage(error.message || "Impossible de supprimer le compte.", "error");
+        deleteConfirmBtn.disabled = false;
+        deleteConfirmBtn.textContent = "Supprimer définitivement";
+      }
+    });
+  }
 
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {

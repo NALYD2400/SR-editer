@@ -2606,7 +2606,7 @@ html[data-theme="light"] .theme-toggle .icon-sun {
   padding: 24px;
   background-color: var(--bg-vercel-deep) !important;
   /* Very subtle, neat grid background */
-  background-image: 
+  background-image:
     radial-gradient(at 50% 50%, transparent 40%, var(--bg-vercel-deep) 90%),
     linear-gradient(var(--border-vercel) 1px, transparent 1px),
     linear-gradient(90deg, var(--border-vercel) 1px, transparent 1px) !important;

@@ -274,11 +274,37 @@
   color: #c5cedd;
 }
 
-/* Login page: bright wallpaper like the app (no heavy dark body fill) */
+.auth-theme-float {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 40;
+}
+
+.auth-theme-float.theme-toggle-icon {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.auth-theme-float [data-theme-label] {
+  display: none;
+}
+
+/* Login / ambient pages: bright wallpaper like the app */
 body.auth-body {
   background: transparent !important;
   min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Login only: lock page scroll (centered card) */
+body.auth-body.auth-body--locked {
   overflow: hidden;
+  height: 100vh;
 }
 
 body.auth-body .ambient-background {

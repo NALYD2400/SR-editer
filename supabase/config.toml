@@ -5,3 +5,21 @@ verify_jwt = false
 
 [functions.admin-users]
 verify_jwt = false
+
+[functions.stripe-checkout]
+verify_jwt = true
+
+[functions.stripe-webhook]
+verify_jwt = false
+
+[functions.stripe-customer-portal]
+verify_jwt = true
+
+[functions.stripe-coupons]
+verify_jwt = true
+
+[functions.account-management]
+verify_jwt = true
+
+[auth]
+enable_manual_linking = true
