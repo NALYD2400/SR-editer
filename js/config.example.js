@@ -4,6 +4,7 @@ window.SR_CONFIG = {
   appVersion: "0.4.0",
   adminFunctionName: "admin-users",
   discordInviteUrl: "https://discord.gg/KZGd6QpnPE",
+  discordRulesUrl: "https://discord.gg/QdkdZ6jSud",
   updateManifestUrl: "/update.json",
   demoMode: false,
   // URL de secours uniquement ; le site charge normalement updateManifestUrl.

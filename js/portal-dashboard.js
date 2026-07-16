@@ -156,13 +156,15 @@
     accountMessageEl.hidden = !message;
     if (discordRecoveryLink) {
       const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
+      const rulesUrl = String(window.SR_CONFIG.discordRulesUrl || "").trim();
       const kind = discordRecoveryKind(message);
-      const visible = Boolean(inviteUrl && state === "error" && kind);
+      const targetUrl = kind === "rules" ? (rulesUrl || inviteUrl) : inviteUrl;
+      const visible = Boolean(targetUrl && state === "error" && kind);
       discordRecoveryLink.hidden = !visible;
       if (visible) {
-        discordRecoveryLink.href = inviteUrl;
+        discordRecoveryLink.href = targetUrl;
         discordRecoveryLink.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
-        openDiscordRequiredModal(message, kind, inviteUrl);
+        openDiscordRequiredModal(message, kind, targetUrl);
       } else {
         closeDiscordRequiredModal();
       }

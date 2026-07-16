@@ -94,16 +94,18 @@
   function updateDiscordRecovery(message, code) {
     if (!discordRecoveryLink) return;
     const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
+    const rulesUrl = String(window.SR_CONFIG.discordRulesUrl || "").trim();
     const kind = discordRecoveryKind(message, code);
-    const visible = Boolean(inviteUrl && kind);
+    const targetUrl = kind === "rules" ? (rulesUrl || inviteUrl) : inviteUrl;
+    const visible = Boolean(targetUrl && kind);
     discordRecoveryLink.hidden = !visible;
     if (!visible) {
       closeDiscordRequiredModal();
       return;
     }
-    discordRecoveryLink.href = inviteUrl;
+    discordRecoveryLink.href = targetUrl;
     discordRecoveryLink.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
-    openDiscordRequiredModal(message, kind, inviteUrl);
+    openDiscordRequiredModal(message, kind, targetUrl);
   }
 
   function showError(message, code) {
