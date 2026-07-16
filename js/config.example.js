@@ -3,6 +3,7 @@ window.SR_CONFIG = {
   supabaseAnonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
   appVersion: "0.4.0",
   adminFunctionName: "admin-users",
+  discordInviteUrl: "https://discord.gg/KZGd6QpnPE",
   updateManifestUrl: "/update.json",
   demoMode: false,
   // URL de secours uniquement ; le site charge normalement updateManifestUrl.

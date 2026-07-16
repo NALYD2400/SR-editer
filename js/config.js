@@ -4,6 +4,7 @@ window.SR_CONFIG = {
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjaWt6a2Z5anJjZ3ZvaWt0YWdnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMxNTQxNDMsImV4cCI6MjA5ODczMDE0M30.1gJxAxevUoRhQv3y9PdZ5PKTSBApsbUHZk0W_AOvBoY",
   appVersion: "0.4.1",
   adminFunctionName: "admin-users",
+  discordInviteUrl: "https://discord.gg/KZGd6QpnPE",
   updateManifestUrl: "/update.json",
   demoMode: false,
   // URL de secours uniquement ; le site charge normalement updateManifestUrl.

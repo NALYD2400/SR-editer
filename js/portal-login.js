@@ -13,19 +13,51 @@
   const submitBtn = document.getElementById("submit-btn");
   const discordBtn = document.getElementById("discord-btn");
   const errorMessage = document.getElementById("error-message");
+  const discordRecoveryLink = document.getElementById("discord-recovery-link");
   const successMessage = document.getElementById("success-message");
   const authSubtitle = document.getElementById("auth-subtitle");
   const authSwitch = document.getElementById("auth-switch");
 
   let mode = "login"; // "login" | "signup"
 
-  function showError(message) {
+  function getDiscordErrorMessage(error, code) {
+    const message = typeof error === "string" ? error : error && error.message ? error.message : "";
+    if (code === "DISCORD_MEMBERSHIP_REQUIRED" || /dois être membre du serveur discord/i.test(message)) {
+      return "Rejoins le serveur Discord SR Editer, accepte le règlement, puis relance la connexion.";
+    }
+    if (code === "DISCORD_RULES_REQUIRED" || /accepte d'abord le règlement/i.test(message)) {
+      return "Accepte le règlement sur le serveur Discord pour obtenir le rôle Membre, puis réessaie.";
+    }
+    if (/resource owner|authorization server denied|access[_ ]denied/i.test(message)) {
+      return "Connexion Discord annulée. Tu peux réessayer quand tu veux.";
+    }
+    if (/unsupported provider|provider is not enabled/i.test(message)) {
+      return "La connexion Discord n'est pas encore activée sur le serveur.";
+    }
+    return message || "Impossible de continuer avec Discord.";
+  }
+
+  function updateDiscordRecovery(message, code) {
+    if (!discordRecoveryLink) return;
+    const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
+    const needsRules = code === "DISCORD_RULES_REQUIRED" || /accepte le règlement/i.test(message);
+    const needsMembership = code === "DISCORD_MEMBERSHIP_REQUIRED" || /rejoins le serveur discord/i.test(message);
+    const visible = Boolean(inviteUrl && (needsRules || needsMembership));
+    discordRecoveryLink.hidden = !visible;
+    if (!visible) return;
+    discordRecoveryLink.href = inviteUrl;
+    discordRecoveryLink.textContent = needsRules ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
+  }
+
+  function showError(message, code) {
     if (successMessage) {
       successMessage.textContent = "";
       successMessage.classList.remove("is-visible");
     }
-    errorMessage.textContent = message;
+    const displayMessage = getDiscordErrorMessage(message, code);
+    errorMessage.textContent = displayMessage;
     errorMessage.classList.add("is-visible");
+    updateDiscordRecovery(displayMessage, code);
   }
 
   function showSuccess(message) {
@@ -33,6 +65,7 @@
       errorMessage.textContent = "";
       errorMessage.classList.remove("is-visible");
     }
+    updateDiscordRecovery("", "");
     if (!successMessage) return;
     successMessage.textContent = message;
     successMessage.classList.add("is-visible");
@@ -47,6 +80,7 @@
       successMessage.textContent = "";
       successMessage.classList.remove("is-visible");
     }
+    updateDiscordRecovery("", "");
   }
 
   function bindSwitch(button, nextMode) {
@@ -100,8 +134,10 @@
 
   const afterAuthPath = safeNextPath();
 
-  const notice = new URLSearchParams(window.location.search).get("notice");
-  if (notice) showError(notice);
+  const initialParams = new URLSearchParams(window.location.search);
+  const notice = initialParams.get("notice");
+  const noticeCode = initialParams.get("notice_code");
+  if (notice) showError(notice, noticeCode);
 
   client.auth.getSession().then(({ data: { session } }) => {
     if (session) {
@@ -150,7 +186,7 @@
       });
 
       if (error) {
-        showError(error.message);
+        showError(error.message, error.code);
         submitBtn.disabled = false;
         submitBtn.textContent = "Créer mon compte";
         return;
@@ -174,7 +210,7 @@
     });
 
     if (error) {
-      showError(error.message);
+      showError(error.message, error.code);
       submitBtn.disabled = false;
       submitBtn.textContent = "Se connecter";
     } else {
@@ -200,7 +236,7 @@
     if (error) {
       window.localStorage.removeItem("sr-editer:discord-signin-pending");
       window.localStorage.removeItem("sr-editer:discord-signin-next");
-      showError(error.message);
+      showError(error.message, error.code);
       discordBtn.disabled = false;
     }
   });

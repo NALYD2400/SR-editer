@@ -24,6 +24,7 @@
   const discordStatusEl = document.getElementById("discord-account-status");
   const discordLinkBtn = document.getElementById("discord-link-btn");
   const discordSyncBtn = document.getElementById("discord-sync-btn");
+  const discordRecoveryLink = document.getElementById("discord-recovery-link");
   const accountMessageEl = document.getElementById("account-action-message");
   const deleteStartBtn = document.getElementById("delete-account-start");
   const deleteConfirmationEl = document.getElementById("delete-account-confirmation");
@@ -71,8 +72,11 @@
     return currentIdentities.find((identity) => identity.provider === "discord") || null;
   }
 
-  function redirectToLogin(message) {
-    const target = "login.html" + (message ? "?notice=" + encodeURIComponent(message) : "");
+  function redirectToLogin(message, code) {
+    const query = new URLSearchParams();
+    if (message) query.set("notice", message);
+    if (code) query.set("notice_code", code);
+    const target = "login.html" + (query.size ? "?" + query.toString() : "");
     window.location.replace(target);
   }
 
@@ -85,6 +89,15 @@
 
   function getDiscordErrorMessage(error) {
     const message = error && error.message ? error.message : "";
+    if (error && error.code === "DISCORD_MEMBERSHIP_REQUIRED") {
+      return "Rejoins le serveur Discord SR Editer, accepte le règlement, puis relance la connexion.";
+    }
+    if (error && error.code === "DISCORD_RULES_REQUIRED") {
+      return "Accepte le règlement sur le serveur Discord pour obtenir le rôle Membre, puis réessaie.";
+    }
+    if (/resource owner|authorization server denied|access[_ ]denied/i.test(message)) {
+      return "Connexion Discord annulée. Tu peux réessayer quand tu veux.";
+    }
     if (/unsupported provider|provider is not enabled/i.test(message)) {
       return "La connexion Discord n'est pas encore activée sur le serveur.";
     }
@@ -96,6 +109,17 @@
     accountMessageEl.textContent = message;
     accountMessageEl.dataset.state = state || "info";
     accountMessageEl.hidden = !message;
+    if (discordRecoveryLink) {
+      const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
+      const needsRules = /accepte le règlement/i.test(message || "");
+      const needsMembership = /rejoins le serveur discord/i.test(message || "");
+      const visible = Boolean(inviteUrl && state === "error" && (needsRules || needsMembership));
+      discordRecoveryLink.hidden = !visible;
+      if (visible) {
+        discordRecoveryLink.href = inviteUrl;
+        discordRecoveryLink.textContent = needsRules ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
+      }
+    }
   }
 
   function renderDiscordConnection() {
@@ -127,18 +151,32 @@
   }
 
   async function invokeAccountAction(action, confirmation) {
+    const { data: sessionData, error: sessionError } = await client.auth.getSession();
+    const accessToken = sessionData && sessionData.session && sessionData.session.access_token;
+    if (sessionError || !accessToken) {
+      throw new Error("La session Discord n'a pas pu être validée. Relance la connexion Discord.");
+    }
     const { data, error } = await client.functions.invoke("account-management", {
       body: Object.assign({ action: action }, confirmation ? { confirmation: confirmation } : {}),
+      headers: { Authorization: "Bearer " + accessToken },
     });
     if (error) {
       let message = error.message || "Action impossible.";
+      let code = "";
       if (error.context && typeof error.context.json === "function") {
         const payload = await error.context.json().catch(() => null);
         if (payload && payload.error) message = payload.error;
+        if (payload && payload.code) code = payload.code;
       }
-      throw new Error(message);
+      const accountError = new Error(message);
+      accountError.code = code;
+      throw accountError;
     }
-    if (data && data.error) throw new Error(data.error);
+    if (data && data.error) {
+      const accountError = new Error(data.error);
+      accountError.code = data.code || "";
+      throw accountError;
+    }
     return data;
   }
 
@@ -235,6 +273,17 @@
       return;
     }
 
+    const oauthParams = new URLSearchParams(window.location.search);
+    const oauthError = oauthParams.get("error_description") || oauthParams.get("error");
+    if (oauthError) {
+      window.localStorage.removeItem("sr-editer:discord-signin-pending");
+      window.localStorage.removeItem("sr-editer:discord-signin-next");
+      window.localStorage.removeItem("sr-editer:discord-link-pending");
+      await client.auth.signOut({ scope: "local" }).catch(function () {});
+      redirectToLogin(getDiscordErrorMessage(new Error(oauthError)));
+      return;
+    }
+
     const {
       data: { session },
       error,
@@ -290,7 +339,7 @@
         window.localStorage.removeItem("sr-editer:discord-signin-pending");
         window.localStorage.removeItem("sr-editer:discord-signin-next");
         await client.auth.signOut({ scope: "local" });
-        redirectToLogin(getDiscordErrorMessage(discordError));
+        redirectToLogin(getDiscordErrorMessage(discordError), discordError.code);
         return;
       }
 
@@ -319,7 +368,7 @@
           currentIdentities = (data && data.identities) || [];
           renderDiscordConnection();
         }
-        showAccountMessage(syncError.message || "Le compte Discord n'a pas pu être lié.", "error");
+        showAccountMessage(getDiscordErrorMessage(syncError), "error");
       } finally {
         window.localStorage.removeItem("sr-editer:discord-link-pending");
       }
@@ -450,7 +499,7 @@
         await invokeAccountAction("sync-discord");
         showAccountMessage("Rôle Discord synchronisé avec ton offre.", "success");
       } catch (error) {
-        showAccountMessage(error.message || "Impossible de synchroniser le rôle Discord.", "error");
+        showAccountMessage(getDiscordErrorMessage(error), "error");
       } finally {
         discordSyncBtn.disabled = false;
       }

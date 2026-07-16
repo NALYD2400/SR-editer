@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/ambient.css?v=1">
-  <link rel="stylesheet" href="styles/portal.css?v=7">
+  <link rel="stylesheet" href="styles/portal.css?v=8">
   <link rel="stylesheet" href="styles/site-pages.css?v=4">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -225,6 +225,7 @@
               <div class="portal-account-actions">
                 <button type="button" class="portal-btn outline" id="discord-sync-btn" hidden>Synchroniser le rôle</button>
                 <button type="button" class="portal-btn primary" id="discord-link-btn">Lier Discord</button>
+                <a class="portal-btn discord-recovery" id="discord-recovery-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Rejoindre le Discord</a>
               </div>
             </div>
 
@@ -257,7 +258,7 @@
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/portal-dashboard.js?v=3"></script>
+  <script src="js/portal-dashboard.js?v=4"></script>
   <script>
     (function initTabNavigation() {
       const links = document.querySelectorAll(".sidebar-link[data-panel]");

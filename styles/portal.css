@@ -1218,6 +1218,18 @@ html[data-theme="light"] .portal-topbar {
   display: none;
 }
 
+.portal-btn.discord-recovery {
+  border-color: color-mix(in srgb, #5865f2 74%, var(--border));
+  background: color-mix(in srgb, #5865f2 18%, var(--surface-2));
+  color: var(--text);
+  text-decoration: none;
+}
+
+.portal-btn.discord-recovery:hover {
+  border-color: #5865f2;
+  background: color-mix(in srgb, #5865f2 28%, var(--surface-2));
+}
+
 .portal-danger-zone {
   border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
 }

@@ -151,6 +151,36 @@
   display: block;
 }
 
+.auth-discord-recovery {
+  display: flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(88, 101, 242, 0.72);
+  border-radius: 12px;
+  background: rgba(88, 101, 242, 0.14);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background-color 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.auth-discord-recovery[hidden] {
+  display: none;
+}
+
+.auth-discord-recovery:hover {
+  border-color: #5865f2;
+  background: rgba(88, 101, 242, 0.24);
+  transform: translateY(-1px);
+}
+
+.auth-discord-recovery:focus-visible {
+  outline: 3px solid rgba(88, 101, 242, 0.38);
+  outline-offset: 2px;
+}
+
 .auth-success {
   margin: 0;
   padding: 10px 12px;

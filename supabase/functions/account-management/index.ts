@@ -53,7 +53,8 @@ serve(async (req) => {
 
   const { data: userData, error: userError } = await userClient.auth.getUser();
   const user = userData.user;
-  if (userError || !user?.id || !user.email) return json(401, { error: "Invalid session." });
+  if (userError || !user?.id) return json(401, { error: "Invalid session." });
+  const userEmail = user.email?.trim() ?? "";
 
   let body: Record<string, unknown>;
   try {
@@ -88,8 +89,14 @@ serve(async (req) => {
 
     if (action !== "delete-account") return json(400, { error: "Unknown action." });
 
+    if (!userEmail) {
+      return json(409, {
+        error: "Ajoute une adresse e-mail à ton compte avant de pouvoir le supprimer.",
+      });
+    }
+
     const confirmation = typeof body.confirmation === "string" ? body.confirmation.trim() : "";
-    if (confirmation.toLowerCase() !== user.email.toLowerCase()) {
+    if (confirmation.toLowerCase() !== userEmail.toLowerCase()) {
       return json(400, { error: "Type the account email to confirm deletion." });
     }
 
@@ -132,7 +139,7 @@ serve(async (req) => {
 
     const cleanupResults = await Promise.all([
       admin.from("support_tickets").delete().eq("user_id", user.id),
-      admin.from("contact_messages").delete().ilike("email", user.email),
+      admin.from("contact_messages").delete().ilike("email", userEmail),
       admin.from("admin_audit_logs").delete().eq("actor_user_id", user.id),
       admin.from("admin_audit_logs").delete().eq("target_id", user.id),
     ]);

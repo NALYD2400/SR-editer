@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/ambient.css?v=1">
   <link rel="stylesheet" href="styles/portal.css?v=6">
-  <link rel="stylesheet" href="styles/auth.css?v=2">
+  <link rel="stylesheet" href="styles/auth.css?v=3">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="portal-body auth-body auth-body--locked">
@@ -56,6 +56,9 @@
         </label>
 
         <p id="error-message" class="auth-error"></p>
+        <a id="discord-recovery-link" class="auth-discord-recovery" href="#" target="_blank" rel="noopener noreferrer" hidden>
+          Rejoindre le Discord
+        </a>
         <p id="success-message" class="auth-success"></p>
 
         <button type="submit" class="auth-submit" id="submit-btn">Se connecter</button>
@@ -85,7 +88,7 @@
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/portal-login.js?v=3"></script>
+  <script src="js/portal-login.js?v=4"></script>
   <script>
     (function initPasswordToggles() {
       document.querySelectorAll("[data-toggle-password]").forEach(function (btn) {
