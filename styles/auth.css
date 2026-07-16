@@ -107,6 +107,12 @@
   padding-right: 40px;
 }
 
+/* Edge/WebView2 exposes a native reveal icon; the interface already has one. */
+.auth-card .password-input-wrapper input::-ms-reveal,
+.auth-card .password-input-wrapper input::-ms-clear {
+  display: none;
+}
+
 .auth-card .password-toggle-btn {
   position: absolute;
   right: 10px;
