@@ -71,6 +71,18 @@
     return currentIdentities.find((identity) => identity.provider === "discord") || null;
   }
 
+  function redirectToLogin(message) {
+    const target = "login.html" + (message ? "?notice=" + encodeURIComponent(message) : "");
+    window.location.replace(target);
+  }
+
+  function safeNextPath() {
+    const next = window.localStorage.getItem("sr-editer:discord-signin-next") ||
+      new URLSearchParams(window.location.search).get("next");
+    if (!next || !/^[a-zA-Z0-9._-]+\.html([?#].*)?$/.test(next)) return null;
+    return next === "dashboard.html" ? null : next;
+  }
+
   function getDiscordErrorMessage(error) {
     const message = error && error.message ? error.message : "";
     if (/unsupported provider|provider is not enabled/i.test(message)) {
@@ -248,20 +260,68 @@
       return;
     }
 
+    if (profile.role === "suspendu") {
+      await client.auth.signOut({ scope: "local" });
+      redirectToLogin("Ce compte est suspendu. Contacte un administrateur.");
+      return;
+    }
+
     const { data: identityData } = await client.auth.getUserIdentities();
     const freshUser = Object.assign({}, session.user, {
       identities: (identityData && identityData.identities) || session.user.identities || [],
     });
+
+    const params = new URLSearchParams(window.location.search);
+    const discordSignInPending =
+      window.localStorage.getItem("sr-editer:discord-signin-pending") === "1" ||
+      params.get("discord_auth") === "1";
+    if (discordSignInPending) {
+      currentIdentities = freshUser.identities;
+      if (!discordIdentity()) {
+        window.localStorage.removeItem("sr-editer:discord-signin-pending");
+        window.localStorage.removeItem("sr-editer:discord-signin-next");
+        await client.auth.signOut({ scope: "local" });
+        redirectToLogin("Discord n'a pas renvoyé de compte utilisable.");
+        return;
+      }
+      try {
+        await invokeAccountAction("sync-discord");
+      } catch (discordError) {
+        window.localStorage.removeItem("sr-editer:discord-signin-pending");
+        window.localStorage.removeItem("sr-editer:discord-signin-next");
+        await client.auth.signOut({ scope: "local" });
+        redirectToLogin(getDiscordErrorMessage(discordError));
+        return;
+      }
+
+      const nextPath = safeNextPath();
+      window.localStorage.removeItem("sr-editer:discord-signin-pending");
+      window.localStorage.removeItem("sr-editer:discord-signin-next");
+      if (nextPath) {
+        window.location.replace(nextPath);
+        return;
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     applyProfile(session.user.email || "", profile, freshUser);
     showShell();
 
     if (window.localStorage.getItem("sr-editer:discord-link-pending") === "1" && discordIdentity()) {
       try {
         await invokeAccountAction("sync-discord");
-        window.localStorage.removeItem("sr-editer:discord-link-pending");
         showAccountMessage("Compte Discord lié et rôle synchronisé.", "success");
       } catch (syncError) {
-        showAccountMessage(syncError.message || "Discord est lié, mais le rôle n'a pas pu être synchronisé.", "error");
+        const identity = discordIdentity();
+        if (identity && currentIdentities.length > 1) {
+          await client.auth.unlinkIdentity(identity).catch(function () {});
+          const { data } = await client.auth.getUserIdentities();
+          currentIdentities = (data && data.identities) || [];
+          renderDiscordConnection();
+        }
+        showAccountMessage(syncError.message || "Le compte Discord n'a pas pu être lié.", "error");
+      } finally {
+        window.localStorage.removeItem("sr-editer:discord-link-pending");
       }
     }
 

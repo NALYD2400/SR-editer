@@ -2,6 +2,7 @@ import { serve } from "https://deno.land/std@0.177.0/http/server.ts";
 import Stripe from "https://esm.sh/stripe@12.4.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.21.0";
 import {
+  DiscordMembershipRequiredError,
   getDiscordId,
   syncDiscordRole,
   type DiscordTier,
@@ -74,7 +75,7 @@ serve(async (req) => {
     if (action === "sync-discord") {
       if (!discordId) return json(409, { error: "No Discord identity is linked." });
       const tier = normalizeTier(profile.subscription_tier);
-      const result = await syncDiscordRole(discordId, tier);
+      const result = await syncDiscordRole(discordId, tier, true);
       return json(200, { ok: true, tier, result });
     }
 
@@ -144,6 +145,9 @@ serve(async (req) => {
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.error(`Account management error (${action}):`, error);
+    if (error instanceof DiscordMembershipRequiredError) {
+      return json(403, { error: message, code: "DISCORD_MEMBERSHIP_REQUIRED" });
+    }
     return json(502, { error: message });
   }
 });

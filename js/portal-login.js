@@ -185,15 +185,21 @@
   discordBtn.addEventListener("click", async () => {
     discordBtn.disabled = true;
     clearMessages();
+    window.localStorage.setItem("sr-editer:discord-signin-pending", "1");
+    if (afterAuthPath !== "dashboard.html") {
+      window.localStorage.setItem("sr-editer:discord-signin-next", afterAuthPath);
+    }
 
     const { error } = await client.auth.signInWithOAuth({
       provider: "discord",
       options: {
-        redirectTo: window.location.origin + "/" + afterAuthPath.replace(/^\//, ""),
+        redirectTo: window.location.origin + "/dashboard.html",
       },
     });
 
     if (error) {
+      window.localStorage.removeItem("sr-editer:discord-signin-pending");
+      window.localStorage.removeItem("sr-editer:discord-signin-next");
       showError(error.message);
       discordBtn.disabled = false;
     }
