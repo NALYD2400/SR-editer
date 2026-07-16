@@ -372,11 +372,38 @@
 
   function discordOf(user) {
     const value = user?.discord;
+    const avatarUrl = typeof value?.avatarUrl === "string" &&
+      /^https:\/\/cdn\.discordapp\.com\/(?:avatars|embed\/avatars)\//i.test(value.avatarUrl.trim())
+      ? value.avatarUrl.trim()
+      : null;
     return {
       linked: value?.linked === true,
       username: typeof value?.username === "string" && value.username.trim() ? value.username.trim() : null,
-      id: typeof value?.id === "string" && value.id.trim() ? value.id.trim() : null
+      id: typeof value?.id === "string" && value.id.trim() ? value.id.trim() : null,
+      avatarUrl
     };
+  }
+
+  function renderDetailAvatar(container, email, discord) {
+    if (!container) return;
+    const initial = (email || "U").charAt(0).toUpperCase();
+    const showFallback = () => {
+      container.replaceChildren(document.createTextNode(initial));
+      container.setAttribute("aria-label", `Initiale du compte ${email}`);
+    };
+
+    if (!discord.avatarUrl) {
+      showFallback();
+      return;
+    }
+
+    const image = document.createElement("img");
+    image.alt = `Avatar Discord de ${discord.username || email}`;
+    image.referrerPolicy = "no-referrer";
+    image.addEventListener("error", showFallback, { once: true });
+    image.src = discord.avatarUrl;
+    container.replaceChildren(image);
+    container.setAttribute("aria-label", image.alt);
   }
 
   async function refreshUsers() {
@@ -491,7 +518,7 @@
     const syncDiscordBtn = document.getElementById("sync-discord-btn");
     const discordFeedback = document.getElementById("discord-sync-feedback");
 
-    if (avatar) avatar.textContent = email.charAt(0).toUpperCase();
+    renderDetailAvatar(avatar, email, discord);
     if (emailLabel) emailLabel.textContent = email;
     if (rolePill) {
       rolePill.textContent = user.role.toUpperCase();

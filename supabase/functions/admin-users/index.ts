@@ -1,4 +1,4 @@
-import { createClient } from "npm:@supabase/supabase-js@2";
+import { createClient, type User } from "npm:@supabase/supabase-js@2";
 import {
   DiscordMembershipRequiredError,
   DiscordRulesRequiredError,
@@ -53,7 +53,7 @@ function discordSummaryOf(user: { identities?: unknown[] | null }) {
   const identity = user.identities?.find((item) => (
     item !== null && typeof item === "object" && (item as Record<string, unknown>).provider === "discord"
   )) as Record<string, unknown> | undefined;
-  if (!identity) return { linked: false, id: null, username: null };
+  if (!identity) return { linked: false, id: null, username: null, avatarUrl: null };
   const metadata = identity.identity_data !== null && typeof identity.identity_data === "object"
     ? identity.identity_data as Record<string, unknown>
     : {};
@@ -62,7 +62,11 @@ function discordSummaryOf(user: { identities?: unknown[] | null }) {
     metadata.global_name ?? metadata.full_name ?? metadata.name ?? metadata.user_name ?? metadata.preferred_username,
     100,
   );
-  return { linked: true, id: id || null, username: username || null };
+  const avatarCandidate = textOf(metadata.avatar_url ?? metadata.picture, 2048);
+  const avatarUrl = /^https:\/\/cdn\.discordapp\.com\/(?:avatars|embed\/avatars)\//i.test(avatarCandidate)
+    ? avatarCandidate
+    : null;
+  return { linked: true, id: id || null, username: username || null, avatarUrl };
 }
 
 function appPermissionsOf(value: unknown) {
@@ -166,6 +170,18 @@ Deno.serve(async (request) => {
     if (error) throw error;
     return data.users;
   };
+  const getDetailedAuthUser = async (user: User) => {
+    const { data, error } = await admin.auth.admin.getUserById(user.id);
+    return !error && data.user ? data.user : user;
+  };
+  const hydrateAuthUsers = async (users: User[]) => {
+    const detailedUsers: User[] = [];
+    for (let index = 0; index < users.length; index += 12) {
+      const batch = users.slice(index, index + 12);
+      detailedUsers.push(...await Promise.all(batch.map(getDetailedAuthUser)));
+    }
+    return detailedUsers;
+  };
 
   if (action === "me") return json(origin, 200, { ok: true, profile: callerProfile, level, permissions });
 
@@ -194,7 +210,7 @@ Deno.serve(async (request) => {
 
   if (action === "list") {
     const allUsers = await listAuthUsers();
-    const users = allUsers.filter((u) => !u.deleted_at);
+    const users = await hydrateAuthUsers(allUsers.filter((u) => !u.deleted_at));
     const [{ data: profiles, error }, { data: licenses }, { data: superadmins }] = await Promise.all([
       admin.from("profiles").select("user_id,email,role,write_mode,app_permissions,created_at").order("created_at", { ascending: false }).limit(1000),
       admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at"),
@@ -226,8 +242,11 @@ Deno.serve(async (request) => {
   if (action === "discord-sync") {
     const targetEmail = emailOf(body.email);
     const users = await listAuthUsers();
-    const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
-    if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
+    const targetSummary = users.find((user) => user.email?.toLowerCase() === targetEmail);
+    if (!targetSummary) return json(origin, 404, { ok: false, error: "Compte introuvable." });
+    const { data: targetData, error: targetError } = await admin.auth.admin.getUserById(targetSummary.id);
+    if (targetError || !targetData.user) return json(origin, 502, { ok: false, error: "Identités du compte temporairement indisponibles." });
+    const target = targetData.user;
     const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
     if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut synchroniser le Discord d'un administrateur." });
     const discordId = getDiscordId(target);
