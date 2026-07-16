@@ -31,6 +31,12 @@
   const deleteEmailInput = document.getElementById("delete-account-email");
   const deleteCancelBtn = document.getElementById("delete-account-cancel");
   const deleteConfirmBtn = document.getElementById("delete-account-confirm");
+  const discordRequiredModal = document.getElementById("discord-required-modal");
+  const discordRequiredDialog = discordRequiredModal && discordRequiredModal.querySelector(".discord-required-dialog");
+  const discordRequiredMessage = document.getElementById("discord-required-message");
+  const discordRequiredJoin = document.getElementById("discord-required-join");
+  const discordRequiredRetry = document.getElementById("discord-required-retry");
+  const discordRequiredClose = document.getElementById("discord-required-close");
 
   const TIER_LABELS = {
     free: "Gratuit",
@@ -44,6 +50,7 @@
   let currentEmail = "";
   let currentIdentities = [];
   let discordActionInFlight = false;
+  let recoveryPreviousFocus = null;
 
   function showShell() {
     if (loadingEl) loadingEl.style.display = "none";
@@ -101,7 +108,45 @@
     if (/unsupported provider|provider is not enabled/i.test(message)) {
       return "La connexion Discord n'est pas encore activée sur le serveur.";
     }
+    if (/invalid session|session required/i.test(message)) {
+      return "Ta session a expiré. Recommence la connexion.";
+    }
     return message || "Impossible de gérer la liaison Discord.";
+  }
+
+  function discordRecoveryKind(message) {
+    if (/accepte le règlement/i.test(message || "")) return "rules";
+    if (/rejoins le serveur discord/i.test(message || "")) return "membership";
+    return null;
+  }
+
+  function closeDiscordRequiredModal() {
+    if (!discordRequiredModal || discordRequiredModal.hidden) return;
+    discordRequiredModal.hidden = true;
+    document.body.classList.remove("discord-modal-open");
+    if (recoveryPreviousFocus && typeof recoveryPreviousFocus.focus === "function") {
+      recoveryPreviousFocus.focus();
+    }
+    recoveryPreviousFocus = null;
+  }
+
+  function openDiscordRequiredModal(message, kind, inviteUrl) {
+    if (!discordRequiredModal || !kind || !inviteUrl) return;
+    recoveryPreviousFocus = document.activeElement;
+    if (discordRequiredMessage) discordRequiredMessage.textContent = message;
+    if (discordRequiredJoin) {
+      discordRequiredJoin.href = inviteUrl;
+      discordRequiredJoin.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
+    }
+    if (discordRequiredRetry) {
+      discordRequiredRetry.textContent = kind === "rules" ? "J’ai accepté, réessayer" : "J’ai rejoint, réessayer";
+    }
+    discordRequiredModal.hidden = false;
+    document.body.classList.add("discord-modal-open");
+    window.requestAnimationFrame(function () {
+      if (discordRequiredJoin) discordRequiredJoin.focus();
+      else if (discordRequiredDialog) discordRequiredDialog.focus();
+    });
   }
 
   function showAccountMessage(message, state) {
@@ -111,13 +156,15 @@
     accountMessageEl.hidden = !message;
     if (discordRecoveryLink) {
       const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
-      const needsRules = /accepte le règlement/i.test(message || "");
-      const needsMembership = /rejoins le serveur discord/i.test(message || "");
-      const visible = Boolean(inviteUrl && state === "error" && (needsRules || needsMembership));
+      const kind = discordRecoveryKind(message);
+      const visible = Boolean(inviteUrl && state === "error" && kind);
       discordRecoveryLink.hidden = !visible;
       if (visible) {
         discordRecoveryLink.href = inviteUrl;
-        discordRecoveryLink.textContent = needsRules ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
+        discordRecoveryLink.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
+        openDiscordRequiredModal(message, kind, inviteUrl);
+      } else {
+        closeDiscordRequiredModal();
       }
     }
   }
@@ -319,13 +366,15 @@
     const freshUser = Object.assign({}, session.user, {
       identities: (identityData && identityData.identities) || session.user.identities || [],
     });
+    currentIdentities = freshUser.identities;
 
     const params = new URLSearchParams(window.location.search);
     const discordSignInPending =
       window.localStorage.getItem("sr-editer:discord-signin-pending") === "1" ||
       params.get("discord_auth") === "1";
+    const discordLinkPending = window.localStorage.getItem("sr-editer:discord-link-pending") === "1";
+    let existingDiscordError = null;
     if (discordSignInPending) {
-      currentIdentities = freshUser.identities;
       if (!discordIdentity()) {
         window.localStorage.removeItem("sr-editer:discord-signin-pending");
         window.localStorage.removeItem("sr-editer:discord-signin-next");
@@ -351,12 +400,35 @@
         return;
       }
       window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (!discordLinkPending && discordIdentity()) {
+      try {
+        await invokeAccountAction("sync-discord");
+      } catch (discordError) {
+        const accessRejected = discordError.code === "DISCORD_MEMBERSHIP_REQUIRED" ||
+          discordError.code === "DISCORD_RULES_REQUIRED";
+        const identity = discordIdentity();
+        if (identity && currentIdentities.length > 1 && accessRejected) {
+          await client.auth.unlinkIdentity(identity).catch(function () {});
+          const { data } = await client.auth.getUserIdentities();
+          currentIdentities = (data && data.identities) || [];
+          freshUser.identities = currentIdentities;
+          existingDiscordError = getDiscordErrorMessage(discordError);
+        } else if (currentIdentities.length <= 1) {
+          await client.auth.signOut({ scope: "local" });
+          redirectToLogin(getDiscordErrorMessage(discordError), discordError.code);
+          return;
+        } else {
+          existingDiscordError = getDiscordErrorMessage(discordError);
+        }
+      }
     }
 
     applyProfile(session.user.email || "", profile, freshUser);
     showShell();
 
-    if (window.localStorage.getItem("sr-editer:discord-link-pending") === "1" && discordIdentity()) {
+    if (existingDiscordError) showAccountMessage(existingDiscordError, "error");
+
+    if (discordLinkPending && discordIdentity()) {
       try {
         await invokeAccountAction("sync-discord");
         showAccountMessage("Compte Discord lié et rôle synchronisé.", "success");
@@ -490,6 +562,41 @@
       }
     });
   }
+
+  if (discordRequiredClose) discordRequiredClose.addEventListener("click", closeDiscordRequiredModal);
+  if (discordRequiredModal) {
+    discordRequiredModal.addEventListener("mousedown", function (event) {
+      if (event.target === discordRequiredModal) closeDiscordRequiredModal();
+    });
+  }
+  if (discordRequiredRetry) {
+    discordRequiredRetry.addEventListener("click", function () {
+      closeDiscordRequiredModal();
+      if (discordIdentity() && discordSyncBtn) discordSyncBtn.click();
+      else if (discordLinkBtn) discordLinkBtn.click();
+    });
+  }
+  document.addEventListener("keydown", function (event) {
+    if (!discordRequiredModal || discordRequiredModal.hidden) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeDiscordRequiredModal();
+      return;
+    }
+    if (event.key === "Tab" && discordRequiredDialog) {
+      const focusable = Array.from(discordRequiredDialog.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])"));
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!first || !last) return;
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+  });
 
   if (discordSyncBtn) {
     discordSyncBtn.addEventListener("click", async () => {

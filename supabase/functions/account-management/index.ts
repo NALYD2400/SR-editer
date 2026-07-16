@@ -35,6 +35,8 @@ serve(async (req) => {
 
   const authorization = req.headers.get("Authorization") ?? "";
   if (!authorization.startsWith("Bearer ")) return json(401, { error: "Session required." });
+  const accessToken = authorization.slice("Bearer ".length).trim();
+  if (!accessToken) return json(401, { error: "Session required." });
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
   const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
@@ -51,7 +53,7 @@ serve(async (req) => {
     auth: { persistSession: false, autoRefreshToken: false },
   });
 
-  const { data: userData, error: userError } = await userClient.auth.getUser();
+  const { data: userData, error: userError } = await userClient.auth.getUser(accessToken);
   const user = userData.user;
   if (userError || !user?.id) return json(401, { error: "Invalid session." });
   const userEmail = user.email?.trim() ?? "";

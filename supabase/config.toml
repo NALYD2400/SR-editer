@@ -19,7 +19,8 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.account-management]
-verify_jwt = true
+# The handler validates the bearer token with Auth via getUser(accessToken).
+verify_jwt = false
 
 [auth]
 site_url = "https://sr-editer.vercel.app"

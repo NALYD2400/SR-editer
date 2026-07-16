@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
   <link rel="stylesheet" href="styles/ambient.css?v=1">
-  <link rel="stylesheet" href="styles/portal.css?v=8">
+  <link rel="stylesheet" href="styles/portal.css?v=9">
   <link rel="stylesheet" href="styles/site-pages.css?v=4">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -254,11 +254,28 @@
     </div>
   </div>
 
+  <div class="discord-required-modal" id="discord-required-modal" hidden>
+    <section class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title" aria-describedby="discord-required-message" tabindex="-1">
+      <header class="discord-required-header">
+        <div>
+          <span class="discord-required-eyebrow">Accès sécurisé</span>
+          <h2 id="discord-required-title">Discord requis</h2>
+        </div>
+        <button type="button" class="discord-required-close" id="discord-required-close" aria-label="Fermer cette fenêtre">×</button>
+      </header>
+      <p class="discord-required-message" id="discord-required-message"></p>
+      <div class="discord-required-actions">
+        <a class="discord-required-primary" id="discord-required-join" href="#" target="_blank" rel="noopener noreferrer">Rejoindre le Discord</a>
+        <button class="discord-required-secondary" id="discord-required-retry" type="button">J’ai rejoint, réessayer</button>
+      </div>
+    </section>
+  </div>
+
   <script src="js/wallpapers.js"></script>
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/portal-dashboard.js?v=4"></script>
+  <script src="js/portal-dashboard.js?v=6"></script>
   <script>
     (function initTabNavigation() {
       const links = document.querySelectorAll(".sidebar-link[data-panel]");
