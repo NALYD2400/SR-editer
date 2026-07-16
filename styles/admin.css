@@ -3212,6 +3212,114 @@ html[data-theme="light"] .admin-login-card {
   padding-bottom: 18px;
 }
 
+.discord-table-cell {
+  display: flex;
+  min-width: 150px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.discord-identity-label {
+  max-width: 190px;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.discord-link-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
+}
+
+.discord-link-state::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.discord-link-state.is-linked {
+  border-color: color-mix(in srgb, var(--success) 38%, var(--border));
+  color: var(--success);
+}
+
+.discord-admin-card {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg-card-raised) 55%, transparent);
+}
+
+.discord-admin-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.discord-admin-summary > div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.discord-admin-label {
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.075em;
+  text-transform: uppercase;
+}
+
+.discord-admin-summary strong {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 550;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.discord-admin-id {
+  overflow-wrap: anywhere;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.discord-admin-card .btn {
+  justify-self: start;
+}
+
+.discord-sync-feedback {
+  margin: 0;
+  color: var(--success);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.discord-sync-feedback.is-error {
+  color: var(--danger);
+}
+
 #panel-user-detail .user-detail-avatar {
   width: 48px;
   height: 48px;

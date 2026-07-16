@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.3.3-responsive" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.1-discord-admin" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -343,6 +343,7 @@
                       <th>Inscrit</th>
                       <th>Mode</th>
                       <th>Rôle</th>
+                      <th>Discord</th>
                       <th style="text-align: right">Actions</th>
                     </tr>
                   </thead>
@@ -368,6 +369,19 @@
                     <h3 id="detail-email">membre@exemple.com</h3>
                     <span class="role-pill" id="detail-role-pill">Membre</span>
                   </div>
+                </div>
+
+                <div class="discord-admin-card" id="detail-discord-card">
+                  <div class="discord-admin-summary">
+                    <div>
+                      <span class="discord-admin-label">Compte Discord</span>
+                      <strong id="detail-discord-name">Non lié</strong>
+                      <span class="discord-admin-id" id="detail-discord-id">Aucune identité Discord associée</span>
+                    </div>
+                    <span class="discord-link-state is-unlinked" id="detail-discord-state">Non lié</span>
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-sm" id="sync-discord-btn" hidden>Synchroniser le rôle</button>
+                  <p class="discord-sync-feedback" id="discord-sync-feedback" role="status" aria-live="polite" hidden></p>
                 </div>
 
                 <div class="user-detail-fields">
@@ -942,7 +956,7 @@
     </div>
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
-    <script src="js/config.js?v=0.3.3"></script>
-    <script src="js/admin.js?v=0.3.6-no-admin-login"></script>
+    <script src="js/config.js?v=0.4.1-discord-admin"></script>
+    <script src="js/admin.js?v=0.4.1-discord-admin-2"></script>
   </body>
 </html>

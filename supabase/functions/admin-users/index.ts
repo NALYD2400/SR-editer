@@ -1,4 +1,11 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import {
+  DiscordMembershipRequiredError,
+  DiscordRulesRequiredError,
+  getDiscordId,
+  syncDiscordRole,
+  type DiscordTier,
+} from "../_shared/discord-sync.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
@@ -38,6 +45,26 @@ function tierFromLicensePlan(plan: string): string {
   }
 }
 
+function normalizeDiscordTier(value: unknown): DiscordTier {
+  return value === "standard" || value === "pro" || value === "premium" ? value : "free";
+}
+
+function discordSummaryOf(user: { identities?: unknown[] | null }) {
+  const identity = user.identities?.find((item) => (
+    item !== null && typeof item === "object" && (item as Record<string, unknown>).provider === "discord"
+  )) as Record<string, unknown> | undefined;
+  if (!identity) return { linked: false, id: null, username: null };
+  const metadata = identity.identity_data !== null && typeof identity.identity_data === "object"
+    ? identity.identity_data as Record<string, unknown>
+    : {};
+  const id = textOf(metadata.sub ?? identity.id ?? identity.identity_id, 64);
+  const username = textOf(
+    metadata.global_name ?? metadata.full_name ?? metadata.name ?? metadata.user_name ?? metadata.preferred_username,
+    100,
+  );
+  return { linked: true, id: id || null, username: username || null };
+}
+
 function appPermissionsOf(value: unknown) {
   const requested = value && typeof value === "object" ? value as Record<string, unknown> : {};
   return Object.fromEntries(appPermissionKeys.map((key) => [key, requested[key] !== false]));
@@ -69,7 +96,7 @@ function textOf(value: unknown, max = 10_000) {
 
 function permissionFor(action: string) {
   if (["dashboard", "me"].includes(action)) return "console";
-  if (["list", "create", "update", "delete", "ban", "unban", "confirm-email", "reset-password", "devices-list", "device-revoke"].includes(action)) return "users";
+  if (["list", "create", "update", "delete", "ban", "unban", "confirm-email", "reset-password", "devices-list", "device-revoke", "discord-sync"].includes(action)) return "users";
   if (action.startsWith("license")) return "licenses";
   if (action.startsWith("subscription") || action === "billing") return "billing";
   if (action.startsWith("support")) return "support";
@@ -190,9 +217,35 @@ Deno.serve(async (request) => {
         role, write_mode: profile?.write_mode ?? "direct",
         app_permissions: appPermissionsOf(profile?.app_permissions),
         plan: license?.plan ?? "free", license_status: license?.status ?? "active", device_limit: license?.device_limit ?? 1,
-        expires_at: license?.expires_at ?? null
+        expires_at: license?.expires_at ?? null,
+        discord: discordSummaryOf(user),
       };
     }) });
+  }
+
+  if (action === "discord-sync") {
+    const targetEmail = emailOf(body.email);
+    const users = await listAuthUsers();
+    const target = users.find((user) => user.email?.toLowerCase() === targetEmail);
+    if (!target) return json(origin, 404, { ok: false, error: "Compte introuvable." });
+    const { data: targetAccess } = await admin.from("superadmin_access").select("level").eq("user_id", target.id).maybeSingle();
+    if (targetAccess && level !== "owner") return json(origin, 403, { ok: false, error: "Seul un propriétaire peut synchroniser le Discord d'un administrateur." });
+    const discordId = getDiscordId(target);
+    if (!discordId) return json(origin, 409, { ok: false, error: "Aucun compte Discord n'est lié à cet utilisateur." });
+    const { data: targetProfile, error: profileError } = await admin.from("profiles")
+      .select("subscription_tier").eq("user_id", target.id).maybeSingle();
+    if (profileError || !targetProfile) return json(origin, 409, { ok: false, error: "Profil SR Editer introuvable." });
+    const tier = normalizeDiscordTier(targetProfile.subscription_tier);
+    try {
+      const result = await syncDiscordRole(discordId, tier, true);
+      await audit("discord.sync", "user", target.id, { email: targetEmail, discord_id: discordId, tier });
+      return json(origin, 200, { ok: true, tier, result });
+    } catch (error) {
+      if (error instanceof DiscordMembershipRequiredError || error instanceof DiscordRulesRequiredError) {
+        return json(origin, 409, { ok: false, error: error.message });
+      }
+      return json(origin, 502, { ok: false, error: "La synchronisation Discord est temporairement indisponible." });
+    }
   }
 
   if (action === "audit-list") {

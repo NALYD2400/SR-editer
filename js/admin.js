@@ -128,10 +128,10 @@
         return {
           ok: true,
           users: [
-            { user_id: "u1", email: "d.robert.2400@gmail.com", role: "owner", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*10).toISOString(), plan: "lifetime", license_status: "active", device_limit: 5, expires_at: null },
-            { user_id: "u2", email: "moderateur@sr-editer.fr", role: "moderateur", write_mode: "draft", confirmed: true, created_at: new Date(Date.now() - 86400000*5).toISOString(), plan: "pro", license_status: "active", device_limit: 2, expires_at: new Date(Date.now() + 86400000*30).toISOString() },
-            { user_id: "u3", email: "testeur@sr-editer.fr", role: "membre", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*2).toISOString(), plan: "free", license_status: "active", device_limit: 1, expires_at: null },
-            { user_id: "u4", email: "banni@gta5-studio.com", role: "membre", write_mode: "direct", confirmed: false, created_at: new Date().toISOString(), banned_until: new Date(Date.now() + 86400000*365).toISOString(), plan: "free", license_status: "suspended", device_limit: 1 }
+            { user_id: "u1", email: "d.robert.2400@gmail.com", role: "owner", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*10).toISOString(), plan: "lifetime", license_status: "active", device_limit: 5, expires_at: null, discord: { linked: true, username: "nalyd1", id: "985083967642423366" } },
+            { user_id: "u2", email: "moderateur@sr-editer.fr", role: "moderateur", write_mode: "draft", confirmed: true, created_at: new Date(Date.now() - 86400000*5).toISOString(), plan: "pro", license_status: "active", device_limit: 2, expires_at: new Date(Date.now() + 86400000*30).toISOString(), discord: { linked: false, username: null, id: null } },
+            { user_id: "u3", email: "testeur@sr-editer.fr", role: "membre", write_mode: "direct", confirmed: true, created_at: new Date(Date.now() - 86400000*2).toISOString(), plan: "free", license_status: "active", device_limit: 1, expires_at: null, discord: { linked: false, username: null, id: null } },
+            { user_id: "u4", email: "banni@gta5-studio.com", role: "membre", write_mode: "direct", confirmed: false, created_at: new Date().toISOString(), banned_until: new Date(Date.now() + 86400000*365).toISOString(), plan: "free", license_status: "suspended", device_limit: 1, discord: { linked: false, username: null, id: null } }
           ]
         };
       }
@@ -370,6 +370,15 @@
     showPanel("users");
   });
 
+  function discordOf(user) {
+    const value = user?.discord;
+    return {
+      linked: value?.linked === true,
+      username: typeof value?.username === "string" && value.username.trim() ? value.username.trim() : null,
+      id: typeof value?.id === "string" && value.id.trim() ? value.id.trim() : null
+    };
+  }
+
   async function refreshUsers() {
     const currentRefreshId = ++lastRefreshId;
     const tbody = document.getElementById("users-tbody");
@@ -385,7 +394,7 @@
         users = result.users || [];
       } catch (reason) {
         if (currentRefreshId !== lastRefreshId) return;
-        tbody.innerHTML = `<tr><td colspan="5" class="empty-state">${escapeHtml(String(reason).replace(/^Error:\s*/i, ""))}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="empty-state">${escapeHtml(String(reason).replace(/^Error:\s*/i, ""))}</td></tr>`;
         if (countEl) countEl.textContent = "—";
         return;
       }
@@ -414,7 +423,9 @@
       users = users.filter(u => 
         (u.email && u.email.toLowerCase().includes(searchVal)) || 
         (u.role && u.role.toLowerCase().includes(searchVal)) ||
-        (u.write_mode && u.write_mode.toLowerCase().includes(searchVal))
+        (u.write_mode && u.write_mode.toLowerCase().includes(searchVal)) ||
+        (discordOf(u).username && discordOf(u).username.toLowerCase().includes(searchVal)) ||
+        (discordOf(u).id && discordOf(u).id.includes(searchVal))
       );
     }
 
@@ -423,7 +434,7 @@
 
     if (users.length === 0) {
       tbody.innerHTML =
-        '<tr><td colspan="5" class="empty-state">Aucun profil ne correspond.</td></tr>';
+        '<tr><td colspan="6" class="empty-state">Aucun profil ne correspond.</td></tr>';
       if (countEl) countEl.textContent = "0";
       return;
     }
@@ -431,11 +442,19 @@
     users.forEach((user) => {
       const tr = document.createElement("tr");
       const date = user.created_at ? new Date(user.created_at).toLocaleDateString("fr-FR") : "—";
+      const discord = discordOf(user);
+      const discordLabel = discord.username || discord.id || "Compte lié";
       tr.innerHTML = `
         <td><strong>${escapeHtml(user.email || "—")}</strong></td>
         <td>${date}</td>
         <td>${escapeHtml(user.write_mode || "direct")}</td>
         <td><span class="role-pill ${user.role || "membre"}">${escapeHtml(user.role || "membre")}</span></td>
+        <td>
+          <div class="discord-table-cell">
+            <span class="discord-link-state ${discord.linked ? "is-linked" : "is-unlinked"}">${discord.linked ? "Lié" : "Non lié"}</span>
+            ${discord.linked ? `<span class="discord-identity-label" title="${escapeHtml(discord.id || discordLabel)}">${escapeHtml(discordLabel)}</span>` : ""}
+          </div>
+        </td>
         <td style="text-align: right;">
           <button type="button" class="btn-action-view view-user-btn">Consulter</button>
           <button type="button" class="btn-action-delete delete-user-btn">Supprimer</button>
@@ -465,6 +484,12 @@
     const rolePill = document.getElementById("detail-role-pill");
     const roleSelect = document.getElementById("detail-role");
     const modeSelect = document.getElementById("detail-mode");
+    const discord = discordOf(user);
+    const discordName = document.getElementById("detail-discord-name");
+    const discordId = document.getElementById("detail-discord-id");
+    const discordState = document.getElementById("detail-discord-state");
+    const syncDiscordBtn = document.getElementById("sync-discord-btn");
+    const discordFeedback = document.getElementById("discord-sync-feedback");
 
     if (avatar) avatar.textContent = email.charAt(0).toUpperCase();
     if (emailLabel) emailLabel.textContent = email;
@@ -474,6 +499,48 @@
     }
     if (roleSelect) roleSelect.value = user.role;
     if (modeSelect) modeSelect.value = user.write_mode;
+    if (discordName) discordName.textContent = discord.linked ? (discord.username || "Compte Discord lié") : "Non lié";
+    if (discordId) discordId.textContent = discord.linked ? `ID : ${discord.id || "indisponible"}` : "Aucune identité Discord associée";
+    if (discordState) {
+      discordState.textContent = discord.linked ? "Lié" : "Non lié";
+      discordState.className = `discord-link-state ${discord.linked ? "is-linked" : "is-unlinked"}`;
+    }
+    if (discordFeedback) {
+      discordFeedback.hidden = true;
+      discordFeedback.textContent = "";
+      discordFeedback.classList.remove("is-error");
+    }
+    if (syncDiscordBtn) {
+      syncDiscordBtn.hidden = !discord.linked;
+      syncDiscordBtn.disabled = false;
+      syncDiscordBtn.textContent = "Synchroniser le rôle";
+      syncDiscordBtn.onclick = async () => {
+        syncDiscordBtn.disabled = true;
+        syncDiscordBtn.textContent = "Synchronisation…";
+        if (discordFeedback) discordFeedback.hidden = true;
+        try {
+          const result = await adminRequest("discord-sync", { email });
+          if (discordFeedback) {
+            discordFeedback.hidden = false;
+            discordFeedback.textContent = `Rôle Discord synchronisé avec l'offre ${result.tier || "free"}.`;
+            discordFeedback.classList.remove("is-error");
+          }
+          addLog("s", `Discord synchronisé : ${email}`);
+          await refreshUsers();
+        } catch (reason) {
+          const message = String(reason).replace(/^Error:\s*/i, "");
+          if (discordFeedback) {
+            discordFeedback.hidden = false;
+            discordFeedback.textContent = message;
+            discordFeedback.classList.add("is-error");
+          }
+          addLog("e", `Synchronisation Discord impossible : ${message}`);
+        } finally {
+          syncDiscordBtn.disabled = false;
+          syncDiscordBtn.textContent = "Synchroniser le rôle";
+        }
+      };
+    }
 
     const permissionInputs = [...document.querySelectorAll("[data-app-permission]")];
     const storedPermissions = user.app_permissions || {};
