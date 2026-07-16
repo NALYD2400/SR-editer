@@ -3,6 +3,7 @@ import Stripe from "https://esm.sh/stripe@12.4.0?target=deno";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.21.0";
 import {
   DiscordMembershipRequiredError,
+  DiscordRulesRequiredError,
   getDiscordId,
   syncDiscordRole,
   type DiscordTier,
@@ -147,6 +148,9 @@ serve(async (req) => {
     console.error(`Account management error (${action}):`, error);
     if (error instanceof DiscordMembershipRequiredError) {
       return json(403, { error: message, code: "DISCORD_MEMBERSHIP_REQUIRED" });
+    }
+    if (error instanceof DiscordRulesRequiredError) {
+      return json(403, { error: message, code: "DISCORD_RULES_REQUIRED" });
     }
     return json(502, { error: message });
   }

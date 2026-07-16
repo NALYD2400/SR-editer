@@ -24,6 +24,13 @@ export class DiscordMembershipRequiredError extends Error {
   }
 }
 
+export class DiscordRulesRequiredError extends Error {
+  constructor() {
+    super("Accepte d'abord le règlement du serveur Discord pour obtenir le rôle Membre.");
+    this.name = "DiscordRulesRequiredError";
+  }
+}
+
 export function getDiscordId(user: AuthUserWithIdentities | null | undefined): string | null {
   return user?.identities?.find((identity) => identity.provider === "discord")?.id ?? null;
 }
@@ -55,6 +62,9 @@ export async function syncDiscordRole(
   const payload = await response.json().catch(() => null) as DiscordSyncResponse | null;
   if (response.status === 403 && payload?.code === "DISCORD_MEMBERSHIP_REQUIRED") {
     throw new DiscordMembershipRequiredError();
+  }
+  if (response.status === 403 && payload?.code === "DISCORD_RULES_REQUIRED") {
+    throw new DiscordRulesRequiredError();
   }
   if (!response.ok || !payload?.success) {
     throw new Error(`Discord role sync failed (${response.status}).`);
