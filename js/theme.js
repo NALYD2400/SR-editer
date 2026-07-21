@@ -1,34 +1,43 @@
-(function forceDarkTheme() {
-  document.documentElement.dataset.theme = "dark";
+(function initTheme() {
+  var stored = "dark";
   try {
-    localStorage.setItem("sr_theme", "dark");
+    stored = localStorage.getItem("sr_theme") || "dark";
   } catch (_err) {
     /* ignore */
   }
+  if (stored !== "light" && stored !== "dark") stored = "dark";
+  document.documentElement.dataset.theme = stored;
 })();
 
-function applyTheme() {
-  document.documentElement.dataset.theme = "dark";
+function applyTheme(theme) {
+  if (theme !== "light" && theme !== "dark") theme = "dark";
+  document.documentElement.dataset.theme = theme;
   try {
-    localStorage.setItem("sr_theme", "dark");
+    localStorage.setItem("sr_theme", theme);
   } catch (_err) {
     /* ignore */
   }
-  window.dispatchEvent(new CustomEvent("sr-theme-change", { detail: { theme: "dark" } }));
-  return "dark";
+  window.dispatchEvent(new CustomEvent("sr-theme-change", { detail: { theme: theme } }));
+  return theme;
 }
 
 window.SRTheme = {
-  get() {
-    return "dark";
+  get: function () {
+    return document.documentElement.dataset.theme || "dark";
   },
-  set() {
-    return applyTheme();
+  set: function (theme) {
+    return applyTheme(theme);
   },
-  toggle() {
-    return applyTheme();
+  toggle: function () {
+    var current = document.documentElement.dataset.theme || "dark";
+    return applyTheme(current === "dark" ? "light" : "dark");
   },
-  bindToggle() {
-    /* Thème clair retiré — dark only */
+  bindToggle: function (selector) {
+    var buttons = document.querySelectorAll(selector || ".theme-toggle");
+    buttons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        window.SRTheme.toggle();
+      });
+    });
   },
 };

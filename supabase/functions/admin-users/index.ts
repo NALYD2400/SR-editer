@@ -16,6 +16,8 @@ const allowedOrigins = new Set([
   "http://127.0.0.1:5000",
   "http://localhost:4313",
   "http://127.0.0.1:4313",
+  "http://localhost:5174",
+  "http://127.0.0.1:5174",
   "http://localhost:8080",
   "http://127.0.0.1:8080",
   "http://localhost:8787",
@@ -28,7 +30,7 @@ const validWriteModes = new Set(["direct", "draft"]);
 const validPlans = new Set(["free", "pro", "studio", "lifetime"]);
 const validLicenseStatuses = new Set(["trialing", "active", "past_due", "canceled", "suspended"]);
 const permissionKeys = ["console", "users", "licenses", "billing", "support", "contacts", "releases", "audit", "system", "team", "library"];
-const appPermissionKeys = ["project", "explorer", "converter", "assets", "materials", "textures", "modeling", "library", "ai", "settings"];
+const appPermissionKeys = ["project", "explorer", "assets", "modeling", "uv-skin", "textures", "materials", "library", "ai", "settings"];
 
 /** Manual license plan → profiles.subscription_tier (desktop/portal source of truth). */
 function tierFromLicensePlan(plan: string): string {
@@ -191,7 +193,7 @@ Deno.serve(async (request) => {
       admin.from("customer_licenses").select("status,plan"),
       admin.from("support_tickets").select("status,priority"),
       admin.from("contact_messages").select("status"),
-      admin.from("admin_audit_logs").select("id,actor_email,action,target_type,target_id,created_at").order("created_at", { ascending: false }).limit(8)
+      admin.from("admin_audit_logs").select("id,actor_email,action,target_type,target_id,created_at").order("created_at", { ascending: false }).limit(100)
     ]);
     return json(origin, 200, {
       ok: true,
@@ -212,7 +214,7 @@ Deno.serve(async (request) => {
     const allUsers = await listAuthUsers();
     const users = await hydrateAuthUsers(allUsers.filter((u) => !u.deleted_at));
     const [{ data: profiles, error }, { data: licenses }, { data: superadmins }] = await Promise.all([
-      admin.from("profiles").select("user_id,email,role,write_mode,app_permissions,created_at").order("created_at", { ascending: false }).limit(1000),
+      admin.from("profiles").select("user_id,email,role,write_mode,app_permissions,created_at,subscription_tier,subscription_status").order("created_at", { ascending: false }).limit(1000),
       admin.from("customer_licenses").select("user_id,plan,status,device_limit,expires_at"),
       admin.from("superadmin_access").select("user_id,level")
     ]);
@@ -227,6 +229,8 @@ Deno.serve(async (request) => {
       if (role === "admin" && superadminLevel === "owner") {
         role = "owner";
       }
+      const subscriptionTier = profile?.subscription_tier || license?.plan || "free";
+      const subscriptionStatus = profile?.subscription_status || license?.status || null;
       return {
         user_id: user.id, email: user.email ?? profile?.email ?? "", created_at: profile?.created_at ?? user.created_at,
         last_sign_in_at: user.last_sign_in_at, confirmed: Boolean(user.email_confirmed_at), banned_until: user.banned_until,
@@ -234,6 +238,8 @@ Deno.serve(async (request) => {
         app_permissions: appPermissionsOf(profile?.app_permissions),
         plan: license?.plan ?? "free", license_status: license?.status ?? "active", device_limit: license?.device_limit ?? 1,
         expires_at: license?.expires_at ?? null,
+        subscription_tier: subscriptionTier,
+        subscription_status: subscriptionStatus,
         discord: discordSummaryOf(user),
       };
     }) });
@@ -278,13 +284,53 @@ Deno.serve(async (request) => {
   }
   if (action === "support-list") {
     const { data, error } = await admin.from("support_tickets").select("*,support_messages(id,author_kind,content,created_at)").order("updated_at", { ascending: false }).limit(300);
-    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
+    if (error) return json(origin, 500, { ok: false, error: error.message });
+    const rows = data ?? [];
+    const userIds = [...new Set(rows.map((row) => row.user_id).filter((id): id is string => Boolean(id)))];
+    const discordByUser = new Map<string, ReturnType<typeof discordSummaryOf>>();
+    const appVersionByUser = new Map<string, string>();
+    if (userIds.length) {
+      const allUsers = await listAuthUsers();
+      const matched = allUsers.filter((user) => userIds.includes(user.id));
+      const detailed = await hydrateAuthUsers(matched);
+      for (const user of detailed) discordByUser.set(user.id, discordSummaryOf(user));
+      const { data: devices } = await admin
+        .from("device_activations")
+        .select("user_id,app_version,last_seen_at")
+        .in("user_id", userIds)
+        .eq("revoked", false)
+        .order("last_seen_at", { ascending: false });
+      for (const device of devices ?? []) {
+        const version = textOf(device.app_version, 40);
+        if (device.user_id && version && !appVersionByUser.has(device.user_id)) {
+          appVersionByUser.set(device.user_id, version);
+        }
+      }
+    }
+    return json(origin, 200, {
+      ok: true,
+      rows: rows.map((row) => ({
+        ...row,
+        source: "app",
+        discord: row.user_id
+          ? (discordByUser.get(row.user_id) ?? { linked: false, id: null, username: null, avatarUrl: null })
+          : { linked: false, id: null, username: null, avatarUrl: null },
+        app_version: row.user_id ? (appVersionByUser.get(row.user_id) ?? null) : null,
+      })),
+    });
   }
   if (action === "support-update") {
     const id = textOf(body.id, 64); const status = textOf(body.status, 16);
     if (!id || !["open", "pending", "closed"].includes(status)) return json(origin, 400, { ok: false, error: "Ticket ou statut invalide." });
     const { error } = await admin.from("support_tickets").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
     if (!error) await audit("support.update", "ticket", id, { status });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+  }
+  if (action === "support-delete") {
+    const id = textOf(body.id, 64);
+    if (!id) return json(origin, 400, { ok: false, error: "Ticket invalide." });
+    const { error } = await admin.from("support_tickets").delete().eq("id", id);
+    if (!error) await audit("support.delete", "ticket", id);
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "support-reply") {
@@ -303,6 +349,13 @@ Deno.serve(async (request) => {
     if (!id || !["new", "read", "archived"].includes(status)) return json(origin, 400, { ok: false, error: "Statut invalide." });
     const { error } = await admin.from("contact_messages").update({ status }).eq("id", id);
     if (!error) await audit("contact.update", "contact", id, { status });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+  }
+  if (action === "contact-delete") {
+    const id = textOf(body.id, 64);
+    if (!id) return json(origin, 400, { ok: false, error: "Message invalide." });
+    const { error } = await admin.from("contact_messages").delete().eq("id", id);
+    if (!error) await audit("contact.delete", "contact", id);
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "license-list") {

@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.1-discord-avatar" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.78-brand" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -44,17 +44,15 @@
       <aside class="admin-sidebar vercel-sidebar">
         <div class="sidebar-header">
           <a href="index.html" class="sidebar-brand">
-            <img class="sidebar-logo-img" src="assets/logo_small.png" alt="SR Editer" />
-            <div class="sidebar-brand-text">
-              <span class="brand-name">SR Editer</span>
-              <span class="brand-badge">Console</span>
-            </div>
+            <span class="sidebar-logo-wrap" aria-hidden="true">
+              <img class="sidebar-logo-img" src="assets/logo_small.png" alt="" />
+            </span>
+            <span class="brand-name">SR Editer</span>
           </a>
         </div>
 
         <div class="sidebar-search-wrapper">
-          <input type="text" class="sidebar-search-input" placeholder="Find..." id="sidebar-filter-input" />
-          <span class="sidebar-search-shortcut">F</span>
+          <input type="search" class="sidebar-search-input" placeholder="Filtrer le menu…" id="sidebar-filter-input" autocomplete="off" />
         </div>
 
         <nav class="sidebar-nav vercel-vertical-links">
@@ -74,10 +72,6 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
             <span class="nav-title">Coupons</span>
           </button>
-          <button type="button" class="sidebar-link" data-panel="licenses">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/><line x1="12" y1="15" x2="12" y2="17"/></svg>
-            <span class="nav-title">Licences</span>
-          </button>
           <button type="button" class="sidebar-link" data-panel="support">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             <span class="nav-title">Support</span>
@@ -89,6 +83,10 @@
           <button type="button" class="sidebar-link" data-panel="releases">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
             <span class="nav-title">Releases</span>
+          </button>
+          <button type="button" class="sidebar-link" data-panel="activity">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="nav-title">Activité</span>
           </button>
           <button type="button" class="sidebar-link" data-panel="audit">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -109,6 +107,18 @@
         </nav>
 
         <div class="sidebar-footer">
+          <button type="button" class="theme-toggle sidebar-theme-toggle" title="Changer de thème" aria-label="Changer de thème">
+            <span class="sidebar-theme-icon" aria-hidden="true">
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            </span>
+            <span class="theme-toggle-label">Thème</span>
+            <span class="sidebar-theme-hint" id="sidebar-theme-hint">Sombre</span>
+          </button>
           <div class="sidebar-footer-profile" id="profile-card">
             <div class="profile-avatar" id="sidebar-avatar">SA</div>
             <div class="profile-info">
@@ -141,8 +151,8 @@
             </div>
           </div>
           <div class="admin-topbar-actions">
-            <a href="dashboard.html" class="btn btn-ghost btn-sm">Espace client</a>
-            <a href="index.html" class="btn btn-ghost btn-sm">Retour au site</a>
+            <a href="dashboard.html" class="btn btn-ghost admin-topbar-link">Espace client</a>
+            <a href="index.html" class="btn btn-ghost admin-topbar-link">Retour au site</a>
           </div>
         </header>
 
@@ -200,51 +210,39 @@
               </div>
             </div>
 
-            <div class="dashboard-split">
-              <!-- Integrity checklist card -->
-              <div class="glass-card panel-card">
-                <div class="panel-card-header">
-                  <h3>Contrôle d'intégrité du système</h3>
-                </div>
-                <div class="diagnostic-grid">
-                  <div class="diagnostic-card">
-                    <div class="diagnostic-info">
-                      <span class="diagnostic-title">Serveur Supabase</span>
-                      <span class="diagnostic-sub">Liaison PostgreSQL live</span>
-                    </div>
-                    <span class="diagnostic-status" id="diag-db">Vérification...</span>
-                  </div>
-                  <div class="diagnostic-card">
-                    <div class="diagnostic-info">
-                      <span class="diagnostic-title">Fonction Edge admin-users</span>
-                      <span class="diagnostic-sub">Permissions &amp; RLS de production</span>
-                    </div>
-                    <span class="diagnostic-status" id="diag-function">Vérification...</span>
-                  </div>
-                  <div class="diagnostic-card">
-                    <div class="diagnostic-info">
-                      <span class="diagnostic-title">Manifeste de version</span>
-                      <span class="diagnostic-sub">Fichier update.json accessible</span>
-                    </div>
-                    <span class="diagnostic-status" id="diag-manifest">Vérification...</span>
-                  </div>
-                  <div class="diagnostic-card">
-                    <div class="diagnostic-info">
-                      <span class="diagnostic-title">Journalisation d'audit</span>
-                      <span class="diagnostic-sub">Traçabilité complète</span>
-                    </div>
-                    <span class="diagnostic-status">CONFORME</span>
-                  </div>
-                </div>
+            <!-- Integrity checklist card -->
+            <div class="glass-card panel-card">
+              <div class="panel-card-header">
+                <h3>Contrôle d'intégrité du système</h3>
               </div>
-
-              <!-- Activity card -->
-              <div class="glass-card panel-card">
-                <div class="panel-card-header">
-                  <h3>Activité récente</h3>
+              <div class="diagnostic-grid">
+                <div class="diagnostic-card">
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-title">Serveur Supabase</span>
+                    <span class="diagnostic-sub">Liaison PostgreSQL live</span>
+                  </div>
+                  <span class="diagnostic-status" id="diag-db">Vérification...</span>
                 </div>
-                <div class="activity-list" id="dashboard-audit">
-                  <div class="empty-state">Chargement…</div>
+                <div class="diagnostic-card">
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-title">Fonction Edge admin-users</span>
+                    <span class="diagnostic-sub">Permissions &amp; RLS de production</span>
+                  </div>
+                  <span class="diagnostic-status" id="diag-function">Vérification...</span>
+                </div>
+                <div class="diagnostic-card">
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-title">Manifeste de version</span>
+                    <span class="diagnostic-sub">Fichier update.json accessible</span>
+                  </div>
+                  <span class="diagnostic-status" id="diag-manifest">Vérification...</span>
+                </div>
+                <div class="diagnostic-card">
+                  <div class="diagnostic-info">
+                    <span class="diagnostic-title">Journalisation d'audit</span>
+                    <span class="diagnostic-sub">Traçabilité complète</span>
+                  </div>
+                  <span class="diagnostic-status">CONFORME</span>
                 </div>
               </div>
             </div>
@@ -285,15 +283,113 @@
 
           <!-- Users -->
           <section class="admin-panel" id="panel-users">
-            <div class="users-management-grid">
-            <!-- User management form -->
-            <form id="user-manage-form" class="glass-card panel-card vercel-card-form users-create-card" style="margin-bottom: 24px;">
-              <div class="vercel-card-body">
-                <div class="panel-card-header">
-                  <h3>Créer un nouveau compte d'accès</h3>
-                  <p class="section-desc">Enregistrez un nouvel utilisateur de la plateforme avec les rôles correspondants.</p>
+            <div class="users-toolbar">
+              <div class="users-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="users-count">—</strong>
+                  <span id="users-count-label">membres</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="users-search" placeholder="E-mail, Discord, ID…" autocomplete="off" />
                 </div>
-                <div class="horizontal-form-grid">
+              </div>
+              <div class="users-toolbar-right">
+                <div class="users-menu" id="users-filters-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="users-filters-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="users-filters-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M4 5h16M7 12h10M10 19h4"/>
+                    </svg>
+                    <span id="users-filters-label">Filtres</span>
+                    <span class="users-menu-badge" id="users-filters-badge" hidden>0</span>
+                  </button>
+                  <div class="users-menu-panel" id="users-filters-menu" hidden role="menu">
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Rôle</div>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="membre" role="menuitemradio">Membre</button>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="moderateur" role="menuitemradio">Modérateur</button>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="admin" role="menuitemradio">Administrateur</button>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="owner" role="menuitemradio">Propriétaire</button>
+                      <button type="button" class="users-menu-item" data-filter-key="role" data-filter-value="suspendu" role="menuitemradio">Suspendu</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Offre</div>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="" role="menuitemradio">Toutes</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="free" role="menuitemradio">Free</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="standard" role="menuitemradio">Standard</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="pro" role="menuitemradio">Pro</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="premium" role="menuitemradio">Premium</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="studio" role="menuitemradio">Studio</button>
+                      <button type="button" class="users-menu-item" data-filter-key="plan" data-filter-value="lifetime" role="menuitemradio">Lifetime</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Statut abo</div>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="active" role="menuitemradio">Actif</button>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="trialing" role="menuitemradio">Essai</button>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="past_due" role="menuitemradio">Impayé</button>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="canceled" role="menuitemradio">Annulé</button>
+                      <button type="button" class="users-menu-item" data-filter-key="status" data-filter-value="suspended" role="menuitemradio">Suspendu</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Discord</div>
+                      <button type="button" class="users-menu-item" data-filter-key="discord" data-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-filter-key="discord" data-filter-value="linked" role="menuitemradio">Lié</button>
+                      <button type="button" class="users-menu-item" data-filter-key="discord" data-filter-value="unlinked" role="menuitemradio">Non lié</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">E-mail</div>
+                      <button type="button" class="users-menu-item" data-filter-key="confirmed" data-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-filter-key="confirmed" data-filter-value="yes" role="menuitemradio">Confirmé</button>
+                      <button type="button" class="users-menu-item" data-filter-key="confirmed" data-filter-value="no" role="menuitemradio">Non confirmé</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Accès</div>
+                      <button type="button" class="users-menu-item" data-filter-key="access" data-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-filter-key="access" data-filter-value="ok" role="menuitemradio">OK</button>
+                      <button type="button" class="users-menu-item" data-filter-key="access" data-filter-value="banned" role="menuitemradio">Banni</button>
+                    </div>
+                    <button type="button" class="users-menu-reset" id="users-filters-reset">Réinitialiser les filtres</button>
+                  </div>
+                </div>
+
+                <div class="users-menu" id="users-sort-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="users-sort-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="users-sort-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>
+                    </svg>
+                    <span id="users-sort-label">Plus récents</span>
+                  </button>
+                  <div class="users-menu-panel users-menu-panel-sort" id="users-sort-menu" hidden role="menu">
+                    <button type="button" class="users-menu-item" data-sort="created_desc" role="menuitemradio">Plus récents</button>
+                    <button type="button" class="users-menu-item" data-sort="created_asc" role="menuitemradio">Plus anciens</button>
+                    <button type="button" class="users-menu-item" data-sort="email_asc" role="menuitemradio">E-mail A→Z</button>
+                    <button type="button" class="users-menu-item" data-sort="email_desc" role="menuitemradio">E-mail Z→A</button>
+                    <button type="button" class="users-menu-item" data-sort="role_asc" role="menuitemradio">Rôle</button>
+                    <button type="button" class="users-menu-item" data-sort="plan_asc" role="menuitemradio">Offre</button>
+                  </div>
+                </div>
+
+                <button type="button" class="btn btn-ghost btn-sm" id="refresh-users-btn">Actualiser</button>
+                <button type="button" class="btn btn-primary btn-sm" id="users-create-toggle" aria-expanded="false" aria-controls="users-create-panel">
+                  Créer un membre
+                </button>
+              </div>
+            </div>
+
+            <div id="users-create-panel" class="users-create-panel" hidden>
+              <form id="user-manage-form" class="users-create-form">
+                <div class="users-create-head">
+                  <div>
+                    <h3>Nouveau compte</h3>
+                    <p class="section-desc">Crée un accès plateforme avec rôle et mode d’écriture.</p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="users-create-close" aria-label="Fermer">Fermer</button>
+                </div>
+                <div class="users-create-grid">
                   <div class="field">
                     <label for="manage-email">Adresse e-mail</label>
                     <input type="email" id="manage-email" required placeholder="membre@site.com" />
@@ -319,74 +415,77 @@
                     </select>
                   </div>
                 </div>
-              </div>
-              <div class="vercel-card-footer">
-                <span class="footer-desc">Le mot de passe doit comporter au moins 10 caractères.</span>
-                <button type="submit" class="btn btn-primary btn-sm">Créer le membre</button>
-              </div>
-            </form>
-
-            <!-- Users List card -->
-            <div class="glass-card panel-card users-list-card">
-              <div class="panel-card-header" style="display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 16px; flex: 1;">
-                  <h3>Utilisateurs</h3>
-                  <input type="text" id="users-search" placeholder="Rechercher un membre..." style="max-width: 250px;" />
+                <div class="users-create-footer">
+                  <span class="footer-desc">Le mot de passe doit comporter au moins 10 caractères.</span>
+                  <button type="submit" class="btn btn-primary btn-sm">Créer le membre</button>
                 </div>
-                <button type="button" class="btn btn-ghost btn-sm" id="refresh-users-btn">Actualiser</button>
-              </div>
-              <div style="overflow-x: auto">
-                <table class="data-table">
+              </form>
+            </div>
+
+            <div class="glass-card panel-card users-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table users-table">
                   <thead>
                     <tr>
-                      <th>Email</th>
-                      <th>Inscrit</th>
-                      <th>Mode</th>
-                      <th>Rôle</th>
-                      <th>Discord</th>
-                      <th style="text-align: right">Actions</th>
+                      <th class="col-member">Membre</th>
+                      <th class="col-role">Rôle</th>
+                      <th class="col-plan">Abonnement</th>
+                      <th class="col-discord">Discord</th>
+                      <th class="col-discord-id">ID Discord</th>
+                      <th class="col-date">Inscrit</th>
+                      <th class="col-actions">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="users-tbody"></tbody>
                 </table>
               </div>
             </div>
-            </div>
           </section>
 
           <!-- User Detail Panel -->
           <section class="admin-panel" id="panel-user-detail">
-            <div class="detail-header-nav" style="margin-bottom: 20px;">
+            <div class="detail-header-nav">
               <button type="button" class="btn btn-ghost btn-sm" id="back-to-users-btn">← Retour à la liste</button>
             </div>
-            
-            <div class="user-detail-grid">
-              <!-- Left Column: User Info & Actions -->
-              <div class="glass-card panel-card user-profile-card">
-                <div class="user-profile-header">
-                  <div class="user-detail-avatar" id="detail-avatar">U</div>
-                  <div class="user-detail-meta">
-                    <h3 id="detail-email">membre@exemple.com</h3>
+
+            <div class="glass-card panel-card user-identity-header">
+              <div class="user-identity-main">
+                <div class="user-detail-avatar" id="detail-avatar">U</div>
+                <div class="user-detail-meta">
+                  <button type="button" class="user-identity-email copy-detail-email" id="detail-email" title="Copier l'e-mail">membre@exemple.com</button>
+                  <div class="user-identity-pills">
                     <span class="role-pill" id="detail-role-pill">Membre</span>
+                    <span class="plan-pill free" id="detail-plan-pill">
+                      <span class="plan-pill-label" id="detail-plan-label">Free</span>
+                      <span class="plan-pill-status" id="detail-plan-status" hidden></span>
+                    </span>
                   </div>
                 </div>
+              </div>
 
-                <div class="discord-admin-card" id="detail-discord-card">
-                  <div class="discord-admin-summary">
-                    <div>
-                      <span class="discord-admin-label">Compte Discord</span>
-                      <strong id="detail-discord-name">Non lié</strong>
-                      <span class="discord-admin-id" id="detail-discord-id">Aucune identité Discord associée</span>
-                    </div>
-                    <span class="discord-link-state is-unlinked" id="detail-discord-state">Non lié</span>
-                  </div>
-                  <button type="button" class="btn btn-secondary btn-sm" id="sync-discord-btn" hidden>Synchroniser le rôle</button>
-                  <p class="discord-sync-feedback" id="discord-sync-feedback" role="status" aria-live="polite" hidden></p>
+              <div class="user-identity-discord-bar" id="detail-discord-card">
+                <div class="detail-discord-meta">
+                  <span class="discord-chip discord-chip-brand">Discord</span>
+                  <button type="button" class="discord-chip discord-chip-name" id="detail-discord-name" data-copy-show-feedback="0" title="Copier le pseudo Discord">Non lié</button>
+                  <button type="button" class="discord-chip discord-chip-id" id="detail-discord-id" data-copy-show-feedback="0" title="Copier l'ID Discord" hidden>
+                    <span class="discord-chip-kicker">ID</span>
+                    <span class="discord-chip-id-value" id="detail-discord-id-value">—</span>
+                  </button>
+                </div>
+                <button type="button" class="btn btn-ghost btn-sm detail-discord-sync" id="sync-discord-btn" hidden>Synchroniser</button>
+                <p class="discord-sync-feedback" id="discord-sync-feedback" role="status" aria-live="polite" hidden></p>
+              </div>
+            </div>
+
+            <div class="user-detail-grid">
+              <div class="glass-card panel-card user-profile-card">
+                <div class="panel-card-header">
+                  <h3>Compte</h3>
                 </div>
 
-                <div class="user-detail-fields">
+                <div class="user-detail-settings">
                   <div class="field">
-                    <label>Rôle du compte</label>
+                    <label for="detail-role">Rôle</label>
                     <select id="detail-role">
                       <option value="membre">Membre</option>
                       <option value="moderateur">Modérateur</option>
@@ -397,113 +496,225 @@
                   </div>
 
                   <div class="field">
-                    <label>Mode d'écriture</label>
+                    <label for="detail-mode">Mode d'écriture</label>
                     <select id="detail-mode">
                       <option value="direct">Direct (Production)</option>
                       <option value="draft">Brouillon (Review)</option>
                     </select>
                   </div>
+
+                  <button type="button" class="btn btn-primary user-detail-save" id="save-detail-btn">Enregistrer</button>
                 </div>
 
-                <div class="action-buttons-title">Actions administratives</div>
-                <div class="user-action-grid">
-                  <button type="button" class="btn btn-primary" id="save-detail-btn">Enregistrer</button>
-                  <button type="button" class="btn btn-secondary" id="reset-password-btn">Envoyer un e-mail de récupération</button>
-                  <button type="button" class="btn btn-secondary" id="confirm-email-btn">Confirmer l'e-mail</button>
-                  <button type="button" class="btn btn-secondary" id="toggle-ban-btn">Bannir / Débannir</button>
-                  <button type="button" class="btn btn-secondary" id="show-devices-btn">Appareils</button>
-                  <button type="button" class="btn btn-danger-outline" id="suspend-detail-btn">Suspendre l'accès</button>
+                <div class="user-compte-section">
+                  <div class="user-compte-section-label">Accès</div>
+                  <div class="user-compte-rows">
+                    <div class="user-compte-row">
+                      <div class="user-compte-row-text">
+                        <strong>Récupération</strong>
+                        <small>Envoyer un reset du mot de passe</small>
+                      </div>
+                      <button type="button" class="user-compte-action" id="reset-password-btn">Envoyer</button>
+                    </div>
+                    <div class="user-compte-row">
+                      <div class="user-compte-row-text">
+                        <strong>E-mail</strong>
+                        <small>Statut de confirmation</small>
+                      </div>
+                      <button type="button" class="user-compte-action" id="confirm-email-btn">Confirmer</button>
+                    </div>
+                    <div class="user-compte-row">
+                      <div class="user-compte-row-text">
+                        <strong>Appareils</strong>
+                        <small>Sessions liées à ce compte</small>
+                      </div>
+                      <button type="button" class="user-compte-action" id="show-devices-btn">Voir</button>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="user-compte-section user-compte-section-danger">
+                  <div class="user-compte-section-label">Zone de danger</div>
+                  <div class="user-compte-rows">
+                    <div class="user-compte-row">
+                      <div class="user-compte-row-text">
+                        <strong>Bannissement</strong>
+                        <small>Bloquer la connexion à l’app</small>
+                      </div>
+                      <button type="button" class="user-compte-action is-danger" id="toggle-ban-btn">Bannir</button>
+                    </div>
+                    <div class="user-compte-row">
+                      <div class="user-compte-row-text">
+                        <strong>Suspension</strong>
+                        <small>Passer le rôle en Suspendu</small>
+                      </div>
+                      <button type="button" class="user-compte-action is-danger" id="suspend-detail-btn">Suspendre</button>
+                    </div>
+                  </div>
                 </div>
 
                 <div id="user-sensitive-output" class="log-terminal" hidden></div>
               </div>
 
-              <!-- Center Column: Permissions -->
               <div class="glass-card panel-card user-permissions-card">
                 <div class="panel-card-header">
-                  <h3>Accès aux fonctionnalités</h3>
+                  <h3>Permissions</h3>
+                  <div class="perm-header-actions">
+                    <span class="perm-count" id="perm-count" aria-live="polite">0 / 10</span>
+                    <button type="button" class="btn btn-ghost btn-sm perm-bulk-btn" id="perm-all-on">Tout</button>
+                    <button type="button" class="btn btn-ghost btn-sm perm-bulk-btn" id="perm-all-off">Aucun</button>
+                  </div>
                 </div>
-                <p class="section-desc">Gérer les zones de l'application autorisées pour ce profil.</p>
                 <div id="app-permissions-grid" class="permissions-list">
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="project" />
                     <div class="perm-text">
                       <strong>Projet</strong>
-                      <small>Vue d’ensemble et gestion du projet.</small>
+                      <small>Hub et gestion du projet</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="project" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="explorer" />
                     <div class="perm-text">
                       <strong>Explorateur GTA</strong>
-                      <small>Navigation dans les fichiers GTA et RPF.</small>
+                      <small>Fichiers GTA et RPF</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="explorer" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="converter" />
                     <div class="perm-text">
-                      <strong>Import & conversion</strong>
-                      <small>Import des assets dans GTA/FiveM et conversion des formats.</small>
+                      <strong>Ressources</strong>
+                      <small>Fichiers du projet</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="assets" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="assets" />
-                    <div class="perm-text">
-                      <strong>Assets</strong>
-                      <small>Liste et consultation des ressources.</small>
-                    </div>
-                  </label>
-                  <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="materials" />
-                    <div class="perm-text">
-                      <strong>Matériaux</strong>
-                      <small>Inspection et modification des matériaux.</small>
-                    </div>
-                  </label>
-                  <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="textures" />
-                    <div class="perm-text">
-                      <strong>Texture Studio</strong>
-                      <small>Édition et export des textures.</small>
-                    </div>
-                  </label>
-                  <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="modeling" />
                     <div class="perm-text">
                       <strong>Éditeur 3D</strong>
-                      <small>Import, placement et texturage d’objets 3D.</small>
+                      <small>Viewport et édition 3D</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="modeling" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="library" />
+                    <div class="perm-text">
+                      <strong>Studio UV</strong>
+                      <small>Projection et gabarits UV</small>
+                    </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="uv-skin" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                  <label class="app-permission-row">
+                    <div class="perm-text">
+                      <strong>Texture Studio</strong>
+                      <small>Édition et export textures</small>
+                    </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="textures" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                  <label class="app-permission-row">
+                    <div class="perm-text">
+                      <strong>Matériaux</strong>
+                      <small>Inspection et édition</small>
+                    </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="materials" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
+                  </label>
+                  <label class="app-permission-row">
                     <div class="perm-text">
                       <strong>Bibliothèque</strong>
-                      <small>Bibliothèque de textures de base.</small>
+                      <small>Textures de base</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="library" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="ai" />
                     <div class="perm-text">
                       <strong>Outils IA</strong>
-                      <small>Fonctionnalités de retouche par IA.</small>
+                      <small>Retouche assistée (panneau)</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="ai" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                   <label class="app-permission-row">
-                    <input type="checkbox" data-app-permission="settings" />
                     <div class="perm-text">
                       <strong>Réglages</strong>
-                      <small>Configuration et support.</small>
+                      <small>Configuration de l’app</small>
                     </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" data-app-permission="settings" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
                   </label>
                 </div>
               </div>
 
-              <!-- Full Width Column: User Activity Logs -->
+              <div class="glass-card panel-card user-subscription-card">
+                <div class="panel-card-header">
+                  <h3>Abonnement</h3>
+                  <span class="user-sub-hint">Licence manuelle · miroir vers l’app</span>
+                </div>
+                <div class="user-sub-grid">
+                  <div class="field">
+                    <label for="detail-sub-plan">Offre</label>
+                    <select id="detail-sub-plan">
+                      <option value="free">Free</option>
+                      <option value="pro">Pro</option>
+                      <option value="studio">Studio</option>
+                      <option value="lifetime">Lifetime</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="detail-sub-status">Statut</label>
+                    <select id="detail-sub-status">
+                      <option value="trialing">Essai</option>
+                      <option value="active">Active</option>
+                      <option value="past_due">Paiement requis</option>
+                      <option value="canceled">Annulée</option>
+                      <option value="suspended">Suspendue</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="detail-sub-devices">Appareils</label>
+                    <input id="detail-sub-devices" type="number" min="1" max="25" value="1" />
+                  </div>
+                  <div class="field">
+                    <label for="detail-sub-expires">Expiration</label>
+                    <input id="detail-sub-expires" type="datetime-local" />
+                  </div>
+                </div>
+                <div class="user-sub-footer">
+                  <p class="user-sub-note">Vide = illimité. Studio / Lifetime → tier Premium dans l’app.</p>
+                  <button type="button" class="btn btn-primary user-sub-save" id="save-subscription-btn">Enregistrer l’abonnement</button>
+                </div>
+              </div>
+
               <div class="glass-card panel-card user-logs-card">
                 <div class="panel-card-header">
-                  <h3>Journal d'activité du membre</h3>
+                  <h3>Activité</h3>
+                  <span class="activity-count" id="detail-activity-count" aria-live="polite">—</span>
                 </div>
-                <div id="detail-logs" class="log-terminal-output" style="font-family: monospace; font-size: 12px; padding: 14px; border-radius: 8px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); min-height: 120px; display: flex; flex-direction: column; gap: 8px;">
+                <div id="detail-logs" class="user-activity-list">
                   <!-- Chargé dynamiquement -->
                 </div>
               </div>
@@ -512,97 +723,225 @@
 
           <!-- Licences -->
           <section class="admin-panel" id="panel-subscriptions">
-            <header class="panel-header">
-              <h2>Abonnements</h2>
-              <p>Gérez les abonnements Stripe de vos utilisateurs.</p>
-            </header>
-            <div class="panel-body">
-              <div class="table-container">
-                <table class="data-table" id="subscriptions-table">
+            <div class="subs-toolbar">
+              <div class="subs-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="subs-count">—</strong>
+                  <span id="subs-count-label">abonnements</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="subs-search" placeholder="E-mail, plan, client ID…" autocomplete="off" />
+                </div>
+              </div>
+              <div class="subs-toolbar-right">
+                <div class="users-menu" id="subs-filters-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="subs-filters-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="subs-filters-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M4 5h16M7 12h10M10 19h4"/>
+                    </svg>
+                    <span id="subs-filters-label">Filtres</span>
+                    <span class="users-menu-badge" id="subs-filters-badge" hidden>0</span>
+                  </button>
+                  <div class="users-menu-panel" id="subs-filters-menu" hidden role="menu">
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Offre</div>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="" role="menuitemradio">Toutes</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="standard" role="menuitemradio">Standard</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="pro" role="menuitemradio">Pro</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="premium" role="menuitemradio">Premium</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="studio" role="menuitemradio">Studio</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="plan" data-subs-filter-value="lifetime" role="menuitemradio">Lifetime</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Statut</div>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="active" role="menuitemradio">Actif</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="trialing" role="menuitemradio">Essai</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="past_due" role="menuitemradio">Impayé</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="canceled" role="menuitemradio">Annulé</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="status" data-subs-filter-value="suspended" role="menuitemradio">Suspendu</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Stripe</div>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="stripe" data-subs-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="stripe" data-subs-filter-value="linked" role="menuitemradio">Client lié</button>
+                      <button type="button" class="users-menu-item" data-subs-filter-key="stripe" data-subs-filter-value="manual" role="menuitemradio">Manuel</button>
+                    </div>
+                    <button type="button" class="users-menu-reset" id="subs-filters-reset">Réinitialiser les filtres</button>
+                  </div>
+                </div>
+
+                <div class="users-menu" id="subs-sort-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="subs-sort-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="subs-sort-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>
+                    </svg>
+                    <span id="subs-sort-label">Offre</span>
+                  </button>
+                  <div class="users-menu-panel users-menu-panel-sort" id="subs-sort-menu" hidden role="menu">
+                    <button type="button" class="users-menu-item" data-subs-sort="plan_asc" role="menuitemradio">Offre</button>
+                    <button type="button" class="users-menu-item" data-subs-sort="status_asc" role="menuitemradio">Statut</button>
+                    <button type="button" class="users-menu-item" data-subs-sort="email_asc" role="menuitemradio">E-mail A→Z</button>
+                    <button type="button" class="users-menu-item" data-subs-sort="email_desc" role="menuitemradio">E-mail Z→A</button>
+                  </div>
+                </div>
+
+                <button type="button" class="users-menu-trigger" id="refresh-subs-btn">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card panel-card subs-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table users-table subs-table">
                   <thead>
                     <tr>
-                      <th>Email</th>
-                      <th>Plan</th>
-                      <th>Statut</th>
-                      <th>Client ID</th>
+                      <th class="col-member">Membre</th>
+                      <th class="col-plan">Offre</th>
+                      <th class="col-status">Statut</th>
+                      <th class="col-stripe">Client Stripe</th>
+                      <th class="col-actions">Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="subscriptions-tbody">
-                    <!-- Loaded dynamically -->
-                  </tbody>
+                  <tbody id="subscriptions-tbody"></tbody>
                 </table>
               </div>
             </div>
           </section>
 
           <section class="admin-panel" id="panel-coupons">
-            <header class="panel-header">
-              <h2>Coupons Stripe</h2>
-              <p>Créez et gérez vos codes de réduction.</p>
-              <div class="panel-actions">
-                <button type="button" class="btn btn-primary" id="btn-create-coupon">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Nouveau Coupon
+            <div class="coupons-toolbar">
+              <div class="coupons-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="coupons-count">—</strong>
+                  <span id="coupons-count-label">coupons</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="coupons-search" placeholder="Code, réduction…" autocomplete="off" />
+                </div>
+              </div>
+              <div class="coupons-toolbar-right">
+                <div class="users-menu" id="coupons-filters-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="coupons-filters-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="coupons-filters-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M4 5h16M7 12h10M10 19h4"/>
+                    </svg>
+                    <span id="coupons-filters-label">Filtres</span>
+                    <span class="users-menu-badge" id="coupons-filters-badge" hidden>0</span>
+                  </button>
+                  <div class="users-menu-panel" id="coupons-filters-menu" hidden role="menu">
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Type</div>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="type" data-coupons-filter-value="" role="menuitemradio">Tous</button>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="type" data-coupons-filter-value="percent" role="menuitemradio">Pourcentage</button>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="type" data-coupons-filter-value="amount" role="menuitemradio">Montant fixe</button>
+                    </div>
+                    <div class="users-menu-group">
+                      <div class="users-menu-group-label">Durée</div>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="duration" data-coupons-filter-value="" role="menuitemradio">Toutes</button>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="duration" data-coupons-filter-value="once" role="menuitemradio">Une fois</button>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="duration" data-coupons-filter-value="repeating" role="menuitemradio">Récurrent</button>
+                      <button type="button" class="users-menu-item" data-coupons-filter-key="duration" data-coupons-filter-value="forever" role="menuitemradio">Illimité</button>
+                    </div>
+                    <button type="button" class="users-menu-reset" id="coupons-filters-reset">Réinitialiser les filtres</button>
+                  </div>
+                </div>
+
+                <div class="users-menu" id="coupons-sort-menu-wrap">
+                  <button type="button" class="users-menu-trigger" id="coupons-sort-trigger" aria-expanded="false" aria-haspopup="true" aria-controls="coupons-sort-menu">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <path d="M7 4v16M7 4l-3 3M7 4l3 3M17 20V4M17 20l-3-3M17 20l3-3"/>
+                    </svg>
+                    <span id="coupons-sort-label">Plus récents</span>
+                  </button>
+                  <div class="users-menu-panel users-menu-panel-sort" id="coupons-sort-menu" hidden role="menu">
+                    <button type="button" class="users-menu-item" data-coupons-sort="created_desc" role="menuitemradio">Plus récents</button>
+                    <button type="button" class="users-menu-item" data-coupons-sort="name_asc" role="menuitemradio">Code A→Z</button>
+                    <button type="button" class="users-menu-item" data-coupons-sort="name_desc" role="menuitemradio">Code Z→A</button>
+                    <button type="button" class="users-menu-item" data-coupons-sort="usage_desc" role="menuitemradio">Plus utilisés</button>
+                  </div>
+                </div>
+
+                <button type="button" class="users-menu-trigger" id="refresh-coupons-btn">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+                <button type="button" class="btn btn-primary btn-sm coupons-create-btn" id="coupons-create-toggle" aria-expanded="false" aria-controls="coupons-create-panel">
+                  Nouveau coupon
                 </button>
               </div>
-            </header>
-            <div class="panel-body">
-              <div class="table-container">
-                <table class="data-table" id="coupons-table">
-                  <thead>
-                    <tr>
-                      <th>Code Promo</th>
-                      <th>Réduction</th>
-                      <th>Durée</th>
-                      <th>Utilisations max</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="coupons-tbody">
-                    <!-- Loaded dynamically -->
-                  </tbody>
-                </table>
-              </div>
             </div>
-          </section>
 
-          <section class="admin-panel" id="panel-licenses">
-            <form id="license-form" class="glass-card panel-card vercel-card-form">
-              <div class="vercel-card-body">
-                <div class="panel-card-header">
-                  <h3>Attribuer une licence</h3>
-                  <p class="section-desc">Override manuel. Miroir vers <code>subscription_tier</code> desktop/portail : Free→free, Pro→pro, Studio/Lifetime→premium.</p>
+            <div id="coupons-create-panel" class="coupons-create-panel" hidden>
+              <form id="coupon-create-form" class="coupons-create-form">
+                <div class="coupons-create-head">
+                  <div>
+                    <h3>Nouveau coupon Stripe</h3>
+                    <p class="section-desc">Le code devient l’identifiant du coupon côté Stripe.</p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="coupons-create-close">Fermer</button>
                 </div>
-                <div class="horizontal-form-grid">
-                  <div class="field"><label for="license-email">Compte</label><input id="license-email" type="email" required placeholder="membre@site.com" /></div>
-                  <div class="field"><label for="license-plan">Offre</label><select id="license-plan"><option value="free">Free</option><option value="pro">Pro</option><option value="studio">Studio</option><option value="lifetime">Lifetime</option></select></div>
-                  <div class="field"><label for="license-status">Statut</label><select id="license-status"><option value="trialing">Essai</option><option value="active">Active</option><option value="past_due">Paiement requis</option><option value="canceled">Annulée</option><option value="suspended">Suspendue</option></select></div>
-                  <div class="field"><label for="license-devices">Appareils autorisés</label><input id="license-devices" type="number" min="1" max="25" value="1" required /></div>
-                  <div class="field"><label for="license-expires">Expiration</label><input id="license-expires" type="datetime-local" /></div>
+                <div class="coupons-create-grid">
+                  <div class="field">
+                    <label for="coupon-code">Code</label>
+                    <input id="coupon-code" type="text" required maxlength="40" placeholder="PROMO50" autocomplete="off" />
+                  </div>
+                  <div class="field">
+                    <label for="coupon-type">Type</label>
+                    <select id="coupon-type">
+                      <option value="percent">Pourcentage</option>
+                      <option value="amount">Montant fixe (EUR)</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="coupon-value" id="coupon-value-label">Réduction (%)</label>
+                    <input id="coupon-value" type="number" required min="1" step="1" placeholder="50" />
+                  </div>
+                  <div class="field">
+                    <label for="coupon-duration">Durée</label>
+                    <select id="coupon-duration">
+                      <option value="once">Une fois</option>
+                      <option value="repeating">Récurrent</option>
+                      <option value="forever">Illimité</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="coupon-max">Utilisations max</label>
+                    <input id="coupon-max" type="number" min="1" step="1" placeholder="Illimité" />
+                  </div>
                 </div>
-              </div>
-              <div class="vercel-card-footer">
-                <span class="footer-desc">Laissez la date d'expiration vide pour une validité illimitée.</span>
-                <button class="btn btn-primary btn-sm" type="submit">Enregistrer</button>
-              </div>
-            </form>
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Licences clients</h3>
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="licenses">Actualiser</button>
-              </div>
-              <div style="overflow-x: auto;">
-                <table class="data-table">
+                <div class="coupons-create-footer">
+                  <span class="footer-desc">Montant fixe = euros (ex. 5 = 5,00 €).</span>
+                  <button type="submit" class="btn btn-primary btn-sm" id="coupon-create-submit">Créer le coupon</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="glass-card panel-card coupons-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table users-table coupons-table">
                   <thead>
                     <tr>
-                      <th>Email</th>
-                      <th>Offre</th>
-                      <th>Statut</th>
-                      <th>Appareils</th>
-                      <th>Expiration</th>
+                      <th class="col-code">Code</th>
+                      <th class="col-discount">Réduction</th>
+                      <th class="col-duration">Durée</th>
+                      <th class="col-usage">Utilisations</th>
+                      <th class="col-actions">Actions</th>
                     </tr>
                   </thead>
-                  <tbody id="licenses-tbody"></tbody>
+                  <tbody id="coupons-tbody"></tbody>
                 </table>
               </div>
             </div>
@@ -610,61 +949,84 @@
 
           <!-- Support -->
           <section class="admin-panel" id="panel-support">
+            <div class="support-toolbar">
+              <div class="support-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="support-count">—</strong>
+                  <span id="support-count-label">tickets</span>
+                </span>
+                <span class="users-count-chip support-open-chip" id="support-open-chip" hidden>
+                  <strong id="support-open-count">0</strong>
+                  <span>ouverts</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" class="ticket-search-input" id="ticket-search-input" placeholder="E-mail, sujet…" autocomplete="off" />
+                </div>
+              </div>
+              <div class="support-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer les tickets">
+                  <button type="button" class="filter-tab is-active" data-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-filter="open">Ouverts</button>
+                  <button type="button" class="filter-tab" data-filter="closed">Clos</button>
+                </div>
+                <button type="button" class="users-menu-trigger" id="refresh-support-btn" data-refresh="support">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
             <div class="support-inbox-grid">
-              <!-- Left: Tickets List -->
               <div class="glass-card panel-card support-sidebar-card">
                 <div class="support-sidebar-header">
-                  <h3>
-                    <span>Tickets support</span>
-                    <button type="button" class="btn btn-ghost btn-sm" data-refresh="support">Actualiser</button>
-                  </h3>
-                  <input type="text" class="ticket-search-input" id="ticket-search-input" placeholder="Filtrer les tickets..." />
-                  <div class="ticket-filter-tabs">
-                    <button type="button" class="filter-tab is-active" data-filter="all">Tous</button>
-                    <button type="button" class="filter-tab" data-filter="open">Ouverts</button>
-                    <button type="button" class="filter-tab" data-filter="closed">Clos</button>
-                  </div>
+                  <h3>Conversations</h3>
                 </div>
                 <div id="support-list" class="support-tickets-list">
                   <div class="empty-state">Chargement…</div>
                 </div>
               </div>
 
-              <!-- Right: Selected Ticket Chat -->
               <div class="glass-card panel-card support-chat-card">
-                <!-- Empty State -->
                 <div class="chat-empty-state" id="chat-empty-state">
                   <svg class="chat-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
                   </svg>
                   <h4>Aucune conversation active</h4>
-                  <p>Sélectionnez un ticket dans la liste de gauche pour lire les messages et répondre en direct.</p>
+                  <p>Sélectionnez un ticket à gauche pour lire et répondre.</p>
                 </div>
 
-                <!-- Active Chat Viewport -->
-                <div class="chat-viewport" id="chat-viewport" style="display: none;">
+                <div class="chat-viewport" id="chat-viewport" hidden>
                   <div class="chat-header">
                     <div class="chat-header-user">
                       <div class="user-avatar" id="support-avatar">U</div>
                       <div class="user-meta">
                         <h4 id="support-chat-subject">Sujet du ticket</h4>
-                        <span id="support-chat-meta">client@email.com</span>
+                        <button type="button" class="support-chat-email" id="support-chat-meta" title="Ouvrir la fiche membre">client@email.com</button>
+                        <div class="support-chat-tags">
+                          <span class="ticket-discord-chip" id="support-chat-discord" hidden></span>
+                          <span class="ticket-app-chip" id="support-chat-app" hidden>App</span>
+                        </div>
                       </div>
                     </div>
                     <div class="chat-header-actions">
-                      <span class="role-pill ticket-status-pill" id="support-status-pill">OUVERT</span>
-                      <div id="support-chat-actions" style="display: none;">
-                        <button type="button" class="btn btn-secondary btn-sm" id="support-close-btn" style="color: var(--danger); border-color: rgba(255, 0, 0, 0.2);">Clore le ticket</button>
+                      <span class="support-status-pill" id="support-status-pill">Ouvert</span>
+                      <button type="button" class="btn-action-view" id="support-open-profile-btn" hidden>Fiche</button>
+                      <div id="support-chat-actions" hidden>
+                        <button type="button" class="btn-action-view" id="support-close-btn">Clore</button>
                       </div>
+                      <button type="button" class="btn-action-delete" id="support-delete-btn" hidden>Supprimer</button>
                     </div>
                   </div>
-                  <div class="chat-messages-container" id="support-chat-messages">
-                    <!-- Messages loaded here -->
-                  </div>
-                  <form id="support-chat-form" class="chat-input-editor" style="display: none;">
-                    <textarea id="support-chat-input" placeholder="Répondre au client..." required></textarea>
+                  <div class="chat-messages-container" id="support-chat-messages"></div>
+                  <form id="support-chat-form" class="chat-input-editor" hidden>
+                    <textarea id="support-chat-input" placeholder="Répondre au client…" required rows="3"></textarea>
                     <div class="editor-toolbar">
-                      <span class="editor-hint">Support Direct · Production</span>
+                      <span class="editor-hint">Réponse visible côté client</span>
                       <button type="submit" class="btn btn-primary btn-sm">Envoyer</button>
                     </div>
                   </form>
@@ -675,13 +1037,83 @@
 
           <!-- Contacts -->
           <section class="admin-panel" id="panel-contacts">
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Messages du site</h3>
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="contacts">Actualiser</button>
+            <div class="contacts-toolbar">
+              <div class="contacts-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="contacts-count">—</strong>
+                  <span id="contacts-count-label">messages</span>
+                </span>
+                <span class="users-count-chip contacts-new-chip" id="contacts-new-chip" hidden>
+                  <strong id="contacts-new-count">0</strong>
+                  <span>nouveaux</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="contacts-search-input" placeholder="E-mail, nom, sujet…" autocomplete="off" />
+                </div>
               </div>
-              <div id="contacts-list" style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="empty-state">Chargement…</div>
+              <div class="contacts-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer les messages">
+                  <button type="button" class="filter-tab is-active" data-contact-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-contact-filter="new">Nouveaux</button>
+                  <button type="button" class="filter-tab" data-contact-filter="read">Lus</button>
+                  <button type="button" class="filter-tab" data-contact-filter="archived">Archivés</button>
+                </div>
+                <button type="button" class="users-menu-trigger" id="refresh-contacts-btn" data-refresh="contacts">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
+            <div class="contacts-inbox-grid">
+              <div class="glass-card panel-card contacts-sidebar-card">
+                <div class="contacts-sidebar-header">
+                  <h3>Messages du site</h3>
+                </div>
+                <div id="contacts-list" class="contacts-messages-list">
+                  <div class="empty-state">Chargement…</div>
+                </div>
+              </div>
+
+              <div class="glass-card panel-card contacts-detail-card">
+                <div class="contacts-empty-state" id="contacts-empty-state">
+                  <svg class="contacts-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                    <polyline points="22,6 12,13 2,6"/>
+                  </svg>
+                  <h4>Aucun message sélectionné</h4>
+                  <p>Choisissez un message à gauche pour le lire et le traiter.</p>
+                </div>
+
+                <div class="contacts-viewport" id="contacts-viewport" hidden>
+                  <div class="contacts-detail-header">
+                    <div class="contacts-detail-meta">
+                      <h4 id="contacts-detail-subject">Sujet</h4>
+                      <div class="contacts-detail-from">
+                        <span id="contacts-detail-name">Visiteur</span>
+                        <button type="button" class="contacts-detail-email" id="contacts-detail-email" title="Copier l’e-mail">email@exemple.com</button>
+                      </div>
+                      <div class="contacts-detail-tags">
+                        <span class="contacts-status-pill" id="contacts-detail-status">Nouveau</span>
+                        <span class="contacts-detail-date" id="contacts-detail-date">—</span>
+                      </div>
+                    </div>
+                    <div class="contacts-detail-actions">
+                      <button type="button" class="btn-action-view" id="contacts-open-profile-btn" hidden>Fiche</button>
+                      <button type="button" class="btn-action-view" id="contacts-mark-read-btn">Lu</button>
+                      <button type="button" class="btn-action-view" id="contacts-archive-btn">Archiver</button>
+                      <button type="button" class="btn-action-delete" id="contacts-delete-btn">Supprimer</button>
+                    </div>
+                  </div>
+                  <div class="contacts-detail-body">
+                    <p id="contacts-detail-message"></p>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
@@ -739,21 +1171,93 @@
             </div>
           </section>
 
+          <!-- Activité récente -->
+          <section class="admin-panel" id="panel-activity">
+            <div class="activity-toolbar">
+              <div class="activity-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="activity-count">—</strong>
+                  <span id="activity-count-label">événements</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="activity-search-input" placeholder="Action, admin, cible…" autocomplete="off" />
+                </div>
+              </div>
+              <div class="activity-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer l’activité">
+                  <button type="button" class="filter-tab is-active" data-activity-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-activity-filter="user">Comptes</button>
+                  <button type="button" class="filter-tab" data-activity-filter="support">Support</button>
+                  <button type="button" class="filter-tab" data-activity-filter="license">Licences</button>
+                  <button type="button" class="filter-tab" data-activity-filter="release">Releases</button>
+                  <button type="button" class="filter-tab" data-activity-filter="system">Système</button>
+                </div>
+                <button type="button" class="users-menu-trigger" id="refresh-activity-btn" data-refresh="activity">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card panel-card activity-feed-card">
+              <div class="activity-feed-header">
+                <h3>Fil d’activité</h3>
+                <span class="activity-feed-hint">Actions récentes de la console</span>
+              </div>
+              <div class="activity-list" id="activity-feed">
+                <div class="empty-state">Chargement…</div>
+              </div>
+            </div>
+          </section>
+
           <!-- Audit -->
           <section class="admin-panel" id="panel-audit">
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Journal d’audit permanent</h3>
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="audit">Rafraîchir</button>
+            <div class="audit-toolbar">
+              <div class="audit-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="audit-count">—</strong>
+                  <span id="audit-count-label">événements</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="audit-search-input" placeholder="Admin, action, cible…" autocomplete="off" />
+                </div>
               </div>
-              <div style="overflow-x: auto;">
-                <table class="data-table">
+              <div class="audit-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer l’audit">
+                  <button type="button" class="filter-tab is-active" data-audit-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-audit-filter="user">Comptes</button>
+                  <button type="button" class="filter-tab" data-audit-filter="support">Support</button>
+                  <button type="button" class="filter-tab" data-audit-filter="license">Licences</button>
+                  <button type="button" class="filter-tab" data-audit-filter="release">Releases</button>
+                  <button type="button" class="filter-tab" data-audit-filter="system">Système</button>
+                </div>
+                <button type="button" class="users-menu-trigger" id="refresh-audit-btn" data-refresh="audit">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card panel-card audit-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table audit-table">
                   <thead>
                     <tr>
-                      <th>Date</th>
-                      <th>Administrateur</th>
-                      <th>Action</th>
-                      <th>Cible</th>
+                      <th class="col-date">Date</th>
+                      <th class="col-admin">Administrateur</th>
+                      <th class="col-action">Action</th>
+                      <th class="col-tone">Type</th>
+                      <th class="col-target">Cible</th>
                     </tr>
                   </thead>
                   <tbody id="audit-tbody"></tbody>
@@ -764,79 +1268,169 @@
 
           <!-- System -->
           <section class="admin-panel" id="panel-system">
-            <div class="kpi-grid">
-              <div class="kpi-card">
-                <span class="kpi-label">Base Supabase</span>
-                <span class="kpi-value" id="health-database">—</span>
-                <span class="kpi-trend" id="health-latency">— ms</span>
+            <div class="system-toolbar">
+              <div class="system-toolbar-left">
+                <span class="users-count-chip system-health-chip" id="system-health-chip">
+                  <strong id="system-health-label">—</strong>
+                  <span>santé</span>
+                </span>
+                <span class="users-count-chip" id="system-checked-chip">
+                  <strong id="system-checked-at">—</strong>
+                  <span>dernier test</span>
+                </span>
               </div>
-              <div class="kpi-card">
-                <span class="kpi-label">Version live</span>
-                <span class="kpi-value" id="health-version">v0.3.3</span>
-                <span class="kpi-trend">update.json</span>
-              </div>
-              <div class="kpi-card">
-                <span class="kpi-label">Fonction admin</span>
-                <span class="kpi-value status-online" id="health-function">—</span>
-                <span class="kpi-trend">Edge Function</span>
+              <div class="system-toolbar-right">
+                <button type="button" class="users-menu-trigger" id="refresh-system-btn" data-refresh="system">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Tester maintenant
+                </button>
               </div>
             </div>
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Points de contrôle</h3>
-                <button type="button" class="btn btn-primary btn-sm" data-refresh="system">Tester maintenant</button>
+
+            <div class="system-kpi-grid">
+              <article class="system-kpi-card" id="system-kpi-db">
+                <span class="system-kpi-label">Base Supabase</span>
+                <strong class="system-kpi-value" id="health-database">—</strong>
+                <span class="system-kpi-meta" id="health-latency">— ms</span>
+              </article>
+              <article class="system-kpi-card" id="system-kpi-version">
+                <span class="system-kpi-label">Version live</span>
+                <strong class="system-kpi-value" id="health-version">—</strong>
+                <span class="system-kpi-meta">update.json</span>
+              </article>
+              <article class="system-kpi-card" id="system-kpi-function">
+                <span class="system-kpi-label">Fonction admin</span>
+                <strong class="system-kpi-value" id="health-function">—</strong>
+                <span class="system-kpi-meta">Edge Function</span>
+              </article>
+              <article class="system-kpi-card" id="system-kpi-manifest">
+                <span class="system-kpi-label">Manifeste</span>
+                <strong class="system-kpi-value" id="health-manifest">—</strong>
+                <span class="system-kpi-meta" id="health-manifest-meta">HTTP —</span>
+              </article>
+            </div>
+
+            <div class="system-main-grid">
+              <div class="glass-card panel-card system-checks-card">
+                <div class="system-card-header">
+                  <div>
+                    <h3>Points de contrôle</h3>
+                    <p>État des services critiques de la console.</p>
+                  </div>
+                </div>
+                <div id="system-checks" class="system-checks-list">
+                  <div class="empty-state">Chargement…</div>
+                </div>
               </div>
-              <div id="system-checks" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+              <div class="glass-card panel-card system-logs-card">
+                <div class="system-card-header">
+                  <div>
+                    <h3>Journal console</h3>
+                    <p>Messages locaux de la session admin.</p>
+                  </div>
+                  <button type="button" class="btn-action-view" id="refresh-logs-btn">Réinitialiser</button>
+                </div>
+                <div id="log-terminal" class="log-terminal system-log-terminal" aria-live="polite"></div>
+              </div>
             </div>
           </section>
 
           <!-- Team -->
           <section class="admin-panel" id="panel-team">
-            <!-- Team Form -->
-            <form id="team-form" class="glass-card panel-card vercel-card-form">
-              <div class="vercel-card-body">
-                <div class="panel-card-header">
-                  <h3>Déléguer la superconsole</h3>
-                  <p class="section-desc">Invitez d'autres administrateurs et accordez-leur des autorisations spécifiques.</p>
+            <div class="team-toolbar">
+              <div class="team-toolbar-left">
+                <span class="users-count-chip" aria-live="polite">
+                  <strong id="team-count">—</strong>
+                  <span id="team-count-label">membres</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="team-search-input" placeholder="E-mail, niveau, permission…" autocomplete="off" />
                 </div>
-                <div class="horizontal-form-grid" style="grid-template-columns: 1fr 1fr;">
-                  <div class="field"><label for="team-email">Compte administrateur</label><input id="team-email" type="email" required placeholder="admin@site.com" /></div>
-                  <div class="field"><label for="team-level">Niveau de contrôle</label><select id="team-level"><option value="collaborator">Collaborateur</option><option value="owner">Propriétaire (Total)</option></select></div>
+              </div>
+              <div class="team-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer l’équipe">
+                  <button type="button" class="filter-tab is-active" data-team-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-team-filter="owner">Owners</button>
+                  <button type="button" class="filter-tab" data-team-filter="collaborator">Collaborateurs</button>
                 </div>
-                <div class="field" style="margin-top: 12px;">
-                  <label>Permissions d'accès</label>
-                  <div class="permissions-checkbox-grid">
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="console" checked /> <span>Console</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="users" /> <span>Utilisateurs</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="licenses" /> <span>Licences</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="billing" /> <span>Abonnements & Coupons</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="support" /> <span>Support</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="contacts" /> <span>Contacts</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="releases" /> <span>Releases</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="audit" /> <span>Audit</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="system" /> <span>Système</span></label>
-                    <label class="custom-checkbox"><input type="checkbox" name="team-permission" value="library" /> <span>Bibliothèque</span></label>
+                <button type="button" class="users-menu-trigger" id="refresh-team-btn" data-refresh="team">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+                <button type="button" class="btn btn-primary btn-sm team-create-btn" id="team-create-toggle" aria-expanded="false" aria-controls="team-create-panel">
+                  Déléguer un accès
+                </button>
+              </div>
+            </div>
+
+            <div id="team-create-panel" class="team-create-panel" hidden>
+              <form id="team-form" class="team-create-form">
+                <div class="team-create-head">
+                  <div>
+                    <h3 id="team-form-title">Déléguer la superconsole</h3>
+                    <p class="section-desc" id="team-form-desc">Invitez un admin existant et définissez ses permissions.</p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="team-create-close" aria-label="Fermer">Fermer</button>
+                </div>
+                <div class="team-create-grid">
+                  <div class="field">
+                    <label for="team-email">Compte administrateur</label>
+                    <input id="team-email" type="email" required placeholder="admin@site.com" autocomplete="off" />
+                  </div>
+                  <div class="field">
+                    <label for="team-level">Niveau de contrôle</label>
+                    <select id="team-level">
+                      <option value="collaborator">Collaborateur</option>
+                      <option value="owner">Propriétaire (Total)</option>
+                    </select>
                   </div>
                 </div>
-              </div>
-              <div class="vercel-card-footer">
-                <span class="footer-desc">Les collaborateurs ne peuvent pas retirer d'autres administrateurs.</span>
-                <button class="btn btn-primary btn-sm" type="submit">Enregistrer l’accès</button>
-              </div>
-            </form>
-            <div class="glass-card panel-card">
-              <div class="panel-card-header">
-                <h3>Équipe autorisée</h3>
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="team">Actualiser</button>
-              </div>
-              <div style="overflow-x: auto;">
-                <table class="data-table">
+                <div class="field team-perms-field">
+                  <div class="team-perms-head">
+                    <label>Permissions d’accès</label>
+                    <div class="team-perms-actions">
+                      <button type="button" class="btn btn-ghost btn-sm" id="team-perms-all">Tout</button>
+                      <button type="button" class="btn btn-ghost btn-sm" id="team-perms-none">Aucun</button>
+                    </div>
+                  </div>
+                  <div class="team-perms-grid">
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="console" checked /> <span>Console</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="users" /> <span>Utilisateurs</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="licenses" /> <span>Licences</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="billing" /> <span>Abonnements</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="support" /> <span>Support</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="contacts" /> <span>Contacts</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="releases" /> <span>Releases</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="audit" /> <span>Audit</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="system" /> <span>Système</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="library" /> <span>Bibliothèque</span></label>
+                    <label class="team-perm-chip"><input type="checkbox" name="team-permission" value="team" /> <span>Équipe</span></label>
+                  </div>
+                </div>
+                <div class="team-create-footer">
+                  <span class="footer-desc">Les collaborateurs ne peuvent pas retirer d’autres administrateurs.</span>
+                  <button class="btn btn-primary btn-sm" type="submit" id="team-form-submit">Enregistrer l’accès</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="glass-card panel-card team-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table team-table">
                   <thead>
                     <tr>
-                      <th>Email</th>
-                      <th>Niveau</th>
-                      <th>Permissions</th>
-                      <th style="text-align: right">Action</th>
+                      <th class="col-member">Membre</th>
+                      <th class="col-level">Niveau</th>
+                      <th class="col-perms">Permissions</th>
+                      <th class="col-actions">Actions</th>
                     </tr>
                   </thead>
                   <tbody id="team-tbody"></tbody>
@@ -847,107 +1441,156 @@
 
           <!-- Textures Library -->
           <section class="admin-panel" id="panel-library">
-            <!-- Upload / Add Form -->
-            <form id="library-form" class="glass-card panel-card vercel-card-form library-create-card">
-              <div class="vercel-card-body">
-                <div class="panel-card-header">
-                  <h3>Ajouter une texture à la bibliothèque</h3>
-                  <p class="section-desc">Téléversez un fichier image (il sera automatiquement converti en WebP, puissance de deux, max 1024px) ou saisissez directement une URL.</p>
+            <div class="library-toolbar">
+              <div class="library-toolbar-top">
+                <div class="library-toolbar-left">
+                  <span class="users-count-chip" aria-live="polite">
+                    <strong id="library-count">—</strong>
+                    <span id="library-count-label">textures</span>
+                  </span>
+                  <div class="users-search-wrap">
+                    <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="search" id="library-search" placeholder="Nom, catégorie, couleur…" autocomplete="off" aria-label="Rechercher une texture" />
+                  </div>
                 </div>
-                
+                <div class="library-toolbar-right">
+                  <button type="button" class="users-menu-trigger" id="refresh-library-btn" data-refresh="library">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                    </svg>
+                    Actualiser
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm library-create-btn" id="library-create-toggle" aria-expanded="false" aria-controls="library-create-panel">
+                    Ajouter une texture
+                  </button>
+                </div>
+              </div>
+              <div class="library-toolbar-bottom">
+                <div class="ticket-filter-tabs library-filter-tabs" role="tablist" aria-label="Filtrer par catégorie" id="library-filter-tabs">
+                  <button type="button" class="filter-tab is-active" data-library-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-library-filter="Métal">Métal</button>
+                  <button type="button" class="filter-tab" data-library-filter="Bois">Bois</button>
+                  <button type="button" class="filter-tab" data-library-filter="Tissu/Cuir">Tissu</button>
+                  <button type="button" class="filter-tab" data-library-filter="Carbone/Plastique">Carbone</button>
+                  <button type="button" class="filter-tab" data-library-filter="Peinture">Peinture</button>
+                  <button type="button" class="filter-tab" data-library-filter="Motif">Motif</button>
+                  <button type="button" class="filter-tab" data-library-filter="Néon/Lumière">Néon</button>
+                  <button type="button" class="filter-tab" data-library-filter="Autre">Autre</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="library-create-panel" class="library-create-panel" hidden>
+              <form id="library-form" class="library-create-form">
+                <div class="library-create-head">
+                  <div>
+                    <h3 id="library-form-title">Ajouter une texture</h3>
+                    <p class="section-desc" id="library-form-desc">Importez une image ou collez une URL, puis renseignez les métadonnées.</p>
+                  </div>
+                  <button type="button" class="btn btn-ghost btn-sm" id="library-create-close" aria-label="Fermer">Fermer</button>
+                </div>
+
                 <input type="hidden" id="library-id" />
-                
-                <div class="horizontal-form-grid library-meta-grid">
-                  <div class="field">
-                    <label for="library-name">Nom de la texture</label>
-                    <input id="library-name" type="text" required placeholder="Ex: Carbon_Fiber_Gloss" />
+
+                <div class="library-editor-layout">
+                  <div class="library-editor-fields">
+                    <div class="field" id="library-name-field">
+                      <label for="library-name">Nom</label>
+                      <input id="library-name" type="text" required placeholder="Ex: Carbon_Fiber_Gloss" autocomplete="off" />
+                    </div>
+
+                    <div class="library-meta-row">
+                      <div class="field">
+                        <label for="library-category" id="library-category-label">Catégorie</label>
+                        <select id="library-category" required>
+                          <option value="Métal">Métal</option>
+                          <option value="Bois">Bois</option>
+                          <option value="Brique">Brique</option>
+                          <option value="Béton">Béton</option>
+                          <option value="Plâtre">Plâtre</option>
+                          <option value="Tissu/Cuir">Tissu/Cuir</option>
+                          <option value="Carbone/Plastique">Carbone/Plastique</option>
+                          <option value="Verre">Verre</option>
+                          <option value="Pierre">Pierre</option>
+                          <option value="Néon/Lumière">Néon/Lumière</option>
+                          <option value="Peinture">Peinture</option>
+                          <option value="Sol/Asphalte">Sol/Asphalte</option>
+                          <option value="Motif">Motif</option>
+                          <option value="Autre">Autre</option>
+                        </select>
+                      </div>
+                      <div class="field">
+                        <label for="library-color" id="library-color-label">Couleur</label>
+                        <select id="library-color" required>
+                          <option value="Noir">Noir</option>
+                          <option value="Blanc">Blanc</option>
+                          <option value="Gris">Gris</option>
+                          <option value="Rouge">Rouge</option>
+                          <option value="Bleu">Bleu</option>
+                          <option value="Vert">Vert</option>
+                          <option value="Jaune">Jaune</option>
+                          <option value="Orange">Orange</option>
+                          <option value="Violet">Violet</option>
+                          <option value="Rose">Rose</option>
+                          <option value="Marron">Marron</option>
+                          <option value="Beige">Beige</option>
+                          <option value="Multicolore">Multicolore</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="library-source-block">
+                      <div class="field" id="library-url-field">
+                        <label for="library-url">URL de l’image</label>
+                        <input id="library-url" type="url" required placeholder="Coller un lien direct…" autocomplete="off" />
+                      </div>
+                      <div class="field">
+                        <label for="library-file" class="library-upload-dropzone" id="library-dropzone-label">
+                          <span id="library-dropzone-title">Importer des images</span>
+                          <small id="library-dropzone-hint">PNG, JPG, WEBP · conversion auto</small>
+                        </label>
+                        <input id="library-file" type="file" accept="image/*" multiple hidden />
+                      </div>
+                    </div>
+
+                    <div id="library-upload-progress" class="library-upload-progress" hidden>
+                      <div class="library-upload-status" id="upload-status-text">Optimisation en cours…</div>
+                      <div class="library-upload-track">
+                        <div id="upload-progress-bar" class="library-upload-bar"></div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="field">
-                    <label for="library-category">Catégorie</label>
-                    <select id="library-category" required>
-                      <option value="Métal">Métal</option>
-                      <option value="Bois">Bois</option>
-                      <option value="Brique">Brique</option>
-                      <option value="Béton">Béton</option>
-                      <option value="Plâtre">Plâtre</option>
-                      <option value="Tissu/Cuir">Tissu/Cuir</option>
-                      <option value="Carbone/Plastique">Carbone/Plastique</option>
-                      <option value="Verre">Verre</option>
-                      <option value="Pierre">Pierre</option>
-                      <option value="Néon/Lumière">Néon/Lumière</option>
-                      <option value="Peinture">Peinture</option>
-                      <option value="Sol/Asphalte">Sol/Asphalte</option>
-                      <option value="Motif">Motif</option>
-                      <option value="Autre">Autre</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label for="library-color">Couleur dominante</label>
-                    <select id="library-color" required>
-                      <option value="Noir">Noir</option>
-                      <option value="Blanc">Blanc</option>
-                      <option value="Gris">Gris</option>
-                      <option value="Rouge">Rouge</option>
-                      <option value="Bleu">Bleu</option>
-                      <option value="Vert">Vert</option>
-                      <option value="Jaune">Jaune</option>
-                      <option value="Orange">Orange</option>
-                      <option value="Violet">Violet</option>
-                      <option value="Rose">Rose</option>
-                      <option value="Marron">Marron</option>
-                      <option value="Beige">Beige</option>
-                      <option value="Multicolore">Multicolore</option>
-                    </select>
-                  </div>
+
+                  <aside class="library-editor-preview" aria-label="Aperçu de la texture">
+                    <span class="library-preview-label" id="library-preview-label">Aperçu</span>
+                    <div class="texture-preview-box">
+                      <img id="library-preview-img" src="" alt="Aperçu" hidden />
+                      <span id="library-preview-placeholder">Aucune image</span>
+                    </div>
+                  </aside>
                 </div>
 
-                <div class="horizontal-form-grid library-source-grid">
-                  <div class="field">
-                    <label for="library-url">URL de l'image</label>
-                    <input id="library-url" type="url" required placeholder="Saisir ou coller un lien direct..." />
-                  </div>
-                  <div class="field">
-                    <label for="library-file" class="library-upload-dropzone">
-                      <span>📁 Importer plusieurs images</span>
-                      <small>PNG, JPG, WEBP · conversion automatique</small>
-                    </label>
-                    <input id="library-file" type="file" accept="image/*" multiple style="display: none;" />
-                  </div>
-                </div>
-
-                <div id="library-upload-progress" class="field" style="margin-top: 10px; display: none;">
-                  <div style="font-size: 11px; color: var(--accent); margin-bottom: 4px;" id="upload-status-text">Optimisation en cours...</div>
-                  <div style="height: 4px; background: var(--bg-elevated); border-radius: var(--radius-pill); overflow: hidden;">
-                    <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--gradient-sunset); transition: width 0.2s;"></div>
-                  </div>
-                </div>
-
-                <!-- Texture Preview Box -->
-                <div class="field library-preview-field">
-                  <label>Aperçu de la texture</label>
-                  <div class="texture-preview-box">
-                    <img id="library-preview-img" src="" alt="Aperçu" style="max-width: 100%; max-height: 100%; object-fit: contain; display: none;" />
-                    <span id="library-preview-placeholder" style="color: var(--muted); font-size: 11px; text-align: center; padding: 10px;">Sélectionnez ou collez un lien pour afficher l'aperçu</span>
+                <div class="library-batch-section" id="library-batch-section" hidden>
+                  <div class="library-batch-section-head">
+                    <strong id="library-batch-count">0 fichiers</strong>
+                    <span>Ajuste le nom / catégorie / couleur avant d’enregistrer.</span>
                   </div>
                   <div id="library-batch-preview" class="library-batch-preview" aria-live="polite"></div>
                 </div>
-              </div>
-              <div class="vercel-card-footer">
-                <span class="footer-desc" id="library-form-desc">Création d'une nouvelle texture.</span>
-                <div style="display: flex; gap: 8px;">
-                  <button class="btn btn-ghost btn-sm" type="button" id="library-cancel-btn" style="display: none;">Annuler</button>
-                  <button class="btn btn-primary btn-sm" type="submit" id="library-submit-btn">Enregistrer la texture</button>
-                </div>
-              </div>
-            </form>
 
-            <!-- Textures List -->
+                <div class="library-create-footer">
+                  <span class="footer-desc" id="library-form-hint">Création d’une nouvelle texture.</span>
+                  <div class="library-create-footer-actions">
+                    <button class="btn btn-ghost btn-sm" type="button" id="library-cancel-btn" hidden>Annuler</button>
+                    <button class="btn btn-primary btn-sm" type="submit" id="library-submit-btn">Enregistrer</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
             <div class="glass-card panel-card library-list-card">
-              <div class="panel-card-header library-list-header">
-                <h3>Textures enregistrées</h3>
-                <input type="search" id="library-search" placeholder="Rechercher une texture..." aria-label="Rechercher une texture" />
-                <button type="button" class="btn btn-ghost btn-sm" data-refresh="library">Actualiser</button>
-              </div>
               <div id="library-list-tbody" class="texture-library-grid"></div>
             </div>
           </section>
@@ -955,8 +1598,89 @@
       </div>
     </div>
 
+    <div id="user-delete-modal" class="admin-confirm-modal" hidden>
+      <div class="admin-confirm-backdrop" data-delete-cancel></div>
+      <div class="admin-confirm-card" role="dialog" aria-modal="true" aria-labelledby="user-delete-title">
+        <div class="admin-confirm-head">
+          <h3 id="user-delete-title">Supprimer ce membre ?</h3>
+          <p class="admin-confirm-copy">
+            Cette action est définitive. Pour confirmer, saisis l’e-mail exact du compte
+            <strong id="user-delete-email-label"></strong>.
+          </p>
+        </div>
+        <div class="field">
+          <label for="user-delete-email-input">E-mail de confirmation</label>
+          <input type="email" id="user-delete-email-input" autocomplete="off" spellcheck="false" placeholder="membre@site.com" />
+        </div>
+        <p class="admin-confirm-error" id="user-delete-error" hidden>L’e-mail ne correspond pas.</p>
+        <div class="admin-confirm-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-delete-cancel>Annuler</button>
+          <button type="button" class="btn btn-danger btn-sm" id="user-delete-confirm-btn" disabled>Supprimer définitivement</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="team-remove-modal" class="admin-confirm-modal" hidden>
+      <div class="admin-confirm-backdrop" data-team-remove-cancel></div>
+      <div class="admin-confirm-card" role="dialog" aria-modal="true" aria-labelledby="team-remove-title">
+        <div class="admin-confirm-head">
+          <h3 id="team-remove-title">Retirer cet accès ?</h3>
+          <p class="admin-confirm-copy">
+            Cette personne perdra immédiatement ses permissions superadmin. Pour confirmer, retape l’e-mail
+            <strong id="team-remove-email-label"></strong>.
+          </p>
+        </div>
+        <div class="field">
+          <label for="team-remove-email-input">E-mail de confirmation</label>
+          <input type="email" id="team-remove-email-input" autocomplete="off" spellcheck="false" placeholder="admin@site.com" />
+        </div>
+        <p class="admin-confirm-error" id="team-remove-error" hidden>L’e-mail ne correspond pas.</p>
+        <div class="admin-confirm-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-team-remove-cancel>Annuler</button>
+          <button type="button" class="btn btn-danger btn-sm" id="team-remove-confirm-btn" disabled>Retirer l’accès</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="library-delete-modal" class="admin-confirm-modal" hidden>
+      <div class="admin-confirm-backdrop" data-library-delete-cancel></div>
+      <div class="admin-confirm-card" role="dialog" aria-modal="true" aria-labelledby="library-delete-title">
+        <div class="admin-confirm-head">
+          <h3 id="library-delete-title">Supprimer cette texture ?</h3>
+          <p class="admin-confirm-copy">
+            La texture sera retirée de la bibliothèque. Pour confirmer, retape son nom exact
+            <strong id="library-delete-name-label"></strong>.
+          </p>
+        </div>
+        <div class="field">
+          <label for="library-delete-name-input">Nom de confirmation</label>
+          <input type="text" id="library-delete-name-input" autocomplete="off" spellcheck="false" placeholder="Nom de la texture" />
+        </div>
+        <p class="admin-confirm-error" id="library-delete-error" hidden>Le nom ne correspond pas.</p>
+        <div class="admin-confirm-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-library-delete-cancel>Annuler</button>
+          <button type="button" class="btn btn-danger btn-sm" id="library-delete-confirm-btn" disabled>Supprimer définitivement</button>
+        </div>
+      </div>
+    </div>
+
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.4.1-discord-avatar"></script>
+    <script src="js/admin.js?v=0.4.78-brand"></script>
+    <script>
+      if (window.SRTheme && window.SRTheme.bindToggle) {
+        window.SRTheme.bindToggle(".theme-toggle");
+      }
+      (function syncSidebarThemeHint() {
+        function updateHint() {
+          var hint = document.getElementById("sidebar-theme-hint");
+          if (!hint) return;
+          var theme = (window.SRTheme && window.SRTheme.get) ? window.SRTheme.get() : (document.documentElement.dataset.theme || "dark");
+          hint.textContent = theme === "light" ? "Clair" : "Sombre";
+        }
+        updateHint();
+        window.addEventListener("sr-theme-change", updateHint);
+      })();
+    </script>
   </body>
 </html>
