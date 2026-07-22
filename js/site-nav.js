@@ -3,6 +3,7 @@
   const client = typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null;
   if (!client || !config) return;
 
+  const CACHE_KEY = "sr_site_nav_cache_v1";
   let lastSession = null;
   let boundAuth = false;
 
@@ -22,6 +23,7 @@
 
   function getAvatarUrl(user) {
     if (!user) return null;
+    if (typeof user.avatarUrl === "string") return user.avatarUrl;
     const meta = user.user_metadata || {};
     if (meta.avatar_url) return meta.avatar_url;
     if (meta.picture) return meta.picture;
@@ -33,6 +35,7 @@
 
   function getDisplayName(user) {
     if (!user) return "Compte";
+    if (typeof user.name === "string" && user.name) return user.name;
     const meta = user.user_metadata || {};
     return (
       meta.full_name ||
@@ -43,18 +46,78 @@
     );
   }
 
+  function getInstantUserFromLocalStorage() {
+    try {
+      const rawCache = localStorage.getItem(CACHE_KEY);
+      if (rawCache) {
+        const parsed = JSON.parse(rawCache);
+        if (parsed && parsed.name) return parsed;
+      }
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && (key.includes("auth-token") || key.startsWith("sb-"))) {
+          const rawToken = localStorage.getItem(key);
+          if (rawToken && rawToken.includes("user")) {
+            const sessionObj = JSON.parse(rawToken);
+            const user = sessionObj.user || (sessionObj.currentSession && sessionObj.currentSession.user);
+            if (user && (user.email || user.user_metadata)) {
+              return {
+                name: getDisplayName(user),
+                email: user.email || "",
+                avatarUrl: getAvatarUrl(user),
+                isAdmin: Boolean(sessionObj.isAdmin || (user.user_metadata && user.user_metadata.role === "admin")),
+                rawUser: user
+              };
+            }
+          }
+        }
+      }
+    } catch (_e) {}
+    return null;
+  }
+
   function markActiveTabs() {
     const currentPage = document.body.getAttribute("data-site-page") || "";
     const hash = window.location.hash || "";
+    const isHome = currentPage === "home" || currentPage === "index";
+    const isPlans = hash === "#abonnements";
+
     document.querySelectorAll(".site-nav-tabs [data-nav]").forEach(function (link) {
       const key = link.getAttribute("data-nav");
-      let active =
-        (key === "home" && (currentPage === "home" || currentPage === "index") && hash !== "#abonnements") ||
-        (key === "docs" && currentPage === "docs") ||
-        (key === "library" && currentPage === "library") ||
-        (key === "plans" && (currentPage === "plans" || hash === "#abonnements")) ||
-        (key === "account" && (currentPage === "account" || currentPage === "dashboard"));
+      let active = false;
+      if (key === "home") {
+        active = isHome && !isPlans;
+      } else if (key === "docs") {
+        active = currentPage === "docs";
+      } else if (key === "library") {
+        active = currentPage === "library";
+      } else if (key === "plans") {
+        active = (isHome && isPlans) || currentPage === "plans";
+      } else if (key === "account") {
+        active = currentPage === "account" || currentPage === "dashboard";
+      }
       link.classList.toggle("is-active", Boolean(active));
+    });
+  }
+
+  // Scroll observer for section highlight on home page
+  if (typeof window !== "undefined") {
+    window.addEventListener("scroll", function () {
+      const currentPage = document.body.getAttribute("data-site-page") || "";
+      if (currentPage !== "home" && currentPage !== "index") return;
+      const plansSec = document.getElementById("abonnements");
+      if (!plansSec) return;
+      const rect = plansSec.getBoundingClientRect();
+      const inPlans = rect.top <= 250 && rect.bottom >= 150;
+      
+      document.querySelectorAll(".site-nav-tabs [data-nav]").forEach(function (link) {
+        const key = link.getAttribute("data-nav");
+        if (key === "plans") {
+          link.classList.toggle("is-active", inPlans);
+        } else if (key === "home") {
+          link.classList.toggle("is-active", !inPlans);
+        }
+      });
     });
   }
 
@@ -69,17 +132,21 @@
       adminEl.hidden = true;
       adminEl.setAttribute("hidden", "");
     }
+    try {
+      localStorage.removeItem(CACHE_KEY);
+    } catch (_e) {}
   }
 
-  function renderAccount(accountEl, user) {
+  function renderAccount(accountEl, user, isAdmin) {
     if (!accountEl) return;
     const name = getDisplayName(user);
     const avatarUrl = getAvatarUrl(user);
     const initial = escapeHtml((name || "?").charAt(0).toUpperCase());
 
     accountEl.className = "site-nav-account";
-    accountEl.href = "dashboard.html";
-    accountEl.title = user.email || name;
+    accountEl.href = isAdmin ? "admin.html" : "dashboard.html";
+    accountEl.title = ((user && user.email) || name) + (isAdmin ? " (Admin)" : "");
+    const adminTag = isAdmin ? '<span class="site-nav-admin-badge">Admin</span>' : '';
     accountEl.innerHTML =
       (avatarUrl
         ? '<img class="site-nav-avatar" src="' +
@@ -88,10 +155,12 @@
         : '<span class="site-nav-avatar site-nav-avatar--initial">' + initial + "</span>") +
       '<span class="site-nav-account-label">' +
       escapeHtml(name) +
-      "</span>";
+      "</span>" +
+      adminTag;
   }
 
   async function resolveIsAdmin(session) {
+    if (!session || !session.user) return false;
     try {
       const { data: profile } = await client
         .from("profiles")
@@ -115,52 +184,77 @@
     }
   }
 
-  async function hydrate(session) {
+  function setCachedProfile(user, isAdmin) {
+    try {
+      const cacheData = {
+        name: getDisplayName(user),
+        email: user ? user.email : "",
+        avatarUrl: getAvatarUrl(user),
+        isAdmin: Boolean(isAdmin),
+        timestamp: Date.now()
+      };
+      localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+    } catch (_e) {}
+  }
+
+  function hydrate(session) {
     lastSession = session || null;
     const accountEl = document.getElementById("site-nav-account");
     const adminEl = document.getElementById("site-nav-admin");
-    if (!accountEl && !adminEl) return;
+    if (adminEl) {
+      adminEl.hidden = true;
+      adminEl.setAttribute("hidden", "");
+    }
+    if (!accountEl) return;
 
     if (!session || !session.user) {
       renderGuest(accountEl, adminEl);
       return;
     }
 
-    renderAccount(accountEl, session.user);
+    // Render account immediately using session user & cached admin role
+    const instantUser = getInstantUserFromLocalStorage();
+    const initialIsAdmin = instantUser ? instantUser.isAdmin : false;
+    renderAccount(accountEl, session.user, initialIsAdmin);
 
-    const isAdmin = await resolveIsAdmin(session);
-    const adminNow = document.getElementById("site-nav-admin");
-    if (adminNow) {
-      if (isAdmin) {
-        adminNow.hidden = false;
-        adminNow.removeAttribute("hidden");
-      } else {
-        adminNow.hidden = true;
-        adminNow.setAttribute("hidden", "");
-      }
-    }
+    // Resolve admin status in background and update cache
+    resolveIsAdmin(session).then(function (isAdmin) {
+      renderAccount(accountEl, session.user, isAdmin);
+      setCachedProfile(session.user, isAdmin);
+    });
   }
 
   function refresh() {
     markActiveTabs();
     client.auth.getSession().then(function (result) {
-      void hydrate(result.data && result.data.session);
+      hydrate(result.data && result.data.session);
     });
   }
 
   window.SRSiteNav = { refresh: refresh };
 
   markActiveTabs();
-  renderGuest(document.getElementById("site-nav-account"), document.getElementById("site-nav-admin"));
 
+  // Instant synchronous cache/session check on page load to eliminate FOUC / login button flicker
+  const accountEl = document.getElementById("site-nav-account");
+  const adminEl = document.getElementById("site-nav-admin");
+  const instantUser = getInstantUserFromLocalStorage();
+
+  if (instantUser) {
+    renderAccount(accountEl, instantUser, instantUser.isAdmin);
+  } else {
+    renderGuest(accountEl, adminEl);
+  }
+
+  // Background session verification with Supabase
   client.auth.getSession().then(function (result) {
-    void hydrate(result.data && result.data.session);
+    hydrate(result.data && result.data.session);
   });
 
   if (!boundAuth) {
     boundAuth = true;
     client.auth.onAuthStateChange(function (_event, session) {
-      void hydrate(session);
+      hydrate(session);
     });
   }
 })();

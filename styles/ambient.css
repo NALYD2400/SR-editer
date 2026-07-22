@@ -6,7 +6,7 @@
   z-index: -2;
   pointer-events: none;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 50%, #12161f 0%, #090b10 100%);
+  background: radial-gradient(circle at 50% 50%, #0e0c15 0%, #030206 100%);
 }
 
 .ambient-wallpaper-stack {
@@ -14,7 +14,7 @@
   inset: -2%;
   z-index: 0;
   overflow: hidden;
-  opacity: 1;
+  opacity: 0.72;
   transition: opacity 0.35s ease;
 }
 
@@ -24,7 +24,7 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  filter: contrast(1.06) saturate(1.08) brightness(1.1);
+  filter: contrast(1.06) saturate(1.12) brightness(0.95);
   will-change: transform, opacity;
 }
 
@@ -75,19 +75,19 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 40%, transparent 0%, rgba(9, 11, 16, 0.2) 72%, rgba(9, 11, 16, 0.48) 100%),
-    linear-gradient(180deg, rgba(9, 11, 16, 0.1) 0%, rgba(9, 11, 16, 0.28) 55%, rgba(9, 11, 16, 0.55) 100%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139, 92, 246, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(3, 2, 6, 0.28) 0%, rgba(3, 2, 6, 0.48) 55%, rgba(3, 2, 6, 0.72) 100%);
   transition: background 0.35s ease;
 }
 
 html[data-theme="light"] .ambient-vignette {
   background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.08) 0%, rgba(234, 231, 238, 0.28) 78%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.12) 0%, rgba(234, 231, 238, 0.35) 55%, rgba(234, 231, 238, 0.52) 100%);
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, rgba(234, 231, 238, 0.35) 78%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(234, 231, 238, 0.42) 55%, rgba(234, 231, 238, 0.6) 100%);
 }
 
 html[data-theme="light"] .ambient-wallpaper-layer {
-  filter: contrast(1.02) saturate(1.04) brightness(1.05);
+  filter: contrast(1.02) saturate(1.04) brightness(0.9);
 }
 
 /* Landing: keep page bg transparent so wallpaper shows */

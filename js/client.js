@@ -87,7 +87,7 @@
           const card = document.createElement("figure");
           card.className = "filmstrip-card";
           const img = document.createElement("img");
-          img.src = shot.src;
+          img.src = encodeURI(shot.src);
           img.alt = shot.alt;
           img.loading = "lazy";
           img.decoding = "async";

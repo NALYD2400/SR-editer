@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bibliothèque — SR Editer</title>
+  <title>Bibliothèque Cloud — SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
-  <link rel="stylesheet" href="styles/ambient.css?v=1">
+  <link rel="stylesheet" href="styles/ambient.css?v=2">
   <link rel="stylesheet" href="styles/auth.css?v=2">
-  <link rel="stylesheet" href="styles/site-pages.css?v=4">
+  <link rel="stylesheet" href="styles/site-pages.css?v=13">
+  <link rel="stylesheet" href="styles/client.css?v=0.3.6">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="portal-body auth-body" data-site-page="library">
+<body class="client-page" data-site-page="library">
   <div class="ambient-background" aria-hidden="true">
     <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
   </div>
   <div class="ambient-vignette" aria-hidden="true"></div>
 
   <div class="site-shell">
+    <!-- Barre de navigation principale -->
     <header class="site-topnav">
       <a href="index.html" class="site-topnav-brand">
-        <img src="assets/logo_small.png" alt="">
+        <img src="assets/logo_small.png" alt="SR Editer">
         <span>SR Editer</span>
       </a>
+
       <nav class="site-nav-tabs" aria-label="Sections du site">
         <a href="index.html" data-nav="home">Accueil</a>
         <a href="docs.html" data-nav="docs">Docs</a>
@@ -32,53 +35,154 @@
         <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
         <a href="dashboard.html" data-nav="account">Espace client</a>
       </nav>
+
       <div class="site-nav-actions">
-        <a href="admin.html" id="site-nav-admin" class="site-nav-admin" hidden>Admin</a>
         <a href="login.html?next=library.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
       </div>
     </header>
 
     <main class="site-main">
       <div class="site-hero-block">
-        <h1>Bibliothèque de textures</h1>
-        <p>Parcours et télécharge des textures cloud pour tes mods. Un compte SR Editer est requis pour y accéder.</p>
+        <p class="hero-kicker"><span class="hero-beta">Bibliothèque Cloud</span> · Textures HD &amp; 4K</p>
+        <h1 class="hero-title">Catalogue de Textures</h1>
+        <p class="hero-lead">
+          Parcourez, filtrez et téléchargez en 1 clic des textures pré-configurées (PBR, Carbone, Métal, Cuir, Néons) prêtes pour vos mods.
+        </p>
+        <div class="docs-hero-badges">
+          <span class="docs-badge">Textures 4K / HD</span>
+          <span class="docs-badge">Cartes PBR Complètes</span>
+          <span class="docs-badge">Export Direct Desktop</span>
+          <span class="docs-badge">Accès Illimité Abonnés</span>
+          <span class="docs-badge">Formats DDS / WEBP</span>
+        </div>
       </div>
 
+      <!-- Gate de connexion (quand non connecté) -->
       <div id="library-gate" class="library-gate site-glass">
-        <h2>Connexion requise</h2>
-        <p>Il faut te connecter pour accéder à la bibliothèque et télécharger des textures.</p>
-        <a class="auth-submit" href="login.html?next=library.html">Se connecter</a>
-        <p class="library-gate-note">Pas encore de compte ? <a href="login.html?mode=signup&amp;next=library.html">S’inscrire</a></p>
+        <div class="library-gate-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h2>Connexion SR Editer requise</h2>
+        <p>Un compte SR Editer connecté est nécessaire pour accéder à la bibliothèque cloud et télécharger les textures d'assets.</p>
+        <ul class="library-gate-benefits">
+          <li>Accès au catalogue complet de textures HD &amp; 4K</li>
+          <li>Application instantanée dans le Texture Studio 2D de l'app</li>
+          <li>Téléchargement sécurisé et synchronisation des licences</li>
+        </ul>
+        <a class="auth-submit" href="login.html?next=library.html">Se connecter à mon compte</a>
+        <p class="library-gate-note">Pas encore de compte ? <a href="login.html?mode=signup&amp;next=library.html">Créer un compte gratuit</a></p>
       </div>
 
       <p id="library-guest-hint" class="library-guest-hint site-glass" hidden></p>
 
+      <!-- Application de bibliothèque (quand connecté) -->
       <div id="library-app" hidden>
+        <!-- Raccourcis de catégories rapides (Pills) -->
+        <div class="library-category-pills" id="library-pills">
+          <button type="button" class="pill-btn active" data-pill-cat="Tous">Tous</button>
+          <button type="button" class="pill-btn" data-pill-cat="Métal">Métal</button>
+          <button type="button" class="pill-btn" data-pill-cat="Carbone/Plastique">Carbone</button>
+          <button type="button" class="pill-btn" data-pill-cat="Néon/Lumière">Néon</button>
+          <button type="button" class="pill-btn" data-pill-cat="Tissu/Cuir">Cuir &amp; Tissu</button>
+          <button type="button" class="pill-btn" data-pill-cat="Bois">Bois</button>
+          <button type="button" class="pill-btn" data-pill-cat="Béton">Béton</button>
+          <button type="button" class="pill-btn" data-pill-cat="Peinture">Peinture</button>
+        </div>
+
+        <!-- Barre de recherche et filtres -->
         <div class="library-toolbar">
-          <input type="search" id="library-search" placeholder="Rechercher une texture…" autocomplete="off">
-          <select id="library-category" aria-label="Catégorie">
-            <option value="Tous">Toutes les catégories</option>
-          </select>
-          <select id="library-color" aria-label="Couleur">
-            <option value="Toutes">Toutes les couleurs</option>
-          </select>
+          <div class="search-input-wrap">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="search" id="library-search" placeholder="Rechercher une texture (métal, carbone, néon, bois...)" autocomplete="off">
+          </div>
+
+          <div class="select-filters">
+            <select id="library-category" aria-label="Catégorie">
+              <option value="Tous">Toutes les catégories</option>
+            </select>
+            <select id="library-color" aria-label="Couleur">
+              <option value="Toutes">Toutes les couleurs</option>
+            </select>
+          </div>
+
+          <div id="library-status" class="library-status-badge">Chargement...</div>
         </div>
-        <p class="library-status" id="library-status">Chargement…</p>
-        <div class="library-grid" id="library-grid"></div>
+
+        <!-- État vide si aucun résultat -->
         <div id="library-empty" class="library-empty site-glass" hidden>
-          <h2>Aucune texture</h2>
-          <p>Essaie un autre filtre, ou reviens plus tard — la bibliothèque est enrichie depuis l’admin.</p>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 48px; height: 48px; color: var(--muted); margin: 0 auto 12px; display: block;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+          <h2>Aucune texture trouvée</h2>
+          <p>Aucun résultat ne correspond à vos critères de recherche. Essayez de réinitialiser vos filtres.</p>
+          <button type="button" class="portal-btn outline" id="reset-filters-btn" style="max-width: 220px; margin: 0 auto;">Réinitialiser les filtres</button>
         </div>
+
+        <!-- Grille des textures -->
+        <div id="library-grid" class="library-grid"></div>
       </div>
     </main>
   </div>
 
+  
+
+  <footer class="client-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand">
+            <img src="assets/logo_small.png" alt="SR Editer" />
+            <span>SR Editer</span>
+          </a>
+          <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
+          <div class="footer-status">
+            <span class="status-dot"></span>
+            <span>Tous les services sont opérationnels</span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html#fonctionnalites">Fonctionnalités</a></li>
+            <li><a href="library.html">Bibliothèque</a></li>
+            <li><a href="index.html#abonnements">Abonnements</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Ressources</h4>
+          <ul>
+            <li><a href="dashboard.html">Espace Client</a></li>
+            <li><a href="docs.html#faq">Foire aux questions</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Légal &amp; Support</h4>
+          <ul>
+            <li><a href="docs.html#legal">Mentions Légales</a></li>
+            <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Support Technique</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 SR Editer. Tous droits réservés. Non affilié à Rockstar Games, Take-Two Interactive ou Cfx.re.</p>
+      </div>
+    </div>
+  </footer>
+
+<!-- Scripts JavaScript -->
   <script src="js/wallpapers.js"></script>
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/site-nav.js?v=3"></script>
-  <script src="js/site-soft-nav.js?v=1"></script>
-  <script src="js/library-page.js?v=6"></script>
+  <script src="js/site-nav.js?v=6"></script>
+  <script src="js/site-soft-nav.js?v=2"></script>
+  <script src="js/library-page.js?v=8"></script>
 </body>
 </html>

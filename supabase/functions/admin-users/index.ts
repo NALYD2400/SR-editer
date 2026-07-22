@@ -1,5 +1,6 @@
 import { createClient, type User } from "npm:@supabase/supabase-js@2";
 import {
+  announcePatchnoteToDiscord,
   DiscordMembershipRequiredError,
   DiscordRulesRequiredError,
   getDiscordId,
@@ -429,9 +430,21 @@ Deno.serve(async (request) => {
       const { error: unpublishError } = await admin.from("release_records").update({ published: false, updated_at: new Date().toISOString() }).eq("published", true).neq("version", version);
       if (unpublishError) return json(origin, 500, { ok: false, error: unpublishError.message });
     }
-    const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes: textOf(body.notes, 5000), published, updated_at: new Date().toISOString() });
-    if (!error) await audit("release.upsert", "release", version, { published });
-    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, manifestUrl: `${supabaseUrl}/functions/v1/app-update` });
+    const notes = textOf(body.notes, 5000);
+    const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes, published, updated_at: new Date().toISOString() });
+    let discordNotice: { success: boolean; error?: string } | null = null;
+    if (!error) {
+      await audit("release.upsert", "release", version, { published });
+      if (published) {
+        try {
+          discordNotice = await announcePatchnoteToDiscord(version, notes, artifactUrl);
+        } catch (err) {
+          console.error("Discord patchnote announcement error:", err);
+          discordNotice = { success: false, error: err instanceof Error ? err.message : String(err) };
+        }
+      }
+    }
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, manifestUrl: `${supabaseUrl}/functions/v1/app-update`, discordNotice });
   }
   if (action === "library-list") {
     const { data, error } = await admin.from("library_textures").select("*").order("created_at", { ascending: false });

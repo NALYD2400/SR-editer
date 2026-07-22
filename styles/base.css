@@ -307,3 +307,20 @@ html[data-theme="light"] .theme-toggle .icon-sun {
   animation: pulse-glow 3s ease-in-out infinite;
 }
 
+
+
+/* Prevent fixed topnav header overlap on anchor scroll targets */
+html {
+  scroll-padding-top: 110px !important;
+}
+
+[id],
+section[id],
+.pricing-section,
+#abonnements {
+  scroll-margin-top: 110px !important;
+}
+
+.pricing-section {
+  padding-top: 48px !important;
+}

@@ -10326,3 +10326,20 @@ html[data-theme="light"] #panel-team .team-perm-chip:has(input:checked) {
 html[data-theme="light"] #panel-team .team-perm-chip:has(input:checked)::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.5 6.2 4.8 8.5 9.5 3.5'/%3E%3C/svg%3E");
 }
+
+/* Enforce circular avatars across dashboard and admin UI */
+.profile-avatar-circle,
+.profile-avatar-circle img,
+.profile-avatar,
+.profile-avatar img,
+.user-avatar,
+.user-avatar img,
+.user-detail-avatar,
+.user-detail-avatar img,
+.user-row-avatar,
+.user-row-avatar img,
+.ticket-avatar,
+.ticket-avatar img {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+}

@@ -4316,14 +4316,21 @@
       const version = document.getElementById("release-version").value.trim();
       const artifactUrl = directReleaseUrl(document.getElementById("release-url").value, version);
       document.getElementById("release-url").value = artifactUrl;
-      await adminRequest("release-upsert", {
+      const result = await adminRequest("release-upsert", {
         version,
         artifactUrl,
         signature: document.getElementById("release-signature").value.trim(),
         notes: document.getElementById("release-notes").value.trim(),
         published: document.getElementById("release-published").checked
       });
-      addLog("s", document.getElementById("release-published").checked ? "Release publiée pour les clients." : "Release enregistrée en brouillon.");
+      const isPublished = document.getElementById("release-published").checked;
+      let logMsg = isPublished ? "Release publiée pour les clients." : "Release enregistrée en brouillon.";
+      if (isPublished && result?.discordNotice?.success) {
+        logMsg += " 📢 Patchnote publié sur Discord.";
+      } else if (isPublished && result?.discordNotice?.error) {
+        logMsg += " ⚠️ Publication Discord : " + result.discordNotice.error;
+      }
+      addLog("s", logMsg);
       await loadReleases();
       await loadUpdateManifest();
     } catch (reason) { addLog("e", String(reason)); }

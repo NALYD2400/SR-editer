@@ -71,3 +71,42 @@ export async function syncDiscordRole(
   }
   return payload;
 }
+
+export type DiscordPatchnoteResponse = {
+  success: boolean;
+  channel_id?: string;
+  message_id?: string;
+  error?: string;
+};
+
+export async function announcePatchnoteToDiscord(
+  version: string,
+  notes: string,
+  artifactUrl?: string,
+): Promise<DiscordPatchnoteResponse> {
+  const botUrl = (Deno.env.get("DISCORD_BOT_URL") || "https://sre-discord-bot.onrender.com")
+    .replace(/\/$/, "");
+  const secret = Deno.env.get("SYNC_SECRET_TOKEN")?.trim();
+  if (!secret) throw new Error("SYNC_SECRET_TOKEN is not configured.");
+
+  const response = await fetch(`${botUrl}/api/announce-patchnote`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${secret}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      version,
+      notes,
+      artifact_url: artifactUrl,
+    }),
+    signal: AbortSignal.timeout(10_000),
+  });
+
+  const payload = await response.json().catch(() => null) as DiscordPatchnoteResponse | null;
+  if (!response.ok || !payload?.success) {
+    console.error("❌ Failed to post patchnote to Discord:", response.status, payload?.error);
+    return { success: false, error: payload?.error ?? `HTTP ${response.status}` };
+  }
+  return payload;
+}

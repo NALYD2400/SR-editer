@@ -13,7 +13,7 @@
   const PAGE_SCRIPTS = {
     home: ["js/screenshots.js?v=0.3.4", "js/client.js?v=0.3.6"],
     docs: [],
-    library: ["js/library-page.js?v=6"],
+    library: ["js/library-page.js?v=8"],
   };
 
   let navigating = false;
@@ -39,13 +39,20 @@
   }
 
   function loadScript(src) {
-    if (loadedScripts.has(src) || document.querySelector('script[src="' + src + '"]')) {
+    // Only trust scripts we actually executed — soft-nav importNode copies
+    // inert <script src> tags that never run, which used to skip real loads.
+    if (loadedScripts.has(src)) {
+      return Promise.resolve();
+    }
+    const existing = document.querySelector('script[src="' + src + '"][data-soft-nav-loaded="1"]');
+    if (existing) {
       loadedScripts.add(src);
       return Promise.resolve();
     }
     return new Promise(function (resolve, reject) {
       const script = document.createElement("script");
       script.src = src;
+      script.dataset.softNavLoaded = "1";
       script.onload = function () {
         loadedScripts.add(src);
         resolve();
@@ -105,8 +112,10 @@
 
     navigating = true;
     document.body.classList.add("is-soft-nav");
+    document.body.classList.add("is-soft-nav-leaving");
 
     try {
+      await new Promise(r => setTimeout(r, 120));
       const response = await fetch(url.href, {
         credentials: "same-origin",
         headers: { Accept: "text/html" },
@@ -127,10 +136,17 @@
         if (!isAmbientNode(child)) child.remove();
       });
 
-      // Import new body content without ambient placeholders
+      // Import new body content without ambient placeholders or scripts.
+      // Scripts must be loaded via ensurePageScripts — importNode copies are inert
+      // and used to block library-page.js from ever running after soft-nav.
       Array.prototype.forEach.call(doc.body.children, function (child) {
         if (isAmbientNode(child)) return;
-        document.body.appendChild(document.importNode(child, true));
+        if (child.tagName === "SCRIPT") return;
+        const imported = document.importNode(child, true);
+        imported.querySelectorAll("script").forEach(function (script) {
+          script.remove();
+        });
+        document.body.appendChild(imported);
       });
 
       // Ensure ambient still first for paint order
@@ -156,7 +172,7 @@
       console.warn("[soft-nav] fallback full load", err);
       window.location.href = url.href;
     } finally {
-      document.body.classList.remove("is-soft-nav");
+      document.body.classList.remove("is-soft-nav"); document.body.classList.remove("is-soft-nav-leaving");
       navigating = false;
     }
   }

@@ -202,6 +202,19 @@
     });
   }
 
+  function showLoadError(nodes, title, message) {
+    showApp(nodes);
+    if (nodes.statusEl) nodes.statusEl.textContent = "";
+    if (nodes.gridEl) nodes.gridEl.innerHTML = "";
+    if (nodes.emptyEl) {
+      nodes.emptyEl.hidden = false;
+      const h2 = nodes.emptyEl.querySelector("h2");
+      const p = nodes.emptyEl.querySelector("p");
+      if (h2) h2.textContent = title;
+      if (p) p.textContent = message;
+    }
+  }
+
   async function loadLibrary(nodes) {
     if (nodes.statusEl) nodes.statusEl.textContent = "Chargement de la bibliothèque…";
     const { data, error } = await client
@@ -211,40 +224,87 @@
 
     if (error) {
       if (isPermissionError(error)) {
-        showGate(nodes);
+        // Session présente mais RLS/JWT KO — ne pas afficher le gate "connexion requise"
+        showLoadError(
+          nodes,
+          "Accès impossible",
+          "Ta session n’a pas pu lire la bibliothèque. Reconnecte-toi, puis réessaie."
+        );
         return;
       }
-      if (nodes.statusEl) nodes.statusEl.textContent = "Impossible de charger la bibliothèque.";
-      if (nodes.emptyEl) {
-        nodes.emptyEl.hidden = false;
-        const h2 = nodes.emptyEl.querySelector("h2");
-        const p = nodes.emptyEl.querySelector("p");
-        if (h2) h2.textContent = "Erreur";
-        if (p) {
-          p.textContent = "Un problème est survenu. Réessaie plus tard ou reconnecte-toi.";
-        }
-      }
+      showLoadError(
+        nodes,
+        "Erreur",
+        "Un problème est survenu. Réessaie plus tard ou reconnecte-toi."
+      );
       return;
     }
 
     allItems = data || [];
+    if (nodes.emptyEl) {
+      const h2 = nodes.emptyEl.querySelector("h2");
+      const p = nodes.emptyEl.querySelector("p");
+      if (h2) h2.textContent = "Aucune texture trouvée";
+      if (p) {
+        p.textContent =
+          "Aucun résultat ne correspond à vos critères de recherche. Essayez de réinitialiser vos filtres.";
+      }
+    }
     render();
   }
 
   function bindFilters(nodes) {
     if (nodes.searchEl && !nodes.searchEl.dataset.bound) {
       nodes.searchEl.dataset.bound = "1";
-      nodes.searchEl.addEventListener("input", render);
+      nodes.searchEl.addEventListener("input", function () {
+        render();
+      });
     }
     if (nodes.categoryEl && !nodes.categoryEl.dataset.bound) {
       nodes.categoryEl.dataset.bound = "1";
-      nodes.categoryEl.addEventListener("change", render);
+      nodes.categoryEl.addEventListener("change", function () {
+        syncPills(nodes.categoryEl.value);
+        render();
+      });
     }
     if (nodes.colorEl && !nodes.colorEl.dataset.bound) {
       nodes.colorEl.dataset.bound = "1";
       nodes.colorEl.addEventListener("change", render);
     }
+
+    const resetBtn = document.getElementById("reset-filters-btn");
+    if (resetBtn && !resetBtn.dataset.bound) {
+      resetBtn.dataset.bound = "1";
+      resetBtn.addEventListener("click", function () {
+        if (nodes.searchEl) nodes.searchEl.value = "";
+        if (nodes.categoryEl) nodes.categoryEl.value = "Tous";
+        if (nodes.colorEl) nodes.colorEl.value = "Toutes";
+        syncPills("Tous");
+        render();
+      });
+    }
+
+    const pills = document.querySelectorAll(".pill-btn[data-pill-cat]");
+    pills.forEach(function (pill) {
+      if (pill.dataset.bound) return;
+      pill.dataset.bound = "1";
+      pill.addEventListener("click", function () {
+        const cat = pill.getAttribute("data-pill-cat");
+        if (nodes.categoryEl) nodes.categoryEl.value = cat;
+        syncPills(cat);
+        render();
+      });
+    });
   }
+
+  function syncPills(activeCat) {
+    const pills = document.querySelectorAll(".pill-btn[data-pill-cat]");
+    pills.forEach(function (p) {
+      p.classList.toggle("active", p.getAttribute("data-pill-cat") === activeCat);
+    });
+  }
+
+  let authBound = false;
 
   function mount() {
     const nodes = els();
@@ -263,6 +323,20 @@
       showApp(nodes);
       void loadLibrary(nodes);
     });
+
+    if (!authBound) {
+      authBound = true;
+      client.auth.onAuthStateChange(function (_event, session) {
+        const current = els();
+        if (!current.gateEl && !current.appEl) return;
+        if (!session) {
+          showGate(current);
+          return;
+        }
+        showApp(current);
+        void loadLibrary(current);
+      });
+    }
   }
 
   window.SRLibrary = { mount: mount };

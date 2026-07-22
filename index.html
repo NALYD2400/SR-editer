@@ -1,192 +1,256 @@
 <!doctype html>
 <html lang="fr" data-theme="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SR Editer — Bêta · GTA V & FiveM</title>
-    <meta
-      name="description"
-      content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM."
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="SR Editer — Bêta · GTA V & FiveM" />
-    <meta property="og:description" content="Édite tes textures GTA V et FiveM." />
-    <meta name="twitter:title" content="SR Editer — Bêta · GTA V & FiveM" />
-    <meta name="twitter:description" content="Édite tes textures GTA V et FiveM." />
-    <meta property="og:image" content="assets/photo%20app/Capture%20d%E2%80%99%C3%A9cran%202026-07-04%20163113.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <link rel="canonical" href="https://sr-editer.vercel.app/" />
-    <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="js/theme.js?v=0.3.4-pro"></script>
-    <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
-    <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
-    <link rel="stylesheet" href="styles/ambient.css?v=1" />
-    <link rel="stylesheet" href="styles/site-pages.css?v=4" />
-    <link rel="stylesheet" href="styles/client.css?v=0.3.6-pricing" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  </head>
-  <body class="client-page" data-site-page="home">
-    <div class="ambient-background" aria-hidden="true">
-      <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SR Editer — Bêta · GTA V & FiveM</title>
+  <meta name="description" content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM." />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SR Editer — Bêta · GTA V & FiveM" />
+  <meta property="og:description" content="Édite tes textures GTA V et FiveM." />
+  <meta name="twitter:title" content="SR Editer — Bêta · GTA V & FiveM" />
+  <meta name="twitter:description" content="Édite tes textures GTA V et FiveM." />
+  <meta property="og:image" content="assets/photo%20app/Capture%20d%E2%80%99%C3%A9cran%202026-07-04%20163113.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://sr-editer.vercel.app/" />
+  <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="js/theme.js?v=0.3.4-pro"></script>
+  <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
+  <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
+  <link rel="stylesheet" href="styles/ambient.css?v=2" />
+  <link rel="stylesheet" href="styles/site-pages.css?v=10" />
+  <link rel="stylesheet" href="styles/client.css?v=0.3.6-pricing" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="client-page" data-site-page="home">
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+  </div>
+  <div class="ambient-vignette" aria-hidden="true"></div>
+
+  <header class="site-topnav">
+    <a href="index.html" class="site-topnav-brand" aria-label="SR Editer">
+      <img src="assets/logo_small.png" alt="SR Editer" />
+      <span>SR Editer</span>
+    </a>
+
+    <nav class="site-nav-tabs" aria-label="Sections du site">
+      <a href="index.html" data-nav="home" class="is-active">Accueil</a>
+      <a href="docs.html" data-nav="docs">Docs</a>
+      <a href="library.html" data-nav="library">Bibliothèque</a>
+      <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
+      <a href="dashboard.html" data-nav="account">Espace client</a>
+    </nav>
+
+    <div class="site-nav-actions">
+      <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
     </div>
-    <div class="ambient-vignette" aria-hidden="true"></div>
+  </header>
 
-    <header class="site-topnav">
-      <a href="index.html" class="site-topnav-brand" aria-label="SR Editer">
-        <img src="assets/logo_small.png" alt="" />
-        <span>SR Editer</span>
-      </a>
-      <nav class="site-nav-tabs" aria-label="Sections du site">
-        <a href="index.html" data-nav="home" class="is-active">Accueil</a>
-        <a href="docs.html" data-nav="docs">Docs</a>
-        <a href="library.html" data-nav="library">Bibliothèque</a>
-        <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
-        <a href="dashboard.html" data-nav="account">Espace client</a>
-      </nav>
-      <div class="site-nav-actions">
-        <a href="admin.html" id="site-nav-admin" class="site-nav-admin" hidden>Admin</a>
-        <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
-        <a href="#telecharger" class="btn btn-primary btn-sm" id="download-nav">Télécharger</a>
-      </div>
-    </header>
+  <main>
+    <section class="client-hero">
+      <div class="hero-inner reveal">
+        <p class="hero-kicker"><span id="app-version">v0.4.2</span> · <span class="hero-beta">Bêta</span> · Application desktop</p>
+        <h1 class="hero-title">GTA V & FiveM</h1>
+        <p class="hero-lead">
+          Ouvre tes dossiers de mods, édite les textures en calques, prévisualise en 3D — tout en local, sans cloud obligatoire.
+        </p>
 
-    <main>
-      <section class="client-hero">
-        <div class="hero-inner reveal">
-          <p class="hero-kicker"><span id="app-version">v0.3.3</span> · <span class="hero-beta">Bêta</span> · Application desktop</p>
-          <h1 class="hero-title">GTA V & FiveM</h1>
-          <p class="hero-lead">
-            Ouvre tes dossiers de mods, édite les textures en calques, prévisualise en 3D — tout en local, sans cloud obligatoire.
+        <div class="hero-cta" id="telecharger">
+          <a href="#" class="btn btn-hero" id="download-btn">Télécharger pour Windows</a>
+          <p class="hero-meta-line">
+            <span id="download-file-size">Windows x64</span>
+            <span aria-hidden="true">·</span>
+            <span>Installateur signé</span>
+            <span aria-hidden="true">·</span>
+            <span>Compte requis</span>
           </p>
-          <div class="hero-cta" id="telecharger">
-            <a href="#" class="btn btn-hero" id="download-btn">Télécharger pour Windows</a>
-            <p class="hero-meta-line">
-              <span id="download-file-size">Windows x64</span>
-              <span aria-hidden="true">·</span>
-              <span>Installateur signé</span>
-              <span aria-hidden="true">·</span>
-              <span>Compte requis</span>
-            </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="app-gallery reveal" id="studio">
+      <div class="section-head">
+        <h2>L'interface réelle</h2>
+        <p>Captures de l'application — Texture Studio, explorateur, viewport 3D.</p>
+      </div>
+
+      <div class="app-filmstrip" id="app-filmstrip">
+        <div class="app-filmstrip-track" id="app-filmstrip-track"></div>
+      </div>
+    </section>
+
+    <section class="features-pro reveal" id="fonctionnalites">
+      <div class="section-head">
+        <h2>Conçu pour le modding</h2>
+        <p>Décodage natif, édition précise, sauvegarde sécurisée sans altérer vos fichiers originaux.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Texture Studio</h3>
+          <p>Gestion par calques 2D, masques alpha avancés, export PNG/DDS et synchronisation live sur le mesh 3D.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <h3>Explorateur RPF</h3>
+          <p>Parcourez directement votre installation GTA V, vos mods FiveM et vos archives locales sans extraction préalable.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          </div>
+          <h3>Viewport 3D WebGL</h3>
+          <p>Prévisualisation 3D temps réel synchronisée instantanément avec vos modifications de textures.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <h3>Moteur RSC7 Native</h3>
+          <p>Support complet des formats GTA V : YTD, YDR, YFT, YDD et OpenFormats — sans faux aperçu.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Sauvegarde Sûre</h3>
+          <p>Backups automatiques intelligents et transactions atomiques avant toute modification sur le disque.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>100 % Local &amp; Confidentialité</h3>
+          <p>L'intégralité du rendu, du décodage et de vos projets reste stockée localement sur votre ordinateur.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-section reveal" id="abonnements">
+      <div class="section-head">
+        <h2>Abonnements</h2>
+        <p>Choisissez la licence adaptée à vos besoins. Activation immédiate dans l'application après connexion.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="pricing-card">
+          <h3>Standard</h3>
+          <p class="pricing-amount">9,99€ <span>/ mois</span></p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Enregistrement illimité des mods</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Export standard HD (PNG)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support par e-mail sous 24h</li>
+          </ul>
+          <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Standard</a>
+        </article>
+
+        <article class="pricing-card pricing-card--featured">
+          <span class="pricing-badge">Recommandé</span>
+          <h3>Pro</h3>
+          <p class="pricing-amount">19,99€ <span>/ mois</span></p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Standard inclus</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Rendu &amp; Textures Ultra 4K</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Outils d'édition &amp; génération IA</li>
+          </ul>
+          <a class="btn pricing-btn pricing-btn--primary" href="login.html?next=dashboard.html">S'abonner Pro</a>
+        </article>
+
+        <article class="pricing-card">
+          <h3>Premium</h3>
+          <p class="pricing-amount">29,99€ <span>/ mois</span></p>
+          <ul>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Pro inclus</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> IA avancée &amp; accès illimité</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support prioritaire VIP (Discord)</li>
+          </ul>
+          <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Premium</a>
+        </article>
+      </div>
+      <p class="pricing-note">Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement dans l'espace client</a>.</p>
+    </section>
+
+    <section class="client-cta-pro reveal" id="demarrer">
+      <div class="cta-inner">
+        <h2>Prêt à modder vos assets ?</h2>
+        <p>Téléchargez SR Editer v0.4.2, connectez-vous et commencez à éditer vos textures et modèles 3D immédiatement.</p>
+        <a href="#" class="btn btn-hero" id="download-btn-2">Télécharger l'application</a>
+        <p class="cta-req">Windows 10/11 x64 · 8 Go RAM recommandés · GTA V / FiveM</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="client-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand">
+            <img src="assets/logo_small.png" alt="SR Editer" />
+            <span>SR Editer</span>
+          </a>
+          <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
+          <div class="footer-status">
+            <span class="status-dot"></span>
+            <span>Tous les services sont opérationnels</span>
           </div>
         </div>
-      </section>
 
-      <section class="app-gallery reveal" id="studio">
-        <div class="section-head">
-          <h2>L'interface réelle</h2>
-          <p>Captures de l'application — Texture Studio, explorateur, viewport 3D.</p>
+        <div class="footer-links-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html#fonctionnalites">Fonctionnalités</a></li>
+            <li><a href="library.html">Bibliothèque</a></li>
+            <li><a href="index.html#abonnements">Abonnements</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+          </ul>
         </div>
-        <div class="app-filmstrip" id="app-filmstrip">
-          <div class="app-filmstrip-track" id="app-filmstrip-track"></div>
-        </div>
-      </section>
 
-      <section class="features-pro reveal" id="fonctionnalites">
-        <div class="section-head">
-          <h2>Conçu pour le modding</h2>
-          <p>Décodage natif, édition précise, sauvegarde sécurisée.</p>
+        <div class="footer-links-col">
+          <h4>Ressources</h4>
+          <ul>
+            <li><a href="dashboard.html">Espace Client</a></li>
+            <li><a href="docs.html#faq">Foire aux questions</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
+          </ul>
         </div>
-        <ul class="features-grid">
-          <li>
-            <h3>Texture Studio</h3>
-            <p>Calques 2D, masques alpha, export PNG/DDS, aperçu live sur le mesh.</p>
-          </li>
-          <li>
-            <h3>Explorateur RPF</h3>
-            <p>Parcours installation GTA, mods FiveM et archives locales.</p>
-          </li>
-          <li>
-            <h3>Viewport 3D</h3>
-            <p>Prévisualisation WebGL synchronisée avec tes retouches textures.</p>
-          </li>
-          <li>
-            <h3>Moteur RSC7</h3>
-            <p>YTD, YDR, YFT, YDD et OpenFormats — sans faux aperçu.</p>
-          </li>
-          <li>
-            <h3>Sauvegarde sûre</h3>
-            <p>Backup automatique et transaction avant toute écriture directe.</p>
-          </li>
-          <li>
-            <h3>100 % local</h3>
-            <p>Le rendu et le décodage restent sur ta machine.</p>
-          </li>
-        </ul>
-      </section>
 
-      <section class="pricing-section reveal" id="abonnements">
-        <div class="section-head">
-          <h2>Abonnements</h2>
-          <p>Choisis la licence adaptée à tes besoins. L’activation est immédiate dans l’app après connexion.</p>
+        <div class="footer-links-col">
+          <h4>Légal &amp; Support</h4>
+          <ul>
+            <li><a href="docs.html#legal">Mentions Légales</a></li>
+            <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Support Technique</a></li>
+          </ul>
         </div>
-        <div class="pricing-grid">
-          <article class="pricing-card">
-            <h3>Standard</h3>
-            <p class="pricing-amount">9,99€ <span>/ mois</span></p>
-            <ul>
-              <li>Enregistrement des mods</li>
-              <li>Export standard (PNG)</li>
-              <li>Support par e-mail</li>
-            </ul>
-            <a class="btn pricing-btn" href="login.html">S’abonner Standard</a>
-          </article>
-          <article class="pricing-card pricing-card--featured">
-            <span class="pricing-badge">Recommandé</span>
-            <h3>Pro</h3>
-            <p class="pricing-amount">19,99€ <span>/ mois</span></p>
-            <ul>
-              <li>Tout Standard</li>
-              <li>Rendu &amp; textures 4K</li>
-              <li>Outils d’édition IA</li>
-            </ul>
-            <a class="btn pricing-btn pricing-btn--primary" href="login.html">S’abonner Pro</a>
-          </article>
-          <article class="pricing-card">
-            <h3>Premium</h3>
-            <p class="pricing-amount">29,99€ <span>/ mois</span></p>
-            <ul>
-              <li>Tout Pro</li>
-              <li>IA avancée &amp; illimitée</li>
-              <li>Priorité support (Discord)</li>
-            </ul>
-            <a class="btn pricing-btn" href="login.html">S’abonner Premium</a>
-          </article>
-        </div>
-        <p class="pricing-note">Déjà un compte ? <a href="dashboard.html">Gère ton abonnement dans l’espace client</a>.</p>
-      </section>
+      </div>
 
-      <section class="client-cta-pro reveal" id="demarrer">
-        <div class="cta-inner">
-          <h2>Prêt à modder ?</h2>
-          <p>Télécharge SR Editer, connecte-toi et ouvre un dossier extrait (YDR + YTD ou ODR).</p>
-          <a href="#" class="btn btn-hero" id="download-btn-2" aria-disabled="true">Télécharger l'application</a>
-          <p class="cta-req">Windows 10/11 x64 · 8 Go RAM · GTA V Legacy / FiveM</p>
-          <p class="pricing-note" style="margin-top:20px;">
-            <a href="docs.html">Documentation</a>
-            <span aria-hidden="true"> · </span>
-            <a href="library.html">Bibliothèque de textures</a>
-          </p>
-        </div>
-      </section>
-    </main>
+      <div class="footer-bottom">
+        <p>© 2026 SR Editer. Tous droits réservés. Non affilié à Rockstar Games, Take-Two Interactive ou Cfx.re.</p>
+      </div>
+    </div>
+  </footer>
 
-    <footer class="client-footer">
-      <p>© 2026 SR Editer · Non affilié à Rockstar Games, Take-Two ou Cfx.re</p>
-    </footer>
-
-    <script src="js/wallpapers.js?v=0.3.4"></script>
-    <script src="js/screenshots.js?v=0.3.4"></script>
-    <script src="js/config.js?v=0.3.4"></script>
-    <script src="js/sr-supabase.js?v=1"></script>
-    <script src="js/ambient.js?v=6"></script>
-    <script src="js/client.js?v=0.3.6"></script>
-    <script src="js/site-nav.js?v=3"></script>
-    <script src="js/site-soft-nav.js?v=1"></script>
-  </body>
+  <script src="js/wallpapers.js?v=0.3.4"></script>
+  <script src="js/screenshots.js?v=0.3.4"></script>
+  <script src="js/config.js?v=0.3.4"></script>
+  <script src="js/sr-supabase.js?v=1"></script>
+  <script src="js/ambient.js?v=6"></script>
+  <script src="js/client.js?v=0.3.6"></script>
+  <script src="js/site-nav.js?v=6"></script>
+  <script src="js/site-soft-nav.js?v=2"></script>
+</body>
 </html>

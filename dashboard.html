@@ -1,332 +1,5344 @@
 <!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
 <html lang="fr" data-theme="dark">
+
+
+
+
+
+
+
+
+
+
+
 <head>
+
+
+
+
+
+
+
+
+
+
+
   <meta charset="UTF-8">
+
+
+
+
+
+
+
+
+
+
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Espace Client - SR Editer</title>
+
+
+
+
+
+
+
+
+
+
+
+  <title>Espace Client — SR Editer</title>
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="icon" type="image/png" href="assets/logo_small.png">
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/theme.js"></script>
+
+
+
+
+
+
+
+
+
+
+
   <link rel="stylesheet" href="styles/tokens.css">
+
+
+
+
+
+
+
+
+
+
+
   <link rel="stylesheet" href="styles/base.css">
-  <link rel="stylesheet" href="styles/ambient.css?v=1">
-  <link rel="stylesheet" href="styles/portal.css?v=9">
-  <link rel="stylesheet" href="styles/site-pages.css?v=4">
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="styles/ambient.css?v=2">
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="styles/portal.css?v=21">
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="styles/site-pages.css?v=13">
+
+
+
+
+
+
+
+
+
+
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+
+
+
+
+
+
+
+
+
 </head>
+
+
+
+
+
+
+
+
+
+
+
 <body class="portal-body" data-site-page="dashboard">
+
+
+
+
+
+
+
+
+
+
+
   <div class="ambient-background" aria-hidden="true">
+
+
+
+
+
+
+
+
+
+
+
     <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
   <div class="ambient-vignette" aria-hidden="true"></div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <!-- Loading State (Centered Screen) -->
+
+
+
+
+
+
+
+
+
+
+
   <div id="loading" class="portal-loading-screen">
+
+
+
+
+
+
+
+
+
+
+
     <div class="portal-loading-spinner"></div>
+
+
+
+
+
+
+
+
+
+
+
     <span>Chargement de ton espace sécurisé...</span>
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <!-- Main Shell (hidden until loaded) -->
+
+
+
+
+
+
+
+
+
+
+
   <div id="dashboard-content" class="portal-app-shell" hidden>
+
+
+
+
+
+
+
+
+
+
+
     <!-- Left Sidebar -->
+
+
+
+
+
+
+
+
+
+
+
     <aside class="portal-sidebar">
+
+
+
+
+
+
+
+
+
+
+
       <div class="sidebar-header">
+
+
+
+
+
+
+
+
+
+
+
         <a href="index.html" class="sidebar-brand sidebar-brand--logo-only" aria-label="SR Editer">
-          <img src="assets/logo.png" alt="SR Editer" class="sidebar-logo-img" onerror="this.onerror=null;this.src='assets/images/logo_detoured.png'">
+
+
+
+
+
+
+
+
+
+
+
+          <img src="assets/logo_small.png" alt="SR Editer" class="sidebar-logo-img">
+
+
+
+
+
+
+
+
+
+
+
         </a>
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <!-- Navigation links -->
+
+
+
+
+
+
+
+
+
+
+
       <nav class="sidebar-nav">
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="sidebar-link active" data-panel="overview">
+
+
+
+
+
+
+
+
+
+
+
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+
+
+
+
+
+
+
+
+
+
+
           <span class="nav-title">Accueil</span>
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="sidebar-link" data-panel="plans">
+
+
+
+
+
+
+
+
+
+
+
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+
+
+
+
+
+
+
+
+
+
+
           <span class="nav-title">Abonnements</span>
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="sidebar-link" data-panel="billing">
+
+
+
+
+
+
+
+
+
+
+
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+
+
+
+
+
+
+
+
+
+
+
           <span class="nav-title">Facturation</span>
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="sidebar-link" data-panel="downloads">
+
+
+
+
+
+
+
+
+
+
+
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+
+
+
+
+
+
+
+
+
+
+
           <span class="nav-title">Téléchargements</span>
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="sidebar-link" data-panel="account">
+
+
+
+
+
+
+
+
+
+
+
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+
+
+
+
+
+
+
+
+
+
+
           <span class="nav-title">Compte</span>
+
+
+
+
+
+
+
+
+
+
+
         </button>
+
+
+
+
+
+
+
+
+
+
+
       </nav>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       <!-- Profile Card Footer -->
+
+
+
+
+
+
+
+
+
+
+
       <div class="sidebar-footer">
+
+
+
+
+
+
+
+
+
+
+
         <div class="profile-card-widget">
+
+
+
+
+
+
+
+
+
+
+
           <div class="profile-avatar-circle" id="profile-avatar-char">U</div>
+
+
+
+
+
+
+
+
+
+
+
           <div class="profile-info-compact">
+
+
+
+
+
+
+
+
+
+
+
             <span class="profile-email-text" id="user-email">...</span>
+
+
+
+
+
+
+
+
+
+
+
             <span id="user-tier" class="tier-badge free">Gratuit</span>
+
+
+
+
+
+
+
+
+
+
+
             <div id="user-role" style="display: none;">...</div>
+
+
+
+
+
+
+
+
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
+
+
           <button type="button" id="logout-btn" class="btn-logout" title="Se déconnecter">
+
+
+
+
+
+
+
+
+
+
+
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+
+
+
+
+
+
+
+
+
+
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+
+
+
+
+
+
+
+
+
+
+
             </svg>
+
+
+
+
+
+
+
+
+
+
+
           </button>
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
     </aside>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     <!-- Right Main Stage -->
+
+
+
+
+
+
+
+
+
+
+
     <div class="portal-main-stage">
+
+
+
+
+
+
+
+
+
+
+
       <header class="portal-topbar">
+
+
+
+
+
+
+
+
+
+
+
         <div class="topbar-title">
+
+
+
+
+
+
+
+
+
+
+
           <button type="button" class="btn-menu-mobile" id="portal-menu-btn" aria-label="Menu">
+
+
+
+
+
+
+
+
+
+
+
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+
+
+
+
+
+
+
+
+
+
+
               <line x1="3" y1="12" x2="21" y2="12"></line>
+
+
+
+
+
+
+
+
+
+
+
               <line x1="3" y1="6" x2="21" y2="6"></line>
+
+
+
+
+
+
+
+
+
+
+
               <line x1="3" y1="18" x2="21" y2="18"></line>
+
+
+
+
+
+
+
+
+
+
+
             </svg>
+
+
+
+
+
+
+
+
+
+
+
           </button>
+
+
+
+
+
+
+
+
+
+
+
           <h1 id="portal-stage-title">Accueil</h1>
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
         <div class="topbar-actions">
+
+
+
+
+
+
+
+
+
+
+
           <a href="admin.html" id="portal-admin-link" class="portal-admin-link" hidden>Admin</a>
+
+
+
+
+
+
+
+
+
+
+
           <a href="index.html" class="back-to-site-link">Retour au site →</a>
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
       </header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       <div class="portal-stage-content">
+
+
+
+
+
+
+
+
+
+
+
         <div class="portal-stage-inner">
-        <!-- Panel 1: Overview -->
-        <section class="portal-panel active" id="panel-overview">
-          <div class="welcome-banner">
-            <h2>Ravi de te revoir</h2>
-            <p>Pilote ton compte, choisis ton offre et télécharge le studio. Tout se synchronise avec l’app.</p>
-          </div>
 
-          <div class="overview-grid">
-            <div class="portal-card active-plan-widget">
-              <h3>Statut de ton offre</h3>
-              <div class="plan-summary-box">
-                <span class="summary-label">Abonnement actuel</span>
-                <span class="summary-value" id="overview-tier-label">Gratuit</span>
-              </div>
-              <p class="text-muted" id="user-status">Aucun abonnement actif — choisis un plan.</p>
-              <button type="button" class="portal-btn primary" data-goto="plans">
-                Voir les offres
-              </button>
+
+
+
+
+
+
+
+
+
+
+          <!-- Panel 1: Overview -->
+
+
+
+
+
+
+
+
+
+
+
+          <section class="portal-panel active" id="panel-overview">
+
+
+
+
+
+
+
+
+
+
+
+            <div class="welcome-banner">
+
+
+
+
+
+
+
+
+
+
+
+              <h2>Ravi de te revoir !</h2>
+
+
+
+
+
+
+
+
+
+
+
+              <p>Pilote ton compte, gère tes licences, accède à la bibliothèque cloud et télécharge l'application desktop SR Editer v0.4.2.</p>
+
+
+
+
+
+
+
+
+
+
+
             </div>
 
-            <div class="portal-card app-status-widget">
-              <h3>Studio d’édition</h3>
-              <p class="text-muted">Installe l’outil desktop pour éditer textures et objets 3D en local.</p>
-              <div class="status-indicator-row">
-                <span class="status-dot-active"></span>
-                <span>Version live : <strong data-app-version>v0.4.0</strong></span>
-              </div>
-              <button type="button" class="portal-btn outline" data-goto="downloads">
-                Aller aux téléchargements
-              </button>
-            </div>
-          </div>
-        </section>
 
-        <!-- Panel 2: Plans / Upgrade -->
-        <section class="portal-panel" id="panel-plans">
-          <div class="portal-card plans-widget">
-            <div class="section-header">
-              <h2>Abonnements disponibles</h2>
-              <p class="text-muted">Choisis la licence adaptée à tes besoins de modding. La mise à niveau est immédiate dans ton application.</p>
-            </div>
 
-            <div class="plan-grid" id="plan-grid">
-              <article class="plan-card-web" data-plan="standard">
-                <div class="plan-badge-area"></div>
-                <h3>Standard</h3>
-                <p class="plan-price-web">9,99€ <span>/ mois</span></p>
-                <ul>
-                  <li>Enregistrement des mods</li>
-                  <li>Export standard (PNG)</li>
-                  <li>Support par e-mail</li>
-                </ul>
-                <button type="button" class="portal-btn primary" data-upgrade-tier="standard">S’abonner Standard</button>
-              </article>
 
-              <article class="plan-card-web highlighted" data-plan="pro">
-                <div class="plan-badge-area"><span class="recommended-badge">Recommandé</span></div>
-                <h3>Pro</h3>
-                <p class="plan-price-web">19,99€ <span>/ mois</span></p>
-                <ul>
-                  <li>Tout Standard</li>
-                  <li>Rendu & Textures 4K</li>
-                  <li>Outils d'Édition IA</li>
-                </ul>
-                <button type="button" class="portal-btn primary" data-upgrade-tier="pro">S’abonner Pro</button>
-              </article>
 
-              <article class="plan-card-web" data-plan="premium">
-                <div class="plan-badge-area"></div>
-                <h3>Premium</h3>
-                <p class="plan-price-web">29,99€ <span>/ mois</span></p>
-                <ul>
-                  <li>Tout Pro</li>
-                  <li>IA avancée & Illimitée</li>
-                  <li>Priorité support (Discord)</li>
-                </ul>
-                <button type="button" class="portal-btn primary" data-upgrade-tier="premium">S’abonner Premium</button>
-              </article>
-            </div>
-            <p id="billing-error" class="portal-error" style="display: none;"></p>
-          </div>
-        </section>
 
-        <!-- Panel 3: Billing -->
-        <section class="portal-panel" id="panel-billing">
-          <div class="portal-card">
-            <h2>Gestion de la Facturation</h2>
-            <p class="text-muted">Met à jour ta carte bancaire, consulte ton historique de paiement ou annule ton renouvellement en un clic sur le portail Stripe sécurisé.</p>
-            <div class="billing-action-box">
-              <button id="manage-billing-btn" class="portal-btn primary" style="max-width: 320px;">
-                Accéder au portail Stripe
-              </button>
-            </div>
-          </div>
-        </section>
 
-        <!-- Panel 4: Downloads -->
-        <section class="portal-panel" id="panel-downloads">
-          <div class="portal-card">
-            <h2>Télécharger l’application</h2>
-            <p class="text-muted">Installe ou mets à jour SR Editer pour Windows (64 bits). Connecte-toi avec ce compte pour activer ton offre.</p>
-            <div class="download-box">
-              <a class="portal-btn primary" id="download-app-link" href="index.html#telecharger" style="max-width: 320px;">
-                Télécharger pour Windows
-              </a>
-              <span class="download-meta">Windows 10/11 x64 · <span data-app-version>v0.4.0</span></span>
-            </div>
-          </div>
-        </section>
 
-        <!-- Panel 5: Account -->
-        <section class="portal-panel" id="panel-account">
-          <div class="portal-card portal-account-card">
-            <div class="section-header">
-              <h2>Compte & connexions</h2>
-              <p class="text-muted">Gère la liaison Discord et les données de ton compte SR Editer.</p>
-            </div>
 
-            <div class="portal-account-block portal-discord-block">
-              <div>
-                <span class="summary-label">Discord</span>
-                <strong id="discord-account-name">Aucun compte lié</strong>
-                <p class="text-muted" id="discord-account-note">Lie Discord pour synchroniser automatiquement ton rôle avec ton abonnement.</p>
-              </div>
-              <span class="portal-connection-status" id="discord-account-status" data-state="idle">Non lié</span>
-              <div class="portal-account-actions">
-                <button type="button" class="portal-btn outline" id="discord-sync-btn" hidden>Synchroniser le rôle</button>
-                <button type="button" class="portal-btn primary" id="discord-link-btn">Lier Discord</button>
-                <a class="portal-btn discord-recovery" id="discord-recovery-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Rejoindre le Discord</a>
-              </div>
-            </div>
 
-            <div class="portal-account-block portal-danger-zone">
-              <div>
-                <span class="summary-label">Zone sensible</span>
-                <strong>Supprimer définitivement le compte</strong>
-                <p class="text-muted">L'abonnement sera arrêté, le rôle Discord retiré et les données associées supprimées.</p>
-              </div>
-              <button type="button" class="portal-btn danger" id="delete-account-start">Supprimer mon compte</button>
-              <div class="portal-delete-confirmation" id="delete-account-confirmation" hidden>
-                <label for="delete-account-email">Saisis ton adresse e-mail pour confirmer</label>
-                <input id="delete-account-email" type="email" autocomplete="off">
-                <div class="portal-account-actions">
-                  <button type="button" class="portal-btn outline" id="delete-account-cancel">Annuler</button>
-                  <button type="button" class="portal-btn danger" id="delete-account-confirm" disabled>Supprimer définitivement</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Grille d'indicateurs métriques 4 cartes -->
+
+
+
+
+
+
+
+
+
+
+
+            <div class="overview-grid" style="margin-bottom: 24px;">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card active-plan-widget">
+
+
+
+
+
+
+
+
+
+
+
+                <h3>Statut de ton offre</h3>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="plan-summary-box">
+
+
+
+
+
+
+
+
+
+
+
+                  <span class="summary-label">Abonnement actuel</span>
+
+
+
+
+
+
+
+
+
+
+
+                  <span class="summary-value" id="overview-tier-label">Gratuit</span>
+
+
+
+
+
+
+
+
+
+
+
                 </div>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted" id="user-status">Aucun abonnement actif — choisis un plan.</p>
+
+
+
+
+
+
+
+
+
+
+
+                <button type="button" class="portal-btn primary" data-goto="plans">
+
+
+
+
+
+
+
+
+
+
+
+                  Gérer les offres →
+
+
+
+
+
+
+
+
+
+
+
+                </button>
+
+
+
+
+
+
+
+
+
+
+
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card app-status-widget">
+
+
+
+
+
+
+
+
+
+
+
+                <h3>Studio d’édition Desktop</h3>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted">Installe l’outil desktop pour éditer textures et objets 3D en local.</p>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="status-indicator-row">
+
+
+
+
+
+
+
+
+
+
+
+                  <span class="status-dot-active"></span>
+
+
+
+
+
+
+
+
+
+
+
+                  <span>Version live : <strong data-app-version>v0.4.2</strong></span>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <button type="button" class="portal-btn outline" data-goto="downloads">
+
+
+
+
+
+
+
+
+
+
+
+                  Télécharger le Studio →
+
+
+
+
+
+
+
+
+
+
+
+                </button>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
             </div>
 
-            <p id="account-action-message" class="portal-account-message" role="status" hidden></p>
-          </div>
-        </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Deuxième rangée : Avantages + Raccourcis et statut -->
+
+
+
+
+
+
+
+
+
+
+
+            <div class="overview-grid">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card">
+
+
+
+
+
+
+
+
+
+
+
+                <h3>Fonctionnalités de ton offre</h3>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted" style="margin-bottom: 16px;">Services débloqués et synchronisés avec l'application :</p>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="overview-feature-list">
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Texture Studio 2D (Calques, masques alpha, filtres)</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Viewport 3D WebGL (Rendu temps réel, éclairages HDRI)</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Moteur RSC7 Native (Import/Export YTD, YDR, YFT, YDD)</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Export Textures DDS BC7 &amp; PNG HD (Ultra 4K)</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Bibliothèque Cloud Textures PBR illimitée</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="overview-feature-item">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg class="overview-feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Support prioritaire &amp; rôle synchronisé sur Discord</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <button type="button" class="portal-btn outline" data-goto="plans">Changer d'offre</button>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card">
+
+
+
+                <h3>Accès Rapide &amp; Ressources</h3>
+
+
+
+                <p class="text-muted" style="margin-bottom: 14px;">Accédez directement aux ressources principales de la plateforme :</p>
+
+
+
+                
+
+
+
+                <div class="shortcut-tiles-list">
+
+
+
+                  <a href="library.html" class="shortcut-tile">
+
+
+
+                    <div class="shortcut-icon-box">
+
+
+
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+
+
+
+                    </div>
+
+
+
+                    <div class="shortcut-text-box">
+
+
+
+                      <span class="shortcut-title">Bibliothèque Cloud Textures</span>
+
+
+
+                      <span class="shortcut-sub">Parcourez 99+ textures HD &amp; 4K prêtes à l'emploi</span>
+
+
+
+                    </div>
+
+
+
+                    <span class="shortcut-arrow">&rarr;</span>
+
+
+
+                  </a>
+
+
+
+
+
+
+
+                  <a href="docs.html" class="shortcut-tile">
+
+
+
+                    <div class="shortcut-icon-box" style="background: rgba(96, 165, 250, 0.12); border-color: rgba(96, 165, 250, 0.25); color: #60a5fa;">
+
+
+
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+
+
+
+                    </div>
+
+
+
+                    <div class="shortcut-text-box">
+
+
+
+                      <span class="shortcut-title">Documentation Officielle</span>
+
+
+
+                      <span class="shortcut-sub">Guides d'installation, formats RPF et raccourcis</span>
+
+
+
+                    </div>
+
+
+
+                    <span class="shortcut-arrow">&rarr;</span>
+
+
+
+                  </a>
+
+
+
+
+
+
+
+                  <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="shortcut-tile">
+
+
+
+                    <div class="shortcut-icon-box" style="background: rgba(129, 140, 248, 0.12); border-color: rgba(129, 140, 248, 0.25); color: #818cf8;">
+
+
+
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+
+
+
+                    </div>
+
+
+
+                    <div class="shortcut-text-box">
+
+
+
+                      <span class="shortcut-title">Serveur Discord Officiel</span>
+
+
+
+                      <span class="shortcut-sub">Communauté, annonces et support technique</span>
+
+
+
+                    </div>
+
+
+
+                    <span class="shortcut-arrow">&rarr;</span>
+
+
+
+                  </a>
+
+
+
+                </div>
+
+
+
+              </div>
+          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Panel 2: Plans / Upgrade -->
+
+
+
+
+
+
+
+
+
+
+
+          <section class="portal-panel" id="panel-plans">
+
+
+
+
+
+
+
+
+
+
+
+            <div class="portal-card plans-widget">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="section-header">
+
+
+
+
+
+
+
+
+
+
+
+                <h2>Abonnements &amp; Licences</h2>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted">Choisis la licence adaptée à tes besoins de modding. La mise à niveau est immédiate dans ton application desktop.</p>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="plan-grid" id="plan-grid">
+
+
+
+
+
+
+
+
+
+
+
+                <article class="plan-card-web" data-plan="standard">
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="plan-badge-area"></div>
+
+
+
+
+
+
+
+
+
+
+
+                  <h3>Standard</h3>
+
+
+
+
+
+
+
+
+
+
+
+                  <p class="plan-price-web">9,99€ <span>/ mois</span></p>
+
+
+
+
+
+
+
+
+
+
+
+                  <ul>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Enregistrement des mods illimité</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Export standard (PNG HD)</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Support par e-mail sous 24h</li>
+
+
+
+
+
+
+
+
+
+
+
+                  </ul>
+
+
+
+
+
+
+
+
+
+
+
+                  <button type="button" class="portal-btn primary" data-upgrade-tier="standard">S’abonner Standard</button>
+
+
+
+
+
+
+
+
+
+
+
+                </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <article class="plan-card-web highlighted" data-plan="pro">
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="plan-badge-area"><span class="recommended-badge">Recommandé</span></div>
+
+
+
+
+
+
+
+
+
+
+
+                  <h3>Pro</h3>
+
+
+
+
+
+
+
+
+
+
+
+                  <p class="plan-price-web">19,99€ <span>/ mois</span></p>
+
+
+
+
+
+
+
+
+
+
+
+                  <ul>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Tout le plan Standard inclus</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Rendu &amp; Textures Ultra 4K</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Outils d'Édition &amp; Génération IA</li>
+
+
+
+
+
+
+
+
+
+
+
+                  </ul>
+
+
+
+
+
+
+
+
+
+
+
+                  <button type="button" class="portal-btn primary" data-upgrade-tier="pro">S’abonner Pro</button>
+
+
+
+
+
+
+
+
+
+
+
+                </article>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <article class="plan-card-web" data-plan="premium">
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="plan-badge-area"></div>
+
+
+
+
+
+
+
+
+
+
+
+                  <h3>Premium</h3>
+
+
+
+
+
+
+
+
+
+
+
+                  <p class="plan-price-web">29,99€ <span>/ mois</span></p>
+
+
+
+
+
+
+
+
+
+
+
+                  <ul>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Tout le plan Pro inclus</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>IA avancée &amp; accès illimité</li>
+
+
+
+
+
+
+
+
+
+
+
+                    <li>Priorité support VIP (Discord)</li>
+
+
+
+
+
+
+
+
+
+
+
+                  </ul>
+
+
+
+
+
+
+
+
+
+
+
+                  <button type="button" class="portal-btn primary" data-upgrade-tier="premium">S’abonner Premium</button>
+
+
+
+
+
+
+
+
+
+
+
+                </article>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+              <p id="billing-error" class="portal-error" style="display: none;"></p>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Panel 3: Billing -->
+
+
+
+
+
+
+
+
+
+
+
+          <section class="portal-panel" id="panel-billing">
+
+
+
+
+
+
+
+
+
+
+
+            <div class="portal-card" style="margin-bottom: 24px;">
+
+
+
+
+
+
+
+
+
+
+
+              <h2>Gestion de la Facturation</h2>
+
+
+
+
+
+
+
+
+
+
+
+              <p class="text-muted">Met à jour ta carte bancaire, consulte ton historique de paiement ou annule ton renouvellement en un clic sur le portail Stripe sécurisé.</p>
+
+
+
+
+
+
+
+
+
+
+
+              <div class="billing-action-box" style="margin-top: 20px;">
+
+
+
+
+
+
+
+
+
+
+
+                <button id="manage-billing-btn" class="portal-btn primary" style="max-width: 320px;">
+
+
+
+
+
+
+
+
+
+
+
+                  Accéder au portail client Stripe
+
+
+
+
+
+
+
+
+
+
+
+                </button>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Historique des Factures -->
+
+
+
+
+
+
+
+
+
+
+
+            <div class="portal-card">
+
+
+
+
+
+
+
+
+
+
+
+              <h3>Historique de Paiements &amp; Reçus</h3>
+
+
+
+
+
+
+
+
+
+
+
+              <p class="text-muted" style="margin-bottom: 16px;">Retrouve l'historique de tes transactions récentes et télécharge tes reçus PDF :</p>
+
+
+
+
+
+
+
+
+
+
+
+              
+
+
+
+
+
+
+
+
+
+
+
+              <div class="docs-table-wrap">
+
+
+
+
+
+
+
+
+
+
+
+                <table class="docs-table">
+
+
+
+
+
+
+
+
+
+
+
+                  <thead>
+
+
+
+
+
+
+
+
+
+
+
+                    <tr>
+
+
+
+
+
+
+
+
+
+
+
+                      <th>Date</th>
+
+
+
+
+
+
+
+
+
+
+
+                      <th>Description</th>
+
+
+
+
+
+
+
+
+
+
+
+                      <th>Montant</th>
+
+
+
+
+
+
+
+
+
+
+
+                      <th>Statut</th>
+
+
+
+
+
+
+
+
+
+
+
+                      <th>Reçu</th>
+
+
+
+
+
+
+
+
+
+
+
+                    </tr>
+
+
+
+
+
+
+
+
+
+
+
+                  </thead>
+
+
+
+
+
+
+
+
+
+
+
+                  <tbody>
+                    <tr>
+                      <td colspan="5" style="text-align:center;padding:28px 12px;color:var(--text-muted);">
+                        Aucune facture pour le moment. Tes reçus Stripe apparaîtront ici après un abonnement.
+                      </td>
+                    </tr>
+                  </tbody>
+
+
+
+
+
+
+
+
+
+
+
+                </table>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Panel 4: Downloads -->
+
+
+
+
+
+
+
+
+
+
+
+          <section class="portal-panel" id="panel-downloads">
+
+
+
+
+
+
+
+
+
+
+
+            <div class="portal-card download-hero-card">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="download-hero-inner">
+
+
+
+
+
+
+
+
+
+
+
+                <div class="download-app-icon">
+
+
+
+
+
+
+
+
+
+
+
+                  <img src="assets/logo_small.png" alt="SR Editer">
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <h2>Télécharger SR Editer Desktop</h2>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted">Installe ou mets à jour l'application officielle SR Editer pour Windows (64 bits). Connecte-toi avec ce compte pour débloquer immédiatement l'ensemble de tes fonctionnalités.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="download-cta-area">
+
+
+
+
+
+
+
+
+
+
+
+                  <a class="portal-btn download-primary-btn" id="download-app-link" href="index.html#telecharger">
+
+
+
+
+
+
+
+
+
+
+
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+
+
+
+
+
+
+
+
+
+
+
+                    <span>Télécharger pour Windows (x64)</span>
+
+
+
+
+
+
+
+
+
+
+
+                  </a>
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="download-meta-badges">
+
+
+
+
+
+
+
+
+
+
+
+                    <span class="dl-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Windows 10 / 11 x64</span>
+
+
+
+
+
+
+
+
+
+
+
+                    <span class="dl-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Installateur Signé</span>
+
+
+
+
+
+
+
+
+
+
+
+                    <span class="dl-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Version live : <strong data-app-version>v0.4.2</strong></span>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <!-- Notes de version & Prérequis -->
+
+
+
+
+
+
+
+
+
+
+
+            <div class="overview-grid">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card">
+
+
+
+
+
+
+
+
+
+
+
+                <h3>Notes de Version <span data-app-version>v0.4.2</span></h3>
+
+
+
+
+
+
+
+
+
+
+
+                <ul class="docs-list" style="margin-top: 10px; font-size: 13.5px;">
+
+
+
+
+
+
+
+
+
+
+
+                  <li>Nouveau moteur RSC7 native (décodage rapide YTD, YDR, YFT, YDD).</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li>Support de l'exportation DDS BC7 haute compression et PNG HD.</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li>Viewport 3D WebGL optimisé avec contrôle des éclairages HDRI.</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li>Correction des synchronisations de rôles Discord automatiques.</li>
+
+
+
+
+
+
+
+
+
+
+
+                </ul>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-card">
+
+
+
+
+
+
+
+
+
+
+
+                <h3>Configuration Requise</h3>
+
+
+
+
+
+
+
+
+
+
+
+                <ul class="docs-list" style="margin-top: 10px; font-size: 13.5px;">
+
+
+
+
+
+
+
+
+
+
+
+                  <li><strong>OS :</strong> Windows 10/11 64-bit</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li><strong>Processeur :</strong> Intel Core i5 / AMD Ryzen 5</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li><strong>RAM :</strong> 8 Go minimum (16 Go recommandés)</li>
+
+
+
+
+
+
+
+
+
+
+
+                  <li><strong>GPU :</strong> Compatible DirectX 11 / WebGL 2.0</li>
+
+
+
+
+
+
+
+
+
+
+
+                </ul>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+          </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          <!-- Panel 5: Account -->
+
+
+
+
+
+
+
+
+
+
+
+          <section class="portal-panel" id="panel-account">
+
+
+
+
+
+
+
+
+
+
+
+            <div class="portal-card portal-account-card">
+
+
+
+
+
+
+
+
+
+
+
+              <div class="section-header">
+
+
+
+
+
+
+
+
+
+
+
+                <h2>Compte &amp; connexions</h2>
+
+
+
+
+
+
+
+
+
+
+
+                <p class="text-muted">Gère la liaison Discord et les données de ton compte SR Editer.</p>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-account-block portal-discord-block">
+
+
+
+
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+
+
+
+
+
+
+
+                  <span class="summary-label">Discord</span>
+
+
+
+
+
+
+
+
+
+
+
+                  <strong id="discord-account-name">Aucun compte lié</strong>
+
+
+
+
+
+
+
+
+
+
+
+                  <p class="text-muted" id="discord-account-note">Lie Discord pour synchroniser automatiquement ton rôle avec ton abonnement.</p>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <span class="portal-connection-status" id="discord-account-status" data-state="idle">Non lié</span>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="portal-account-actions">
+
+
+
+
+
+
+
+
+
+
+
+                  <button type="button" class="portal-btn outline" id="discord-sync-btn" hidden>Synchroniser le rôle</button>
+
+
+
+
+
+
+
+
+
+
+
+                  <button type="button" class="portal-btn primary" id="discord-link-btn">Lier Discord</button>
+
+
+
+
+
+
+
+
+
+
+
+                  <a class="portal-btn discord-recovery" id="discord-recovery-link" href="#" target="_blank" rel="noopener noreferrer" hidden>Rejoindre le Discord</a>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div class="portal-account-block portal-danger-zone">
+
+
+
+
+
+
+
+
+
+
+
+                <div>
+
+
+
+
+
+
+
+
+
+
+
+                  <span class="summary-label">Zone sensible</span>
+
+
+
+
+
+
+
+
+
+
+
+                  <strong>Supprimer définitivement le compte</strong>
+
+
+
+
+
+
+
+
+
+
+
+                  <p class="text-muted">L'abonnement sera arrêté, le rôle Discord retiré et les données associées supprimées.</p>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+                <button type="button" class="portal-btn danger" id="delete-account-start">Supprimer mon compte</button>
+
+
+
+
+
+
+
+
+
+
+
+                <div class="portal-delete-confirmation" id="delete-account-confirmation" hidden>
+
+
+
+
+
+
+
+
+
+
+
+                  <label for="delete-account-email">Saisis ton adresse e-mail pour confirmer</label>
+
+
+
+
+
+
+
+
+
+
+
+                  <input id="delete-account-email" type="email" autocomplete="off">
+
+
+
+
+
+
+
+
+
+
+
+                  <div class="portal-account-actions">
+
+
+
+
+
+
+
+
+
+
+
+                    <button type="button" class="portal-btn outline" id="delete-account-cancel">Annuler</button>
+
+
+
+
+
+
+
+
+
+
+
+                    <button type="button" class="portal-btn danger" id="delete-account-confirm" disabled>Supprimer définitivement</button>
+
+
+
+
+
+
+
+
+
+
+
+                  </div>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <p id="account-action-message" class="portal-account-message" role="status" hidden></p>
+
+
+
+
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+          </section>
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
     </div>
+
+
+
+
+
+
+
+
+
+
+
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <div class="discord-required-modal" id="discord-required-modal" hidden>
+
+
+
+
+
+
+
+
+
+
+
     <section class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title" aria-describedby="discord-required-message" tabindex="-1">
+
+
+
+
+
+
+
+
+
+
+
       <header class="discord-required-header">
+
+
+
+
+
+
+
+
+
+
+
         <div>
+
+
+
+
+
+
+
+
+
+
+
           <span class="discord-required-eyebrow">Accès sécurisé</span>
+
+
+
+
+
+
+
+
+
+
+
           <h2 id="discord-required-title">Discord requis</h2>
+
+
+
+
+
+
+
+
+
+
+
         </div>
+
+
+
+
+
+
+
+
+
+
+
         <button type="button" class="discord-required-close" id="discord-required-close" aria-label="Fermer cette fenêtre">×</button>
+
+
+
+
+
+
+
+
+
+
+
       </header>
+
+
+
+
+
+
+
+
+
+
+
       <p class="discord-required-message" id="discord-required-message"></p>
+
+
+
+
+
+
+
+
+
+
+
       <div class="discord-required-actions">
+
+
+
+
+
+
+
+
+
+
+
         <a class="discord-required-primary" id="discord-required-join" href="#" target="_blank" rel="noopener noreferrer">Rejoindre le Discord</a>
+
+
+
+
+
+
+
+
+
+
+
         <button class="discord-required-secondary" id="discord-required-retry" type="button">J’ai rejoint, réessayer</button>
+
+
+
+
+
+
+
+
+
+
+
       </div>
+
+
+
+
+
+
+
+
+
+
+
     </section>
+
+
+
+
+
+
+
+
+
+
+
   </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/wallpapers.js"></script>
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/config.js"></script>
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/sr-supabase.js?v=1"></script>
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/ambient.js?v=6"></script>
+
+
+
+
+
+
+
+
+
+
+
   <script src="js/portal-dashboard.js?v=7"></script>
+
+
+
+
+
+
+
+
+
+
+
   <script>
+
+
+
+
+
+
+
+
+
+
+
     (function initTabNavigation() {
+
+
+
+
+
+
+
+
+
+
+
       const links = document.querySelectorAll(".sidebar-link[data-panel]");
+
+
+
+
+
+
+
+
+
+
+
       const panels = document.querySelectorAll(".portal-panel");
+
+
+
+
+
+
+
+
+
+
+
       const stageTitle = document.getElementById("portal-stage-title");
+
+
+
+
+
+
+
+
+
+
+
       const sidebar = document.querySelector(".portal-sidebar");
+
+
+
+
+
+
+
+
+
+
+
       const menuBtn = document.getElementById("portal-menu-btn");
 
+
+
+
+
+
+
+
+
+
+
+      const stageContent = document.querySelector(".portal-stage-content");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       const panelTitles = {
+
+
+
+
+
+
+
+
+
+
+
         overview: "Accueil",
+
+
+
+
+
+
+
+
+
+
+
         plans: "Abonnements",
+
+
+
+
+
+
+
+
+
+
+
         billing: "Facturation",
+
+
+
+
+
+
+
+
+
+
+
         downloads: "Téléchargements",
+
+
+
+
+
+
+
+
+
+
+
         account: "Compte"
+
+
+
+
+
+
+
+
+
+
+
       };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       function showPanel(panelId) {
+
+
+
+
+
+
+
+
+
+
+
         links.forEach(function (l) {
+
+
+
+
+
+
+
+
+
+
+
           l.classList.toggle("active", l.getAttribute("data-panel") === panelId);
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
         panels.forEach(function (p) {
-          p.classList.toggle("active", p.id === "panel-" + panelId);
+
+
+
+
+
+
+
+
+
+
+
+          const isTarget = p.id === "panel-" + panelId;
+
+
+
+
+
+
+
+
+
+
+
+          if (isTarget) {
+
+
+
+
+
+
+
+
+
+
+
+            p.classList.remove("active");
+
+
+
+
+
+
+
+
+
+
+
+            void p.offsetWidth; // trigger reflow for smooth animation
+
+
+
+
+
+
+
+
+
+
+
+            p.classList.add("active");
+
+
+
+
+
+
+
+
+
+
+
+          } else {
+
+
+
+
+
+
+
+
+
+
+
+            p.classList.remove("active");
+
+
+
+
+
+
+
+
+
+
+
+          }
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
+        if (stageContent) stageContent.scrollTop = 0;
+
+
+
+
+
+
+
+
+
+
+
         if (stageTitle && panelTitles[panelId]) stageTitle.textContent = panelTitles[panelId];
+
+
+
+
+
+
+
+
+
+
+
         if (sidebar) sidebar.classList.remove("is-open");
+
+
+
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       links.forEach(function (link) {
+
+
+
+
+
+
+
+
+
+
+
         link.addEventListener("click", function () {
+
+
+
+
+
+
+
+
+
+
+
           showPanel(link.getAttribute("data-panel"));
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
       });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
       document.querySelectorAll("[data-goto]").forEach(function (btn) {
+
+
+
+
+
+
+
+
+
+
+
         btn.addEventListener("click", function () {
+
+
+
+
+
+
+
+
+
+
+
           showPanel(btn.getAttribute("data-goto"));
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
       });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       if (menuBtn && sidebar) {
+
+
+
+
+
+
+
+
+
+
+
         menuBtn.addEventListener("click", function (e) {
+
+
+
+
+
+
+
+
+
+
+
           e.stopPropagation();
+
+
+
+
+
+
+
+
+
+
+
           sidebar.classList.toggle("is-open");
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
         document.addEventListener("click", function (e) {
+
+
+
+
+
+
+
+
+
+
+
           if (!sidebar.contains(e.target) && sidebar.classList.contains("is-open")) {
+
+
+
+
+
+
+
+
+
+
+
             sidebar.classList.remove("is-open");
+
+
+
+
+
+
+
+
+
+
+
           }
+
+
+
+
+
+
+
+
+
+
+
         });
+
+
+
+
+
+
+
+
+
+
+
       }
+
+
+
+
+
+
+
+
+
+
+
     })();
+
+
+
+
+
+
+
+
+
+
+
   </script>
+
+
+
+
+
+
+
+
+
+
+
 </body>
+
+
+
+
+
+
+
+
+
+
+
 </html>

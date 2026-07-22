@@ -13,14 +13,19 @@
 
 .auth-card {
   width: min(420px, calc(100vw - 32px));
-  padding: 28px;
-  border-radius: 16px;
-  border: 1px solid rgba(166, 181, 209, 0.16);
-  background: rgba(18, 23, 32, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.35);
+  padding: 32px 28px;
+  border-radius: var(--radius-xl);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(145deg, rgba(22, 18, 34, 0.75), rgba(12, 10, 20, 0.88));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 30px rgba(139, 92, 246, 0.15);
   box-sizing: border-box;
+  transition: transform 0.3s var(--ease-spring), border-color 0.3s ease;
+}
+
+.auth-card:hover {
+  border-color: rgba(139, 92, 246, 0.35);
 }
 
 .auth-brand {
@@ -72,15 +77,15 @@
 
 .auth-field input {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 12px;
-  border: 1px solid rgba(166, 181, 209, 0.16);
-  background: rgba(19, 25, 35, 0.88);
+  padding: 11px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(14, 11, 22, 0.88);
   color: #f5f7fb;
   font-size: 14px;
   outline: none;
   box-sizing: border-box;
-  transition: border-color 0.15s, box-shadow 0.15s;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
 .auth-field input::placeholder {
@@ -88,8 +93,8 @@
 }
 
 .auth-field input:focus {
-  border-color: #7d97ff;
-  box-shadow: 0 0 0 2px rgba(125, 151, 255, 0.12);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft), 0 0 16px rgba(139, 92, 246, 0.2);
 }
 
 .auth-field[hidden] {
@@ -203,21 +208,27 @@
 
 .auth-submit {
   margin-top: 4px;
-  padding: 11px 14px;
+  padding: 12px 14px;
   border: none;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #7d97ff 0%, #9a7dff 100%);
+  border-radius: var(--radius-md);
+  background: var(--btn-primary-bg);
   color: #fff;
   font-weight: 700;
   font-size: 14px;
+  font-family: var(--font-display), sans-serif;
   cursor: pointer;
   width: 100%;
-  transition: opacity 0.15s, transform 0.15s;
+  box-shadow: var(--btn-primary-shadow);
+  transition: transform 0.25s var(--ease-spring), box-shadow 0.25s ease, opacity 0.25s ease;
 }
 
 .auth-submit:hover:not(:disabled) {
-  opacity: 0.94;
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: var(--btn-primary-hover-shadow);
+}
+
+.auth-submit:active:not(:disabled) {
+  transform: translateY(0) scale(0.98);
 }
 
 .auth-submit:disabled {

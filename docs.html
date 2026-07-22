@@ -3,28 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Documentation — SR Editer</title>
+  <title>Documentation Officielle — SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png">
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="styles/tokens.css">
   <link rel="stylesheet" href="styles/base.css">
-  <link rel="stylesheet" href="styles/ambient.css?v=1">
+  <link rel="stylesheet" href="styles/ambient.css?v=2">
   <link rel="stylesheet" href="styles/auth.css?v=2">
-  <link rel="stylesheet" href="styles/site-pages.css?v=4">
+  <link rel="stylesheet" href="styles/site-pages.css?v=13">
+  <link rel="stylesheet" href="styles/client.css?v=0.3.6">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="portal-body auth-body" data-site-page="docs">
+<body class="client-page" data-site-page="docs">
   <div class="ambient-background" aria-hidden="true">
     <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
   </div>
   <div class="ambient-vignette" aria-hidden="true"></div>
 
   <div class="site-shell">
+    <!-- Navigation principale -->
     <header class="site-topnav">
       <a href="index.html" class="site-topnav-brand">
-        <img src="assets/logo_small.png" alt="">
+        <img src="assets/logo_small.png" alt="SR Editer">
         <span>SR Editer</span>
       </a>
+
       <nav class="site-nav-tabs" aria-label="Sections du site">
         <a href="index.html" data-nav="home">Accueil</a>
         <a href="docs.html" data-nav="docs" class="is-active">Docs</a>
@@ -32,133 +35,420 @@
         <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
         <a href="dashboard.html" data-nav="account">Espace client</a>
       </nav>
+
       <div class="site-nav-actions">
-        <a href="admin.html" id="site-nav-admin" class="site-nav-admin" hidden>Admin</a>
         <a href="login.html?next=docs.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
       </div>
     </header>
 
     <main class="site-main">
       <div class="site-hero-block">
-        <h1>Documentation</h1>
-        <p>Guide rapide pour comprendre SR Editer : installation, workflow textures, explorateur RPF, viewport 3D et compte.</p>
+        <p class="hero-kicker"><span class="hero-beta">Documentation</span> · SR Editer v0.4.2</p>
+        <h1 class="hero-title">Guide &amp; Documentation</h1>
+        <p class="hero-lead">
+          Le guide officiel pour l'inspection, l'édition de textures 2D et la prévisualisation 3D temps réel pour GTA V et FiveM.
+        </p>
+        
       </div>
 
+      <!-- Layout principal Docs : TOC à gauche + Contenu à droite -->
       <div class="docs-layout">
-        <aside class="docs-toc site-glass">
-          <h2>Sommaire</h2>
-          <a href="#demarrer">Démarrer</a>
-          <a href="#interface">Interface</a>
-          <a href="#textures">Texture Studio</a>
-          <a href="#explorateur">Explorateur RPF</a>
-          <a href="#viewport">Viewport 3D</a>
-          <a href="#bibliotheque">Bibliothèque</a>
-          <a href="#compte">Compte &amp; abonnements</a>
-          <a href="#faq">FAQ</a>
+        <!-- Sommaire latéral fixe -->
+        <aside class="docs-toc">
+          <div class="toc-title">Sommaire</div>
+          <nav class="toc-nav">
+            <a href="#demarrer" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <span>1. Démarrer &amp; Installation</span>
+            </a>
+            <a href="#interface" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+              <span>2. Interface &amp; Espaces</span>
+            </a>
+            <a href="#explorateur" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>3. Explorateur RPF</span>
+            </a>
+            <a href="#textures" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+              <span>4. Texture Studio 2D</span>
+            </a>
+            <a href="#viewport" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+              <span>5. Viewport 3D WebGL</span>
+            </a>
+            <a href="#bibliotheque" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              <span>6. Bibliothèque Cloud</span>
+            </a>
+            <a href="#raccourcis" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="8" y1="16" x2="16" y2="16"/></svg>
+              <span>7. Raccourcis Claviers</span>
+            </a>
+            <a href="#compte" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              <span>8. Compte &amp; Licences</span>
+            </a>
+            <a href="#faq" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <span>9. Dépannage &amp; FAQ</span>
+            </a>
+            <a href="#legal" class="toc-link">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              <span>10. Mentions Légales</span>
+            </a>
+          </nav>
         </aside>
 
-        <article class="docs-content site-glass">
-          <section id="demarrer">
-            <h2>Démarrer</h2>
-            <ol>
-              <li>Télécharge l’installateur Windows depuis la <a href="index.html#telecharger" style="color:#7d97ff">page d’accueil</a>.</li>
-              <li>Crée un compte (e-mail ou Discord) sur <a href="login.html" style="color:#7d97ff">login.html</a>.</li>
-              <li>Ouvre SR Editer et connecte-toi avec le même compte.</li>
-              <li>Ouvre un dossier de mods extrait (fichiers <code>YDR</code> + <code>YTD</code>, ou OpenFormats <code>ODR</code>).</li>
+        <!-- Sections de documentation -->
+        <div class="docs-content">
+          <!-- Section 1 : Démarrer -->
+          <section id="demarrer" class="docs-card">
+            <h2>1. Démarrer &amp; Installation</h2>
+            <p>SR Editer est un logiciel desktop moderne optimisé pour Windows 10 et 11 (64-bit). Il permet d'ouvrir directement les dossiers de modding GTA V, FiveM et les archives RPF sans extraction manuelle complexe.</p>
+
+            <ol class="docs-steps">
+              <li>Téléchargez l'installateur officiel Windows depuis le bouton d'action de la <a href="index.html">page d'accueil</a>.</li>
+              <li>Lancez l'installateur <code>SREditer-Setup.exe</code> et suivez les instructions à l'écran.</li>
+              <li>Créez votre compte (par adresse e-mail ou connexion instantanée via Discord) sur la page de <a href="login.html">connexion</a>.</li>
+              <li>Lancez l'application desktop SR Editer et saisissez vos identifiants de compte.</li>
+              <li>Ouvrez un dossier de jeu, une ressource FiveM ou une archive <span class="format-pill">.rpf</span> pour démarrer l'édition.</li>
             </ol>
-            <div class="docs-callout">
-              Prérequis : Windows 10/11 x64, ~8 Go RAM, GTA V Legacy et/ou FiveM. Le rendu et le décodage restent en local.
+
+            <div class="docs-table-wrap">
+              <table class="docs-table">
+                <thead>
+                  <tr>
+                    <th>Composant</th>
+                    <th>Configuration Minimale</th>
+                    <th>Configuration Recommandée</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Système d'exploitation</td>
+                    <td>Windows 10 64-bit (v1909+)</td>
+                    <td>Windows 11 64-bit (Dernière version)</td>
+                  </tr>
+                  <tr>
+                    <td>Processeur (CPU)</td>
+                    <td>Intel Core i5-4460 / AMD FX-8350</td>
+                    <td>Intel Core i7-10700K / AMD Ryzen 7 3700X</td>
+                  </tr>
+                  <tr>
+                    <td>Mémoire RAM</td>
+                    <td>8 Go RAM</td>
+                    <td>16 Go RAM ou plus</td>
+                  </tr>
+                  <tr>
+                    <td>Carte Graphique (GPU)</td>
+                    <td>NVIDIA GTX 960 / AMD R9 280 (2 Go VRAM)</td>
+                    <td>NVIDIA RTX 2060 / AMD RX 6600 (6 Go VRAM)</td>
+                  </tr>
+                  <tr>
+                    <td>Affichage &amp; Rendu</td>
+                    <td>DirectX 11 / WebGL 2.0 (1080p)</td>
+                    <td>DirectX 12 / WebGL 2.0 (1440p / 4K)</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="docs-callout docs-callout--tip">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              <div><strong>Exécution 100 % Locale :</strong> L'intégralité des décodages de fichiers RAGE, du rendu 3D et des modifications de textures s'effectue directement sur votre GPU et CPU local. Vos fichiers de mods originaux ne sont jamais envoyés sur un serveur distant.</div>
             </div>
           </section>
 
-          <section id="interface">
-            <h2>Interface</h2>
-            <p>L’app est organisée en zones :</p>
-            <ul>
-              <li><strong>Explorateur</strong> — fichiers, RPF, dossiers de mods.</li>
-              <li><strong>Texture Studio</strong> — édition 2D (calques, masques, pinceaux).</li>
-              <li><strong>Viewport 3D</strong> — prévisualisation live du mesh.</li>
-              <li><strong>Bibliothèque</strong> — textures cloud prêtes à appliquer.</li>
-              <li><strong>Réglages / Compte</strong> — thème, abonnement, administration.</li>
-            </ul>
-          </section>
+          <!-- Section 2 : Interface -->
+          <section id="interface" class="docs-card">
+            <h2>2. Interface &amp; Espaces de travail</h2>
+            <p>L'interface de SR Editer est conçue pour maximiser l'ergonomie lors des sessions de retouche intensives :</p>
 
-          <section id="textures">
-            <h2>Texture Studio</h2>
-            <p>Édite une texture embarquée ou externe :</p>
-            <ul>
-              <li>Ouvre un drawable / fragment et sélectionne une texture.</li>
-              <li>Travaille en calques (peint, gomme, opacité, masque alpha).</li>
-              <li>Exporte en PNG / DDS selon ton offre.</li>
-              <li>L’aperçu 3D se met à jour pendant l’édition.</li>
+            <ul class="docs-list">
+              <li><strong>Explorateur de Fichiers (Gauche) :</strong> Arborescence complète de vos répertoires locaux, installations GTA V, serveurs FiveM et archives RPF.</li>
+              <li><strong>Texture Studio 2D (Centre) :</strong> Espace de dessin et d'édition par calques avec pinceaux, masques d'opacité, filtres et masques alpha.</li>
+              <li><strong>Viewport 3D WebGL (Droite) :</strong> Rendu 3D temps réel du maillage (<span class="format-pill">YDR</span> / <span class="format-pill">YFT</span>) synchronisé instantanément avec vos retouches 2D.</li>
+              <li><strong>Barre d'Inspecteur de Propriétés (Bas) :</strong> Détails techniques du maillage (nombre de poly/verts, canaux de coordonnées UV, formats DDS, mipmaps et shaders).</li>
+              <li><strong>Barre d'Outils Supérieure :</strong> Boutons d'export rapide, annulation/rétablissement, sauvegarde sécurisée et sélecteur de thème.</li>
             </ul>
-            <h3>Bonnes pratiques</h3>
-            <ul>
-              <li>Garde toujours un backup : l’app crée une sauvegarde avant écriture directe.</li>
-              <li>Travaille d’abord sur une copie du mod FiveM.</li>
-              <li>Vérifie la résolution (HD / 4K selon ton plan).</li>
-            </ul>
-          </section>
 
-          <section id="explorateur">
-            <h2>Explorateur RPF</h2>
-            <p>Parcours :</p>
-            <ul>
-              <li>l’installation GTA V,</li>
-              <li>les ressources FiveM,</li>
-              <li>des archives / dossiers locaux.</li>
-            </ul>
-            <p>Tu peux ouvrir des assets RAGE (<code>YTD</code>, <code>YDR</code>, <code>YFT</code>, <code>YDD</code>) et des formats OpenFormats. Le moteur RSC7 décode nativement — pas de faux aperçu.</p>
-          </section>
-
-          <section id="viewport">
-            <h2>Viewport 3D</h2>
-            <p>Le viewport WebGL affiche le modèle et synchronise les textures éditées. Utilise-le pour valider les UV, les seams et le rendu avant d’exporter / d’installer le mod.</p>
-          </section>
-
-          <section id="bibliotheque">
-            <h2>Bibliothèque de textures</h2>
-            <p>La bibliothèque cloud contient des textures classées (métal, bois, tissu, néon…).</p>
-            <ul>
-              <li>Dans l’app : section Bibliothèque → appliquer sur le projet.</li>
-              <li>Sur le site : page <a href="library.html" style="color:#7d97ff">Bibliothèque</a> pour parcourir et télécharger.</li>
-            </ul>
             <div class="docs-callout">
-              Accès bibliothèque (site) : connexion obligatoire. Sans compte, tu ne peux ni voir le catalogue ni télécharger.
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              <div><strong>Personnalisation des Panneaux :</strong> Vous pouvez redimensionner ou masquer n'importe quel panneau latéral en faisant glisser les séparateurs d'interface.</div>
             </div>
           </section>
 
-          <section id="compte">
-            <h2>Compte &amp; abonnements</h2>
-            <p>Les paiements et la gestion d’offre se font sur le site (espace client), pas dans l’app.</p>
-            <ul>
-              <li><strong>Gratuit</strong> — découverte limitée.</li>
-              <li><strong>Standard</strong> — enregistrement mods, export PNG.</li>
-              <li><strong>Pro</strong> — 4K + outils IA.</li>
-              <li><strong>Premium</strong> — IA avancée + support prioritaire.</li>
+          <!-- Section 3 : Explorateur RPF -->
+          <section id="explorateur" class="docs-card">
+            <h2>3. Explorateur RPF &amp; Moteur RSC7</h2>
+            <p>Le moteur natif RSC7 développé pour SR Editer permet de lire et modifier sans altération les conteneurs de la structure RAGE (Rockstar Advanced Game Engine) :</p>
+
+            <ul class="docs-list">
+              <li><strong>Conteneurs Dictionnaires de Textures :</strong> <span class="format-pill">.ytd</span> (Textures 2D embarquées, diffuse, normal, specular).</li>
+              <li><strong>Modèles 3D Immeubles/Objets :</strong> <span class="format-pill">.ydr</span> (Drawable maillages et shaders).</li>
+              <li><strong>Véhicules &amp; Formats Fragment :</strong> <span class="format-pill">.yft</span> (Véhicules, pièces détachables, déformations).</li>
+              <li><strong>Dictionnaires de Définition :</strong> <span class="format-pill">.ydd</span> (Bibliothèques de drawables).</li>
+              <li><strong>Formats OpenFormats :</strong> Support natif des fichiers <span class="format-pill">.odr</span> et <span class="format-pill">.otd</span> pour l'interopérabilité avec 3ds Max / Blender.</li>
             </ul>
-            <p>Voir <a href="index.html#abonnements" style="color:#7d97ff">les tarifs</a> ou <a href="dashboard.html" style="color:#7d97ff">ton espace client</a>.</p>
+
+            <div class="docs-callout docs-callout--warning">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              <div><strong>Transaction de Sauvegarde Sécurisée :</strong> Avant d'écrire dans une archive RPF existante, SR Editer génère automatiquement une copie temporaire atomique. En cas de coupure de courant ou d'arrêt imprévu, l'archive originale reste intacte.</div>
+            </div>
           </section>
 
-          <section id="faq">
-            <h2>FAQ</h2>
-            <h3>L’app demande un compte</h3>
-            <p>Oui pour synchroniser l’offre et la bibliothèque. Sans auth configurée en dev, certaines portes restent ouvertes.</p>
-            <h3>Mes fichiers restent-ils en local ?</h3>
-            <p>Oui. Le décodage et le rendu sont locaux. Seuls compte, abonnement et bibliothèque cloud passent par Supabase.</p>
-            <h3>Où gérer Stripe ?</h3>
-            <p>Dans le dashboard web → Facturation (portail Stripe client).</p>
+          <!-- Section 4 : Texture Studio -->
+          <section id="textures" class="docs-card">
+            <h2>4. Texture Studio 2D &amp; Calques</h2>
+            <p>L'espace d'édition 2D propose les outils essentiels aux moddeurs pour créer ou ajuster des livrées (livery), vêtements et logos :</p>
+
+            <ul class="docs-list">
+              <li><strong>Système de Calques Multiples :</strong> Créez, dupliquez, masquez et réorganisez vos calques de travail sans altérer la texture d'origine.</li>
+              <li><strong>Canaux Alpha &amp; Transparence :</strong> Éditez le canal Alpha indépendant pour ajuster la brillance, les zones de réflexion spéculaire ou la découpe de transparence.</li>
+              <li><strong>Pinceaux &amp; Remplissage :</strong> Pinceaux personnalisables (taille, dureté, opacité), gomme et pot de peinture avec détection de tolérance.</li>
+              <li><strong>Filtres d'Ajustement :</strong> Réglage de la teinte, saturation, luminosité, contraste et inversion des couleurs en temps réel.</li>
+              <li><strong>Exportations Multi-Formats :</strong> Export vers <span class="format-pill">PNG</span> 8-bit ou compression <span class="format-pill">DDS</span> (DXT1, DXT5, BC7) selon le niveau d'abonnement.</li>
+            </ul>
           </section>
-        </article>
+
+          <!-- Section 5 : Viewport 3D -->
+          <section id="viewport" class="docs-card">
+            <h2>5. Viewport 3D WebGL</h2>
+            <p>Le moteur 3D intégré s'appuie sur WebGL pour offrir une prévisualisation fidèle du rendu en jeu :</p>
+
+            <ul class="docs-list">
+              <li><strong>Contrôles de Caméra 3D :</strong> Rotation autour de l'objet (Clic gauche + Glisser), Panoramique (Clic droit + Glisser) et Zoom molette.</li>
+              <li><strong>Éclairages HDRI Dynamiques :</strong> Basculez entre différents environnements (Plein jour, Studio sombre, Garages néon) pour tester le rendu de vos matériaux.</li>
+              <li><strong>Mode Fil de Fer (Wireframe) :</strong> Inspectez la densité du maillage 3D et les coutures de dépliage UV (seams).</li>
+              <li><strong>Isolation des Canaux de Shaders :</strong> Visualisez individuellement le canal Diffuse, la carte Normal Map ou la carte Spéculaire.</li>
+            </ul>
+          </section>
+
+          <!-- Section 6 : Bibliothèque Cloud -->
+          <section id="bibliotheque" class="docs-card">
+            <h2>6. Bibliothèque Cloud &amp; Textures HD</h2>
+            <p>La bibliothèque cloud SR Editer donne accès à des centaines de textures prêtes à l'emploi (carbone 4K, métaux brossés, cuirs perforés, autocollants de modding) :</p>
+
+            <ul class="docs-list">
+              <li><strong>Dans l'Application Desktop :</strong> Ouvrez l'onglet Bibliothèque pour appliquer une texture directement sur votre calque actif en 1 clic.</li>
+              <li><strong>Sur le Site Web :</strong> Visitez la page <a href="library.html">Bibliothèque</a> pour consulter le catalogue, filtrer par couleur/catégorie et télécharger les fichiers au format ZIP.</li>
+            </ul>
+          </section>
+
+          <!-- Section 7 : Raccourcis Claviers -->
+          <section id="raccourcis" class="docs-card">
+            <h2>7. Raccourcis Claviers</h2>
+            <p>Accélérez votre workflow grâce aux raccourcis intégrés dans SR Editer :</p>
+
+            <div class="docs-table-wrap">
+              <table class="docs-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>Raccourci Windows</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Ouvrir un Fichier / Mod</td>
+                    <td><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">O</kbd></td>
+                    <td>Ouvre l'explorateur pour charger un dossier, RPF ou YDR.</td>
+                  </tr>
+                  <tr>
+                    <td>Sauvegarder le Projet</td>
+                    <td><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">S</kbd></td>
+                    <td>Enregistre les modifications de calques et textures.</td>
+                  </tr>
+                  <tr>
+                    <td>Annuler l'Action</td>
+                    <td><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">Z</kbd></td>
+                    <td>Annule la dernière retouche de dessin ou calque.</td>
+                  </tr>
+                  <tr>
+                    <td>Rétablir l'Action</td>
+                    <td><kbd class="kbd-key">Ctrl</kbd> + <kbd class="kbd-key">Y</kbd></td>
+                    <td>Rétablit l'action précédemment annulée.</td>
+                  </tr>
+                  <tr>
+                    <td>Réinitialiser la Vue 3D</td>
+                    <td><kbd class="kbd-key">R</kbd></td>
+                    <td>Replace la caméra 3D au centre de l'objet.</td>
+                  </tr>
+                  <tr>
+                    <td>Basculer le Mode Fil de Fer</td>
+                    <td><kbd class="kbd-key">W</kbd></td>
+                    <td>Affiche ou masque le wireframe 3D sur le mesh.</td>
+                  </tr>
+                  <tr>
+                    <td>Bascule Pinceau / Gomme</td>
+                    <td><kbd class="kbd-key">B</kbd> / <kbd class="kbd-key">E</kbd></td>
+                    <td>Sélectionne l'outil Pinceau (Brush) ou Gomme (Eraser).</td>
+                  </tr>
+                  <tr>
+                    <td>Plein Écran Viewport 3D</td>
+                    <td><kbd class="kbd-key">F11</kbd></td>
+                    <td>Agrandit le viewport 3D sur tout l'écran.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 8 : Compte & Licences -->
+          <section id="compte" class="docs-card">
+            <h2>8. Compte &amp; Licences</h2>
+            <p>SR Editer propose des offres adaptées aussi bien aux passionnés qu'aux studios de modding professionnels :</p>
+
+            <div class="docs-table-wrap">
+              <table class="docs-table">
+                <thead>
+                  <tr>
+                    <th>Fonctionnalité</th>
+                    <th>Gratuit (Bêta)</th>
+                    <th>Standard (9,99€/mois)</th>
+                    <th>Pro (19,99€/mois)</th>
+                    <th>Premium (29,99€/mois)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Explorateur RPF &amp; Rendu 3D</td>
+                    <td>Oui</td>
+                    <td>Oui</td>
+                    <td>Oui</td>
+                    <td>Oui</td>
+                  </tr>
+                  <tr>
+                    <td>Enregistrement des Mods</td>
+                    <td>Limité</td>
+                    <td>Illimité</td>
+                    <td>Illimité</td>
+                    <td>Illimité</td>
+                  </tr>
+                  <tr>
+                    <td>Export Textures DDS / PNG</td>
+                    <td>PNG Standard</td>
+                    <td>PNG HD</td>
+                    <td>Ultra 4K &amp; DDS BC7</td>
+                    <td>Ultra 4K &amp; DDS BC7</td>
+                  </tr>
+                  <tr>
+                    <td>Génération Textures IA</td>
+                    <td>Non</td>
+                    <td>Non</td>
+                    <td>Inclus (Quota Pro)</td>
+                    <td>Accès Illimité</td>
+                  </tr>
+                  <tr>
+                    <td>Support Client</td>
+                    <td>Forum</td>
+                    <td>E-mail 24h</td>
+                    <td>Discord Rapide</td>
+                    <td>Priorité VIP Discord</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Section 9 : FAQ -->
+          <section id="faq" class="docs-card">
+            <h2>9. Dépannage &amp; Foire Aux Questions</h2>
+
+            <div class="docs-faq-item">
+              <h4>Pourquoi l'application me demande-t-elle de me connecter au premier lancement ?</h4>
+              <p>Le compte SR Editer permet de valider votre licence d'utilisation, de synchroniser votre rôle Discord automatiquement et d'autoriser le téléchargement sécurisé des textures cloud.</p>
+            </div>
+
+            <div class="docs-faq-item">
+              <h4>Mes fichiers 3D et textures sont-ils envoyés sur vos serveurs ?</h4>
+              <p>Absolument pas. Tout le traitement de fichiers RPF, la modification de calques 2D et le rendu WebGL s'effectuent à 100 % en local sur votre processeur et votre carte graphique.</p>
+            </div>
+
+            <div class="docs-faq-item">
+              <h4>Comment lier mon compte Discord pour obtenir le rôle abonné ?</h4>
+              <p>Rendez-vous dans votre <a href="dashboard.html">Espace Client</a>, puis cliquez sur le bouton <strong>Lier Discord</strong>. Votre rôle sera immédiatement synchronisé sur le serveur officiel SR Editer.</p>
+            </div>
+
+            <div class="docs-faq-item">
+              <h4>Comment résilier ou modifier mon abonnement bancaire ?</h4>
+              <p>Accédez à la rubrique Facturation dans l'Espace Client, puis cliquez sur <strong>Accéder au portail Stripe</strong>. Vous pourrez gérer votre carte bancaire ou interrompre le renouvellement en 1 clic.</p>
+            </div>
+          </section>
+
+          <!-- Section 10 : Mentions Légales -->
+          <section id="legal" class="docs-card">
+            <h2>10. Mentions Légales &amp; Confidentialité</h2>
+            <p>SR Editer est un logiciel indépendant développé pour la communauté de modding. SR Editer n'est en aucun cas affilié, sponsorisé ou approuvé par Rockstar Games, Take-Two Interactive ou Cfx.re / FiveM.</p>
+            <p>Toutes les marques déposées, noms de produits et logos appartiennent à leurs propriétaires respectifs. L'utilisation de cet outil reste sous votre responsabilité exclusive pour la création de contenu moddé personnel ou autorisé.</p>
+          </section>
+        </div>
       </div>
     </main>
   </div>
 
+  
+
+  <footer class="client-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand">
+            <img src="assets/logo_small.png" alt="SR Editer" />
+            <span>SR Editer</span>
+          </a>
+          <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
+          <div class="footer-status">
+            <span class="status-dot"></span>
+            <span>Tous les services sont opérationnels</span>
+          </div>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html#fonctionnalites">Fonctionnalités</a></li>
+            <li><a href="library.html">Bibliothèque</a></li>
+            <li><a href="index.html#abonnements">Abonnements</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Ressources</h4>
+          <ul>
+            <li><a href="dashboard.html">Espace Client</a></li>
+            <li><a href="docs.html#faq">Foire aux questions</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Légal &amp; Support</h4>
+          <ul>
+            <li><a href="docs.html#legal">Mentions Légales</a></li>
+            <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Support Technique</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 SR Editer. Tous droits réservés. Non affilié à Rockstar Games, Take-Two Interactive ou Cfx.re.</p>
+      </div>
+    </div>
+  </footer>
+
+<!-- Scripts -->
   <script src="js/wallpapers.js"></script>
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/site-nav.js?v=3"></script>
-  <script src="js/site-soft-nav.js?v=1"></script>
+  <script src="js/site-nav.js?v=6"></script>
+  <script src="js/site-soft-nav.js?v=2"></script>
 </body>
 </html>
