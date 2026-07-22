@@ -554,9 +554,7 @@ body.auth-body:not(.auth-body--locked) {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  max-width: min(650px, 52vw) !important;
-  overflow-x: auto !important;
-  scrollbar-width: none !important;
+  overflow: visible !important;
 }
 
 .site-nav-tabs::-webkit-scrollbar {
@@ -1351,7 +1349,7 @@ body.auth-body:not(.auth-body--locked) {
 
   .site-nav-tabs {
     max-width: 100% !important;
-    overflow-x: auto !important;
+    overflow: visible !important;
   }
 }
 
