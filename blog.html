@@ -865,12 +865,12 @@
             </a>
           </div>
         `;
+      } else {
         downloadBox.innerHTML = `
           <div style="margin-top:30px; padding:20px; border-radius:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); text-align:center; color:rgba(255,255,255,0.6); font-size:13px;">
             ⚠️ Les anciennes versions ne sont plus proposées au téléchargement direct. Veuillez utiliser la dernière version <a href="blog.html?version=${latest.version}" style="color:#818cf8; text-decoration:underline;">v${latest.version}</a>.
           </div>
         `;
-      }
       }
 
       document.getElementById("blog-list-view").style.display = "none";
