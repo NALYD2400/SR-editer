@@ -10343,3 +10343,384 @@ html[data-theme="light"] #panel-team .team-perm-chip:has(input:checked)::before 
   border-radius: 50% !important;
   overflow: hidden !important;
 }
+
+/* ── Releases panel ── */
+#panel-releases {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#panel-releases .releases-publish-card,
+#panel-releases .releases-history-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 18px;
+}
+
+#panel-releases .panel-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+#panel-releases .panel-card-header h3 {
+  margin: 0;
+}
+
+#panel-releases .panel-card-header .section-desc {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+#panel-releases .releases-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#panel-releases .releases-form .field {
+  gap: 6px;
+}
+
+#panel-releases .releases-form-meta {
+  display: grid;
+  grid-template-columns: 140px minmax(240px, 1fr);
+  gap: 10px 12px;
+}
+
+#panel-releases .releases-date-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#panel-releases .releases-date-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+#panel-releases .releases-field-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#panel-releases .releases-inline-action {
+  appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+#panel-releases .releases-inline-action:hover {
+  color: var(--text-primary);
+}
+
+#panel-releases .releases-sig-input {
+  width: 100%;
+  max-height: 4.6em;
+  min-height: 3.2em;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  resize: vertical;
+  overflow: auto;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+#panel-releases #release-notes {
+  min-height: 88px;
+  resize: vertical;
+}
+
+#panel-releases .releases-publish-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 2px;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--warning) 28%, var(--border));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--warning-soft) 55%, transparent);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+#panel-releases .releases-publish-toggle:hover {
+  border-color: color-mix(in srgb, var(--warning) 48%, var(--border));
+  background: var(--warning-soft);
+}
+
+#panel-releases .releases-publish-toggle:has(input:checked) {
+  border-color: color-mix(in srgb, var(--warning) 70%, var(--border));
+  background: var(--warning-soft);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--warning) 35%, transparent);
+}
+
+#panel-releases .releases-publish-toggle input {
+  margin-top: 2px;
+  width: 15px;
+  height: 15px;
+  accent-color: var(--warning);
+  flex-shrink: 0;
+}
+
+#panel-releases .releases-publish-toggle span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+#panel-releases .releases-publish-toggle strong {
+  font-size: 13px;
+  font-weight: 650;
+  color: #fbbf24;
+}
+
+#panel-releases .releases-publish-toggle small {
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+#panel-releases .releases-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 2px;
+}
+
+#panel-releases .releases-actions #save-release-btn.is-publish-mode {
+  background: #fbbf24 !important;
+  color: #111 !important;
+  border-color: #fbbf24 !important;
+}
+
+#panel-releases .releases-actions #save-release-btn.is-publish-mode:hover {
+  background: transparent !important;
+  color: #fbbf24 !important;
+  border-color: #fbbf24 !important;
+}
+
+#panel-releases .releases-manifest {
+  margin-top: 2px;
+}
+
+#panel-releases .releases-manifest-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+#panel-releases .releases-manifest-head span {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#panel-releases .releases-manifest textarea {
+  width: 100%;
+  min-height: 110px;
+  resize: vertical;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font: inherit;
+  outline: none;
+}
+
+#panel-releases .releases-table-head,
+#panel-releases .release-item {
+  display: grid;
+  grid-template-columns: 88px 96px 148px minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  align-items: center;
+}
+
+#panel-releases .releases-table-head {
+  padding: 0 10px 6px;
+  border-bottom: 1px solid var(--border);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+#panel-releases .releases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#panel-releases .release-item {
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: transparent;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+#panel-releases .release-item:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+
+#panel-releases .release-item-version {
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+#panel-releases .release-status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.35;
+}
+
+#panel-releases .release-status-pill.is-published {
+  color: #34d399;
+  background: rgba(52, 211, 153, 0.12);
+}
+
+#panel-releases .release-status-pill.is-draft {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.12);
+}
+
+#panel-releases .release-item-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+#panel-releases .release-item-notes {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#panel-releases .release-item-notes.is-empty {
+  opacity: 0.65;
+  font-style: italic;
+}
+
+#panel-releases .release-item-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+#panel-releases .release-item-actions .btn {
+  padding: 5px 10px;
+}
+
+#panel-releases .release-item-actions .btn-action-delete {
+  color: var(--danger);
+}
+
+#panel-releases .releases-list > .empty-state {
+  padding: 18px 10px;
+}
+
+@media (max-width: 980px) {
+  #panel-releases .releases-table-head {
+    display: none;
+  }
+
+  #panel-releases .release-item {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "version actions"
+      "status actions"
+      "date actions"
+      "notes notes";
+    align-items: start;
+  }
+
+  #panel-releases .release-item-version { grid-area: version; }
+  #panel-releases .release-status-pill { grid-area: status; }
+  #panel-releases .release-item-date { grid-area: date; }
+  #panel-releases .release-item-notes {
+    grid-area: notes;
+    white-space: pre-wrap;
+    margin-top: 2px;
+  }
+  #panel-releases .release-item-actions {
+    grid-area: actions;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 720px) {
+  #panel-releases .releases-form-meta {
+    grid-template-columns: 1fr;
+  }
+
+  #panel-releases .releases-date-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  #panel-releases .releases-actions {
+    width: 100%;
+  }
+
+  #panel-releases .releases-actions .btn {
+    flex: 1;
+  }
+}
+
+html[data-theme="light"] #panel-releases .releases-publish-toggle strong {
+  color: #b45309;
+}
+
+html[data-theme="light"] #panel-releases .releases-actions #save-release-btn.is-publish-mode {
+  background: #f5a623 !important;
+  color: #111 !important;
+  border-color: #f5a623 !important;
+}
+
+html[data-theme="light"] #panel-releases .release-status-pill.is-published {
+  color: #059669;
+  background: rgba(5, 150, 105, 0.1);
+}
+
+html[data-theme="light"] #panel-releases .release-status-pill.is-draft {
+  color: #b45309;
+  background: rgba(180, 83, 9, 0.1);
+}

@@ -2867,13 +2867,105 @@
     }
   }
 
+  function syncReleaseDateFromLocal() {
+    const localInput = document.getElementById("release-date-local");
+    const isoInput = document.getElementById("release-date");
+    if (!localInput || !isoInput) return "";
+    const raw = localInput.value;
+    if (!raw) {
+      isoInput.value = "";
+      return "";
+    }
+    const parsed = new Date(raw);
+    if (Number.isNaN(parsed.getTime())) return isoInput.value || "";
+    isoInput.value = parsed.toISOString();
+    return isoInput.value;
+  }
+
+  function setReleaseDateValue(isoOrDate) {
+    const localInput = document.getElementById("release-date-local");
+    const isoInput = document.getElementById("release-date");
+    const date = isoOrDate instanceof Date ? isoOrDate : new Date(isoOrDate || Date.now());
+    const safe = Number.isNaN(date.getTime()) ? new Date() : date;
+    if (localInput) localInput.value = toDatetimeLocalValue(safe);
+    if (isoInput) isoInput.value = safe.toISOString();
+    return isoInput?.value || safe.toISOString();
+  }
+
+  function syncReleaseSaveButton() {
+    const published = Boolean(document.getElementById("release-published")?.checked);
+    const saveBtn = document.getElementById("save-release-btn");
+    if (!saveBtn) return;
+    saveBtn.textContent = published ? "Publier maintenant" : "Enregistrer en brouillon";
+    saveBtn.classList.toggle("is-publish-mode", published);
+  }
+
+  function fillReleaseForm(rel = {}) {
+    if (document.getElementById("release-version")) document.getElementById("release-version").value = rel.version || "";
+    if (document.getElementById("release-url")) document.getElementById("release-url").value = rel.artifact_url || "";
+    if (document.getElementById("release-signature")) document.getElementById("release-signature").value = rel.signature || "";
+    if (document.getElementById("release-notes")) document.getElementById("release-notes").value = rel.notes || "";
+    if (document.getElementById("release-published")) document.getElementById("release-published").checked = Boolean(rel.published);
+    if (rel.pub_date || rel.updated_at) setReleaseDateValue(rel.pub_date || rel.updated_at);
+    syncReleaseSaveButton();
+  }
+
   async function loadReleases() {
     const list = document.getElementById("releases-list");
+    const tableHead = document.querySelector("#panel-releases .releases-table-head");
     if (!list) return;
     try {
       const data = await adminRequest("release-list");
-      list.innerHTML = data.rows.length ? data.rows.map((row) => `<article class="admin-list-item"><div><strong>v${escapeHtml(row.version)}</strong><small>${formatDate(row.updated_at)} · ${row.published ? "Publiée" : "Brouillon"}</small><p>${escapeHtml(row.notes || "Sans notes")}</p></div><a class="btn btn-ghost btn-sm" href="${escapeHtml(row.artifact_url)}" target="_blank" rel="noopener noreferrer">Artefact</a></article>`).join("") : '<div class="empty-state">Aucune release enregistrée.</div>';
-    } catch (reason) { list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`; }
+      window._latestReleaseRows = data.rows ?? [];
+      const hasRows = Boolean(data.rows?.length);
+      if (tableHead) tableHead.hidden = !hasRows;
+      list.innerHTML = hasRows ? data.rows.map((row, index) => {
+        const published = Boolean(row.published);
+        const notes = String(row.notes || "").trim();
+        return `
+        <article class="release-item">
+          <strong class="release-item-version">v${escapeHtml(row.version)}</strong>
+          <span class="release-status-pill ${published ? "is-published" : "is-draft"}">${published ? "Publiée" : "Brouillon"}</span>
+          <span class="release-item-date">${formatDate(row.updated_at)}</span>
+          <p class="release-item-notes${notes ? "" : " is-empty"}" title="${escapeHtml(notes || "Sans notes")}">${escapeHtml(notes || "Sans notes")}</p>
+          <div class="release-item-actions">
+            <button type="button" class="btn btn-ghost btn-sm edit-release-btn" data-index="${index}">Modifier</button>
+            <button type="button" class="btn btn-ghost btn-sm btn-action-delete delete-release-btn" data-version="${escapeHtml(row.version)}">Supprimer</button>
+            <a class="btn btn-ghost btn-sm" href="${escapeHtml(row.artifact_url)}" target="_blank" rel="noopener noreferrer">Artefact</a>
+          </div>
+        </article>`;
+      }).join("") : '<div class="empty-state">Aucune release enregistrée.</div>';
+
+      list.querySelectorAll(".edit-release-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.getAttribute("data-index"));
+          const rel = window._latestReleaseRows?.[idx];
+          if (!rel) return;
+          fillReleaseForm(rel);
+          addLog("i", `Release v${rel.version} chargée dans le formulaire pour modification.`);
+          document.getElementById("release-version")?.scrollIntoView({ behavior: "smooth", block: "center" });
+          document.getElementById("release-version")?.focus();
+        });
+      });
+
+      list.querySelectorAll(".delete-release-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const version = btn.getAttribute("data-version");
+          if (!version) return;
+          if (!confirm(`Es-tu sûr de vouloir supprimer la release v${version} ?`)) return;
+          try {
+            await adminRequest("release-delete", { version });
+            addLog("s", `Release v${version} supprimée avec succès.`);
+            await loadReleases();
+          } catch (err) {
+            addLog("e", `Erreur lors de la suppression de la release : ${String(err)}`);
+          }
+        });
+      });
+    } catch (reason) {
+      if (tableHead) tableHead.hidden = true;
+      list.innerHTML = `<div class="empty-state">${escapeHtml(String(reason))}</div>`;
+    }
   }
 
   document.getElementById("team-form")?.addEventListener("submit", async (event) => {
@@ -4255,21 +4347,24 @@
       const manifestUrl = config.updateManifestUrl || "/update.json";
       const separator = manifestUrl.includes("?") ? "&" : "?";
       const res = await fetch(`${manifestUrl}${separator}admin=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok || res.status === 204) return;
+      if (!res.ok || res.status === 204) {
+        if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
+        return;
+      }
       const data = await res.json();
       const verInput = document.getElementById("release-version");
-      const dateInput = document.getElementById("release-date");
       const urlInput = document.getElementById("release-url");
       const sigInput = document.getElementById("release-signature");
       if (verInput && data.version) verInput.value = data.version;
-      if (dateInput && data.pub_date) dateInput.value = data.pub_date;
+      if (data.pub_date) setReleaseDateValue(data.pub_date);
+      else if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
       const platform = data.platforms?.["windows-x86_64"];
       if (urlInput && platform?.url) urlInput.value = platform.url;
       if (sigInput && platform?.signature) sigInput.value = platform.signature;
       const notesInput = document.getElementById("release-notes");
       if (notesInput && data.notes) notesInput.value = data.notes;
     } catch {
-      /* ignore */
+      if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
     }
   }
 
@@ -4284,9 +4379,30 @@
     return url;
   }
 
+  document.getElementById("release-date-local")?.addEventListener("change", () => {
+    syncReleaseDateFromLocal();
+  });
+  document.getElementById("release-date-now-btn")?.addEventListener("click", () => {
+    setReleaseDateValue(new Date());
+    addLog("i", "Date de publication mise à maintenant.");
+  });
+  document.getElementById("clear-release-sig-btn")?.addEventListener("click", () => {
+    const sigInput = document.getElementById("release-signature");
+    if (!sigInput) return;
+    sigInput.value = "";
+    sigInput.focus();
+  });
+  document.getElementById("release-published")?.addEventListener("change", syncReleaseSaveButton);
+  syncReleaseSaveButton();
+
   document.getElementById("generate-release-btn")?.addEventListener("click", () => {
     const version = document.getElementById("release-version").value.trim();
-    const pubDate = document.getElementById("release-date").value.trim();
+    if (!version) {
+      addLog("e", "Indique une version avant de générer le manifeste.");
+      document.getElementById("release-version")?.focus();
+      return;
+    }
+    const pubDate = syncReleaseDateFromLocal() || setReleaseDateValue(new Date());
     const zipUrl = directReleaseUrl(document.getElementById("release-url").value, version);
     document.getElementById("release-url").value = zipUrl;
     const signature = document.getElementById("release-signature").value.trim();
@@ -4314,16 +4430,30 @@
   document.getElementById("save-release-btn")?.addEventListener("click", async () => {
     try {
       const version = document.getElementById("release-version").value.trim();
+      if (!version) {
+        addLog("e", "Indique une version avant d’enregistrer.");
+        document.getElementById("release-version")?.focus();
+        return;
+      }
       const artifactUrl = directReleaseUrl(document.getElementById("release-url").value, version);
+      if (!artifactUrl) {
+        addLog("e", "Indique l’URL de l’installateur .exe.");
+        document.getElementById("release-url")?.focus();
+        return;
+      }
       document.getElementById("release-url").value = artifactUrl;
+      const isPublished = document.getElementById("release-published").checked;
+      if (isPublished && !confirm(`Publier immédiatement la v${version} pour l’app et le site client ?`)) {
+        return;
+      }
+      syncReleaseDateFromLocal();
       const result = await adminRequest("release-upsert", {
         version,
         artifactUrl,
         signature: document.getElementById("release-signature").value.trim(),
         notes: document.getElementById("release-notes").value.trim(),
-        published: document.getElementById("release-published").checked
+        published: isPublished
       });
-      const isPublished = document.getElementById("release-published").checked;
       let logMsg = isPublished ? "Release publiée pour les clients." : "Release enregistrée en brouillon.";
       if (isPublished && result?.discordNotice?.success) {
         logMsg += " 📢 Patchnote publié sur Discord.";

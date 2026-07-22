@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.78-brand" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.80-releases" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -1120,54 +1120,84 @@
 
           <!-- Releases -->
           <section class="admin-panel" id="panel-releases">
-            <div class="glass-card panel-card">
+            <div class="glass-card panel-card releases-publish-card">
               <div class="panel-card-header">
-                <h3>Publication des mises à jour</h3>
+                <div>
+                  <h3>Publication des mises à jour</h3>
+                  <p class="section-desc">Version, artefact, signature — puis brouillon ou publication.</p>
+                </div>
               </div>
-              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px;">
+
+              <div class="releases-form">
+                <div class="releases-form-row releases-form-meta">
+                  <div class="field">
+                    <label for="release-version">Version</label>
+                    <input type="text" id="release-version" value="0.3.3" pattern="\d+\.\d+\.\d+" placeholder="0.4.2" autocomplete="off" />
+                  </div>
+                  <div class="field">
+                    <label for="release-date-local">Date de publication</label>
+                    <div class="releases-date-row">
+                      <input type="datetime-local" id="release-date-local" step="1" />
+                      <button type="button" class="btn btn-ghost btn-sm" id="release-date-now-btn" title="Mettre la date à maintenant">Maintenant</button>
+                    </div>
+                    <input type="hidden" id="release-date" value="" />
+                  </div>
+                </div>
+
                 <div class="field">
-                  <label for="release-version">Version</label>
-                  <input type="text" id="release-version" value="0.3.3" pattern="\d+\.\d+\.\d+" />
+                  <label for="release-url">URL de l’installateur .exe</label>
+                  <input type="url" id="release-url" placeholder="https://github.com/…/releases/download/…/SR.Editer_x.y.z_x64-setup.exe" />
                 </div>
+
+                <div class="field releases-sig-field">
+                  <div class="releases-field-label-row">
+                    <label for="release-signature">Signature Tauri (.sig)</label>
+                    <button type="button" class="releases-inline-action" id="clear-release-sig-btn">Effacer</button>
+                  </div>
+                  <textarea id="release-signature" rows="3" class="releases-sig-input" placeholder="Colle le contenu du fichier .sig" spellcheck="false"></textarea>
+                </div>
+
                 <div class="field">
-                  <label for="release-date">Date ISO</label>
-                  <input type="text" id="release-date" value="2026-07-04T14:00:00Z" />
-                </div>
-                <div class="field" style="grid-column: span 2;">
-                  <label for="release-url">URL de l’installateur .exe (GitHub Release)</label>
-                  <input type="url" id="release-url" />
-                </div>
-                <div class="field" style="grid-column: span 2;">
-                  <label for="release-signature">Signature Tauri (.sig)</label>
-                  <input type="text" id="release-signature" placeholder="Contenu du fichier .sig" />
-                </div>
-                <div class="field" style="grid-column: span 2;">
                   <label for="release-notes">Notes de version</label>
-                  <input type="text" id="release-notes" placeholder="Corrections et nouveautés..." />
+                  <textarea id="release-notes" rows="4" placeholder="- Nouveautés&#10;- Corrections de bugs…"></textarea>
                 </div>
-                <label style="display:flex; align-items:center; gap:8px; font-size:12px; cursor:pointer; grid-column: span 2;">
+
+                <label class="releases-publish-toggle" for="release-published">
                   <input type="checkbox" id="release-published" />
-                  Publier immédiatement pour l’application et le site client
+                  <span>
+                    <strong>Publier immédiatement</strong>
+                    <small>Pousse la version dans l’app et sur le site client. Irréversible côté clients déjà notifiés.</small>
+                  </span>
                 </label>
               </div>
-              <div style="display: flex; gap: 12px; margin-top: 8px;">
-                <button type="button" class="btn btn-primary" id="generate-release-btn">Générer le manifeste</button>
-                <button type="button" class="btn btn-ghost" id="save-release-btn">Enregistrer / publier</button>
+
+              <div class="releases-actions">
+                <button type="button" class="btn btn-primary" id="save-release-btn">Enregistrer en brouillon</button>
+                <button type="button" class="btn btn-ghost" id="generate-release-btn">Générer le manifeste</button>
               </div>
-              <div class="code-output" id="release-output" style="margin-top: 14px;" hidden>
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px">
-                  <span style="font-size: 11px; color: var(--text-secondary); font-weight: 700">update.json</span>
+
+              <div class="code-output releases-manifest" id="release-output" hidden>
+                <div class="releases-manifest-head">
+                  <span>update.json</span>
                   <button type="button" class="btn btn-ghost btn-sm" id="copy-json-btn">Copier</button>
                 </div>
-                <textarea id="release-json" readonly style="min-height: 120px;"></textarea>
+                <textarea id="release-json" readonly rows="8"></textarea>
               </div>
             </div>
-            <div class="glass-card panel-card">
+
+            <div class="glass-card panel-card releases-history-card">
               <div class="panel-card-header">
                 <h3>Historique des releases</h3>
                 <button type="button" class="btn btn-ghost btn-sm" id="refresh-releases-btn">Actualiser</button>
               </div>
-              <div id="releases-list" style="display: flex; flex-direction: column; gap: 10px;"></div>
+              <div class="releases-table-head" aria-hidden="true">
+                <span>Version</span>
+                <span>Statut</span>
+                <span>Date</span>
+                <span>Notes</span>
+                <span>Actions</span>
+              </div>
+              <div id="releases-list" class="releases-list"></div>
             </div>
           </section>
 
@@ -1666,7 +1696,7 @@
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.4.78-brand"></script>
+    <script src="js/admin.js?v=0.4.80-releases"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");

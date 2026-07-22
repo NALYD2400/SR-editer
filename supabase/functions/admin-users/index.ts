@@ -446,6 +446,13 @@ Deno.serve(async (request) => {
     }
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, manifestUrl: `${supabaseUrl}/functions/v1/app-update`, discordNotice });
   }
+  if (action === "release-delete") {
+    const version = textOf(body.version, 32);
+    if (!version) return json(origin, 400, { ok: false, error: "Numéro de version requis." });
+    const { error } = await admin.from("release_records").delete().eq("version", version);
+    if (!error) await audit("release.delete", "release", version, {});
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+  }
   if (action === "library-list") {
     const { data, error } = await admin.from("library_textures").select("*").order("created_at", { ascending: false });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
