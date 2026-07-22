@@ -30,8 +30,76 @@
 
       <nav class="site-nav-tabs" aria-label="Sections du site">
         <a href="index.html" data-nav="home">Accueil</a>
-        <a href="docs.html" data-nav="docs" class="is-active">Docs</a>
-        <a href="library.html" data-nav="library">Bibliothèque</a>
+        
+        <!-- Dropdown Produits -->
+        <div class="site-nav-dropdown">
+          <a href="index.html#fonctionnalites" class="site-nav-dropdown-trigger">
+            <span>Produits</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <div class="site-nav-dropdown-menu">
+            <a href="docs.html#textures" class="dropdown-item">
+              <div class="dropdown-item-icon">🎨</div>
+              <div>
+                <div class="dropdown-item-title">Texture Studio 2D</div>
+                <div class="dropdown-item-desc">Édition &amp; conversion DDS / PNG</div>
+              </div>
+            </a>
+            <a href="docs.html#viewport" class="dropdown-item">
+              <div class="dropdown-item-icon">📐</div>
+              <div>
+                <div class="dropdown-item-title">Viewport 3D WebGL</div>
+                <div class="dropdown-item-desc">Prévisualisation 3D temps réel</div>
+              </div>
+            </a>
+            <a href="docs.html#explorateur" class="dropdown-item">
+              <div class="dropdown-item-icon">📁</div>
+              <div>
+                <div class="dropdown-item-title">Explorateur RPF</div>
+                <div class="dropdown-item-desc">Inspection de fichiers GTA V / FiveM</div>
+              </div>
+            </a>
+            <a href="library.html" class="dropdown-item">
+              <div class="dropdown-item-icon">☁️</div>
+              <div>
+                <div class="dropdown-item-title">Bibliothèque Cloud</div>
+                <div class="dropdown-item-desc">Assets &amp; textures partagées</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Dropdown Ressources -->
+        <div class="site-nav-dropdown">
+          <a href="docs.html" class="site-nav-dropdown-trigger is-active">
+            <span>Ressources</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <div class="site-nav-dropdown-menu">
+            <a href="docs.html" class="dropdown-item">
+              <div class="dropdown-item-icon">📖</div>
+              <div>
+                <div class="dropdown-item-title">Documentation</div>
+                <div class="dropdown-item-desc">Guides, tutoriels &amp; raccourcis</div>
+              </div>
+            </a>
+            <a href="blog.html" class="dropdown-item">
+              <div class="dropdown-item-icon">🚀</div>
+              <div>
+                <div class="dropdown-item-title">Blog &amp; Patchnotes</div>
+                <div class="dropdown-item-desc">Nouveautés &amp; journal de release</div>
+              </div>
+            </a>
+            <a href="docs.html#faq" class="dropdown-item">
+              <div class="dropdown-item-icon">❓</div>
+              <div>
+                <div class="dropdown-item-title">Support &amp; FAQ</div>
+                <div class="dropdown-item-desc">Foire aux questions &amp; aide</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
         <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
         <a href="dashboard.html" data-nav="account">Espace client</a>
       </nav>
