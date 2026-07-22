@@ -29,8 +29,6 @@
       </a>
 
       <nav class="site-nav-tabs" aria-label="Sections du site">
-        <a href="index.html" data-nav="home">Accueil</a>
-        
         <!-- Dropdown Produits -->
         <div class="site-nav-dropdown">
           <a href="index.html#fonctionnalites" class="site-nav-dropdown-trigger">
@@ -69,6 +67,43 @@
           </div>
         </div>
 
+        <!-- Dropdown Fonctionnalités -->
+        <div class="site-nav-dropdown">
+          <a href="index.html#fonctionnalites" class="site-nav-dropdown-trigger">
+            <span>Fonctionnalités</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </a>
+          <div class="site-nav-dropdown-menu">
+            <a href="index.html#fonctionnalites" class="dropdown-item">
+              <div class="dropdown-item-icon">🎮</div>
+              <div>
+                <div class="dropdown-item-title">Modding GTA V &amp; FiveM</div>
+                <div class="dropdown-item-desc">Conçu spécifiquement pour le modding</div>
+              </div>
+            </a>
+            <a href="docs.html#textures" class="dropdown-item">
+              <div class="dropdown-item-icon">✨</div>
+              <div>
+                <div class="dropdown-item-title">Édition 2D multi-calques</div>
+                <div class="dropdown-item-desc">Filtres, retouches et masques</div>
+              </div>
+            </a>
+            <a href="docs.html#viewport" class="dropdown-item">
+              <div class="dropdown-item-icon">📦</div>
+              <div>
+                <div class="dropdown-item-title">Rendu 3D dynamique</div>
+                <div class="dropdown-item-desc">Éclairage, ombres et matériaux</div>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Tarifs -->
+        <a href="index.html#abonnements" data-nav="plans">Tarifs</a>
+
+        <!-- Blog -->
+        <a href="blog.html" data-nav="blog">Blog</a>
+
         <!-- Dropdown Ressources -->
         <div class="site-nav-dropdown">
           <a href="docs.html" class="site-nav-dropdown-trigger is-active">
@@ -86,8 +121,8 @@
             <a href="blog.html" class="dropdown-item">
               <div class="dropdown-item-icon">🚀</div>
               <div>
-                <div class="dropdown-item-title">Blog &amp; Patchnotes</div>
-                <div class="dropdown-item-desc">Nouveautés &amp; journal de release</div>
+                <div class="dropdown-item-title">Journal des Releases</div>
+                <div class="dropdown-item-desc">Historique des versions</div>
               </div>
             </a>
             <a href="docs.html#faq" class="dropdown-item">
@@ -99,32 +134,6 @@
             </a>
           </div>
         </div>
-
-        <!-- Dropdown Abonnements -->
-        <div class="site-nav-dropdown">
-          <a href="index.html#abonnements" class="site-nav-dropdown-trigger">
-            <span>Abonnements</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </a>
-          <div class="site-nav-dropdown-menu">
-            <a href="index.html#abonnements" class="dropdown-item">
-              <div class="dropdown-item-icon">💳</div>
-              <div>
-                <div class="dropdown-item-title">Tarifs &amp; Formules</div>
-                <div class="dropdown-item-desc">Standard, Pro &amp; Premium</div>
-              </div>
-            </a>
-            <a href="dashboard.html" class="dropdown-item">
-              <div class="dropdown-item-icon">💼</div>
-              <div>
-                <div class="dropdown-item-title">Facturation &amp; Licence</div>
-                <div class="dropdown-item-desc">Gérer son abonnement Stripe</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <a href="dashboard.html" data-nav="account">Espace client</a>
       </nav>
 
       <div class="site-nav-actions">
