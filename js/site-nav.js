@@ -257,4 +257,19 @@
       hydrate(session);
     });
   }
+
+  // Clic sur les boutons déroulants (mobile & desktop)
+  document.addEventListener('click', function(e) {
+    const trigger = e.target.closest('.site-nav-dropdown-trigger');
+    if (trigger) {
+      const parent = trigger.closest('.site-nav-dropdown');
+      if (parent) {
+        const isOpen = parent.classList.contains('is-open');
+        document.querySelectorAll('.site-nav-dropdown').forEach(d => d.classList.remove('is-open'));
+        if (!isOpen) parent.classList.add('is-open');
+      }
+    } else if (!e.target.closest('.site-nav-dropdown')) {
+      document.querySelectorAll('.site-nav-dropdown').forEach(d => d.classList.remove('is-open'));
+    }
+  });
 })();
