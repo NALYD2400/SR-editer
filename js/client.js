@@ -25,7 +25,7 @@
       return;
     }
 
-    function applyDownload(dlUrl, version) {
+    function applyDownload(dlUrl, version, rawSize) {
       if (versionBadge && version) versionBadge.textContent = "v" + version;
 
       if (dlUrl) {
@@ -34,15 +34,9 @@
           link.removeAttribute("aria-disabled");
           link.removeAttribute("title");
         });
-        if (fileSizeBadge) {
-          fetch(dlUrl, { method: "HEAD" })
-            .then(function (response) {
-              const size = formatFileSize(Number(response.headers.get("content-length")));
-              if (size) fileSizeBadge.textContent = size;
-            })
-            .catch(function () {
-              return undefined;
-            });
+        if (fileSizeBadge && rawSize) {
+          const size = formatFileSize(Number(rawSize));
+          if (size) fileSizeBadge.textContent = size;
         }
         return;
       }
@@ -72,7 +66,8 @@
         const windows = manifest && manifest.platforms && manifest.platforms["windows-x86_64"];
         applyDownload(
           (windows && windows.url) || config.downloadUrl,
-          (manifest && manifest.version) || config.appVersion
+          (manifest && manifest.version) || config.appVersion,
+          windows && windows.size
         );
       })
       .catch(function () {
