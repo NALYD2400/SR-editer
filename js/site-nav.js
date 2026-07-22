@@ -262,6 +262,7 @@
   document.addEventListener('click', function(e) {
     const trigger = e.target.closest('.site-nav-dropdown-trigger');
     if (trigger) {
+      e.preventDefault();
       const parent = trigger.closest('.site-nav-dropdown');
       if (parent) {
         const isOpen = parent.classList.contains('is-open');
