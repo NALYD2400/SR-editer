@@ -483,6 +483,12 @@
   </style>
 </head>
 <body class="client-page" data-site-page="blog">
+  <!-- Ambient Wallpaper Background Stack -->
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+  </div>
+  <div class="ambient-vignette" aria-hidden="true"></div>
+
   <!-- Ambient Background Orbs -->
   <div class="blog-ambient-mesh" aria-hidden="true">
     <div class="blog-orb blog-orb-1"></div>
@@ -537,41 +543,10 @@
           </div>
         </div>
 
-        <!-- Dropdown Fonctionnalités -->
-        <div class="site-nav-dropdown">
-          <a href="index.html#fonctionnalites" class="site-nav-dropdown-trigger">
-            <span>Fonctionnalités</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </a>
-          <div class="site-nav-dropdown-menu">
-            <a href="index.html#fonctionnalites" class="dropdown-item">
-              <div class="dropdown-item-icon">🎮</div>
-              <div>
-                <div class="dropdown-item-title">Modding GTA V &amp; FiveM</div>
-                <div class="dropdown-item-desc">Conçu spécifiquement pour le modding</div>
-              </div>
-            </a>
-            <a href="docs.html#textures" class="dropdown-item">
-              <div class="dropdown-item-icon">✨</div>
-              <div>
-                <div class="dropdown-item-title">Édition 2D multi-calques</div>
-                <div class="dropdown-item-desc">Filtres, retouches et masques</div>
-              </div>
-            </a>
-            <a href="docs.html#viewport" class="dropdown-item">
-              <div class="dropdown-item-icon">📦</div>
-              <div>
-                <div class="dropdown-item-title">Rendu 3D dynamique</div>
-                <div class="dropdown-item-desc">Éclairage, ombres et matériaux</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <!-- Tarifs -->
+        <!-- Tarifs (Lien simple) -->
         <a href="index.html#abonnements" data-nav="plans">Tarifs</a>
 
-        <!-- Blog -->
+        <!-- Blog (Lien simple actif) -->
         <a href="blog.html" data-nav="blog" class="is-active">Blog</a>
 
         <!-- Dropdown Ressources -->
@@ -942,5 +917,7 @@
       return String(str).replace(/</g, "&lt;").replace(/>/g, "&gt;");
     }
   </script>
+  <script src="js/wallpapers.js"></script>
+  <script src="js/ambient.js?v=2"></script>
 </body>
 </html>
