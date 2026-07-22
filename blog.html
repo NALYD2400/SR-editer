@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog & Nouveautés — SR Editer</title>
+  <link rel="icon" type="image/png" href="assets/logo_small.png">
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="styles/ambient.css?v=2">
+  <link rel="stylesheet" href="styles/auth.css?v=2">
+  <link rel="stylesheet" href="styles/site-pages.css?v=13">
+  <link rel="stylesheet" href="styles/client.css?v=0.3.6">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    /* Custom Blog & Changelog Styling — Inspired by antigravity.google/blog */
+    .blog-hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .blog-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+    .blog-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 18px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .blog-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    /* Featured Banner Card */
+    .featured-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(30, 27, 75, 0.5) 0%, rgba(15, 23, 42, 0.6) 100%);
+      border: 1px solid rgba(129, 140, 248, 0.25);
+      border-radius: 24px;
+      padding: 40px;
+      margin: 40px auto 60px;
+      max-width: 1100px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(16px);
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+    .featured-card:hover {
+      border-color: rgba(129, 140, 248, 0.5);
+      transform: translateY(-2px);
+    }
+    .featured-card::before {
+      content: "";
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .featured-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .version-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      background: #6366f1;
+      color: #fff;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .date-tag {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.5);
+    }
+    .featured-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .featured-excerpt {
+      font-size: 15px;
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.82);
+      margin-bottom: 24px;
+      white-space: pre-wrap;
+    }
+    .featured-actions {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .btn-download {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #fff;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      text-decoration: none;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+      transition: all 0.2s;
+    }
+    .btn-download:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      border-radius: 10px;
+      font-weight: 500;
+      font-size: 14px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    /* Grid of Blog Posts */
+    .blog-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto 80px;
+    }
+    .blog-card {
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .blog-card:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(129, 140, 248, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+    }
+    .blog-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    .card-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(129, 140, 248, 0.15);
+      color: #818cf8;
+      border: 1px solid rgba(129, 140, 248, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .card-date {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      line-height: 1.3;
+    }
+    .card-excerpt {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.7);
+      line-height: 1.6;
+      margin-bottom: 20px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .card-link {
+      font-size: 13px;
+      font-weight: 600;
+      color: #818cf8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Modal Article View */
+    .article-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(8, 6, 18, 0.85);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .article-modal.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .article-modal-content {
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      max-width: 800px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 40px;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+    }
+    .modal-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 0;
+      color: #fff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body class="client-page" data-site-page="blog">
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+  </div>
+  <div class="ambient-vignette" aria-hidden="true"></div>
+
+  <div class="site-shell">
+    <!-- Header Navigation -->
+    <header class="site-topnav">
+      <a href="index.html" class="site-topnav-brand">
+        <img src="assets/logo_small.png" alt="SR Editer">
+        <span>SR Editer</span>
+      </a>
+
+      <nav class="site-nav-tabs" aria-label="Sections du site">
+        <a href="index.html" data-nav="home">Accueil</a>
+        <a href="docs.html" data-nav="docs">Docs</a>
+        <a href="blog.html" data-nav="blog" class="is-active">Blog &amp; Releases</a>
+        <a href="library.html" data-nav="library">Bibliothèque</a>
+        <a href="index.html#abonnements" data-nav="plans">Abonnements</a>
+        <a href="dashboard.html" data-nav="account">Espace client</a>
+      </nav>
+
+      <div class="site-nav-actions">
+        <a href="login.html?next=blog.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+      </div>
+    </header>
+
+    <main class="site-main">
+      <!-- Hero Header -->
+      <section class="blog-hero">
+        <div class="blog-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          Journal &amp; Mises à jour
+        </div>
+        <h1 class="blog-title">Nouveautés &amp; Journal de Bord</h1>
+        <p class="blog-subtitle">
+          Découvrez les dernières versions majeures, les annonces d'améliorations 3D WebGL et l'historique complet des patchnotes de SR Editer.
+        </p>
+      </section>
+
+      <!-- Section Principale (Dernière version à la Une) -->
+      <div id="featured-article-container" style="max-width: 1100px; margin: 0 auto;">
+        <div style="text-align: center; opacity: 0.6; padding: 40px;">Chargement des nouveautés...</div>
+      </div>
+
+      <!-- Grille des versions précédentes -->
+      <div style="max-width: 1100px; margin: 0 auto 30px;">
+        <h2 style="font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+          <span>Historique des Mises à Jour</span>
+          <span style="font-size: 13px; font-weight: 400; color: rgba(255,255,255,0.5);">— Versions antérieures</span>
+        </h2>
+      </div>
+
+      <div class="blog-grid" id="blog-grid-container">
+        <!-- Rempli dynamiquement par JS -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Modal pour voir le détail complet d'une version -->
+  <div class="article-modal" id="article-modal" onclick="closeArticleModal(event)">
+    <div class="article-modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close-btn" onclick="closeArticleModal()">&times;</button>
+      <div id="modal-body-content"></div>
+    </div>
+  </div>
+
+  <footer class="client-footer">
+    <div class="footer-container">
+      <div class="footer-grid">
+        <div class="footer-brand-col">
+          <a href="index.html" class="footer-brand">
+            <img src="assets/logo_small.png" alt="SR Editer" />
+            <span>SR Editer</span>
+          </a>
+          <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="docs.html">Documentation</a></li>
+            <li><a href="blog.html">Blog &amp; Releases</a></li>
+            <li><a href="library.html">Bibliothèque</a></li>
+            <li><a href="dashboard.html">Espace Client</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-col">
+          <h4>Communauté</h4>
+          <ul>
+            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
+            <li><a href="docs.html#changelog">Changelog rapide</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 SR Editer. Tous droits réservés.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/wallpapers.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/sr-supabase.js?v=1"></script>
+  <script src="js/ambient.js?v=6"></script>
+  <script src="js/site-nav.js?v=6"></script>
+  <script src="js/site-soft-nav.js?v=2"></script>
+  <script>
+    let releasesData = [];
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const featuredContainer = document.getElementById("featured-article-container");
+      const gridContainer = document.getElementById("blog-grid-container");
+
+      try {
+        const client = window.srSupabase;
+        if (client) {
+          const { data, error } = await client
+            .from("release_records")
+            .select("version, notes, artifact_url, updated_at")
+            .eq("published", true)
+            .order("updated_at", { ascending: false });
+
+          if (!error && data && data.length) {
+            releasesData = data;
+          }
+        }
+      } catch (err) {
+        console.error("Erreur chargement Supabase:", err);
+      }
+
+      // Données de fallback si la BD est vide
+      if (!releasesData.length) {
+        releasesData = [
+          {
+            version: "0.4.3",
+            updated_at: new Date().toISOString(),
+            notes: "SR Editer 0.4.3 — nouvelle version stable.\n• Correction du système de notifications Discord\n• Amélioration de la stabilité de l'export de textures DDS/PNG\n• Optimisation du viewport WebGL 3D",
+            artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.4.3/SR.Editer_0.4.3_x64-setup.exe"
+          },
+          {
+            version: "0.4.2",
+            updated_at: "2026-07-15T14:00:00Z",
+            notes: "Nouvelle mise à jour majeure avec intégration de Texture Studio 2D et prévisualisation instantanée du modèle 3D.",
+            artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.4.2/SR.Editer_0.4.2_x64-setup.exe"
+          }
+        ];
+      }
+
+      // Afficher la version à la une (La plus récente)
+      const latest = releasesData[0];
+      const dateFormatted = new Date(latest.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+      featuredContainer.innerHTML = `
+        <div class="featured-card">
+          <div class="featured-header">
+            <span class="version-tag">🚀 SR Editer v${latest.version}</span>
+            <span class="date-tag">Publié le ${dateFormatted}</span>
+          </div>
+          <h2 class="featured-title">Release Officielle v${latest.version}</h2>
+          <div class="featured-excerpt">${latest.notes ? latest.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Dernière version stable de SR Editer."}</div>
+          <div class="featured-actions">
+            ${latest.artifact_url ? `<a href="${latest.artifact_url}" target="_blank" rel="noopener noreferrer" class="btn-download">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Télécharger l'installateur (.exe)
+            </a>` : ''}
+            <button onclick="openArticleModal(0)" class="btn-secondary">
+              Lire les notes complètes →
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Afficher la grille des versions précédentes
+      const previousReleases = releasesData.slice(1);
+      if (!previousReleases.length) {
+        gridContainer.innerHTML = `<div style="grid-column: 1/-1; opacity: 0.5; text-align: center; padding: 20px;">Toutes les versions antérieures sont affichées dans l'historique complet.</div>`;
+        return;
+      }
+
+      gridContainer.innerHTML = previousReleases.map((rel, index) => {
+        const pDate = new Date(rel.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+        return `
+          <div class="blog-card" onclick="openArticleModal(${index + 1})">
+            <div>
+              <div class="blog-card-meta">
+                <span class="card-badge">Version v${rel.version}</span>
+                <span class="card-date">${pDate}</span>
+              </div>
+              <h3 class="card-title">Mise à jour v${rel.version}</h3>
+              <p class="card-excerpt">${rel.notes ? rel.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Notes de version et améliorations de stabilité."}</p>
+            </div>
+            <div class="card-footer">
+              <span class="card-link">Voir le détail →</span>
+              ${rel.artifact_url ? `<span style="font-size:11px; color:#34d399;">💾 .exe disponible</span>` : ''}
+            </div>
+          </div>
+        `;
+      }).join("");
+    });
+
+    function openArticleModal(index) {
+      const rel = releasesData[index];
+      if (!rel) return;
+
+      const dateFormatted = new Date(rel.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+      const modalBody = document.getElementById("modal-body-content");
+
+      modalBody.innerHTML = `
+        <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+          <span style="background:#6366f1; color:#fff; padding:4px 12px; border-radius:8px; font-weight:700; font-size:13px;">v${rel.version}</span>
+          <span style="font-size:13px; color:rgba(255,255,255,0.5);">${dateFormatted}</span>
+        </div>
+        <h2 style="font-size:24px; font-weight:800; color:#fff; margin-bottom:20px;">Notes de version — SR Editer v${rel.version}</h2>
+        <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:24px; font-size:15px; line-height:1.7; color:rgba(255,255,255,0.85); white-space:pre-wrap; margin-bottom:24px;">${rel.notes ? rel.notes.replace(/</g, "&lt;").replace(/>/g, "&gt;") : "Améliorations générales et corrections de bugs."}</div>
+        ${rel.artifact_url ? `<a href="${rel.artifact_url}" target="_blank" rel="noopener noreferrer" style="display:inline-flex; align-items:center; gap:8px; padding:14px 28px; background:linear-gradient(135deg, #6366f1, #4f46e5); color:#fff; border-radius:12px; font-weight:700; font-size:14px; text-decoration:none; box-shadow:0 4px 15px rgba(99,102,241,0.4);">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Télécharger l'installateur v${rel.version} (.exe)
+        </a>` : ''}
+      `;
+
+      document.getElementById("article-modal").classList.add("is-open");
+    }
+
+    function closeArticleModal(event) {
+      document.getElementById("article-modal").classList.remove("is-open");
+    }
+  </script>
+</body>
+</html>
