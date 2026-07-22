@@ -21,7 +21,8 @@ body.auth-body:not(.auth-body--locked) {
 .site-topnav {
   position: sticky;
   top: 16px;
-  z-index: 100;
+  z-index: 99999;
+  overflow: visible;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -32,7 +33,7 @@ body.auth-body:not(.auth-body--locked) {
   width: min(860px, calc(100% - 32px));
   border-radius: var(--radius-pill);
   border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(12, 10, 22, 0.72);
+  background: rgba(12, 10, 22, 0.85);
   backdrop-filter: blur(24px) saturate(180%);
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.65), 0 0 30px rgba(139, 92, 246, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -52,6 +53,8 @@ body.auth-body:not(.auth-body--locked) {
   width: min(860px, calc(100% - 32px));
   margin: 0;
   box-sizing: border-box;
+  z-index: 99999;
+  overflow: visible;
 }
 
 .site-topnav-brand {
@@ -85,9 +88,7 @@ body.auth-body:not(.auth-body--locked) {
   border-radius: var(--radius-pill);
   background: transparent;
   border: none;
-  max-width: min(720px, 58vw);
-  overflow-x: auto;
-  scrollbar-width: none;
+  overflow: visible;
 }
 
 .site-nav-tabs::-webkit-scrollbar {
