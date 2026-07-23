@@ -427,8 +427,6 @@ Deno.serve(async (request) => {
       } catch {
         return json(origin, 400, { ok: false, error: "L'installateur GitHub est inaccessible." });
       }
-      const { error: unpublishError } = await admin.from("release_records").update({ published: false, updated_at: new Date().toISOString() }).eq("published", true).neq("version", version);
-      if (unpublishError) return json(origin, 500, { ok: false, error: unpublishError.message });
     }
     const notes = textOf(body.notes, 5000);
     const { error } = await admin.from("release_records").upsert({ version, artifact_url: artifactUrl, signature, notes, published, updated_at: new Date().toISOString() });
