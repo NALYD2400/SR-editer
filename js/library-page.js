@@ -7,6 +7,10 @@
 
   const CATEGORIES = [
     "Tous",
+    "Couleur unie",
+    "Couleurs GTA V / FiveM",
+    "Dégradés",
+    "Badges & Logos Vectoriels",
     "Métal",
     "Bois",
     "Brique",
