@@ -17,4 +17,14 @@
     );
     return window.__srSupabaseClient;
   };
+
+  try {
+    Object.defineProperty(window, "srSupabase", {
+      get: function () {
+        return window.getSRSupabase();
+      },
+      configurable: true,
+      enumerable: true
+    });
+  } catch (_) {}
 })();

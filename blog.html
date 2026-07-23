@@ -685,7 +685,7 @@
 
     async function loadReleases() {
       try {
-        const client = window.srSupabase;
+        const client = (typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null) || window.srSupabase;
         if (client) {
           const { data, error } = await client
             .from("release_records")

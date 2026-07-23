@@ -485,7 +485,7 @@
       const container = document.getElementById("changelog-container");
       if (!container) return;
       try {
-        const client = window.srSupabase;
+        const client = (typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null) || window.srSupabase;
         if (!client) return;
         const { data, error } = await client
           .from("release_records")
