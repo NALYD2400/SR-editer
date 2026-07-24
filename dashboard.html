@@ -4824,119 +4824,19 @@
 
 
       function showPanel(panelId) {
+        const currentLinks = document.querySelectorAll(".sidebar-link[data-panel]");
+        const currentPanels = document.querySelectorAll(".portal-panel");
 
-
-
-
-
-
-
-
-
-
-
-        links.forEach(function (l) {
-
-
-
-
-
-
-
-
-
-
-
+        currentLinks.forEach(function (l) {
           l.classList.toggle("active", l.getAttribute("data-panel") === panelId);
-
-
-
-
-
-
-
-
-
-
-
         });
 
-
-
-
-
-
-
-
-
-
-
-        panels.forEach(function (p) {
-
-
-
-
-
-
-
-
-
-
-
+        currentPanels.forEach(function (p) {
           const isTarget = p.id === "panel-" + panelId;
-
-
-
-
-
-
-
-
-
-
-
           if (isTarget) {
-
-
-
-
-
-
-
-
-
-
-
             p.classList.remove("active");
-
-
-
-
-
-
-
-
-
-
-
             void p.offsetWidth; // trigger reflow for smooth animation
-
-
-
-
-
-
-
-
-
-
-
             p.classList.add("active");
-
-
-
-
-
 
 
 
