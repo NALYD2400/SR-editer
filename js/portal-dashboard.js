@@ -305,6 +305,178 @@
 
     syncPlanButtons();
     renderDiscordConnection();
+    if (user && user.id) loadWebSupportTickets(user.id);
+  }
+
+  let activeWebTicket = null;
+
+  async function loadWebSupportTickets(userId) {
+    const listEl = document.getElementById("web-tickets-list-container");
+    const badgeEl = document.getElementById("web-ticket-count-badge");
+    if (!listEl || !client) return;
+
+    try {
+      const { data, error } = await client
+        .from("support_tickets")
+        .select("*")
+        .eq("user_id", userId)
+        .order("updated_at", { ascending: false });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        if (badgeEl) badgeEl.textContent = "0 Ticket";
+        listEl.innerHTML = `
+          <div style="text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.5); font-size: 13px;">
+            <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 600; color: rgba(255, 255, 255, 0.8);">Aucun ticket en cours</p>
+            <p style="margin: 0; font-size: 12px;">Cliquez sur "+ Nouveau Ticket" pour demander de l'aide à l'équipe support.</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (badgeEl) badgeEl.textContent = data.length + " Ticket(s)";
+
+      const statusMap = {
+        open: { label: "Ouvert", color: "#22c55e", bg: "rgba(34, 197, 94, 0.15)" },
+        pending: { label: "En attente", color: "#a855f7", bg: "rgba(168, 85, 247, 0.15)" },
+        closed: { label: "Clos", color: "#94a3b8", bg: "rgba(148, 163, 184, 0.15)" }
+      };
+
+      window.__webTicketsData = data;
+
+      listEl.innerHTML = data.map(function(t, idx) {
+        const st = statusMap[t.status] || statusMap.open;
+        const dateStr = new Date(t.updated_at || t.created_at).toLocaleDateString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+        return `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; margin-bottom: 8px;">
+            <div>
+              <div style="font-size: 13.5px; font-weight: 700; color: #ffffff; margin-bottom: 2px;">${t.subject || "Sans titre"}</div>
+              <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5);">Activité : ${dateStr}</div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 11px; background: ${st.bg}; color: ${st.color}; padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid ${st.color}40;">
+                ${st.label}
+              </span>
+              <button type="button" onclick="window.openWebTicketChat(${idx})" style="background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.35); padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer;">
+                Consulter &amp; Répondre
+              </button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    } catch (err) {
+      if (badgeEl) badgeEl.textContent = "0 Ticket";
+      if (listEl) {
+        listEl.innerHTML = `
+          <div style="text-align: center; padding: 18px; color: rgba(255, 255, 255, 0.5); font-size: 12px;">
+            Aucun ticket en cours pour le moment.
+          </div>
+        `;
+      }
+    }
+  }
+
+  window.openWebTicketChat = function(idx) {
+    const ticket = window.__webTicketsData && window.__webTicketsData[idx];
+    if (!ticket) return;
+    activeWebTicket = ticket;
+
+    const modal = document.getElementById("web-ticket-chat-modal");
+    const subjectEl = document.getElementById("web-chat-ticket-subject");
+    const statusPill = document.getElementById("web-chat-ticket-status-pill");
+    const replyInput = document.getElementById("web-reply-message");
+    const replyBtn = document.getElementById("submit-ticket-reply-btn");
+
+    if (subjectEl) subjectEl.textContent = ticket.subject || "Ticket #" + ticket.id.slice(0, 8);
+    if (statusPill) {
+      const isClosed = ticket.status === "closed";
+      const isPending = ticket.status === "pending";
+      statusPill.textContent = isClosed ? "Clos" : isPending ? "En attente" : "Ouvert";
+      statusPill.style.background = isClosed ? "rgba(148, 163, 184, 0.2)" : isPending ? "rgba(168, 85, 247, 0.2)" : "rgba(34, 197, 94, 0.2)";
+      statusPill.style.color = isClosed ? "#94a3b8" : isPending ? "#c084fc" : "#4ade80";
+      statusPill.style.border = isClosed ? "1px solid rgba(148, 163, 184, 0.4)" : isPending ? "1px solid rgba(168, 85, 247, 0.4)" : "1px solid rgba(34, 197, 94, 0.4)";
+    }
+
+    if (replyInput && replyBtn) {
+      if (ticket.status === "closed") {
+        replyInput.disabled = true;
+        replyInput.placeholder = "Ce ticket est résolu et marqué comme clos par l'assistance.";
+        replyBtn.disabled = true;
+        replyBtn.style.opacity = "0.5";
+        replyBtn.style.cursor = "not-allowed";
+      } else {
+        replyInput.disabled = false;
+        replyInput.placeholder = "Écrire votre réponse...";
+        replyBtn.disabled = false;
+        replyBtn.style.opacity = "1";
+        replyBtn.style.cursor = "pointer";
+      }
+    }
+
+    if (modal) modal.hidden = false;
+    loadWebTicketMessages(ticket.id);
+  };
+
+  async function loadWebTicketMessages(ticketId) {
+    const container = document.getElementById("web-chat-messages-container");
+    if (!container || !client) return;
+    container.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; padding: 20px;">Chargement des messages...</div>';
+
+    try {
+      const { data, error } = await client
+        .from("support_messages")
+        .select("*")
+        .eq("ticket_id", ticketId)
+        .order("created_at", { ascending: true });
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        container.innerHTML = '<div style="text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; padding: 20px;">Aucun message dans cette discussion.</div>';
+        return;
+      }
+
+      container.innerHTML = data.map(function(msg) {
+        const isAdmin = msg.author_kind === "admin" || msg.author_kind === "staff";
+        const alignSelf = isAdmin ? "flex-start" : "flex-end";
+        const bg = isAdmin 
+          ? "linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%)" 
+          : "linear-gradient(135deg, rgba(255, 0, 124, 0.22) 0%, rgba(217, 0, 104, 0.14) 100%)";
+        const border = isAdmin ? "rgba(139, 92, 246, 0.35)" : "rgba(255, 0, 124, 0.35)";
+        const borderRadius = isAdmin ? "14px 14px 14px 4px" : "14px 14px 4px 14px";
+        const authorLabel = isAdmin ? "Support SR Editer" : "Vous";
+        const avatarBg = isAdmin ? "linear-gradient(135deg, #a855f7, #6366f1)" : "linear-gradient(135deg, #ff007c, #d90068)";
+        const avatarContent = isAdmin 
+          ? "SR" 
+          : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
+        const timeStr = new Date(msg.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
+
+        return `
+          <div style="display: flex; gap: 10px; flex-direction: ${isAdmin ? 'row' : 'row-reverse'}; max-width: 85%; align-self: ${alignSelf}; margin-bottom: 6px;">
+            <div style="width: 32px; height: 32px; border-radius: 10px; background: ${avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+              ${avatarContent}
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: ${isAdmin ? 'flex-start' : 'flex-end'};">
+              <div style="font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, 0.55); margin-bottom: 4px; padding: 0 2px;">
+                ${authorLabel} <span style="font-weight: 400; opacity: 0.7;">• ${timeStr}</span>
+              </div>
+              <div style="background: ${bg}; border: 1px solid ${border}; padding: 11px 16px; border-radius: ${borderRadius}; color: #ffffff; font-size: 13.5px; line-height: 1.55; word-break: break-word; box-shadow: 0 6px 20px rgba(0,0,0,0.25);">
+                ${escapeHtml(msg.content)}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+
+      container.scrollTop = container.scrollHeight;
+    } catch (err) {
+      container.innerHTML = '<div style="text-align: center; color: #ef4444; font-size: 13px; padding: 20px;">Erreur lors du chargement de la discussion.</div>';
+    }
+  }
+
+  function escapeHtml(str) {
+    return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
   }
 
   async function init() {
@@ -659,6 +831,135 @@
     logoutBtn.addEventListener("click", async () => {
       await client.auth.signOut();
       window.location.href = "login.html";
+    });
+  }
+
+  // --- WEB TICKET CREATION & CHAT LISTENERS ---
+  const openNewBtn = document.getElementById("open-new-ticket-modal-btn");
+  const closeNewBtn = document.getElementById("close-new-ticket-modal-btn");
+  const cancelNewBtn = document.getElementById("cancel-new-ticket-modal-btn");
+  const createModal = document.getElementById("web-create-ticket-modal");
+
+  if (openNewBtn && createModal) {
+    openNewBtn.addEventListener("click", function() {
+      createModal.hidden = false;
+    });
+  }
+  if (closeNewBtn && createModal) {
+    closeNewBtn.addEventListener("click", function() { createModal.hidden = true; });
+  }
+  if (cancelNewBtn && createModal) {
+    cancelNewBtn.addEventListener("click", function() { createModal.hidden = true; });
+  }
+
+  const closeChatBtn = document.getElementById("close-ticket-chat-modal-btn");
+  const chatModal = document.getElementById("web-ticket-chat-modal");
+  if (closeChatBtn && chatModal) {
+    closeChatBtn.addEventListener("click", function() { chatModal.hidden = true; });
+  }
+
+  const createForm = document.getElementById("web-create-ticket-form");
+  if (createForm) {
+    createForm.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const subjectInput = document.getElementById("web-ticket-subject");
+      const prioritySelect = document.getElementById("web-ticket-priority");
+      const messageInput = document.getElementById("web-ticket-message");
+      const errorEl = document.getElementById("web-create-ticket-error");
+      const submitBtn = document.getElementById("submit-new-ticket-btn");
+
+      if (!subjectInput || !messageInput || !client || !currentSession) return;
+
+      const subject = subjectInput.value.trim();
+      const priority = prioritySelect ? prioritySelect.value : "normal";
+      const message = messageInput.value.trim();
+
+      if (!subject || !message) return;
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Création..."; }
+      if (errorEl) errorEl.style.display = "none";
+
+      try {
+        // 1. Insert into support_tickets
+        const { data: ticket, error: ticketError } = await client
+          .from("support_tickets")
+          .insert({
+            user_id: currentSession.user.id,
+            email: currentSession.user.email,
+            subject: subject,
+            priority: priority,
+            status: "open"
+          })
+          .select()
+          .single();
+
+        if (ticketError) throw ticketError;
+
+        // 2. Insert into support_messages
+        const { error: msgError } = await client
+          .from("support_messages")
+          .insert({
+            ticket_id: ticket.id,
+            author_user_id: currentSession.user.id,
+            author_kind: "user",
+            content: message
+          });
+
+        if (msgError) throw msgError;
+
+        subjectInput.value = "";
+        messageInput.value = "";
+        if (createModal) createModal.hidden = true;
+        loadWebSupportTickets(currentSession.user.id);
+      } catch (err) {
+        if (errorEl) {
+          errorEl.textContent = err.message || "Erreur lors de la création du ticket.";
+          errorEl.style.display = "block";
+        }
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer le ticket"; }
+      }
+    });
+  }
+
+  const replyForm = document.getElementById("web-ticket-reply-form");
+  if (replyForm) {
+    replyForm.addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const replyInput = document.getElementById("web-reply-message");
+      const submitBtn = document.getElementById("submit-ticket-reply-btn");
+      if (!replyInput || !activeWebTicket || !client || !currentSession) return;
+
+      const content = replyInput.value.trim();
+      if (!content) return;
+
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "Envoi..."; }
+
+      try {
+        const { error: msgError } = await client
+          .from("support_messages")
+          .insert({
+            ticket_id: activeWebTicket.id,
+            author_user_id: currentSession.user.id,
+            author_kind: "user",
+            content: content
+          });
+
+        if (msgError) throw msgError;
+
+        await client
+          .from("support_tickets")
+          .update({ status: "open", updated_at: new Date().toISOString() })
+          .eq("id", activeWebTicket.id);
+
+        replyInput.value = "";
+        loadWebTicketMessages(activeWebTicket.id);
+        loadWebSupportTickets(currentSession.user.id);
+      } catch (err) {
+        alert("Erreur lors de l'envoi de la réponse: " + (err.message || String(err)));
+      } finally {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "Envoyer"; }
+      }
     });
   }
 

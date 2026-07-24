@@ -4288,273 +4288,182 @@
 
 
 
+          <!-- SUPPORT PANEL -->
+          <section class="portal-panel" id="panel-support">
+            <div class="portal-card">
+              <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
+                <div>
+                  <h2 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #ffffff;">Support Client &amp; Suivi des Tickets</h2>
+                  <p class="text-muted" style="margin: 0; font-size: 13px; color: rgba(255, 255, 255, 0.65);">Consultez vos tickets en cours, obtenez de l&apos;aide en direct ou rejoignez le Discord SR Editer.</p>
+                </div>
+                <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn primary-btn" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); color: #ffffff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; box-shadow: 0 4px 16px rgba(88, 101, 242, 0.35);">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  Rejoindre le Discord Support
+                </a>
+              </div>
+
+              <!-- Live Tickets List Section -->
+              <div style="margin-bottom: 24px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                  <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff007c" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    Vos Tickets Support en Cours
+                  </h3>
+                  <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="web-ticket-count-badge" style="font-size: 11px; background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.3); padding: 2px 8px; border-radius: 12px; font-weight: 700;">
+                      Chargement...
+                    </span>
+                    <button type="button" id="open-new-ticket-modal-btn" class="btn primary-btn" style="display: inline-flex; align-items: center; gap: 6px; background: #ff007c; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease;">
+                      + Nouveau Ticket
+                    </button>
+                  </div>
+                </div>
+
+                <div id="web-tickets-list-container">
+                  <div style="text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.5); font-size: 13px;">
+                    Connexion au serveur de support...
+                  </div>
+                </div>
+              </div>
+
+              <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                <!-- Card 1: Discord 24/7 -->
+                <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(88, 101, 242, 0.2); display: flex; align-items: center; justify-content: center; color: #5865F2;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <div>
+                      <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff;">Discord Officiel 24/7</h3>
+                      <span style="font-size: 11px; color: #22c55e; font-weight: 600;">● Communauté active &amp; Support direct</span>
+                    </div>
+                  </div>
+                  <p style="margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.65); line-height: 1.5;">Posez vos questions sur le canal dédié au support. Les administrateurs et modérateurs vous répondent rapidement en direct.</p>
+                  <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn outline-btn" style="margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(88, 101, 242, 0.15); color: #5865F2; border: 1px solid rgba(88, 101, 242, 0.3); padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 12.5px; font-weight: 700; width: 100%;">
+                    Ouvrir Discord Officiel
+                  </a>
+                </div>
+
+                <!-- Card 2: Guarantee & Response Time -->
+                <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
+                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 0, 124, 0.2); display: flex; align-items: center; justify-content: center; color: #ff007c;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div>
+                      <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff;">Temps de Réponse Garantis</h3>
+                      <span style="font-size: 11px; color: #ff007c; font-weight: 600;">● Réponse sous &lt; 2h • 7j/7</span>
+                    </div>
+                  </div>
+                  <p style="margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.65); line-height: 1.5;">Tous vos tickets créés depuis l'Espace Web ou l'App Desktop sont traités en priorité par l'équipe d'administration SR Editer.</p>
+                  <span class="badge" style="margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; width: 100%; background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.3); padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">
+                    Assistance Prioritaire Active
+                  </span>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
-
-
-
-
-
-
-
-
-
-
-
       </div>
-
-
-
-
-
-
-
-
-
-
-
     </div>
-
-
-
-
-
-
-
-
-
-
-
+  </div>
+  <div class="discord-required-modal" id="discord-required-modal" hidden>
+    <section class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title" aria-describedby="discord-required-message" tabindex="-1">
+      <header class="discord-required-header">
+        <div>
+          <span class="discord-required-eyebrow">Accès sécurisé</span>
+          <h2 id="discord-required-title">Discord requis</h2>
+        </div>
+        <button type="button" class="discord-required-close" id="discord-required-close" aria-label="Fermer cette fenêtre">×</button>
+      </header>
+      <p class="discord-required-message" id="discord-required-message"></p>
+      <div class="discord-required-actions">
+        <a class="discord-required-primary" id="discord-required-join" href="#" target="_blank" rel="noopener noreferrer">Rejoindre le Discord</a>
+        <button class="discord-required-secondary" id="discord-required-retry" type="button">J’ai rejoint, réessayer</button>
+      </div>
+    </section>
   </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  <div class="discord-required-modal" id="discord-required-modal" hidden>
-
-
-
-
-
-
-
-
-
-
-
-    <section class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title" aria-describedby="discord-required-message" tabindex="-1">
-
-
-
-
-
-
-
-
-
-
-
-      <header class="discord-required-header">
-
-
-
-
-
-
-
-
-
-
-
-        <div>
-
-
-
-
-
-
-
-
-
-
-
-          <span class="discord-required-eyebrow">Accès sécurisé</span>
-
-
-
-
-
-
-
-
-
-
-
-          <h2 id="discord-required-title">Discord requis</h2>
-
-
-
-
-
-
-
-
-
-
-
+  <!-- MODAL 1: CRÉER UN NOUVEAU TICKET -->
+  <div class="discord-required-modal" id="web-create-ticket-modal" hidden style="background: rgba(6, 4, 14, 0.88); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); z-index: 10005; padding: 20px;">
+    <div style="background: linear-gradient(160deg, rgba(24, 20, 38, 0.98), rgba(12, 10, 22, 0.98)); border: 1px solid rgba(255, 0, 124, 0.35); border-radius: 20px; width: 100%; max-width: 540px; padding: 28px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 0, 124, 0.15); color: #fff; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 10px; background: rgba(255, 0, 124, 0.2); display: flex; align-items: center; justify-content: center; color: #ff007c;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          </div>
+          <div>
+            <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #ffffff;">Ouvrir un Ticket Support</h3>
+            <span style="font-size: 11.5px; color: rgba(255, 255, 255, 0.55);">Posez votre question à l'équipe SR Editer</span>
+          </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-        <button type="button" class="discord-required-close" id="discord-required-close" aria-label="Fermer cette fenêtre">×</button>
-
-
-
-
-
-
-
-
-
-
-
-      </header>
-
-
-
-
-
-
-
-
-
-
-
-      <p class="discord-required-message" id="discord-required-message"></p>
-
-
-
-
-
-
-
-
-
-
-
-      <div class="discord-required-actions">
-
-
-
-
-
-
-
-
-
-
-
-        <a class="discord-required-primary" id="discord-required-join" href="#" target="_blank" rel="noopener noreferrer">Rejoindre le Discord</a>
-
-
-
-
-
-
-
-
-
-
-
-        <button class="discord-required-secondary" id="discord-required-retry" type="button">J’ai rejoint, réessayer</button>
-
-
-
-
-
-
-
-
-
-
-
+        <button type="button" id="close-new-ticket-modal-btn" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;">×</button>
       </div>
 
-
-
-
-
-
-
-
-
-
-
-    </section>
-
-    <!-- SUPPORT PANEL -->
-    <section class="portal-panel" id="panel-support">
-      <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <div class="panel-copy">
-          <span class="panel-kicker" style="color: var(--accent, #ff007c); font-size: 11px; font-weight: 700; text-transform: uppercase;">Assistance &amp; Support</span>
-          <h2 style="margin: 4px 0; font-size: 20px;">Support Client &amp; Tickets</h2>
-          <p style="color: var(--muted, #94a3b8); font-size: 13px; margin: 0;">Posez vos questions, signalez un bug ou discutez en direct avec l&apos;équipe SR Editer.</p>
+      <form id="web-create-ticket-form">
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 8px;">Sujet de votre demande</label>
+          <input type="text" id="web-ticket-subject" required placeholder="Ex: Problème d'activation, question abonnement..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,0,124,0.3); border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 13.5px; outline: none; box-sizing: border-box; transition: border-color 0.2s ease;" />
         </div>
-        <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn primary-btn" style="display: inline-flex; align-items: center; gap: 8px; background: #5865F2; color: #fff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 600;">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-          Rejoindre le Discord Support
-        </a>
+
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 8px;">Priorité de prise en charge</label>
+          <select id="web-ticket-priority" style="width: 100%; background: #1a162b; border: 1px solid rgba(255,0,124,0.3); border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 13.5px; outline: none; box-sizing: border-box;">
+            <option value="normal">Normale (Réponse sous 2h)</option>
+            <option value="high">Haute / Urgente</option>
+            <option value="low">Faible</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 22px;">
+          <label style="display: block; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.85); margin-bottom: 8px;">Message détaillé</label>
+          <textarea id="web-ticket-message" required rows="4" placeholder="Expliquez précisément votre problème ou votre question..." style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,0,124,0.3); border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 13.5px; outline: none; box-sizing: border-box; resize: vertical; line-height: 1.5;"></textarea>
+        </div>
+
+        <div id="web-create-ticket-error" style="color: #ef4444; font-size: 12.5px; margin-bottom: 14px; padding: 10px 14px; background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; display: none;"></div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 12px;">
+          <button type="button" id="cancel-new-ticket-modal-btn" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); color: #fff; padding: 11px 20px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer;">Annuler</button>
+          <button type="submit" id="submit-new-ticket-btn" style="background: linear-gradient(135deg, #ff007c 0%, #d90068 100%); border: none; color: #fff; padding: 11px 24px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 18px rgba(255, 0, 124, 0.4);">Envoyer le ticket</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: DISCUSSION / CHAT TICKET -->
+  <div class="discord-required-modal" id="web-ticket-chat-modal" hidden style="background: rgba(6, 4, 14, 0.88); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); z-index: 10005; padding: 20px;">
+    <div style="background: linear-gradient(160deg, rgba(22, 18, 36, 0.98), rgba(12, 10, 22, 0.98)); border: 1px solid rgba(255, 0, 124, 0.35); border-radius: 20px; width: 100%; max-width: 720px; height: 82vh; max-height: 680px; display: flex; flex-direction: column; padding: 24px; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 0, 124, 0.15); color: #fff; box-sizing: border-box;">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.1); flex-shrink: 0;">
+        <div style="display: flex; align-items: center; gap: 14px;">
+          <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, rgba(255, 0, 124, 0.25), rgba(139, 92, 246, 0.25)); border: 1px solid rgba(255, 0, 124, 0.4); display: flex; align-items: center; justify-content: center; color: #ff007c;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h3 id="web-chat-ticket-subject" style="margin: 0; font-size: 17px; font-weight: 800; color: #ffffff;">Sujet du ticket</h3>
+              <span id="web-chat-ticket-status-pill" style="font-size: 10px; padding: 3px 9px; border-radius: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;">Ouvert</span>
+            </div>
+            <span style="font-size: 11.5px; color: rgba(255, 255, 255, 0.55); margin-top: 2px; display: block;">Échange direct avec l'équipe support SR Editer</span>
+          </div>
+        </div>
+        <button type="button" id="close-ticket-chat-modal-btn" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); width: 32px; height: 32px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease;">×</button>
       </div>
 
-      <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-top: 20px;">
-        <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 15px;">Support Direct Discord 24/7</h3>
-          <p style="margin: 0; font-size: 12px; color: var(--muted, #94a3b8); line-height: 1.5;">Notre équipe et la communauté réagissent rapidement en direct sur notre serveur Discord officiel.</p>
-          <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn outline-btn" style="margin-top: 16px; display: inline-flex; align-items: center; gap: 8px; background: rgba(88, 101, 242, 0.15); color: #5865F2; border: 1px solid rgba(88, 101, 242, 0.3); padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600;">
-            Ouvrir Discord 24/7
-          </a>
-        </div>
-
-        <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 20px;">
-          <h3 style="margin: 0 0 8px 0; font-size: 15px;">Support par Ticket Desktop</h3>
-          <p style="margin: 0; font-size: 12px; color: var(--muted, #94a3b8); line-height: 1.5;">Ouvrez un ticket avec suivi direct depuis l&apos;application SR Editer dans Réglages → Support &amp; assistance.</p>
-          <span class="badge" style="margin-top: 16px; display: inline-block; background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.3); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600;">
-            Disponible dans l&apos;application Desktop
-          </span>
-        </div>
+      <!-- Scrollable messages container -->
+      <div id="web-chat-messages-container" style="flex: 1; overflow-y: auto; padding: 18px 24px 18px 12px; display: flex; flex-direction: column; gap: 14px;">
+        <div style="text-align: center; color: rgba(255,255,255,0.5); font-size: 13px;">Chargement de la discussion...</div>
       </div>
-    </section>
 
-
-
-
-
+      <!-- Reply form -->
+      <form id="web-ticket-reply-form" style="padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.1); flex-shrink: 0; display: flex; gap: 12px; align-items: flex-end;">
+        <textarea id="web-reply-message" required rows="2" placeholder="Écrire votre réponse..." style="flex: 1; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 12px 16px; color: #fff; font-size: 13.5px; outline: none; resize: none; box-sizing: border-box; line-height: 1.4; transition: border-color 0.2s ease;"></textarea>
+        <button type="submit" id="submit-ticket-reply-btn" style="background: linear-gradient(135deg, #ff007c 0%, #d90068 100%); border: none; color: #fff; padding: 12px 22px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; height: 46px; white-space: nowrap; box-shadow: 0 4px 16px rgba(255, 0, 124, 0.4); display: inline-flex; align-items: center; gap: 6px;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Envoyer
+        </button>
+      </form>
+    </div>
+  </div>
 
 
 
@@ -4826,108 +4735,34 @@
       function showPanel(panelId) {
         const currentLinks = document.querySelectorAll(".sidebar-link[data-panel]");
         const currentPanels = document.querySelectorAll(".portal-panel");
-
+        const targetPanel = document.getElementById("panel-" + panelId);
+        const stageContent = document.querySelector(".portal-stage-content");
+        const stageTitle = document.getElementById("portal-stage-title");
+        const sidebar = document.querySelector(".portal-sidebar");
+        
         currentLinks.forEach(function (l) {
           l.classList.toggle("active", l.getAttribute("data-panel") === panelId);
         });
 
         currentPanels.forEach(function (p) {
-          const isTarget = p.id === "panel-" + panelId;
-          if (isTarget) {
-            p.classList.remove("active");
-            void p.offsetWidth; // trigger reflow for smooth animation
-            p.classList.add("active");
-
-
-
-
-
-
-          } else {
-
-
-
-
-
-
-
-
-
-
-
-            p.classList.remove("active");
-
-
-
-
-
-
-
-
-
-
-
-          }
-
-
-
-
-
-
-
-
-
-
-
+          p.classList.remove("active");
+          p.style.display = "none";
         });
 
+        if (targetPanel) {
+          void targetPanel.offsetWidth; // trigger reflow for animation
+          targetPanel.classList.add("active");
+          targetPanel.style.display = "block";
+          targetPanel.style.opacity = "1";
+          targetPanel.style.visibility = "visible";
+        }
 
-
-
-
-
-
-
-
-
-
+        window.scrollTo(0, 0);
         if (stageContent) stageContent.scrollTop = 0;
-
-
-
-
-
-
-
-
-
-
-
         if (stageTitle && panelTitles[panelId]) stageTitle.textContent = panelTitles[panelId];
-
-
-
-
-
-
-
-
-
-
-
         if (sidebar) sidebar.classList.remove("is-open");
-
-
-
-
-
-
-
-
-
-
-
       }
+
 
 
 

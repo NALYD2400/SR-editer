@@ -2115,16 +2115,37 @@ html[data-theme="light"] .sidebar-link:hover {
 }
 
 
-/* Guaranteed display for active panels */
-.portal-panel[hidden] {
+/* Guaranteed display for active panels & hidden elements */
+[hidden],
+.portal-panel[hidden],
+.discord-required-modal[hidden] {
   display: none !important;
 }
 
-.portal-panel.active {
+/* Custom sleek scrollbar for web support chat */
+#web-chat-messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+#web-chat-messages-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 4px;
+}
+#web-chat-messages-container::-webkit-scrollbar-thumb {
+  background: rgba(255, 0, 124, 0.35);
+  border-radius: 4px;
+}
+#web-chat-messages-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 0, 124, 0.65);
+}
+
+.portal-panel.active,
+#panel-support.active {
   display: block !important;
   opacity: 1 !important;
   visibility: visible !important;
   transform: translateY(0) scale(1) !important;
+  z-index: 10 !important;
+  position: relative !important;
 }
 
 
