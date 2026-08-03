@@ -1,4 +1,57 @@
 (function () {
+  function initMobileNav() {
+    const header = document.querySelector(".site-topnav");
+    if (!header || header.querySelector(".site-nav-toggle")) return;
+    const nav = header.querySelector(".site-nav-tabs");
+    if (!nav) return;
+
+    if (!nav.id) nav.id = "site-nav-tabs";
+
+    const toggle = document.createElement("button");
+    toggle.type = "button";
+    toggle.className = "site-nav-toggle";
+    toggle.setAttribute("aria-label", "Ouvrir le menu");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", nav.id);
+    toggle.innerHTML =
+      '<span class="site-nav-toggle-bar" aria-hidden="true"></span>' +
+      '<span class="site-nav-toggle-bar" aria-hidden="true"></span>' +
+      '<span class="site-nav-toggle-bar" aria-hidden="true"></span>';
+
+    const actions = header.querySelector(".site-nav-actions");
+    if (actions) header.insertBefore(toggle, actions);
+    else header.appendChild(toggle);
+
+    function setOpen(open) {
+      header.classList.toggle("is-nav-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Fermer le menu" : "Ouvrir le menu");
+    }
+
+    toggle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      setOpen(!header.classList.contains("is-nav-open"));
+    });
+
+    document.addEventListener("click", function (event) {
+      if (!header.classList.contains("is-nav-open")) return;
+      if (header.contains(event.target)) return;
+      setOpen(false);
+    });
+
+    nav.addEventListener("click", function (event) {
+      const link = event.target.closest("a");
+      if (!link || link.classList.contains("site-nav-dropdown-trigger")) return;
+      setOpen(false);
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.matchMedia("(min-width: 861px)").matches) setOpen(false);
+    });
+  }
+
+  initMobileNav();
+
   const config = window.SR_CONFIG;
   const client = typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null;
   if (!client || !config) return;
