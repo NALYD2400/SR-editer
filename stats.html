@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>SR Editer — Pulse</title>
+    <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="js/theme.js?v=0.3.3-vercel"></script>
+    <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
+    <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
+    <link rel="stylesheet" href="styles/ambient.css?v=2" />
+    <link rel="stylesheet" href="styles/stats.css?v=1" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  </head>
+  <body class="stats-body">
+    <div class="ambient-layer" id="ambient-layer" aria-hidden="true"></div>
+    <div class="ambient-vignette" aria-hidden="true"></div>
+
+    <div class="stats-gate" id="stats-gate">
+      <p class="stats-gate-label">SR Pulse</p>
+      <h1>Vérification d’accès…</h1>
+      <p id="stats-gate-hint">Session admin requise.</p>
+    </div>
+
+    <div class="stats-shell" id="stats-shell" hidden>
+      <header class="stats-top">
+        <a class="stats-brand" href="admin.html" aria-label="Retour console admin">
+          <img src="assets/logo_small.png" alt="" width="28" height="28" />
+          <span>
+            <strong>SR Pulse</strong>
+            <small>Command center</small>
+          </span>
+        </a>
+
+        <div class="stats-top-meta">
+          <span class="stats-live-pill" id="stats-live-pill">
+            <span class="stats-live-dot" aria-hidden="true"></span>
+            Live
+          </span>
+          <span class="stats-updated" id="stats-updated">—</span>
+          <button type="button" class="stats-refresh" id="stats-refresh">Actualiser</button>
+          <a class="stats-back" href="admin.html">Console →</a>
+        </div>
+      </header>
+
+      <main class="stats-main">
+        <section class="stats-hero" aria-labelledby="stats-hero-title">
+          <div class="stats-hero-copy">
+            <p class="stats-eyebrow">Ce qui compte vraiment</p>
+            <h1 id="stats-hero-title">Téléchargements</h1>
+            <p class="stats-hero-sub">
+              Cumulative GitHub Releases · installateur Windows
+              <span id="stats-hero-version">v—</span>
+            </p>
+          </div>
+          <div class="stats-hero-metric">
+            <p class="stats-hero-value" id="stats-downloads">—</p>
+            <p class="stats-hero-footnote" id="stats-downloads-note">Chargement des assets…</p>
+          </div>
+          <div class="stats-hero-bars" id="stats-hero-bars" aria-hidden="true"></div>
+        </section>
+
+        <section class="stats-strip" aria-label="Indicateurs clés">
+          <article class="stats-tile">
+            <span class="stats-tile-label">Utilisateurs</span>
+            <strong class="stats-tile-value" id="stats-users">—</strong>
+            <span class="stats-tile-hint">Comptes Supabase</span>
+          </article>
+          <article class="stats-tile">
+            <span class="stats-tile-label">Licences actives</span>
+            <strong class="stats-tile-value" id="stats-licenses">—</strong>
+            <span class="stats-tile-hint">Standard / Pro / Premium</span>
+          </article>
+          <article class="stats-tile">
+            <span class="stats-tile-label">Support ouvert</span>
+            <strong class="stats-tile-value" id="stats-tickets">—</strong>
+            <span class="stats-tile-hint" id="stats-tickets-hint">Tickets</span>
+          </article>
+          <article class="stats-tile">
+            <span class="stats-tile-label">Contacts récents</span>
+            <strong class="stats-tile-value" id="stats-contacts">—</strong>
+            <span class="stats-tile-hint">Messages site</span>
+          </article>
+        </section>
+
+        <section class="stats-board">
+          <div class="stats-board-head">
+            <h2>Releases</h2>
+            <p>Téléchargements par version (assets GitHub)</p>
+          </div>
+          <div class="stats-table-wrap">
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Version</th>
+                  <th>Publiée</th>
+                  <th>Téléchargements</th>
+                  <th>Part</th>
+                </tr>
+              </thead>
+              <tbody id="stats-releases-body">
+                <tr>
+                  <td colspan="4" class="stats-empty">Chargement…</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="stats-footer-row" aria-label="Santé produit">
+          <div class="stats-health">
+            <span>Version live</span>
+            <strong id="stats-version">—</strong>
+          </div>
+          <div class="stats-health">
+            <span>Plateforme</span>
+            <strong>Windows x64 · NSIS</strong>
+          </div>
+          <div class="stats-health">
+            <span>Source downloads</span>
+            <strong id="stats-repo">GitHub</strong>
+          </div>
+          <div class="stats-health">
+            <span>Compte</span>
+            <strong id="stats-email">—</strong>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/config.js?v=0.3.4"></script>
+    <script src="js/sr-supabase.js?v=1"></script>
+    <script src="js/ambient.js?v=6"></script>
+    <script src="js/stats.js?v=1"></script>
+  </body>
+</html>

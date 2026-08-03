@@ -251,6 +251,8 @@ body {
   width: 100%;
   text-align: left;
   transition: all 0.1s ease;
+  text-decoration: none;
+  box-sizing: border-box;
 }
 
 .vercel-vertical-links .sidebar-link:hover {
