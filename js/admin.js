@@ -88,6 +88,7 @@
     audit: "Audit global",
     system: "Santé système",
     team: "Équipe superadmin",
+    pulse: "Stats",
     library: "Bibliothèque de Textures"
   };
 
@@ -104,6 +105,7 @@
     audit: "Tracez l'intégralité des événements d'administration et de sécurité.",
     system: "Surveillez les logs serveurs, les Edge Functions et le statut de la DB.",
     team: "Gérez les permissions des administrateurs et modérateurs.",
+    pulse: "Téléchargements GitHub, licences et indicateurs clés du produit.",
     library: "Ajoutez, organisez et publiez les textures disponibles dans l’application."
   };
 
@@ -437,6 +439,7 @@
       audit: "audit",
       system: "system",
       team: "team",
+      pulse: "console",
       library: "library"
     };
     consoleAccess = { access, mapping };
@@ -1718,6 +1721,138 @@
     } catch (reason) {
       addLog("e", String(reason));
     }
+  }
+
+  function pulseRepoFromConfig() {
+    const url = String(config.downloadUrl || "");
+    const match = url.match(/github\.com\/([^/]+)\/([^/]+)\/releases/i);
+    if (match) return `${match[1]}/${match[2]}`;
+    return "NALYD2400/SR-editer";
+  }
+
+  function formatPulseNumber(value) {
+    const n = Number(value);
+    if (!Number.isFinite(n)) return "—";
+    return new Intl.NumberFormat("fr-FR").format(n);
+  }
+
+  function formatPulseDate(value) {
+    if (!value) return "—";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  async function fetchGithubReleaseStats(repo) {
+    const response = await fetch(
+      `https://api.github.com/repos/${repo}/releases?per_page=20`,
+      { headers: { Accept: "application/vnd.github+json" } }
+    );
+    if (!response.ok) throw new Error(`GitHub API ${response.status}`);
+    const releases = await response.json();
+    if (!Array.isArray(releases)) return [];
+    return releases
+      .filter((rel) => rel && !rel.draft)
+      .map((rel) => {
+        const assets = Array.isArray(rel.assets) ? rel.assets : [];
+        const downloads = assets.reduce((sum, asset) => sum + (Number(asset.download_count) || 0), 0);
+        return {
+          tag: String(rel.tag_name || rel.name || "").replace(/^v/i, ""),
+          publishedAt: rel.published_at || rel.created_at,
+          downloads,
+          prerelease: Boolean(rel.prerelease)
+        };
+      })
+      .filter((row) => row.tag);
+  }
+
+  function renderPulseBars(rows) {
+    const bars = document.getElementById("pulse-hero-bars");
+    if (!bars) return;
+    bars.replaceChildren();
+    const sample = rows.slice(0, 12);
+    const max = Math.max(...sample.map((row) => row.downloads), 1);
+    sample
+      .slice()
+      .reverse()
+      .forEach((row, index) => {
+        const bar = document.createElement("span");
+        bar.style.height = `${Math.round(Math.max(0.12, row.downloads / max) * 100)}%`;
+        bar.style.animationDelay = `${index * 40}ms`;
+        bars.appendChild(bar);
+      });
+  }
+
+  function renderPulseReleases(rows) {
+    const body = document.getElementById("pulse-releases-body");
+    if (!body) return;
+    if (!rows.length) {
+      body.innerHTML = '<tr><td colspan="4" class="empty-state">Aucune release GitHub trouvée.</td></tr>';
+      return;
+    }
+    const total = rows.reduce((sum, row) => sum + row.downloads, 0);
+    body.innerHTML = rows
+      .map((row) => {
+        const share = total > 0 ? Math.round((row.downloads / total) * 100) : 0;
+        const label = `v${escapeHtml(row.tag)}${row.prerelease ? " · pre" : ""}`;
+        return `<tr>
+          <td><strong>${label}</strong></td>
+          <td>${escapeHtml(formatPulseDate(row.publishedAt))}</td>
+          <td>${formatPulseNumber(row.downloads)}</td>
+          <td><span class="pulse-share"><span class="pulse-share-track"><span class="pulse-share-fill" style="width:${share}%"></span></span><span>${share}%</span></span></td>
+        </tr>`;
+      })
+      .join("");
+  }
+
+  async function loadPulseStats() {
+    const version = String(config.appVersion || "—").replace(/^v/i, "");
+    const repo = pulseRepoFromConfig();
+    const setText = (id, value) => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    };
+
+    setText("pulse-version", `v${version}`);
+    setText("pulse-hero-version", `v${version}`);
+    setText("pulse-repo", repo);
+
+    try {
+      const data = await adminRequest("dashboard");
+      const metrics = data.metrics || {};
+      setText("pulse-users", formatPulseNumber(metrics.users));
+      setText("pulse-licenses", formatPulseNumber(metrics.activeLicenses));
+      setText("pulse-tickets", formatPulseNumber(metrics.openTickets));
+      setText("pulse-contacts", formatPulseNumber(metrics.newContacts));
+      setText("pulse-tickets-hint", `${formatPulseNumber(metrics.urgentTickets || 0)} urgent(s)`);
+    } catch (reason) {
+      addLog("e", String(reason));
+    }
+
+    try {
+      const rows = await fetchGithubReleaseStats(repo);
+      const total = rows.reduce((sum, row) => sum + row.downloads, 0);
+      setText("pulse-downloads", formatPulseNumber(total));
+      setText(
+        "pulse-downloads-note",
+        `${rows.length} release(s) · dernière v${rows[0] ? rows[0].tag : version}`
+      );
+      renderPulseReleases(rows);
+      renderPulseBars(rows);
+    } catch (reason) {
+      setText("pulse-downloads", "—");
+      setText("pulse-downloads-note", `GitHub indisponible : ${String(reason).replace(/^Error:\s*/i, "")}`);
+      const body = document.getElementById("pulse-releases-body");
+      if (body) {
+        body.innerHTML =
+          '<tr><td colspan="4" class="empty-state">Impossible de lire les téléchargements GitHub pour le moment.</td></tr>';
+      }
+    }
+
+    setText(
+      "pulse-updated",
+      `Maj ${new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}`
+    );
   }
 
   function formatActivityShortTime(value) {
@@ -3039,7 +3174,7 @@
   });
 
   function loadPanel(panelId) {
-    const loaders = { overview: loadDashboard, users: refreshUsers, subscriptions: loadSubscriptions, coupons: loadCoupons, support: loadSupport, contacts: loadContacts, releases: loadReleases, activity: loadActivity, audit: loadAudit, system: loadSystem, team: loadTeam, library: loadLibrary };
+    const loaders = { overview: loadDashboard, users: refreshUsers, subscriptions: loadSubscriptions, coupons: loadCoupons, support: loadSupport, contacts: loadContacts, releases: loadReleases, activity: loadActivity, audit: loadAudit, system: loadSystem, team: loadTeam, pulse: loadPulseStats, library: loadLibrary };
     return loaders[panelId]?.();
   }
 
@@ -4306,6 +4441,7 @@
 
   document.querySelectorAll("[data-refresh]").forEach((button) => button.addEventListener("click", () => void loadPanel(button.dataset.refresh)));
   document.getElementById("refresh-releases-btn")?.addEventListener("click", () => void loadReleases());
+  document.getElementById("pulse-refresh-btn")?.addEventListener("click", () => void loadPulseStats());
 
 
 

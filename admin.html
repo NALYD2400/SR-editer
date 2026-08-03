@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.80-releases" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.81-pulse" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -60,10 +60,6 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
             <span class="nav-title">Console</span>
           </button>
-          <a class="sidebar-link" href="stats.html" id="sidebar-stats-link">
-            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-            <span class="nav-title">Pulse / Stats</span>
-          </a>
           <button type="button" class="sidebar-link" data-panel="users">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span class="nav-title">Utilisateurs</span>
@@ -103,6 +99,10 @@
           <button type="button" class="sidebar-link" data-panel="team">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
             <span class="nav-title">Équipe</span>
+          </button>
+          <button type="button" class="sidebar-link" data-panel="pulse">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <span class="nav-title">Stats</span>
           </button>
           <button type="button" class="sidebar-link" data-panel="library">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
@@ -1473,6 +1473,98 @@
             </div>
           </section>
 
+          <!-- Pulse / Stats -->
+          <section class="admin-panel" id="panel-pulse">
+            <div class="pulse-toolbar">
+              <div class="pulse-toolbar-copy">
+                <span class="pulse-live-pill">
+                  <span class="pulse-live-dot" aria-hidden="true"></span>
+                  Live
+                </span>
+                <span class="pulse-updated" id="pulse-updated">—</span>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="pulse-refresh-btn">Actualiser</button>
+            </div>
+
+            <div class="pulse-hero">
+              <div class="pulse-hero-copy">
+                <p class="pulse-eyebrow">Ce qui compte vraiment</p>
+                <h2 class="pulse-hero-title">Téléchargements</h2>
+                <p class="pulse-hero-sub">
+                  Cumulative GitHub Releases · installateur Windows
+                  <strong id="pulse-hero-version">v—</strong>
+                </p>
+              </div>
+              <div class="pulse-hero-metric">
+                <p class="pulse-hero-value" id="pulse-downloads">—</p>
+                <p class="pulse-hero-note" id="pulse-downloads-note">Chargement…</p>
+              </div>
+              <div class="pulse-hero-bars" id="pulse-hero-bars" aria-hidden="true"></div>
+            </div>
+
+            <div class="kpi-grid pulse-kpi-grid">
+              <div class="kpi-card">
+                <span class="kpi-label">Utilisateurs</span>
+                <span class="kpi-value" id="pulse-users">—</span>
+                <span class="kpi-trend">Comptes Supabase</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Licences actives</span>
+                <span class="kpi-value" id="pulse-licenses">—</span>
+                <span class="kpi-trend">Standard / Pro / Premium</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Support ouvert</span>
+                <span class="kpi-value" id="pulse-tickets">—</span>
+                <span class="kpi-trend" id="pulse-tickets-hint">Tickets</span>
+              </div>
+              <div class="kpi-card">
+                <span class="kpi-label">Contacts récents</span>
+                <span class="kpi-value" id="pulse-contacts">—</span>
+                <span class="kpi-trend">Messages site</span>
+              </div>
+            </div>
+
+            <div class="pulse-board">
+              <div class="pulse-board-head">
+                <h3>Releases</h3>
+                <p>Téléchargements par version (assets GitHub)</p>
+              </div>
+              <div class="table-wrap">
+                <table class="data-table pulse-table">
+                  <thead>
+                    <tr>
+                      <th>Version</th>
+                      <th>Publiée</th>
+                      <th>Téléchargements</th>
+                      <th>Part</th>
+                    </tr>
+                  </thead>
+                  <tbody id="pulse-releases-body">
+                    <tr>
+                      <td colspan="4" class="empty-state">Chargement…</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="pulse-health-row">
+              <div class="pulse-health">
+                <span>Version live</span>
+                <strong id="pulse-version">—</strong>
+              </div>
+              <div class="pulse-health">
+                <span>Plateforme</span>
+                <strong>Windows x64 · NSIS</strong>
+              </div>
+              <div class="pulse-health">
+                <span>Source downloads</span>
+                <strong id="pulse-repo">GitHub</strong>
+              </div>
+            </div>
+          </section>
+
           <!-- Textures Library -->
           <section class="admin-panel" id="panel-library">
             <div class="library-toolbar">
@@ -1700,7 +1792,7 @@
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.4.80-releases"></script>
+    <script src="js/admin.js?v=0.4.81-pulse"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");
