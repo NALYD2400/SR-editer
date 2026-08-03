@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SR Editer — Bêta · GTA V & FiveM</title>
+  <title>SR Editer · GTA V & FiveM</title>
   <meta name="description" content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM." />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="SR Editer — Bêta · GTA V & FiveM" />
+  <meta property="og:title" content="SR Editer · GTA V & FiveM" />
   <meta property="og:description" content="Édite tes textures GTA V et FiveM." />
-  <meta name="twitter:title" content="SR Editer — Bêta · GTA V & FiveM" />
+  <meta name="twitter:title" content="SR Editer · GTA V & FiveM" />
   <meta name="twitter:description" content="Édite tes textures GTA V et FiveM." />
   <meta property="og:image" content="assets/photo%20app/Capture%20d%E2%80%99%C3%A9cran%202026-07-04%20163113.png" />
   <meta name="twitter:card" content="summary_large_image" />
@@ -45,7 +45,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
         </a>
         <div class="site-nav-dropdown-menu">
-          <a href="index.html" class="dropdown-item">SR Editer Bêta</a>
+          <a href="index.html" class="dropdown-item">SR Editer</a>
           <a href="library.html" class="dropdown-item">Bibliothèque Cloud</a>
         </div>
       </div>
@@ -71,17 +71,17 @@
 
     <div class="site-nav-actions">
       <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
-        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
+        <script src="js/nav-bootstrap.js?v=1"></script>
     </div>
   </header>
 
   <main>
     <section class="client-hero">
       <div class="hero-inner reveal">
-        <p class="hero-kicker"><span id="app-version">v0.4.3</span> · <span class="hero-beta">Bêta</span> · Application desktop</p>
-        <h1 class="hero-title">GTA V & FiveM</h1>
+        <p class="hero-kicker"><span id="app-version">v0.4.5</span> · Application desktop Windows</p>
+        <h1 class="hero-title">SR Editer</h1>
         <p class="hero-lead">
-          Ouvre tes dossiers de mods, édite les textures en calques, prévisualise en 3D — tout en local, sans cloud obligatoire.
+          Atelier local pour GTA V &amp; FiveM : ouvre tes dossiers de mods, édite les textures en calques, prévisualise en 3D — sans cloud obligatoire.
         </p>
 
         <div class="hero-cta" id="telecharger">
@@ -187,8 +187,8 @@
           <p class="pricing-amount">19,99€ <span>/ mois</span></p>
           <ul>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Standard inclus</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Rendu &amp; Textures Ultra 4K</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Outils d'édition &amp; génération IA</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support prioritaire Discord</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Accès anticipé aux outils expérimentaux</li>
           </ul>
           <a class="btn pricing-btn pricing-btn--primary" href="login.html?next=dashboard.html">S'abonner Pro</a>
         </article>
@@ -198,19 +198,19 @@
           <p class="pricing-amount">29,99€ <span>/ mois</span></p>
           <ul>
             <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Pro inclus</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> IA avancée &amp; accès illimité</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support prioritaire VIP (Discord)</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support VIP Discord</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priorité sur les retours produit</li>
           </ul>
           <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Premium</a>
         </article>
       </div>
-      <p class="pricing-note">Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement dans l'espace client</a>.</p>
+      <p class="pricing-note">L'enregistrement et l'export nécessitent Standard ou supérieur. L'IA texture utilise vos propres clés API (OpenAI / Gemini). Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement</a>.</p>
     </section>
 
     <section class="client-cta-pro reveal" id="demarrer">
       <div class="cta-inner">
         <h2>Prêt à modder vos assets ?</h2>
-        <p>Téléchargez SR Editer v0.4.2, connectez-vous et commencez à éditer vos textures et modèles 3D immédiatement.</p>
+        <p>Téléchargez SR Editer <span id="cta-app-version">v0.4.5</span>, connectez-vous et commencez à éditer vos textures et modèles 3D immédiatement.</p>
         <a href="#" class="btn btn-hero" id="download-btn-2">Télécharger l'application</a>
         <p class="cta-req">Windows 10/11 x64 · 8 Go RAM recommandés · GTA V / FiveM</p>
       </div>
@@ -255,9 +255,10 @@
         <div class="footer-links-col">
           <h4>Légal &amp; Support</h4>
           <ul>
-            <li><a href="docs.html#legal">Mentions Légales</a></li>
+            <li><a href="privacy.html">Confidentialité</a></li>
+            <li><a href="terms.html">Conditions d'utilisation</a></li>
+            <li><a href="docs.html#legal">Mentions légales</a></li>
             <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
-            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Support Technique</a></li>
           </ul>
         </div>
       </div>

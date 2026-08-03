@@ -36,7 +36,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
           </a>
           <div class="site-nav-dropdown-menu">
-            <a href="index.html" class="dropdown-item">SR Editer Bêta</a>
+            <a href="index.html" class="dropdown-item">SR Editer</a>
             <a href="library.html" class="dropdown-item">Bibliothèque Cloud</a>
           </div>
         </div>
@@ -62,13 +62,13 @@
 
       <div class="site-nav-actions">
         <a href="login.html?next=docs.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
-        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
+        <script src="js/nav-bootstrap.js?v=1"></script>
       </div>
     </header>
 
     <main class="site-main">
       <div class="site-hero-block">
-        <p class="hero-kicker"><span class="hero-beta">Documentation</span> · SR Editer v0.4.2</p>
+        <p class="hero-kicker"><span class="hero-beta">Documentation</span> · SR Editer v0.4.5</p>
         <h1 class="hero-title">Guide &amp; Documentation</h1>
         <p class="hero-lead">
           Le guide officiel pour l'inspection, l'édition de textures 2D et la prévisualisation 3D temps réel pour GTA V et FiveM.
@@ -335,7 +335,7 @@
                 <thead>
                   <tr>
                     <th>Fonctionnalité</th>
-                    <th>Gratuit (Bêta)</th>
+                    <th>Gratuit</th>
                     <th>Standard (9,99€/mois)</th>
                     <th>Pro (19,99€/mois)</th>
                     <th>Premium (29,99€/mois)</th>
@@ -412,6 +412,11 @@
             <h2>11. Mentions Légales &amp; Confidentialité</h2>
             <p>SR Editer est un logiciel indépendant développé pour la communauté de modding. SR Editer n'est en aucun cas affilié, sponsorisé ou approuvé par Rockstar Games, Take-Two Interactive ou Cfx.re / FiveM.</p>
             <p>Toutes les marques déposées, noms de produits et logos appartiennent à leurs propriétaires respectifs. L'utilisation de cet outil reste sous votre responsabilité exclusive pour la création de contenu moddé personnel ou autorisé.</p>
+            <p>Documents complets :</p>
+            <ul>
+              <li><a href="privacy.html">Politique de confidentialité (RGPD)</a></li>
+              <li><a href="terms.html">Conditions d'utilisation</a></li>
+            </ul>
           </section>
         </div>
       </div>
@@ -460,7 +465,9 @@
         <div class="footer-links-col">
           <h4>Légal &amp; Support</h4>
           <ul>
-            <li><a href="docs.html#legal">Mentions Légales</a></li>
+            <li><a href="privacy.html">Confidentialité</a></li>
+            <li><a href="terms.html">Conditions d'utilisation</a></li>
+            <li><a href="docs.html#legal">Mentions légales</a></li>
             <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
             <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Support Technique</a></li>
           </ul>
@@ -496,7 +503,7 @@
         if (error || !data || !data.length) {
           container.innerHTML = `
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 20px;">
-              <h3 style="margin-top:0; color:#818cf8; font-size:16px;">SR Editer v0.4.2</h3>
+              <h3 style="margin-top:0; color:#818cf8; font-size:16px;">SR Editer v0.4.5</h3>
               <p style="white-space:pre-wrap; line-height:1.6; opacity:0.9; font-size:14px; margin-bottom:0;">Nouvelle version stable avec prévisualisation WebGL et Texture Studio 2D.</p>
             </div>
           `;

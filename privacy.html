@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Politique de confidentialité — SR Editer</title>
+  <meta name="description" content="Politique de confidentialité de SR Editer : données collectées, finalités, conservation et droits." />
+  <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
+  <script src="js/theme.js?v=0.3.4-pro"></script>
+  <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
+  <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
+  <link rel="stylesheet" href="styles/ambient.css?v=2" />
+  <link rel="stylesheet" href="styles/site-pages.css?v=10" />
+  <link rel="stylesheet" href="styles/client.css?v=0.3.6-pricing" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="client-page" data-site-page="privacy">
+  <div class="ambient-background" aria-hidden="true">
+    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+  </div>
+  <div class="ambient-vignette" aria-hidden="true"></div>
+
+  <header class="site-topnav">
+    <a href="index.html" class="site-topnav-brand" aria-label="SR Editer">
+      <img src="assets/logo_small.png" alt="SR Editer" />
+      <span>SR Editer</span>
+    </a>
+    <nav class="site-nav-tabs" aria-label="Sections du site">
+      <a href="index.html">Accueil</a>
+      <a href="docs.html">Documentation</a>
+      <a href="terms.html">Conditions</a>
+    </nav>
+    <div class="site-nav-actions">
+      <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+      <script src="js/nav-bootstrap.js?v=1"></script>
+    </div>
+  </header>
+
+  <main class="site-shell" style="padding: 48px 24px 80px; max-width: 820px; margin: 0 auto;">
+    <p class="hero-kicker">Légal · Mis à jour le 3 août 2026</p>
+    <h1 class="hero-title" style="font-size: clamp(2rem, 4vw, 2.8rem);">Politique de confidentialité</h1>
+    <p class="hero-lead">
+      Cette politique décrit comment SR Editer traite les données personnelles lorsque vous utilisez
+      le site <a href="https://sr-editer.vercel.app/">sr-editer.vercel.app</a> et l’application desktop.
+    </p>
+
+    <section class="docs-card" style="margin-top: 28px;">
+      <h2>1. Responsable du traitement</h2>
+      <p>
+        Le responsable du traitement est l’éditeur de SR Editer. Pour toute demande relative à vos
+        données : contactez le support via Discord
+        (<a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">serveur officiel</a>)
+        ou l’adresse indiquée dans l’espace client.
+      </p>
+      <p><em>Complétez ici votre identité légale (nom / société, adresse, e-mail de contact RGPD) avant une commercialisation large.</em></p>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>2. Données collectées</h2>
+      <ul>
+        <li><strong>Compte</strong> : e-mail, mot de passe hashé (via Supabase Auth), éventuellement profil Discord (identifiant, nom d’affichage, avatar) si vous choisissez la connexion Discord.</li>
+        <li><strong>Abonnement</strong> : statut d’abonnement, identifiants techniques Stripe (pas le numéro complet de carte, géré par Stripe).</li>
+        <li><strong>Usage produit</strong> : journaux techniques minimaux (erreurs, événements d’authentification) nécessaires au fonctionnement et à la sécurité.</li>
+        <li><strong>Données locales</strong> : vos fichiers de mods, textures et projets restent sur votre ordinateur. Ils ne sont pas uploadés vers nos serveurs sauf action explicite (ex. bibliothèque cloud si vous l’utilisez).</li>
+        <li><strong>IA</strong> : si vous activez l’édition IA, les images et prompts sont envoyés aux fournisseurs que vous configurez (OpenAI / Google Gemini) avec <em>votre</em> clé API.</li>
+      </ul>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>3. Finalités et bases légales</h2>
+      <ul>
+        <li>Fournir le compte, l’abonnement et l’accès à l’application (exécution du contrat).</li>
+        <li>Sécuriser les comptes, prévenir la fraude et assurer le support (intérêt légitime / obligation légale).</li>
+        <li>Améliorer le produit à partir de retours et d’incidents techniques anonymisés lorsque possible (intérêt légitime).</li>
+      </ul>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>4. Sous-traitants</h2>
+      <ul>
+        <li><strong>Supabase</strong> : authentification et base de données profils.</li>
+        <li><strong>Stripe</strong> : paiement et portail de facturation.</li>
+        <li><strong>Vercel</strong> : hébergement du site et du manifeste de mise à jour.</li>
+        <li><strong>Discord</strong> : connexion OAuth optionnelle et communauté support.</li>
+        <li><strong>GitHub</strong> : distribution des installateurs / releases.</li>
+      </ul>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>5. Conservation</h2>
+      <p>
+        Les données de compte sont conservées tant que le compte est actif, puis supprimées ou
+        anonymisées dans un délai raisonnable après demande de suppression, sauf obligations
+        comptables/légales (facturation).
+      </p>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>6. Vos droits (RGPD)</h2>
+      <p>
+        Vous pouvez demander l’accès, la rectification, l’effacement, la limitation, la portabilité
+        et vous opposer à certains traitements. Vous pouvez aussi introduire une réclamation auprès
+        de la CNIL (<a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>).
+      </p>
+    </section>
+
+    <section class="docs-card" style="margin-top: 16px;">
+      <h2>7. Sécurité</h2>
+      <p>
+        Nous appliquons des mesures techniques raisonnables (HTTPS, authentification, contrôles
+        d’abonnement côté application, permissions Tauri limitées). Aucun système n’est infaillible :
+        protégez aussi votre poste et vos clés API.
+      </p>
+    </section>
+
+    <p style="margin-top: 28px;">
+      <a href="terms.html">Conditions d’utilisation</a> ·
+      <a href="docs.html#legal">Mentions légales</a> ·
+      <a href="index.html">Retour à l’accueil</a>
+    </p>
+  </main>
+
+  <script src="js/config.js?v=0.3.4"></script>
+  <script src="js/sr-supabase.js?v=1"></script>
+  <script src="js/ambient.js?v=6"></script>
+  <script src="js/site-nav.js?v=6"></script>
+</body>
+</html>

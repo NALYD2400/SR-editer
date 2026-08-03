@@ -21,16 +21,26 @@
       .replace(/"/g, "&quot;");
   }
 
+  function safeHttpsUrl(value) {
+    try {
+      const url = new URL(String(value || ""));
+      if (url.protocol === "https:" || url.protocol === "http:") return url.href;
+    } catch (_e) {}
+    return null;
+  }
+
   function getAvatarUrl(user) {
     if (!user) return null;
-    if (typeof user.avatarUrl === "string") return user.avatarUrl;
+    if (typeof user.avatarUrl === "string") return safeHttpsUrl(user.avatarUrl);
     const meta = user.user_metadata || {};
-    if (meta.avatar_url) return meta.avatar_url;
-    if (meta.picture) return meta.picture;
+    if (meta.avatar_url) return safeHttpsUrl(meta.avatar_url);
+    if (meta.picture) return safeHttpsUrl(meta.picture);
     const discord = (user.identities || []).find(function (identity) {
       return identity.provider === "discord";
     });
-    return (discord && discord.identity_data && discord.identity_data.avatar_url) || null;
+    return safeHttpsUrl(
+      discord && discord.identity_data && discord.identity_data.avatar_url
+    );
   }
 
   function getDisplayName(user) {

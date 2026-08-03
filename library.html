@@ -62,7 +62,7 @@
 
       <div class="site-nav-actions">
         <a href="login.html?next=library.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
-        <script>(function(){try{var el=document.getElementById("site-nav-account");if(!el)return;var u=null;var c=localStorage.getItem("sr_site_nav_cache_v1");if(c){u=JSON.parse(c);}if(!u||!u.name){for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&(k.includes("auth-token")||k.startsWith("sb-"))){var t=localStorage.getItem(k);if(t&&t.includes("user")){var s=JSON.parse(t);var usr=s.user||(s.currentSession&&s.currentSession.user);if(usr){var m=usr.user_metadata||{};var nm=m.full_name||m.name||m.preferred_username||(usr.email?usr.email.split("@")[0]:"Compte");var av=m.avatar_url||m.picture||null;u={name:nm,email:usr.email||"",avatarUrl:av,isAdmin:Boolean(s.isAdmin||(m&&m.role==="admin"))};break;}}}}}if(u&&u.name){el.className="site-nav-account";el.href=u.isAdmin?"admin.html":"dashboard.html";el.title=(u.email||u.name)+(u.isAdmin?" (Admin)":"");var img=u.avatarUrl?'<img class="site-nav-avatar" src="'+String(u.avatarUrl).replace(/"/g,"")+'" alt="" width="22" height="22" referrerpolicy="no-referrer">':'<span class="site-nav-avatar site-nav-avatar--initial">'+String(u.name.charAt(0)||"?").toUpperCase()+"</span>";var adminTag=u.isAdmin?'<span class="site-nav-admin-badge">Admin</span>':"";el.innerHTML=img+'<span class="site-nav-account-label">'+String(u.name)+'</span>'+adminTag;}else{el.innerHTML="Se connecter";}}catch(e){if(el)el.innerHTML="Se connecter";}})();</script>
+        <script src="js/nav-bootstrap.js?v=1"></script>
       </div>
     </header>
 
