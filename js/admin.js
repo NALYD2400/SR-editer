@@ -1767,19 +1767,22 @@
   }
 
   function renderPulseBars(rows) {
-    const bars = document.getElementById("pulse-hero-bars");
-    if (!bars) return;
-    bars.replaceChildren();
-    const sample = rows.slice(0, 12);
+    const chart = document.getElementById("pulse-hero-bars");
+    if (!chart) return;
+    chart.replaceChildren();
+    const sample = rows.slice(0, 16);
     const max = Math.max(...sample.map((row) => row.downloads), 1);
     sample
       .slice()
       .reverse()
-      .forEach((row, index) => {
+      .forEach((row) => {
+        const col = document.createElement("div");
+        col.className = "pulse-chart-col";
+        col.title = `v${row.tag} · ${formatPulseNumber(row.downloads)}`;
         const bar = document.createElement("span");
-        bar.style.height = `${Math.round(Math.max(0.12, row.downloads / max) * 100)}%`;
-        bar.style.animationDelay = `${index * 40}ms`;
-        bars.appendChild(bar);
+        bar.style.height = `${Math.round(Math.max(0.08, row.downloads / max) * 100)}%`;
+        col.appendChild(bar);
+        chart.appendChild(col);
       });
   }
 

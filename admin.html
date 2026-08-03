@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.81-pulse" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.82-pulse-vercel" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -1477,6 +1477,7 @@
           <section class="admin-panel" id="panel-pulse">
             <div class="pulse-toolbar">
               <div class="pulse-toolbar-copy">
+                <span class="pulse-range-pill">All time</span>
                 <span class="pulse-live-pill">
                   <span class="pulse-live-dot" aria-hidden="true"></span>
                   Live
@@ -1486,82 +1487,84 @@
               <button type="button" class="btn btn-ghost btn-sm" id="pulse-refresh-btn">Actualiser</button>
             </div>
 
-            <div class="pulse-hero">
-              <div class="pulse-hero-copy">
-                <p class="pulse-eyebrow">Ce qui compte vraiment</p>
-                <h2 class="pulse-hero-title">Téléchargements</h2>
-                <p class="pulse-hero-sub">
-                  Cumulative GitHub Releases · installateur Windows
-                  <strong id="pulse-hero-version">v—</strong>
-                </p>
-              </div>
-              <div class="pulse-hero-metric">
-                <p class="pulse-hero-value" id="pulse-downloads">—</p>
-                <p class="pulse-hero-note" id="pulse-downloads-note">Chargement…</p>
-              </div>
-              <div class="pulse-hero-bars" id="pulse-hero-bars" aria-hidden="true"></div>
+            <div class="pulse-metrics">
+              <article class="pulse-metric is-primary">
+                <span class="pulse-metric-label">Téléchargements</span>
+                <strong class="pulse-metric-value" id="pulse-downloads">—</strong>
+                <span class="pulse-metric-hint" id="pulse-downloads-note">Chargement…</span>
+              </article>
+              <article class="pulse-metric">
+                <span class="pulse-metric-label">Utilisateurs</span>
+                <strong class="pulse-metric-value" id="pulse-users">—</strong>
+                <span class="pulse-metric-hint">Comptes Supabase</span>
+              </article>
+              <article class="pulse-metric">
+                <span class="pulse-metric-label">Licences actives</span>
+                <strong class="pulse-metric-value" id="pulse-licenses">—</strong>
+                <span class="pulse-metric-hint">Standard / Pro / Premium</span>
+              </article>
+              <article class="pulse-metric">
+                <span class="pulse-metric-label">Support ouvert</span>
+                <strong class="pulse-metric-value" id="pulse-tickets">—</strong>
+                <span class="pulse-metric-hint" id="pulse-tickets-hint">Tickets</span>
+              </article>
+              <article class="pulse-metric">
+                <span class="pulse-metric-label">Contacts</span>
+                <strong class="pulse-metric-value" id="pulse-contacts">—</strong>
+                <span class="pulse-metric-hint">Messages site</span>
+              </article>
             </div>
 
-            <div class="kpi-grid pulse-kpi-grid">
-              <div class="kpi-card">
-                <span class="kpi-label">Utilisateurs</span>
-                <span class="kpi-value" id="pulse-users">—</span>
-                <span class="kpi-trend">Comptes Supabase</span>
+            <div class="pulse-chart-card">
+              <div class="pulse-chart-head">
+                <div>
+                  <p class="pulse-eyebrow">Downloads</p>
+                  <h2 class="pulse-chart-title">Installateur Windows <span id="pulse-hero-version">v—</span></h2>
+                </div>
+                <p class="pulse-chart-meta">Cumulative GitHub Releases</p>
               </div>
-              <div class="kpi-card">
-                <span class="kpi-label">Licences actives</span>
-                <span class="kpi-value" id="pulse-licenses">—</span>
-                <span class="kpi-trend">Standard / Pro / Premium</span>
-              </div>
-              <div class="kpi-card">
-                <span class="kpi-label">Support ouvert</span>
-                <span class="kpi-value" id="pulse-tickets">—</span>
-                <span class="kpi-trend" id="pulse-tickets-hint">Tickets</span>
-              </div>
-              <div class="kpi-card">
-                <span class="kpi-label">Contacts récents</span>
-                <span class="kpi-value" id="pulse-contacts">—</span>
-                <span class="kpi-trend">Messages site</span>
-              </div>
+              <div class="pulse-chart" id="pulse-hero-bars" aria-hidden="true"></div>
             </div>
 
-            <div class="pulse-board">
-              <div class="pulse-board-head">
-                <h3>Releases</h3>
-                <p>Téléchargements par version (assets GitHub)</p>
+            <div class="pulse-panels">
+              <div class="pulse-board">
+                <div class="pulse-board-head">
+                  <h3>Releases</h3>
+                  <p>Part des téléchargements</p>
+                </div>
+                <div class="table-wrap">
+                  <table class="pulse-table">
+                    <thead>
+                      <tr>
+                        <th>Version</th>
+                        <th>Publiée</th>
+                        <th>Téléchargements</th>
+                        <th>Part</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pulse-releases-body">
+                      <tr>
+                        <td colspan="4" class="empty-state">Chargement…</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
-              <div class="table-wrap">
-                <table class="data-table pulse-table">
-                  <thead>
-                    <tr>
-                      <th>Version</th>
-                      <th>Publiée</th>
-                      <th>Téléchargements</th>
-                      <th>Part</th>
-                    </tr>
-                  </thead>
-                  <tbody id="pulse-releases-body">
-                    <tr>
-                      <td colspan="4" class="empty-state">Chargement…</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
 
-            <div class="pulse-health-row">
-              <div class="pulse-health">
-                <span>Version live</span>
-                <strong id="pulse-version">—</strong>
-              </div>
-              <div class="pulse-health">
-                <span>Plateforme</span>
-                <strong>Windows x64 · NSIS</strong>
-              </div>
-              <div class="pulse-health">
-                <span>Source downloads</span>
-                <strong id="pulse-repo">GitHub</strong>
-              </div>
+              <aside class="pulse-side">
+                <div class="pulse-side-card">
+                  <span>Version live</span>
+                  <strong id="pulse-version">—</strong>
+                </div>
+                <div class="pulse-side-card">
+                  <span>Plateforme</span>
+                  <strong>Windows x64 · NSIS</strong>
+                </div>
+                <div class="pulse-side-card">
+                  <span>Source</span>
+                  <strong id="pulse-repo">GitHub</strong>
+                </div>
+              </aside>
             </div>
           </section>
 
@@ -1792,7 +1795,7 @@
 
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.4.81-pulse"></script>
+    <script src="js/admin.js?v=0.4.82-pulse-vercel"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");
