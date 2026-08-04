@@ -1758,7 +1758,7 @@
                   </div>
                 </div>
                 <div class="library-toolbar-bottom">
-                  <p class="models-drive-status" id="models-drive-status">Google Drive : …</p>
+                  <div class="models-drive-row"><p class="models-drive-status" id="models-drive-status">Google Drive : …</p><button type="button" class="btn btn-ghost btn-sm" id="models-connect-google">Connecter Google</button></div>
                   <div class="ticket-filter-tabs library-filter-tabs" role="tablist" aria-label="Filtrer modèles">
                     <button type="button" class="filter-tab is-active" data-models-filter="all">Tous</button>
                     <button type="button" class="filter-tab" data-models-filter="Skins">Skins</button>
@@ -1966,7 +1966,8 @@
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
     <script src="js/admin.js?v=0.4.83-models-api"></script>
-    <script src="js/admin-library-models.js?v=0.2.1-drop-fix"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="js/admin-library-models.js?v=0.3.0-oauth-drive"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");

@@ -15,7 +15,12 @@
   let previewGlbFile = null;
   let packFiles = [];
   let pendingDelete = null;
-  let driveConfigured = false;
+  let driveConfigured = false; // dossier ID présent côté serveur
+  let googleAccessToken = "";
+  let googleTokenExpiresAt = 0;
+
+  const DRIVE_TOKEN_KEY = "sr_admin_google_drive_token";
+  const DRIVE_TOKEN_EXP_KEY = "sr_admin_google_drive_token_exp";
 
   function api() {
     return window.SRAdminApi || null;
@@ -278,16 +283,106 @@
     return btoa(binary);
   }
 
-  /** Pack → Google Drive only, by ~2 Mo chunks (no Supabase Storage). */
+  function loadStoredGoogleToken() {
+    try {
+      googleAccessToken = sessionStorage.getItem(DRIVE_TOKEN_KEY) || "";
+      googleTokenExpiresAt = Number(sessionStorage.getItem(DRIVE_TOKEN_EXP_KEY) || 0);
+    } catch {
+      googleAccessToken = "";
+      googleTokenExpiresAt = 0;
+    }
+  }
+
+  function persistGoogleToken(token, expiresInSec) {
+    googleAccessToken = token || "";
+    googleTokenExpiresAt = Date.now() + Math.max(60, Number(expiresInSec) || 3600) * 1000 - 30_000;
+    try {
+      sessionStorage.setItem(DRIVE_TOKEN_KEY, googleAccessToken);
+      sessionStorage.setItem(DRIVE_TOKEN_EXP_KEY, String(googleTokenExpiresAt));
+    } catch {
+      /* ignore */
+    }
+  }
+
+  function hasFreshGoogleToken() {
+    return Boolean(googleAccessToken && Date.now() < googleTokenExpiresAt);
+  }
+
+  function googleOAuthClientId() {
+    return (window.SR_CONFIG && window.SR_CONFIG.googleOAuthClientId) || "";
+  }
+
+  function connectGoogleDrive() {
+    const clientId = googleOAuthClientId();
+    if (!clientId) {
+      alert(
+        "Manque googleOAuthClientId dans js/config.js.\n\nCrée un ID client OAuth (type Application Web) dans Google Cloud, origines : https://sr-editer.vercel.app"
+      );
+      return;
+    }
+    if (!window.google?.accounts?.oauth2) {
+      alert("Google Identity non chargé. Hard refresh (Ctrl+Shift+R) puis réessaie.");
+      return;
+    }
+    const client = window.google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: "https://www.googleapis.com/auth/drive.file",
+      callback: (resp) => {
+        if (resp.error) {
+          alert(`Google Drive : ${resp.error}`);
+          return;
+        }
+        if (!resp.access_token) {
+          alert("Aucun token Google reçu.");
+          return;
+        }
+        persistGoogleToken(resp.access_token, resp.expires_in);
+        void refreshDriveStatus();
+      },
+    });
+    client.requestAccessToken({ prompt: hasFreshGoogleToken() ? "" : "consent" });
+  }
+
+  async function ensureGoogleAccessToken() {
+    if (hasFreshGoogleToken()) return googleAccessToken;
+    return new Promise((resolve, reject) => {
+      const clientId = googleOAuthClientId();
+      if (!clientId || !window.google?.accounts?.oauth2) {
+        reject(new Error("Configure googleOAuthClientId et recharge la page, puis clique Connecter Google."));
+        return;
+      }
+      const client = window.google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: "https://www.googleapis.com/auth/drive.file",
+        callback: (resp) => {
+          if (resp.error || !resp.access_token) {
+            reject(new Error(resp.error || "Connexion Google annulée."));
+            return;
+          }
+          persistGoogleToken(resp.access_token, resp.expires_in);
+          resolve(resp.access_token);
+        },
+      });
+      client.requestAccessToken({ prompt: "consent" });
+    });
+  }
+
+  /** Pack → Google Drive via OAuth user (tes 5 To), chunks 2 Mo. */
   async function uploadPackToDrive(zipFile, displayName, onProgress) {
     const total = zipFile.size;
     const filename = `${(displayName || "model").replace(/[^\w.-]+/g, "_").slice(0, 80)}-${Date.now()}.zip`;
+    onProgress?.(3, "Connexion Google…");
+    const accessToken = await ensureGoogleAccessToken();
     onProgress?.(5, "Ouverture session Google Drive…");
-    const start = await api().adminRequest("library-models-drive-start", { filename, size: total });
+    const start = await api().adminRequest("library-models-drive-start", {
+      filename,
+      size: total,
+      accessToken,
+    });
     if (!start.ok || !start.uploadUrl) throw new Error(start.error || "Session Drive impossible.");
 
     const buffer = new Uint8Array(await zipFile.arrayBuffer());
-    const chunkSize = 2 * 1024 * 1024; // 2 Mo
+    const chunkSize = 2 * 1024 * 1024;
     let offset = 0;
     let fileMeta = null;
 
@@ -302,6 +397,7 @@
         offset,
         total,
         chunkBase64: bytesToBase64(slice),
+        accessToken,
       });
       if (!chunkRes.ok) throw new Error(chunkRes.error || "Chunk Drive échoué.");
       if (chunkRes.done && chunkRes.file) {
@@ -312,12 +408,38 @@
     }
 
     if (!fileMeta?.id) throw new Error("Upload Drive incomplet.");
-    onProgress?.(88, "Pack sur Google Drive.");
+    onProgress?.(88, "Pack sur ton Google Drive.");
     return {
       pack_drive_file_id: fileMeta.id,
       pack_drive_url: fileMeta.downloadUrl || fileMeta.webViewLink || null,
       pack_size_bytes: total,
     };
+  }
+
+  async function refreshDriveStatus() {
+    const el = $("models-drive-status");
+    const btn = $("models-connect-google");
+    if (!el || !api()?.adminRequest) return;
+    loadStoredGoogleToken();
+    try {
+      const data = await api().adminRequest("library-models-drive-status");
+      driveConfigured = Boolean(data.configured);
+      const linked = hasFreshGoogleToken();
+      if (!driveConfigured) {
+        el.textContent = "Dossier Drive manquant — secret GOOGLE_DRIVE_FOLDER_ID";
+        el.classList.remove("is-ready");
+      } else if (!linked) {
+        el.textContent = "Dossier OK — clique « Connecter Google » (tes 5 To)";
+        el.classList.remove("is-ready");
+      } else {
+        el.textContent = "Google Drive connecté — packs → ton Drive";
+        el.classList.add("is-ready");
+      }
+      if (btn) btn.hidden = false;
+    } catch {
+      el.textContent = "Google Drive : statut inconnu";
+      el.classList.remove("is-ready");
+    }
   }
 
   function reportProgress(pct, label) {
@@ -342,21 +464,6 @@
     } catch (err) {
       list.innerHTML = `<div class="empty-state library-empty is-error">Erreur : ${escapeHtml(err.message || err)}</div>`;
       syncCount(0);
-    }
-  }
-
-  async function refreshDriveStatus() {
-    const el = $("models-drive-status");
-    if (!el || !api()?.adminRequest) return;
-    try {
-      const data = await api().adminRequest("library-models-drive-status");
-      driveConfigured = Boolean(data.configured);
-      el.textContent = driveConfigured
-        ? "Google Drive : prêt — packs directs (Supabase = previews seulement)"
-        : "Google Drive requis pour publier un pack (Supabase 500 Mo trop juste)";
-      el.classList.toggle("is-ready", driveConfigured);
-    } catch {
-      el.textContent = "Google Drive : statut inconnu";
     }
   }
 
@@ -502,7 +609,10 @@
         throw new Error("Dépose le pack (YDR / fichiers du skin) avant de publier.");
       }
       if (packFiles.length && !driveConfigured) {
-        throw new Error("Configure Google Drive d’abord (secrets Supabase). Les packs ne vont plus sur Storage (quota 500 Mo).");
+        throw new Error("Secret GOOGLE_DRIVE_FOLDER_ID manquant (ID de ton dossier SR-Editer-Models).");
+      }
+      if (packFiles.length) {
+        await ensureGoogleAccessToken();
       }
 
       const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
@@ -647,6 +757,8 @@
       void refreshDriveStatus();
       void loadModels();
     });
+    $("models-connect-google")?.addEventListener("click", () => connectGoogleDrive());
+    loadStoredGoogleToken();
 
     document.querySelectorAll("[data-models-filter]").forEach((tab) => {
       tab.addEventListener("click", () => {

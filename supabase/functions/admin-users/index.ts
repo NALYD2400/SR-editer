@@ -508,10 +508,12 @@ Deno.serve(async (request) => {
     return json(origin, 200, {
       ok: true,
       configured: cfg.configured,
-      folderId: cfg.configured ? cfg.folderId : null,
+      folderId: cfg.folderId || null,
+      hasServiceAccount: cfg.hasServiceAccount,
+      oauthRequired: true,
       hint: cfg.configured
-        ? "Google Drive prêt — packs envoyés directement (chunks), Supabase = previews seulement."
-        : "Ajoute GOOGLE_SERVICE_ACCOUNT_JSON + GOOGLE_DRIVE_FOLDER_ID (Shared Drive). Sans ça, impossible de publier un pack.",
+        ? "Dossier Drive OK — connecte ton Google dans l’admin (compte Gmail perso = OAuth obligatoire)."
+        : "Ajoute GOOGLE_DRIVE_FOLDER_ID (ton dossier SR-Editer-Models) dans les secrets Supabase.",
     });
   }
   if (action === "library-models-list") {
@@ -520,8 +522,12 @@ Deno.serve(async (request) => {
   }
   if (action === "library-models-drive-start") {
     const cfg = driveConfigFromEnv();
-    if (!cfg.configured || !cfg.account) {
-      return json(origin, 503, { ok: false, error: "Google Drive non configuré. Packs = Drive uniquement (Supabase 500 Mo trop juste)." });
+    if (!cfg.folderId) {
+      return json(origin, 503, { ok: false, error: "GOOGLE_DRIVE_FOLDER_ID manquant dans les secrets Supabase." });
+    }
+    const userAccessToken = textOf(body.accessToken, 4096);
+    if (!userAccessToken && !cfg.account) {
+      return json(origin, 401, { ok: false, error: "Connecte ton Google Drive dans l’admin (bouton Connecter Google)." });
     }
     const filename = textOf(body.filename, 256) || `model-${Date.now()}.zip`;
     const size = Number(body.size);
@@ -530,7 +536,8 @@ Deno.serve(async (request) => {
     }
     try {
       const uploadUrl = await startResumableDriveUpload({
-        account: cfg.account,
+        accessToken: userAccessToken || undefined,
+        account: userAccessToken ? undefined : cfg.account || undefined,
         folderId: cfg.folderId,
         filename,
         size,
@@ -543,8 +550,9 @@ Deno.serve(async (request) => {
   }
   if (action === "library-models-drive-chunk") {
     const cfg = driveConfigFromEnv();
-    if (!cfg.configured || !cfg.account) {
-      return json(origin, 503, { ok: false, error: "Google Drive non configuré." });
+    const userAccessToken = textOf(body.accessToken, 4096);
+    if (!userAccessToken && !cfg.account) {
+      return json(origin, 401, { ok: false, error: "Connecte ton Google Drive dans l’admin." });
     }
     const uploadUrl = textOf(body.uploadUrl, 4000);
     const offset = Number(body.offset);
@@ -559,7 +567,8 @@ Deno.serve(async (request) => {
         return json(origin, 400, { ok: false, error: "Taille de chunk invalide." });
       }
       const result = await uploadResumableDriveChunk({
-        account: cfg.account,
+        accessToken: userAccessToken || undefined,
+        account: userAccessToken ? undefined : cfg.account || undefined,
         uploadUrl,
         bytes: binary,
         offset,
@@ -569,7 +578,7 @@ Deno.serve(async (request) => {
         return json(origin, 200, { ok: true, done: false, nextOffset: offset + binary.byteLength });
       }
       try {
-        await shareDriveFileAnyoneWithLink(cfg.account, result.file.id);
+        await shareDriveFileAnyoneWithLink(userAccessToken || cfg.account!, result.file.id);
       } catch {
         /* lien public optionnel */
       }

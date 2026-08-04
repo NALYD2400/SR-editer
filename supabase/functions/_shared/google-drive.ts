@@ -51,7 +51,8 @@ export function driveConfigFromEnv() {
   const folderId = (Deno.env.get("GOOGLE_DRIVE_FOLDER_ID") ?? "").trim();
   const account = json ? parseServiceAccount(json) : null;
   return {
-    configured: Boolean(account && folderId),
+    configured: Boolean(folderId), // folder cible suffit ; auth = OAuth user OU service account
+    hasServiceAccount: Boolean(account && folderId),
     account,
     folderId,
   };
@@ -169,15 +170,18 @@ export async function deleteDriveFile(account: ServiceAccount, fileId: string): 
   }
 }
 
-/** Démarre un upload résumable Drive (le navigateur envoie ensuite des chunks via l’edge). */
+/** Démarre un upload résumable Drive (token user OAuth ou service account). */
 export async function startResumableDriveUpload(params: {
-  account: ServiceAccount;
+  accessToken?: string;
+  account?: ServiceAccount;
   folderId: string;
   filename: string;
   size: number;
   mimeType?: string;
 }): Promise<string> {
-  const token = await getAccessToken(params.account);
+  const token = params.accessToken
+    || (params.account ? await getAccessToken(params.account) : "");
+  if (!token) throw new Error("Token Google Drive manquant (connecte ton Google dans l’admin).");
   const mimeType = params.mimeType || "application/zip";
   const response = await fetch(
     "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable&supportsAllDrives=true&fields=id,webViewLink,webContentLink",
@@ -205,13 +209,16 @@ export async function startResumableDriveUpload(params: {
 }
 
 export async function uploadResumableDriveChunk(params: {
-  account: ServiceAccount;
+  accessToken?: string;
+  account?: ServiceAccount;
   uploadUrl: string;
   bytes: Uint8Array;
   offset: number;
   total: number;
 }): Promise<{ done: boolean; file?: DriveUploadResult }> {
-  const token = await getAccessToken(params.account);
+  const token = params.accessToken
+    || (params.account ? await getAccessToken(params.account) : "");
+  if (!token) throw new Error("Token Google Drive manquant.");
   const start = params.offset;
   const end = params.offset + params.bytes.length - 1;
   const response = await fetch(params.uploadUrl, {
@@ -225,7 +232,6 @@ export async function uploadResumableDriveChunk(params: {
     body: params.bytes,
   });
 
-  // 308 Resume Incomplete = chunk accepté, pas fini
   if (response.status === 308) {
     return { done: false };
   }
@@ -246,10 +252,12 @@ export async function uploadResumableDriveChunk(params: {
 
 /** Lien public lecture seule — l’app peut télécharger sans compte Google. */
 export async function shareDriveFileAnyoneWithLink(
-  account: ServiceAccount,
+  accessTokenOrAccount: string | ServiceAccount,
   fileId: string,
 ): Promise<void> {
-  const token = await getAccessToken(account);
+  const token = typeof accessTokenOrAccount === "string"
+    ? accessTokenOrAccount
+    : await getAccessToken(accessTokenOrAccount);
   const response = await fetch(
     `https://www.googleapis.com/drive/v3/files/${encodeURIComponent(fileId)}/permissions?supportsAllDrives=true`,
     {
