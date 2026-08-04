@@ -1831,9 +1831,9 @@
                         <span class="models-drop-label">Pack modèle <em>(YDR, YFT, textures, meta…)</em></span>
                         <button type="button" class="library-upload-dropzone models-dropzone models-pack-dropzone" id="models-pack-dropzone">
                           <span id="models-pack-summary">Aucun fichier pack</span>
-                          <small>Drag &amp; drop multi-fichiers ou .zip — zip auto à la publication</small>
+                          <small>Drag &amp; drop dossier, multi-fichiers ou .zip — structure conservée</small>
                         </button>
-                        <input id="models-pack-input" type="file" multiple accept=".ydr,.yft,.ydd,.ytd,.ymap,.ymf,.meta,.xml,.zip,.rar,.7z,.dds,.png,.jpg,.webp" hidden />
+                        <input id="models-pack-input" type="file" multiple accept=".ydr,.yft,.ydd,.ytd,.ycd,.ypt,.ymap,.ymf,.ymt,.meta,.xml,.cfg,.lua,.json,.zip,.rar,.7z,.dds,.png,.jpg,.jpeg,.webp,*/*" hidden />
                         <ul class="models-pack-list" id="models-pack-list"></ul>
                       </div>
 
@@ -1966,7 +1966,7 @@
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
     <script src="js/admin.js?v=0.4.83-models-api"></script>
-    <script src="js/admin-library-models.js?v=0.2.0-drive-direct"></script>
+    <script src="js/admin-library-models.js?v=0.2.1-drop-fix"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");

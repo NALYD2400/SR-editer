@@ -4,7 +4,8 @@
  */
 (function initAdminLibraryModels() {
   const MODEL_CATEGORIES = ["Armes", "Véhicules", "Peds", "Props", "Skins", "Autre"];
-  const PACK_EXT = /\.(ya?dr|yft|ydd|ytd|ymap|ymf|meta|xml|ydr|yft|ydd|ytd|zip|rar|7z|dds|png|jpg|jpeg|webp)$/i;
+  // Extensions typiques GTA + archives. Les autres fichiers d’un dossier sont aussi acceptés.
+  const PACK_EXT = /\.(ya?dr|yft|ydd|ytd|ycd|ypt|ymap|ymf|ymt|meta|xml|cfg|lua|json|zip|rar|7z|dds|png|jpg|jpeg|webp|txt)$/i;
 
   let models = [];
   let modelsFilter = "all";
@@ -60,11 +61,21 @@
     if (!panel || !toggle) return;
     panel.hidden = !open;
     toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    // reset UNIQUEMENT à l’ouverture volontaire "Publier" — pas après un drop/import
     if (open && mode === "create") resetForm();
     if (open) {
       $("models-form-title").textContent = editingId ? "Modifier le modèle" : "Publier un modèle";
       $("models-submit-btn").textContent = editingId ? "Enregistrer" : "Publier";
     }
+  }
+
+  function ensureCreatePanelOpen() {
+    const panel = $("models-create-panel");
+    if (!panel || !panel.hidden) return;
+    panel.hidden = false;
+    $("models-create-toggle")?.setAttribute("aria-expanded", "true");
+    $("models-form-title").textContent = editingId ? "Modifier le modèle" : "Publier un modèle";
+    $("models-submit-btn").textContent = editingId ? "Enregistrer" : "Publier";
   }
 
   function resetForm() {
@@ -96,12 +107,15 @@
       : "Aucun fichier pack";
     list.innerHTML = packFiles
       .map(
-        (file, index) => `
+        (file, index) => {
+          const label = file.relativePath || file.webkitRelativePath || file.name;
+          return `
       <li class="models-pack-item">
-        <span title="${escapeHtml(file.name)}">${escapeHtml(file.name)}</span>
+        <span title="${escapeHtml(label)}">${escapeHtml(label)}</span>
         <em>${formatBytes(file.size)}</em>
         <button type="button" data-pack-remove="${index}" aria-label="Retirer">×</button>
-      </li>`
+      </li>`;
+        }
       )
       .join("");
     list.querySelectorAll("[data-pack-remove]").forEach((btn) => {
@@ -112,14 +126,89 @@
     });
   }
 
+  function isPackCandidate(file) {
+    if (!file || !file.name) return false;
+    if (file.size === 0 && !file.type) return false;
+    if (PACK_EXT.test(file.name)) return true;
+    if (file.type === "application/zip" || file.type === "application/x-zip-compressed") return true;
+    if (file.type === "application/x-7z-compressed" || file.type === "application/vnd.rar") return true;
+    // Fichiers sans extension / inconnus dans un dossier skin : on prend tout sauf trash OS
+    const base = file.name.toLowerCase();
+    if (base === ".ds_store" || base === "thumbs.db" || base.startsWith(".")) return false;
+    return true;
+  }
+
   function addPackFiles(fileList) {
-    const incoming = Array.from(fileList || []).filter((f) => PACK_EXT.test(f.name) || f.type === "application/zip");
-    if (!incoming.length) return;
-    const map = new Map(packFiles.map((f) => [f.name + f.size, f]));
-    incoming.forEach((f) => map.set(f.name + f.size, f));
+    const all = Array.from(fileList || []);
+    const incoming = all.filter(isPackCandidate);
+    if (!incoming.length) {
+      alert(
+        all.length
+          ? "Aucun fichier pack reconnu. Dépose un .zip ou un dossier avec .ydr / .yft / textures."
+          : "Aucun fichier reçu. Réessaie avec un .zip ou un dossier."
+      );
+      return;
+    }
+    const map = new Map(packFiles.map((f) => [(f.relativePath || f.name) + f.size, f]));
+    incoming.forEach((f) => map.set((f.relativePath || f.name) + f.size, f));
     packFiles = Array.from(map.values());
     renderPackList();
-    setCreateOpen(true, editingId ? "edit" : "create");
+    ensureCreatePanelOpen(); // ne PAS resetForm ici
+  }
+
+  async function readDirectoryEntry(directoryEntry, pathPrefix, out) {
+    const reader = directoryEntry.createReader();
+    const readBatch = () =>
+      new Promise((resolve, reject) => {
+        reader.readEntries(resolve, reject);
+      });
+    let batch = await readBatch();
+    while (batch.length) {
+      for (const entry of batch) {
+        const nextPath = `${pathPrefix}${entry.name}`;
+        if (entry.isFile) {
+          const file = await new Promise((resolve, reject) => entry.file(resolve, reject));
+          try {
+            Object.defineProperty(file, "relativePath", { value: nextPath, configurable: true });
+          } catch {
+            /* ignore */
+          }
+          out.push(file);
+        } else if (entry.isDirectory) {
+          await readDirectoryEntry(entry, `${nextPath}/`, out);
+        }
+      }
+      batch = await readBatch();
+    }
+  }
+
+  async function collectFromDataTransfer(dataTransfer) {
+    const items = dataTransfer?.items;
+    if (!items || !items.length) return Array.from(dataTransfer?.files || []);
+
+    const out = [];
+    const entries = [];
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
+      const entry = typeof item.webkitGetAsEntry === "function" ? item.webkitGetAsEntry() : null;
+      if (entry) entries.push(entry);
+      else {
+        const file = item.getAsFile?.();
+        if (file) out.push(file);
+      }
+    }
+
+    if (!entries.length) return Array.from(dataTransfer.files || out);
+
+    for (const entry of entries) {
+      if (entry.isFile) {
+        const file = await new Promise((resolve, reject) => entry.file(resolve, reject));
+        out.push(file);
+      } else if (entry.isDirectory) {
+        await readDirectoryEntry(entry, `${entry.name}/`, out);
+      }
+    }
+    return out;
   }
 
   function setPreviewImage(file) {
@@ -154,9 +243,11 @@
   async function zipPackFiles(files) {
     if (!window.JSZip) throw new Error("JSZip non chargé.");
     if (files.length === 1 && /\.zip$/i.test(files[0].name)) return files[0];
+    // rar/7z : on encapsule dans un zip conteneur
     const zip = new window.JSZip();
     for (const file of files) {
-      zip.file(file.name, file);
+      const path = file.relativePath || file.webkitRelativePath || file.name;
+      zip.file(path, file);
     }
     const blob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } });
     return new File([blob], "model-pack.zip", { type: "application/zip" });
@@ -483,20 +574,34 @@
     }
   }
 
-  function bindDropzone(zoneId, inputId, onFiles) {
+  function bindDropzone(zoneId, inputId, onFiles, options = {}) {
     const zone = $(zoneId);
     const input = $(inputId);
     if (!zone || !input) return;
-    zone.addEventListener("click", () => input.click());
+    const { packZone = false } = options;
+
+    zone.addEventListener("click", (event) => {
+      event.preventDefault();
+      input.click();
+    });
     zone.addEventListener("dragover", (e) => {
       e.preventDefault();
+      e.stopPropagation();
       zone.classList.add("is-dragover");
     });
-    zone.addEventListener("dragleave", () => zone.classList.remove("is-dragover"));
-    zone.addEventListener("drop", (e) => {
+    zone.addEventListener("dragleave", (e) => {
       e.preventDefault();
       zone.classList.remove("is-dragover");
-      onFiles(e.dataTransfer?.files);
+    });
+    zone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      zone.classList.remove("is-dragover");
+      if (packZone) {
+        void collectFromDataTransfer(e.dataTransfer).then((files) => onFiles(files));
+      } else {
+        onFiles(e.dataTransfer?.files);
+      }
     });
     input.addEventListener("change", () => {
       onFiles(input.files);
@@ -553,14 +658,19 @@
     });
 
     bindDropzone("models-preview-dropzone", "models-preview-image-input", (files) => {
-      const file = Array.from(files || []).find((f) => f.type.startsWith("image/"));
+      const file = Array.from(files || []).find((f) => f.type.startsWith("image/") || /\.(png|jpe?g|webp|gif)$/i.test(f.name));
       if (file) setPreviewImage(file);
     });
     bindDropzone("models-glb-dropzone", "models-preview-glb-input", (files) => {
       const file = Array.from(files || []).find((f) => /\.glb$/i.test(f.name));
       if (file) setPreviewGlb(file);
     });
-    bindDropzone("models-pack-dropzone", "models-pack-input", (files) => addPackFiles(files));
+    bindDropzone(
+      "models-pack-dropzone",
+      "models-pack-input",
+      (files) => addPackFiles(files),
+      { packZone: true }
+    );
 
     $("models-clear-preview")?.addEventListener("click", () => {
       setPreviewImage(null);
