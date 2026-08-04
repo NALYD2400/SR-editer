@@ -15,7 +15,7 @@
     <script src="js/theme.js?v=0.3.3-vercel"></script>
     <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.82-pulse-vercel" />
+    <link rel="stylesheet" href="styles/admin.css?v=0.4.83-models" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -1570,6 +1570,12 @@
 
           <!-- Textures Library -->
           <section class="admin-panel" id="panel-library">
+            <div class="library-hub-tabs" role="tablist" aria-label="Sections bibliothèque">
+              <button type="button" class="library-hub-tab is-active" data-library-hub="textures" role="tab" aria-selected="true">Textures</button>
+              <button type="button" class="library-hub-tab" data-library-hub="models" role="tab" aria-selected="false">Modèles 3D</button>
+            </div>
+
+            <div id="library-textures-view">
             <div class="library-toolbar">
               <div class="library-toolbar-top">
                 <div class="library-toolbar-left">
@@ -1722,6 +1728,147 @@
             <div class="glass-card panel-card library-list-card">
               <div id="library-list-tbody" class="texture-library-grid"></div>
             </div>
+            </div><!-- /library-textures-view -->
+
+            <div id="library-models-view" hidden>
+              <div class="library-toolbar">
+                <div class="library-toolbar-top">
+                  <div class="library-toolbar-left">
+                    <span class="users-count-chip" aria-live="polite">
+                      <strong id="models-count">—</strong>
+                      <span>modèles</span>
+                    </span>
+                    <div class="users-search-wrap">
+                      <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                      </svg>
+                      <input type="search" id="models-search" placeholder="Nom, catégorie…" autocomplete="off" aria-label="Rechercher un modèle" />
+                    </div>
+                  </div>
+                  <div class="library-toolbar-right">
+                    <button type="button" class="users-menu-trigger" id="refresh-models-btn">
+                      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                      </svg>
+                      Actualiser
+                    </button>
+                    <button type="button" class="btn btn-primary btn-sm" id="models-create-toggle" aria-expanded="false" aria-controls="models-create-panel">
+                      Publier un modèle
+                    </button>
+                  </div>
+                </div>
+                <div class="library-toolbar-bottom">
+                  <p class="models-drive-status" id="models-drive-status">Google Drive : …</p>
+                  <div class="ticket-filter-tabs library-filter-tabs" role="tablist" aria-label="Filtrer modèles">
+                    <button type="button" class="filter-tab is-active" data-models-filter="all">Tous</button>
+                    <button type="button" class="filter-tab" data-models-filter="Skins">Skins</button>
+                    <button type="button" class="filter-tab" data-models-filter="Véhicules">Véhicules</button>
+                    <button type="button" class="filter-tab" data-models-filter="Peds">Peds</button>
+                    <button type="button" class="filter-tab" data-models-filter="Armes">Armes</button>
+                    <button type="button" class="filter-tab" data-models-filter="Props">Props</button>
+                    <button type="button" class="filter-tab" data-models-filter="Autre">Autre</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="models-create-panel" class="library-create-panel" hidden>
+                <form id="models-form" class="library-create-form models-create-form">
+                  <div class="library-create-head">
+                    <div>
+                      <h3 id="models-form-title">Publier un modèle</h3>
+                      <p class="section-desc">Nom + catégorie, preview optionnelle (image et/ou GLB), pack YDR/skin en drag &amp; drop.</p>
+                    </div>
+                    <button type="button" class="btn btn-ghost btn-sm" id="models-create-close" aria-label="Fermer">Fermer</button>
+                  </div>
+
+                  <input type="hidden" id="models-id" />
+
+                  <div class="library-editor-layout">
+                    <div class="library-editor-fields">
+                      <div class="field">
+                        <label for="models-name">Nom</label>
+                        <input id="models-name" type="text" required placeholder="Ex: police_skin_v2" autocomplete="off" />
+                      </div>
+                      <div class="library-meta-row">
+                        <div class="field">
+                          <label for="models-category">Catégorie</label>
+                          <select id="models-category" required>
+                            <option value="Skins">Skins</option>
+                            <option value="Véhicules">Véhicules</option>
+                            <option value="Peds">Peds</option>
+                            <option value="Armes">Armes</option>
+                            <option value="Props">Props</option>
+                            <option value="Autre">Autre</option>
+                          </select>
+                        </div>
+                        <div class="field">
+                          <label for="models-description">Description</label>
+                          <input id="models-description" type="text" placeholder="Optionnel" autocomplete="off" />
+                        </div>
+                      </div>
+
+                      <div class="models-drop-grid">
+                        <div class="field">
+                          <span class="models-drop-label">Preview image <em>(optionnel)</em></span>
+                          <button type="button" class="library-upload-dropzone models-dropzone" id="models-preview-dropzone">
+                            <span>Image WEBP/PNG/JPG</span>
+                            <small>Optimisée auto en WEBP ≤1024</small>
+                          </button>
+                          <input id="models-preview-image-input" type="file" accept="image/*" hidden />
+                        </div>
+                        <div class="field">
+                          <span class="models-drop-label">Preview GLB <em>(optionnel)</em></span>
+                          <button type="button" class="library-upload-dropzone models-dropzone" id="models-glb-dropzone">
+                            <span>Fichier .glb</span>
+                            <small>Aperçu 3D léger</small>
+                          </button>
+                          <input id="models-preview-glb-input" type="file" accept=".glb,model/gltf-binary" hidden />
+                          <span class="models-glb-chip" id="models-glb-chip" hidden></span>
+                        </div>
+                      </div>
+
+                      <div class="field">
+                        <span class="models-drop-label">Pack modèle <em>(YDR, YFT, textures, meta…)</em></span>
+                        <button type="button" class="library-upload-dropzone models-dropzone models-pack-dropzone" id="models-pack-dropzone">
+                          <span id="models-pack-summary">Aucun fichier pack</span>
+                          <small>Drag &amp; drop multi-fichiers ou .zip — zip auto à la publication</small>
+                        </button>
+                        <input id="models-pack-input" type="file" multiple accept=".ydr,.yft,.ydd,.ytd,.ymap,.ymf,.meta,.xml,.zip,.rar,.7z,.dds,.png,.jpg,.webp" hidden />
+                        <ul class="models-pack-list" id="models-pack-list"></ul>
+                      </div>
+
+                      <div id="models-upload-progress" class="library-upload-progress" hidden>
+                        <div class="library-upload-status" id="models-upload-status">Publication…</div>
+                        <div class="library-upload-track">
+                          <div id="models-upload-bar" class="library-upload-bar"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <aside class="library-editor-preview" aria-label="Aperçu modèle">
+                      <span class="library-preview-label">Aperçu</span>
+                      <div class="texture-preview-box">
+                        <img id="models-preview-img" src="" alt="Aperçu" hidden />
+                        <span id="models-preview-placeholder">Aucune preview</span>
+                      </div>
+                      <button type="button" class="btn btn-ghost btn-sm" id="models-clear-preview">Vider previews</button>
+                    </aside>
+                  </div>
+
+                  <div class="library-create-footer">
+                    <span class="footer-desc" id="models-form-hint">Pack → Google Drive direct · previews légères → Supabase.</span>
+                    <div class="library-create-footer-actions">
+                      <button class="btn btn-ghost btn-sm" type="button" id="models-cancel-btn" hidden>Annuler</button>
+                      <button class="btn btn-primary btn-sm" type="submit" id="models-submit-btn">Publier</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+
+              <div class="glass-card panel-card library-list-card">
+                <div id="models-list" class="models-library-grid"></div>
+              </div>
+            </div><!-- /library-models-view -->
           </section>
         </div>
       </div>
@@ -1793,9 +1940,33 @@
       </div>
     </div>
 
+    <div id="models-delete-modal" class="admin-confirm-modal" hidden>
+      <div class="admin-confirm-backdrop" data-models-delete-cancel></div>
+      <div class="admin-confirm-card" role="dialog" aria-modal="true" aria-labelledby="models-delete-title">
+        <div class="admin-confirm-head">
+          <h3 id="models-delete-title">Supprimer ce modèle ?</h3>
+          <p class="admin-confirm-copy">
+            Pack Storage + Drive + previews seront retirés. Retape le nom exact
+            <strong id="models-delete-name-label"></strong>.
+          </p>
+        </div>
+        <div class="field">
+          <label for="models-delete-name-input">Nom de confirmation</label>
+          <input type="text" id="models-delete-name-input" autocomplete="off" spellcheck="false" placeholder="Nom du modèle" />
+        </div>
+        <p class="admin-confirm-error" id="models-delete-error" hidden>Le nom ne correspond pas.</p>
+        <div class="admin-confirm-actions">
+          <button type="button" class="btn btn-ghost btn-sm" data-models-delete-cancel>Annuler</button>
+          <button type="button" class="btn btn-danger btn-sm" id="models-delete-confirm-btn" disabled>Supprimer définitivement</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
     <script src="js/wallpapers.js?v=0.3.3"></script>
     <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.4.82-pulse-vercel"></script>
+    <script src="js/admin.js?v=0.4.83-models-api"></script>
+    <script src="js/admin-library-models.js?v=0.2.0-drive-direct"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");

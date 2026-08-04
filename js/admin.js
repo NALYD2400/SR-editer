@@ -4817,4 +4817,11 @@
   });
 
   setInterval(refreshKpis, 8000);
+
+  window.SRAdminApi = {
+    adminRequest,
+    getSupabase: () => supabase,
+    escapeHtml,
+    optimizeTexture,
+  };
 })();

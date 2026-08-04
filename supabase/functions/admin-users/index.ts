@@ -7,6 +7,14 @@ import {
   syncDiscordRole,
   type DiscordTier,
 } from "../_shared/discord-sync.ts";
+import {
+  deleteDriveFile,
+  driveConfigFromEnv,
+  driveDownloadUrl,
+  shareDriveFileAnyoneWithLink,
+  startResumableDriveUpload,
+  uploadResumableDriveChunk,
+} from "../_shared/google-drive.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL") ?? "";
 const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? "";
@@ -116,6 +124,14 @@ function permissionFor(action: string) {
   return "console";
 }
 
+
+function isManagedModelsUrl(value: string) {
+  if (!value) return true;
+  const prefix = `${supabaseUrl}/storage/v1/object/public/models-library/`;
+  return value.startsWith(prefix) && value.length <= 2048;
+}
+
+const MODEL_CATEGORIES = new Set(["Armes", "Véhicules", "Peds", "Props", "Skins", "Autre"]);
 function isManagedLibraryUrl(value: string) {
   const prefix = `${supabaseUrl}/storage/v1/object/public/textures-library/`;
   const vercelPrefix = "https://sr-editer.vercel.app/assets/textures/";
@@ -127,7 +143,7 @@ Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(origin) });
   if (request.method !== "POST") return json(origin, 405, { ok: false, error: "Méthode refusée." });
   if (origin && !allowedOrigins.has(origin)) return json(origin, 403, { ok: false, error: "Origine refusée." });
-  if (Number(request.headers.get("content-length") ?? 0) > 65_536) return json(origin, 413, { ok: false, error: "Requête trop volumineuse." });
+  if (Number(request.headers.get("content-length") ?? 0) > 5_500_000) return json(origin, 413, { ok: false, error: "Requête trop volumineuse." });
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return json(origin, 503, { ok: false, error: "Service administrateur non configuré." });
 
   const authorization = request.headers.get("Authorization") ?? "";
@@ -484,6 +500,164 @@ Deno.serve(async (request) => {
     if (!id) return json(origin, 400, { ok: false, error: "ID requis." });
     const { error } = await admin.from("library_textures").delete().eq("id", id);
     if (!error) await audit("library.delete", "library_texture", id);
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
+  }
+
+  if (action === "library-models-drive-status") {
+    const cfg = driveConfigFromEnv();
+    return json(origin, 200, {
+      ok: true,
+      configured: cfg.configured,
+      folderId: cfg.configured ? cfg.folderId : null,
+      hint: cfg.configured
+        ? "Google Drive prêt — packs envoyés directement (chunks), Supabase = previews seulement."
+        : "Ajoute GOOGLE_SERVICE_ACCOUNT_JSON + GOOGLE_DRIVE_FOLDER_ID (Shared Drive). Sans ça, impossible de publier un pack.",
+    });
+  }
+  if (action === "library-models-list") {
+    const { data, error } = await admin.from("library_models").select("*").order("created_at", { ascending: false });
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
+  }
+  if (action === "library-models-drive-start") {
+    const cfg = driveConfigFromEnv();
+    if (!cfg.configured || !cfg.account) {
+      return json(origin, 503, { ok: false, error: "Google Drive non configuré. Packs = Drive uniquement (Supabase 500 Mo trop juste)." });
+    }
+    const filename = textOf(body.filename, 256) || `model-${Date.now()}.zip`;
+    const size = Number(body.size);
+    if (!Number.isFinite(size) || size <= 0 || size > 800_000_000) {
+      return json(origin, 400, { ok: false, error: "Taille pack invalide (max ~800 Mo)." });
+    }
+    try {
+      const uploadUrl = await startResumableDriveUpload({
+        account: cfg.account,
+        folderId: cfg.folderId,
+        filename,
+        size,
+        mimeType: "application/zip",
+      });
+      return json(origin, 200, { ok: true, uploadUrl, size });
+    } catch (reason) {
+      return json(origin, 500, { ok: false, error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (action === "library-models-drive-chunk") {
+    const cfg = driveConfigFromEnv();
+    if (!cfg.configured || !cfg.account) {
+      return json(origin, 503, { ok: false, error: "Google Drive non configuré." });
+    }
+    const uploadUrl = textOf(body.uploadUrl, 4000);
+    const offset = Number(body.offset);
+    const total = Number(body.total);
+    const chunkBase64 = textOf(body.chunkBase64, 5_000_000);
+    if (!uploadUrl.startsWith("https://") || !Number.isFinite(offset) || !Number.isFinite(total) || !chunkBase64) {
+      return json(origin, 400, { ok: false, error: "Chunk Drive invalide." });
+    }
+    try {
+      const binary = Uint8Array.from(atob(chunkBase64), (c) => c.charCodeAt(0));
+      if (binary.byteLength === 0 || binary.byteLength > 3_200_000) {
+        return json(origin, 400, { ok: false, error: "Taille de chunk invalide." });
+      }
+      const result = await uploadResumableDriveChunk({
+        account: cfg.account,
+        uploadUrl,
+        bytes: binary,
+        offset,
+        total,
+      });
+      if (!result.done || !result.file) {
+        return json(origin, 200, { ok: true, done: false, nextOffset: offset + binary.byteLength });
+      }
+      try {
+        await shareDriveFileAnyoneWithLink(cfg.account, result.file.id);
+      } catch {
+        /* lien public optionnel */
+      }
+      return json(origin, 200, {
+        ok: true,
+        done: true,
+        file: {
+          id: result.file.id,
+          webViewLink: result.file.webViewLink,
+          webContentLink: result.file.webContentLink,
+          downloadUrl: driveDownloadUrl(result.file.id),
+        },
+      });
+    } catch (reason) {
+      return json(origin, 500, { ok: false, error: reason instanceof Error ? reason.message : String(reason) });
+    }
+  }
+  if (action === "library-models-upsert") {
+    const id = body.id ? textOf(body.id, 64) : undefined;
+    const name = textOf(body.name, 256);
+    const category = textOf(body.category, 64);
+    const description = textOf(body.description, 2000);
+    const preview_image_url = textOf(body.preview_image_url, 2048) || null;
+    const preview_glb_url = textOf(body.preview_glb_url, 2048) || null;
+    const pack_drive_file_id = textOf(body.pack_drive_file_id, 128) || null;
+    const pack_drive_url = textOf(body.pack_drive_url, 2048) || null;
+    const pack_size_bytes = Number(body.pack_size_bytes) || 0;
+    const pack_file_count = Number(body.pack_file_count) || 0;
+    const status = body.status === "draft" ? "draft" : "published";
+    if (!name || !MODEL_CATEGORIES.has(category)) {
+      return json(origin, 400, { ok: false, error: "Nom et catégorie (Armes, Véhicules, Peds, Props, Skins, Autre) requis." });
+    }
+    if (preview_image_url && !isManagedModelsUrl(preview_image_url)) {
+      return json(origin, 400, { ok: false, error: "Preview image hors bucket models-library." });
+    }
+    if (preview_glb_url && !isManagedModelsUrl(preview_glb_url)) {
+      return json(origin, 400, { ok: false, error: "Preview GLB hors bucket models-library." });
+    }
+    if (!id && !pack_drive_file_id) {
+      return json(origin, 400, { ok: false, error: "Pack Drive requis (les packs ne passent plus par Supabase Storage)." });
+    }
+    const payload: Record<string, unknown> = {
+      name,
+      category,
+      description,
+      preview_image_url,
+      preview_glb_url,
+      pack_size_bytes,
+      pack_file_count,
+      status,
+      // Plus de gros packs sur Storage (quota 500 Mo)
+      pack_storage_path: null,
+      pack_public_url: pack_drive_file_id ? driveDownloadUrl(pack_drive_file_id) : null,
+      updated_at: new Date().toISOString(),
+    };
+    if (pack_drive_file_id) {
+      payload.pack_drive_file_id = pack_drive_file_id;
+      payload.pack_drive_url = pack_drive_url || driveDownloadUrl(pack_drive_file_id);
+      payload.pack_public_url = driveDownloadUrl(pack_drive_file_id);
+    }
+    if (id) payload.id = id;
+    const { data: upsertedData, error } = await admin.from("library_models").upsert(payload).select().single();
+    if (error) return json(origin, 500, { ok: false, error: error.message });
+    await audit(id ? "library.models.update" : "library.models.create", "library_model", upsertedData.id, { name, category });
+    return json(origin, 200, { ok: true, data: upsertedData });
+  }
+  if (action === "library-models-delete") {
+    const id = textOf(body.id, 64);
+    if (!id) return json(origin, 400, { ok: false, error: "ID requis." });
+    const { data: row } = await admin.from("library_models").select("*").eq("id", id).maybeSingle();
+    if (!row) return json(origin, 404, { ok: false, error: "Modèle introuvable." });
+    const paths: string[] = [];
+    if (row.pack_storage_path) paths.push(row.pack_storage_path);
+    for (const urlKey of ["preview_image_url", "preview_glb_url"] as const) {
+      const url = String(row[urlKey] || "");
+      const marker = "/storage/v1/object/public/models-library/";
+      const idx = url.indexOf(marker);
+      if (idx >= 0) paths.push(decodeURIComponent(url.slice(idx + marker.length)));
+    }
+    if (paths.length) {
+      await admin.storage.from("models-library").remove(paths);
+    }
+    const cfg = driveConfigFromEnv();
+    if (cfg.configured && cfg.account && row.pack_drive_file_id) {
+      try { await deleteDriveFile(cfg.account, row.pack_drive_file_id); } catch { /* keep DB delete */ }
+    }
+    const { error } = await admin.from("library_models").delete().eq("id", id);
+    if (!error) await audit("library.models.delete", "library_model", id, { name: row.name });
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true });
   }
   if (action === "team-list") {
