@@ -505,16 +505,60 @@ Deno.serve(async (request) => {
 
   if (action === "library-models-drive-status") {
     const cfg = driveConfigFromEnv();
+    const oauthReady = Boolean(Deno.env.get("GOOGLE_OAUTH_CLIENT_ID") && Deno.env.get("GOOGLE_OAUTH_CLIENT_SECRET"));
     return json(origin, 200, {
       ok: true,
       configured: cfg.configured,
       folderId: cfg.folderId || null,
       hasServiceAccount: cfg.hasServiceAccount,
       oauthRequired: true,
-      hint: cfg.configured
-        ? "Dossier Drive OK — connecte ton Google dans l’admin (compte Gmail perso = OAuth obligatoire)."
-        : "Ajoute GOOGLE_DRIVE_FOLDER_ID (ton dossier SR-Editer-Models) dans les secrets Supabase.",
+      oauthExchangeReady: oauthReady,
+      hint: !cfg.configured
+        ? "Ajoute GOOGLE_DRIVE_FOLDER_ID (ton dossier SR-Editer-Models) dans les secrets Supabase."
+        : oauthReady
+        ? "Dossier Drive OK — clique « Connecter Google » (redirection OAuth)."
+        : "Dossier OK — ajoute GOOGLE_OAUTH_CLIENT_ID + GOOGLE_OAUTH_CLIENT_SECRET dans les secrets Supabase.",
     });
+  }
+  if (action === "library-models-google-exchange") {
+    const clientId = Deno.env.get("GOOGLE_OAUTH_CLIENT_ID") ?? "";
+    const clientSecret = Deno.env.get("GOOGLE_OAUTH_CLIENT_SECRET") ?? "";
+    const redirectUri = Deno.env.get("GOOGLE_OAUTH_REDIRECT_URI")
+      || "https://sr-editer.vercel.app/admin.html";
+    const code = textOf(body.code, 2048);
+    if (!clientId || !clientSecret) {
+      return json(origin, 503, {
+        ok: false,
+        error: "Secrets GOOGLE_OAUTH_CLIENT_ID / GOOGLE_OAUTH_CLIENT_SECRET manquants sur Supabase.",
+      });
+    }
+    if (!code) return json(origin, 400, { ok: false, error: "Code OAuth manquant." });
+    try {
+      const tokenRes = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          code,
+          client_id: clientId,
+          client_secret: clientSecret,
+          redirect_uri: redirectUri,
+          grant_type: "authorization_code",
+        }),
+      });
+      const tokenJson = await tokenRes.json() as Record<string, unknown>;
+      if (!tokenRes.ok || !tokenJson.access_token) {
+        const detail = textOf(tokenJson.error_description ?? tokenJson.error, 500) || `HTTP ${tokenRes.status}`;
+        return json(origin, 400, { ok: false, error: `Échange OAuth Google : ${detail}` });
+      }
+      return json(origin, 200, {
+        ok: true,
+        accessToken: String(tokenJson.access_token),
+        expiresIn: Number(tokenJson.expires_in) || 3600,
+        scope: textOf(tokenJson.scope, 1024) || null,
+      });
+    } catch (reason) {
+      return json(origin, 500, { ok: false, error: reason instanceof Error ? reason.message : String(reason) });
+    }
   }
   if (action === "library-models-list") {
     const { data, error } = await admin.from("library_models").select("*").order("created_at", { ascending: false });

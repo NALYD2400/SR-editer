@@ -312,6 +312,11 @@
     return (window.SR_CONFIG && window.SR_CONFIG.googleOAuthClientId) || "";
   }
 
+  function googleOAuthRedirectUri() {
+    return `${window.location.origin}/admin.html`;
+  }
+
+  /** Full-page redirect (évite les popups bloquées par le navigateur). */
   function connectGoogleDrive() {
     const clientId = googleOAuthClientId();
     if (!clientId) {
@@ -324,47 +329,48 @@
       alert("Google Identity non chargé. Hard refresh (Ctrl+Shift+R) puis réessaie.");
       return;
     }
-    const client = window.google.accounts.oauth2.initTokenClient({
+    const client = window.google.accounts.oauth2.initCodeClient({
       client_id: clientId,
       scope: "https://www.googleapis.com/auth/drive.file",
-      callback: (resp) => {
-        if (resp.error) {
-          alert(`Google Drive : ${resp.error}`);
-          return;
-        }
-        if (!resp.access_token) {
-          alert("Aucun token Google reçu.");
-          return;
-        }
-        persistGoogleToken(resp.access_token, resp.expires_in);
-        void refreshDriveStatus();
-      },
+      ux_mode: "redirect",
+      redirect_uri: googleOAuthRedirectUri(),
+      state: "sr-editer-drive",
     });
-    client.requestAccessToken({ prompt: hasFreshGoogleToken() ? "" : "consent" });
+    client.requestCode();
+  }
+
+  async function finishGoogleOAuthRedirect() {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const state = params.get("state");
+    const oauthError = params.get("error");
+    if (!code && !oauthError) return false;
+    if (state && state !== "sr-editer-drive") return false;
+
+    const cleanUrl = `${window.location.origin}/admin.html#library`;
+    window.history.replaceState({}, "", cleanUrl);
+
+    if (oauthError) {
+      alert(`Google Drive : ${oauthError}${params.get("error_description") ? ` — ${params.get("error_description")}` : ""}`);
+      return true;
+    }
+
+    try {
+      const data = await api().adminRequest("library-models-google-exchange", { code });
+      if (!data.ok || !data.accessToken) throw new Error(data.error || "Échange OAuth impossible.");
+      persistGoogleToken(data.accessToken, data.expiresIn);
+      setHub("models");
+      void refreshDriveStatus();
+      alert("Google Drive connecté.");
+    } catch (err) {
+      alert(err.message || String(err));
+    }
+    return true;
   }
 
   async function ensureGoogleAccessToken() {
     if (hasFreshGoogleToken()) return googleAccessToken;
-    return new Promise((resolve, reject) => {
-      const clientId = googleOAuthClientId();
-      if (!clientId || !window.google?.accounts?.oauth2) {
-        reject(new Error("Configure googleOAuthClientId et recharge la page, puis clique Connecter Google."));
-        return;
-      }
-      const client = window.google.accounts.oauth2.initTokenClient({
-        client_id: clientId,
-        scope: "https://www.googleapis.com/auth/drive.file",
-        callback: (resp) => {
-          if (resp.error || !resp.access_token) {
-            reject(new Error(resp.error || "Connexion Google annulée."));
-            return;
-          }
-          persistGoogleToken(resp.access_token, resp.expires_in);
-          resolve(resp.access_token);
-        },
-      });
-      client.requestAccessToken({ prompt: "consent" });
-    });
+    throw new Error("Clique d’abord « Connecter Google », puis republie le modèle.");
   }
 
   /** Pack → Google Drive via OAuth user (tes 5 To), chunks 2 Mo. */
@@ -427,6 +433,9 @@
       const linked = hasFreshGoogleToken();
       if (!driveConfigured) {
         el.textContent = "Dossier Drive manquant — secret GOOGLE_DRIVE_FOLDER_ID";
+        el.classList.remove("is-ready");
+      } else if (!data.oauthExchangeReady) {
+        el.textContent = "Dossier OK — secrets OAuth Supabase manquants (client id + secret)";
         el.classList.remove("is-ready");
       } else if (!linked) {
         el.textContent = "Dossier OK — clique « Connecter Google » (tes 5 To)";
@@ -759,6 +768,7 @@
     });
     $("models-connect-google")?.addEventListener("click", () => connectGoogleDrive());
     loadStoredGoogleToken();
+    void finishGoogleOAuthRedirect();
 
     document.querySelectorAll("[data-models-filter]").forEach((tab) => {
       tab.addEventListener("click", () => {
