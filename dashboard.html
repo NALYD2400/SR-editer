@@ -178,7 +178,7 @@
 
 
 
-<body class="portal-body" data-site-page="dashboard">
+<body class="portal-body client-page client-page--showcase" data-site-page="dashboard">
 
 
 
@@ -190,30 +190,26 @@
 
 
 
-  <div class="ambient-background" aria-hidden="true">
-
-
-
-
-
-
-
-
-
-
-
-    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
-
-
-
-
-
-
-
-
-
-
-
+  <div class="sticky-hero-bg" data-image-reveal aria-hidden="true">
+    <div
+      class="reveal-bg reveal-bg--base"
+      data-reveal-base
+      style="background-image: url('assets/showcase/cyan-white.png')"
+    ></div>
+    <div
+      class="reveal-bg reveal-bg--layer"
+      data-reveal-layer
+      style="background-image: url('assets/showcase/electric-blue-2.png')"
+    ></div>
+    <div class="showcase-hero-fade"></div>
+    <svg class="reveal-grid" aria-hidden="true">
+      <defs>
+        <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hero-grid)" />
+    </svg>
   </div>
 
 
@@ -4544,7 +4540,8 @@
 
 
 
-  <script src="js/ambient.js?v=6"></script>
+  <script src="js/skins.js?v=1"></script>
+  <script src="js/image-reveal.js?v=2"></script>
 
 
 

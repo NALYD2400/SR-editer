@@ -132,21 +132,178 @@
 
     if (filmstripTrack && screenshots.length > 0 && filmstripTrack.dataset.filled !== "1") {
       filmstripTrack.dataset.filled = "1";
-      function buildCards() {
-        screenshots.forEach(function (shot) {
-          const card = document.createElement("figure");
-          card.className = "filmstrip-card";
-          const img = document.createElement("img");
-          img.src = encodeURI(shot.src);
-          img.alt = shot.alt;
-          img.loading = "lazy";
-          img.decoding = "async";
-          card.appendChild(img);
-          filmstripTrack.appendChild(card);
+      
+      let activeIndex = 0;
+      const dotsContainer = document.getElementById("gallery-dots");
+      const captionLabel = document.getElementById("gallery-caption-label");
+      
+      screenshots.forEach(function (shot, index) {
+        const card = document.createElement("figure");
+        card.className = "filmstrip-card";
+        card.dataset.index = index;
+        const img = document.createElement("img");
+        img.src = encodeURI(shot.src);
+        img.alt = shot.alt;
+        img.loading = "lazy";
+        img.decoding = "async";
+        card.appendChild(img);
+        
+        card.addEventListener("click", function () {
+          openLightbox(index);
+        });
+        
+        filmstripTrack.appendChild(card);
+
+        if (dotsContainer) {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "gallery-dot" + (index === 0 ? " is-active" : "");
+          dot.setAttribute("aria-label", "Aller à la capture " + (index + 1));
+          dot.addEventListener("click", function () {
+            goToSlide(index);
+          });
+          dotsContainer.appendChild(dot);
+        }
+      });
+
+      const cards = filmstripTrack.querySelectorAll(".filmstrip-card");
+
+      function updateSlider() {
+        if (!cards.length) return;
+        
+        const cardEl = cards[activeIndex];
+        const filmstripContainer = document.getElementById("app-filmstrip");
+        if (!filmstripContainer) return;
+        const filmstripWidth = filmstripContainer.offsetWidth;
+        const cardWidth = cardEl.offsetWidth;
+        
+        const offset = (filmstripWidth / 2) - (cardWidth / 2) - cardEl.offsetLeft;
+        filmstripTrack.style.transform = "translate3d(" + offset + "px, 0, 0)";
+
+        cards.forEach(function (c, i) {
+          c.classList.toggle("is-active", i === activeIndex);
+          c.style.opacity = i === activeIndex ? "1" : "0.45";
+          c.style.transform = i === activeIndex ? "scale(1)" : "scale(0.92)";
+        });
+
+        if (captionLabel) {
+          captionLabel.textContent = screenshots[activeIndex].alt;
+        }
+
+        if (dotsContainer) {
+          dotsContainer.querySelectorAll(".gallery-dot").forEach(function (dot, i) {
+            dot.classList.toggle("is-active", i === activeIndex);
+          });
+        }
+      }
+
+      let autoplayTimer = null;
+      const AUTOPLAY_DELAY = 4500;
+
+      function startAutoplay() {
+        stopAutoplay();
+        autoplayTimer = setInterval(function () {
+          goToSlide(activeIndex + 1);
+        }, AUTOPLAY_DELAY);
+      }
+
+      function stopAutoplay() {
+        if (autoplayTimer) {
+          clearInterval(autoplayTimer);
+          autoplayTimer = null;
+        }
+      }
+
+      function goToSlide(index) {
+        activeIndex = (index + screenshots.length) % screenshots.length;
+        updateSlider();
+        if (autoplayTimer) {
+          startAutoplay();
+        }
+      }
+
+      const prevBtn = document.getElementById("gallery-prev");
+      const nextBtn = document.getElementById("gallery-next");
+      if (prevBtn) prevBtn.addEventListener("click", function () { goToSlide(activeIndex - 1); });
+      if (nextBtn) nextBtn.addEventListener("click", function () { goToSlide(activeIndex + 1); });
+
+      const galleryWrapper = document.querySelector(".gallery-wrapper");
+      if (galleryWrapper) {
+        galleryWrapper.addEventListener("mouseenter", stopAutoplay);
+        galleryWrapper.addEventListener("mouseleave", startAutoplay);
+      }
+
+      setTimeout(function () {
+        updateSlider();
+        startAutoplay();
+      }, 100);
+      window.addEventListener("resize", updateSlider);
+
+      // --- LIGHTBOX DYNAMIC LOGIC ---
+      let lightboxActiveIndex = 0;
+      const lightbox = document.getElementById("gallery-lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const lightboxCaption = document.getElementById("lightbox-caption");
+      const lightboxClose = document.getElementById("lightbox-close");
+      const lightboxPrev = document.getElementById("lightbox-nav-prev");
+      const lightboxNext = document.getElementById("lightbox-nav-next");
+
+      function openLightbox(index) {
+        if (!lightbox || !lightboxImg) return;
+        lightboxActiveIndex = index;
+        lightboxImg.src = encodeURI(screenshots[index].src);
+        lightboxImg.alt = screenshots[index].alt;
+        if (lightboxCaption) lightboxCaption.textContent = screenshots[index].alt;
+        
+        lightbox.setAttribute("aria-hidden", "false");
+        lightbox.classList.add("is-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeLightbox() {
+        if (!lightbox) return;
+        lightbox.setAttribute("aria-hidden", "true");
+        lightbox.classList.remove("is-open");
+        document.body.style.overflow = "";
+      }
+
+      function navigateLightbox(dir) {
+        lightboxActiveIndex = (lightboxActiveIndex + dir + screenshots.length) % screenshots.length;
+        if (lightboxImg) {
+          lightboxImg.src = encodeURI(screenshots[lightboxActiveIndex].src);
+          lightboxImg.alt = screenshots[lightboxActiveIndex].alt;
+        }
+        if (lightboxCaption) {
+          lightboxCaption.textContent = screenshots[lightboxActiveIndex].alt;
+        }
+        goToSlide(lightboxActiveIndex);
+      }
+
+      if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+      if (lightboxPrev) lightboxPrev.addEventListener("click", function () { navigateLightbox(-1); });
+      if (lightboxNext) lightboxNext.addEventListener("click", function () { navigateLightbox(1); });
+
+      if (lightbox) {
+        lightbox.addEventListener("click", function (e) {
+          if (e.target === lightbox || e.target.classList.contains("lightbox-content")) {
+            closeLightbox();
+          }
         });
       }
-      buildCards();
-      buildCards();
+
+      window.addEventListener("keydown", function (e) {
+        if (lightbox && lightbox.classList.contains("is-open")) {
+          if (e.key === "Escape") closeLightbox();
+          if (e.key === "ArrowLeft") navigateLightbox(-1);
+          if (e.key === "ArrowRight") navigateLightbox(1);
+        } else {
+          const sliderEl = document.getElementById("app-filmstrip");
+          if (sliderEl && (document.activeElement === sliderEl || sliderEl.contains(document.activeElement))) {
+            if (e.key === "ArrowLeft") goToSlide(activeIndex - 1);
+            if (e.key === "ArrowRight") goToSlide(activeIndex + 1);
+          }
+        }
+      });
     }
 
     if (!scrollBound) {
