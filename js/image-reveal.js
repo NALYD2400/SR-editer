@@ -78,13 +78,60 @@
       }
     }
 
+    const skins = window.SR_SKINS || [];
+    let lastIndex = -1;
+
+    // Create alternative base layer for ultra-smooth opacity crossfade (top layer)
+    const base2 = base.cloneNode(true);
+    base2.classList.remove("reveal-bg--base");
+    base2.classList.add("reveal-bg--base-alt");
+    base2.style.opacity = "0";
+    base2.style.transition = "opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1)";
+    base.style.opacity = "1"; // base stays fully opaque underneath
+    base.parentNode.insertBefore(base2, reveal);
+
+    let showBase2 = false;
+
+    function handleScrollImageChange() {
+      if (!skins.length) return;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      if (docHeight <= 0) return;
+      const scrollPercent = window.scrollY / docHeight;
+      
+      const skinsCount = skins.length;
+      const indexBase = Math.min(skinsCount - 1, Math.floor(scrollPercent * skinsCount));
+      
+      if (indexBase !== lastIndex) {
+        lastIndex = indexBase;
+        const indexLayer = (indexBase + 1) % skinsCount;
+        
+        const imgBase = skins[indexBase].src;
+        const imgLayer = skins[indexLayer].src;
+        
+        if (showBase2) {
+          // base (underneath) gets the new image, then we fade out base2 (top) to reveal base
+          base.style.backgroundImage = "url('" + encodeURI(imgBase) + "')";
+          base2.style.opacity = "0";
+        } else {
+          // base2 (top) gets the new image and fades in over base
+          base2.style.backgroundImage = "url('" + encodeURI(imgBase) + "')";
+          base2.style.opacity = "1";
+        }
+        showBase2 = !showBase2;
+        
+        reveal.style.backgroundImage = "url('" + encodeURI(imgLayer) + "')";
+      }
+    }
+
     // Start with a soft center preview so the effect is obvious before first move
     paintMask();
     root.classList.add("is-reveal-active");
+    handleScrollImageChange();
 
     window.addEventListener("mousemove", onMove, { passive: true });
     window.addEventListener("pointermove", onMove, { passive: true });
     window.addEventListener("resize", paintMask);
+    window.addEventListener("scroll", handleScrollImageChange, { passive: true });
     raf = window.requestAnimationFrame(tick);
 
     root._revealTeardown = function () {
@@ -93,6 +140,10 @@
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("resize", paintMask);
+      window.removeEventListener("scroll", handleScrollImageChange);
+      if (base2.parentNode) {
+        base2.parentNode.removeChild(base2);
+      }
       delete root.dataset.revealReady;
     };
   }

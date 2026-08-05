@@ -1018,6 +1018,19 @@ section[id],
   box-shadow:
     0 12px 40px rgba(15, 23, 42, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  animation: navEntrance 1.0s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.15s;
+}
+
+@keyframes navEntrance {
+  from {
+    opacity: 0;
+    top: -60px !important;
+  }
+  to {
+    opacity: 1;
+    top: 20px !important;
+  }
 }
 
 .client-page--showcase .site-topnav:hover {
@@ -1143,6 +1156,20 @@ section[id],
   align-self: center;
   transition: opacity 0.2s linear, transform 0.2s linear;
   will-change: opacity, transform;
+  animation: heroEntrance 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes heroEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
 .showcase-hero-copy.is-leaving {
@@ -1155,7 +1182,8 @@ section[id],
   background-size: cover;
   background-position: center 38%;
   background-repeat: no-repeat;
-  will-change: mask-image, -webkit-mask-image;
+  will-change: mask-image, -webkit-mask-image, background-image;
+  transition: background-image 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .reveal-bg--base {
@@ -1500,27 +1528,27 @@ section[id],
 /* Staggered entrance */
 .client-page--showcase .reveal {
   opacity: 0;
-  transform: translateY(36px);
-  filter: blur(6px);
+  transform: translateY(40px) scale(0.97);
+  filter: blur(8px);
   transition:
-    opacity 0.7s var(--ease-out),
-    transform 0.7s var(--ease-out),
-    filter 0.7s var(--ease-out);
+    opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1.0s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .client-page--showcase .reveal.is-visible {
   opacity: 1;
-  transform: none;
-  filter: none;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
 }
 
 .client-page--showcase .feature-card,
 .client-page--showcase .pricing-card {
   opacity: 0;
-  transform: translateY(28px);
+  transform: translateY(30px) scale(0.95);
   transition:
-    opacity 0.55s var(--ease-out),
-    transform 0.55s var(--ease-out),
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     background 0.35s ease,
     border-color 0.35s ease,
     box-shadow 0.45s var(--ease-out);
@@ -1529,7 +1557,7 @@ section[id],
 .client-page--showcase .reveal.is-visible .feature-card,
 .client-page--showcase .reveal.is-visible .pricing-card {
   opacity: 1;
-  transform: none;
+  transform: translateY(0) scale(1);
 }
 
 .client-page--showcase .reveal.is-visible .feature-card:nth-child(1),
