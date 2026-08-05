@@ -768,6 +768,69 @@ html[data-theme="light"] .sidebar-link:hover {
   font-family: var(--font-display), sans-serif;
 }
 
+
+.ai-quota-box {
+  margin: 0 0 14px;
+  padding: 12px 12px 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(139, 92, 246, 0.08);
+}
+
+.ai-quota-box-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ai-quota-box-head .summary-label {
+  margin: 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.62);
+}
+
+.ai-quota-refresh {
+  padding: 4px 10px !important;
+  min-height: 0 !important;
+  font-size: 11px !important;
+}
+
+.ai-quota-meter {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.ai-quota-meter-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #8b5cf6, #ff007c);
+  transition: width 0.25s ease;
+}
+
+.ai-quota-copy {
+  margin: 10px 0 0;
+  color: var(--text);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.ai-quota-copy strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+.ai-quota-meta {
+  margin: 6px 0 0 !important;
+  font-size: 11px !important;
+  line-height: 1.4;
+}
+
 .plan-summary-box {
   display: flex;
   flex-direction: column;

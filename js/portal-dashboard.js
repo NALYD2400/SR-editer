@@ -12,6 +12,10 @@
   const userTierEl = document.getElementById("user-tier");
   const userStatusEl = document.getElementById("user-status");
   const overviewTierEl = document.getElementById("overview-tier-label");
+  const aiQuotaCopyEl = document.getElementById("ai-quota-copy");
+  const aiQuotaMetaEl = document.getElementById("ai-quota-meta");
+  const aiQuotaFillEl = document.getElementById("ai-quota-meter-fill");
+  const aiQuotaRefreshBtn = document.getElementById("ai-quota-refresh");
   const manageBillingBtn = document.getElementById("manage-billing-btn");
   const billingErrorEl = document.getElementById("billing-error");
   const logoutBtn = document.getElementById("logout-btn");
@@ -43,6 +47,13 @@
     standard: "Standard",
     pro: "Pro",
     premium: "Premium",
+  };
+
+  const AI_TEXTURE_DAILY_LIMIT = {
+    free: 10,
+    standard: 100,
+    pro: 250,
+    premium: 500,
   };
 
   let currentSession = null;
@@ -245,6 +256,90 @@
     });
   }
 
+
+  function formatQuotaReset(iso) {
+    if (!iso) return "";
+    try {
+      return new Date(iso).toLocaleString("fr-FR", {
+        weekday: "short",
+        day: "numeric",
+        month: "short",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    } catch (_err) {
+      return iso;
+    }
+  }
+
+  function renderAiQuotaFallback() {
+    const limit = AI_TEXTURE_DAILY_LIMIT[currentTier] || AI_TEXTURE_DAILY_LIMIT.free;
+    if (aiQuotaCopyEl) {
+      aiQuotaCopyEl.innerHTML =
+        "<strong>" +
+        limit +
+        "</strong> / jour inclus avec l'offre " +
+        (TIER_LABELS[currentTier] || currentTier);
+    }
+    if (aiQuotaMetaEl) {
+      aiQuotaMetaEl.textContent =
+        "Gratuit 10 · Standard 100 · Pro 250 · Premium 500 (reset minuit UTC).";
+    }
+    if (aiQuotaFillEl) aiQuotaFillEl.style.width = "0%";
+  }
+
+  async function loadAiTextureQuota() {
+    if (!client || !currentSession) {
+      renderAiQuotaFallback();
+      return;
+    }
+    if (aiQuotaCopyEl) aiQuotaCopyEl.textContent = "Chargement du quota…";
+    try {
+      const { data, error } = await client.functions.invoke("ai-texture-edit", {
+        body: { action: "status" },
+      });
+      if (error) throw error;
+      if (data && data.error) throw new Error(data.error);
+      const quota = data && data.quota ? data.quota : null;
+      if (!quota || typeof quota.limit !== "number") {
+        renderAiQuotaFallback();
+        return;
+      }
+      const used = Number(quota.used) || 0;
+      const limit = Math.max(1, Number(quota.limit) || 1);
+      const remaining = typeof quota.remaining === "number" ? quota.remaining : Math.max(0, limit - used);
+      if (aiQuotaFillEl) {
+        aiQuotaFillEl.style.width = Math.min(100, (used / limit) * 100) + "%";
+      }
+      if (aiQuotaCopyEl) {
+        aiQuotaCopyEl.innerHTML =
+          "<strong>" +
+          remaining +
+          "</strong> restante" +
+          (remaining > 1 ? "s" : "") +
+          " aujourd'hui · " +
+          used +
+          "/" +
+          limit +
+          " utilisées";
+      }
+      if (aiQuotaMetaEl) {
+        aiQuotaMetaEl.textContent =
+          "Reset : " +
+          formatQuotaReset(quota.resetsAt) +
+          " · Offre " +
+          (TIER_LABELS[quota.tier] || TIER_LABELS[currentTier] || currentTier);
+      }
+    } catch (err) {
+      console.warn("Quota IA indisponible:", err);
+      renderAiQuotaFallback();
+      if (aiQuotaMetaEl) {
+        aiQuotaMetaEl.textContent =
+          "Quota live indisponible pour le moment — limite indicative de ton offre.";
+      }
+    }
+  }
+
   function applyProfile(email, profile, user) {
     currentTier = profile.subscription_tier || "free";
     currentEmail = email;
@@ -306,6 +401,7 @@
     syncPlanButtons();
     renderDiscordConnection();
     if (user && user.id) loadWebSupportTickets(user.id);
+    void loadAiTextureQuota();
   }
 
   let activeWebTicket = null;
@@ -636,6 +732,13 @@
         /* ignore */
       }
     }
+  }
+
+
+  if (aiQuotaRefreshBtn) {
+    aiQuotaRefreshBtn.addEventListener("click", function () {
+      void loadAiTextureQuota();
+    });
   }
 
   if (manageBillingBtn) {
