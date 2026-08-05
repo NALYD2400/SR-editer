@@ -10,7 +10,7 @@
   <meta property="og:description" content="Édite tes textures GTA V et FiveM." />
   <meta name="twitter:title" content="SR Editer · GTA V & FiveM" />
   <meta name="twitter:description" content="Édite tes textures GTA V et FiveM." />
-  <meta property="og:image" content="assets/photo%20app/Capture%20d%E2%80%99%C3%A9cran%202026-07-04%20163113.png" />
+  <meta property="og:image" content="assets/showcase/cyan-white.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="canonical" href="https://sr-editer.vercel.app/" />
   <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
@@ -21,11 +21,11 @@
   <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
   <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
   <link rel="stylesheet" href="styles/ambient.css?v=2" />
-  <link rel="stylesheet" href="styles/site-pages.css?v=10" />
-  <link rel="stylesheet" href="styles/client.css?v=0.3.6-pricing" />
+  <link rel="stylesheet" href="styles/site-pages.css?v=11" />
+  <link rel="stylesheet" href="styles/client.css?v=0.5.1-clear" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="client-page" data-site-page="home">
+<body class="client-page client-page--showcase" data-site-page="home">
   <div class="ambient-background" aria-hidden="true">
     <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
   </div>
@@ -38,7 +38,6 @@
     </a>
 
     <nav class="site-nav-tabs" aria-label="Sections du site">
-      <!-- Dropdown Produits -->
       <div class="site-nav-dropdown">
         <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
           <span>Produits</span>
@@ -50,13 +49,9 @@
         </div>
       </div>
 
-      <!-- Tarifs (Lien simple) -->
       <a href="index.html#abonnements" data-nav="plans">Tarifs</a>
-
-      <!-- Blog (Lien simple) -->
       <a href="blog.html" data-nav="blog">Blog</a>
 
-      <!-- Dropdown Ressources -->
       <div class="site-nav-dropdown">
         <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
           <span>Ressources</span>
@@ -71,20 +66,42 @@
 
     <div class="site-nav-actions">
       <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
-        <script src="js/nav-bootstrap.js?v=1"></script>
     </div>
   </header>
+  <script src="js/nav-bootstrap.js?v=1"></script>
 
-  <main>
-    <section class="client-hero">
-      <div class="hero-inner reveal">
-        <p class="hero-kicker"><span id="app-version">v0.4.5</span> · Application desktop Windows</p>
+  <!-- Image + reveal : reste fixe pendant le scroll -->
+  <div class="sticky-hero-bg" data-image-reveal aria-hidden="true">
+    <div
+      class="reveal-bg reveal-bg--base"
+      data-reveal-base
+      style="background-image: url('assets/showcase/cyan-white.png')"
+    ></div>
+    <div
+      class="reveal-bg reveal-bg--layer"
+      data-reveal-layer
+      style="background-image: url('assets/showcase/electric-blue-2.png')"
+    ></div>
+    <div class="showcase-hero-fade"></div>
+    <svg class="reveal-grid" aria-hidden="true">
+      <defs>
+        <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
+          <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#hero-grid)" />
+    </svg>
+  </div>
+
+  <main class="site-overscroll">
+    <section class="showcase-hero" id="telecharger">
+      <div class="showcase-hero-copy" data-hero-copy>
+        <p class="hero-kicker"><span id="app-version">v0.4.5</span> · Desktop Windows</p>
         <h1 class="hero-title">SR Editer</h1>
         <p class="hero-lead">
-          Atelier local pour GTA V &amp; FiveM : ouvre tes dossiers de mods, édite les textures en calques, prévisualise en 3D — sans cloud obligatoire.
+          Peins tes skins, édite les textures, prévisualise en 3D — atelier local pour GTA V &amp; FiveM.
         </p>
-
-        <div class="hero-cta" id="telecharger">
+        <div class="hero-cta">
           <a href="#" class="btn btn-hero" id="download-btn">Télécharger pour Windows</a>
           <p class="hero-meta-line">
             <span id="download-file-size">Windows x64</span>
@@ -97,12 +114,44 @@
       </div>
     </section>
 
-    <section class="app-gallery reveal" id="studio">
+    <div class="site-sheet">
+    <section class="skin-showcase reveal" id="studio">
       <div class="section-head">
-        <h2>L'interface réelle</h2>
-        <p>Captures de l'application — Texture Studio, explorateur, viewport 3D.</p>
+        <h2>Skins réalisés avec SR Editer</h2>
+        <p>Choisis une variante — mêmes assets, finitions différentes.</p>
       </div>
 
+      <div class="skin-stage-wrap" id="skin-stage">
+        <button type="button" class="skin-nav-btn skin-nav-btn--prev" id="skin-prev" aria-label="Skin précédent">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+
+        <figure class="skin-stage-frame">
+          <img
+            id="skin-stage-img"
+            src="assets/showcase/electric-blue.png"
+            alt="Skin sniper SR bleu électrique"
+            width="1600"
+            height="900"
+            decoding="async"
+          />
+        </figure>
+
+        <button type="button" class="skin-nav-btn skin-nav-btn--next" id="skin-next" aria-label="Skin suivant">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <p class="skin-tone" id="skin-tone-label">Bleu</p>
+
+      <div class="skin-rail" id="skin-rail" role="listbox" aria-label="Variantes de skins"></div>
+    </section>
+
+    <section class="app-gallery reveal" id="interface">
+      <div class="section-head">
+        <h2>L'interface réelle</h2>
+        <p>Texture Studio, explorateur RPF, viewport 3D — ce que tu vois en local.</p>
+      </div>
       <div class="app-filmstrip" id="app-filmstrip">
         <div class="app-filmstrip-track" id="app-filmstrip-track"></div>
       </div>
@@ -111,7 +160,7 @@
     <section class="features-pro reveal" id="fonctionnalites">
       <div class="section-head">
         <h2>Conçu pour le modding</h2>
-        <p>Décodage natif, édition précise, sauvegarde sécurisée sans altérer vos fichiers originaux.</p>
+        <p>Décodage natif, édition précise, sauvegarde sûre — sans toucher aux originaux.</p>
       </div>
       <div class="features-grid">
         <div class="feature-card">
@@ -119,7 +168,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
           </div>
           <h3>Texture Studio</h3>
-          <p>Gestion par calques 2D, masques alpha avancés, export PNG/DDS et synchronisation live sur le mesh 3D.</p>
+          <p>Calques 2D, masques alpha, export PNG/DDS et sync live sur le mesh 3D.</p>
         </div>
 
         <div class="feature-card">
@@ -127,7 +176,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
           </div>
           <h3>Explorateur RPF</h3>
-          <p>Parcourez directement votre installation GTA V, vos mods FiveM et vos archives locales sans extraction préalable.</p>
+          <p>Parcours GTA V, mods FiveM et archives locales sans extraction préalable.</p>
         </div>
 
         <div class="feature-card">
@@ -135,7 +184,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
           </div>
           <h3>Viewport 3D WebGL</h3>
-          <p>Prévisualisation 3D temps réel synchronisée instantanément avec vos modifications de textures.</p>
+          <p>Prévisualisation temps réel synchronisée avec tes modifications de textures.</p>
         </div>
 
         <div class="feature-card">
@@ -143,23 +192,23 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           </div>
           <h3>Moteur RSC7 Native</h3>
-          <p>Support complet des formats GTA V : YTD, YDR, YFT, YDD et OpenFormats — sans faux aperçu.</p>
+          <p>YTD, YDR, YFT, YDD et OpenFormats — sans faux aperçu.</p>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <h3>Sauvegarde Sûre</h3>
-          <p>Backups automatiques intelligents et transactions atomiques avant toute modification sur le disque.</p>
+          <h3>Sauvegarde sûre</h3>
+          <p>Backups automatiques et écritures atomiques avant toute modif disque.</p>
         </div>
 
         <div class="feature-card">
           <div class="feature-icon">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
           </div>
-          <h3>100 % Local &amp; Confidentialité</h3>
-          <p>L'intégralité du rendu, du décodage et de vos projets reste stockée localement sur votre ordinateur.</p>
+          <h3>100 % local</h3>
+          <p>Rendu, décodage et projets restent sur ton PC — pas de cloud obligatoire.</p>
         </div>
       </div>
     </section>
@@ -167,7 +216,7 @@
     <section class="pricing-section reveal" id="abonnements">
       <div class="section-head">
         <h2>Abonnements</h2>
-        <p>Choisissez la licence adaptée à vos besoins. Activation immédiate dans l'application après connexion.</p>
+        <p>Activation immédiate dans l'app après connexion.</p>
       </div>
       <div class="pricing-grid">
         <article class="pricing-card">
@@ -205,18 +254,17 @@
           <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Premium</a>
         </article>
       </div>
-      <p class="pricing-note">Standard débloque l&apos;enregistrement/export. Pro ajoute l&apos;IA (vos clés OpenAI/Gemini/HF) et l&apos;atlas 4K. Premium = Pro + file VIP support. Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement</a>.</p>
+      <p class="pricing-note">Standard débloque l&apos;enregistrement/export. Pro ajoute l&apos;IA et l&apos;atlas 4K. Premium = Pro + file VIP. Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement</a>.</p>
     </section>
 
     <section class="client-cta-pro reveal" id="demarrer">
       <div class="cta-inner">
-        <h2>Prêt à modder vos assets ?</h2>
-        <p>Téléchargez SR Editer <span id="cta-app-version">v0.4.5</span>, connectez-vous et commencez à éditer vos textures et modèles 3D immédiatement.</p>
+        <h2>Prêt à peindre tes skins ?</h2>
+        <p>Télécharge SR Editer <span id="cta-app-version">v0.4.5</span>, connecte-toi et édite immédiatement.</p>
         <a href="#" class="btn btn-hero" id="download-btn-2">Télécharger l'application</a>
         <p class="cta-req">Windows 10/11 x64 · 8 Go RAM recommandés · GTA V / FiveM</p>
       </div>
     </section>
-  </main>
 
   <footer class="client-footer">
     <div class="footer-container">
@@ -226,7 +274,7 @@
             <img src="assets/logo_small.png" alt="SR Editer" />
             <span>SR Editer</span>
           </a>
-          <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
+          <p class="footer-desc">L'atelier desktop pour l'édition de textures et la prévisualisation 3D GTA V / FiveM.</p>
           <div class="footer-status">
             <span class="status-dot"></span>
             <span>Tous les services sont opérationnels</span>
@@ -269,14 +317,18 @@
       </div>
     </div>
   </footer>
+    </div>
+  </main>
 
   <script src="js/wallpapers.js?v=0.3.4"></script>
+  <script src="js/skins.js?v=1"></script>
   <script src="js/screenshots.js?v=0.3.4"></script>
   <script src="js/config.js?v=0.3.4"></script>
   <script src="js/sr-supabase.js?v=1"></script>
   <script src="js/ambient.js?v=6"></script>
-  <script src="js/client.js?v=0.3.6"></script>
-  <script src="js/site-nav.js?v=7"></script>
-  <script src="js/site-soft-nav.js?v=2"></script>
+  <script src="js/image-reveal.js?v=2"></script>
+  <script src="js/client.js?v=0.5.0"></script>
+  <script src="js/site-nav.js?v=8"></script>
+  <script src="js/site-soft-nav.js?v=3"></script>
 </body>
 </html>

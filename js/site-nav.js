@@ -18,8 +18,9 @@
       '<span class="site-nav-toggle-bar" aria-hidden="true"></span>' +
       '<span class="site-nav-toggle-bar" aria-hidden="true"></span>';
 
-    const actions = header.querySelector(".site-nav-actions");
-    if (actions) header.insertBefore(toggle, actions);
+    // Only insertBefore when reference is a direct child — soft-nav / nested DOM can break otherwise
+    const actions = header.querySelector(":scope > .site-nav-actions") || header.querySelector(".site-nav-actions");
+    if (actions && actions.parentNode === header) header.insertBefore(toggle, actions);
     else header.appendChild(toggle);
 
     function setOpen(open) {
@@ -294,7 +295,7 @@
     });
   }
 
-  window.SRSiteNav = { refresh: refresh };
+  window.SRSiteNav = { refresh: refresh, initMobileNav: initMobileNav };
 
   markActiveTabs();
 

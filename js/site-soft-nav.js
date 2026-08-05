@@ -11,7 +11,7 @@
   };
 
   const PAGE_SCRIPTS = {
-    home: ["js/screenshots.js?v=0.3.4", "js/client.js?v=0.3.6"],
+    home: ["js/skins.js?v=1", "js/screenshots.js?v=0.3.4", "js/image-reveal.js?v=2", "js/client.js?v=0.5.0"],
     docs: [],
     library: ["js/library-page.js?v=8"],
   };
@@ -76,9 +76,13 @@
     if (page === "library" && window.SRLibrary && typeof window.SRLibrary.mount === "function") {
       window.SRLibrary.mount();
     }
-    // Toujours resynchroniser le compte après swap DOM
-    if (window.SRSiteNav && typeof window.SRSiteNav.refresh === "function") {
-      window.SRSiteNav.refresh();
+    // Toujours resynchroniser le compte / menu mobile après swap DOM
+    if (window.SRSiteNav) {
+      if (typeof window.SRSiteNav.initMobileNav === "function") window.SRSiteNav.initMobileNav();
+      if (typeof window.SRSiteNav.refresh === "function") window.SRSiteNav.refresh();
+    }
+    if (window.SRImageReveal && typeof window.SRImageReveal.mount === "function") {
+      window.SRImageReveal.mount();
     }
   }
 

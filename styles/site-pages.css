@@ -209,9 +209,6 @@ body.auth-body:not(.auth-body--locked) {
   background: rgba(255, 255, 255, 0.1) !important;
   transform: none !important;
 }
-  color: rgba(255, 255, 255, 0.5);
-  margin-top: 2px;
-}
 
 .site-nav-actions {
   display: flex;
