@@ -1235,6 +1235,283 @@ section[id],
   color: #0b1220;
 }
 
+/* ── Motion + glass that lets the sticky image breathe ── */
+.client-page--showcase .feature-card,
+.client-page--showcase .pricing-card,
+.client-page--showcase .cta-inner,
+.client-page--showcase .skin-stage-frame {
+  background: rgba(255, 255, 255, 0.38);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 10px 36px rgba(15, 23, 42, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  transition:
+    transform 0.45s var(--ease-out),
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.45s var(--ease-out);
+}
+
+.client-page--showcase .feature-card h3,
+.client-page--showcase .pricing-card h3,
+.client-page--showcase .pricing-amount,
+.client-page--showcase .cta-inner h2 {
+  color: #0b1220;
+}
+
+.client-page--showcase .feature-card p,
+.client-page--showcase .pricing-card li,
+.client-page--showcase .pricing-amount span,
+.client-page--showcase .cta-inner > p,
+.client-page--showcase .cta-req,
+.client-page--showcase .pricing-note {
+  color: rgba(15, 23, 42, 0.72);
+}
+
+.client-page--showcase .feature-icon {
+  background: rgba(0, 180, 255, 0.12);
+  border-color: rgba(0, 160, 230, 0.28);
+  color: #0284c7;
+}
+
+.client-page--showcase .feature-card:hover {
+  transform: translateY(-8px) scale(1.01);
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(0, 200, 255, 0.45);
+  box-shadow:
+    0 22px 50px rgba(15, 23, 42, 0.12),
+    0 0 0 1px rgba(0, 200, 255, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.client-page--showcase .pricing-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(0, 180, 255, 0.4);
+  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.12);
+}
+
+.client-page--showcase .pricing-card--featured {
+  background: rgba(255, 255, 255, 0.52);
+  border-color: rgba(0, 180, 255, 0.5);
+  box-shadow:
+    0 18px 48px rgba(14, 165, 233, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.client-page--showcase .pricing-badge {
+  background: linear-gradient(135deg, #00d4ff 0%, #3b82f6 100%);
+  box-shadow: 0 6px 16px rgba(14, 165, 233, 0.35);
+  color: #041018;
+}
+
+.client-page--showcase .pricing-btn {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(15, 23, 42, 0.12);
+  color: #0b1220;
+}
+
+.client-page--showcase .pricing-btn:hover {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 180, 255, 0.35);
+}
+
+.client-page--showcase .pricing-btn--primary {
+  background: linear-gradient(135deg, #00d4ff 0%, #3b82f6 100%) !important;
+  color: #041018 !important;
+  border: none !important;
+  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.3);
+}
+
+.client-page--showcase .pricing-card li::before {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+.client-page--showcase .pricing-card li svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  color: #0284c7;
+  background: none !important;
+  fill: none !important;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.client-page--showcase .app-gallery {
+  padding: clamp(32px, 6vw, 72px) 0 clamp(48px, 8vw, 96px);
+}
+
+.client-page--showcase .app-filmstrip {
+  mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+}
+
+.client-page--showcase .app-filmstrip-track {
+  gap: 28px;
+  padding: 16px 8vw 32px;
+  animation-duration: 70s;
+}
+
+.client-page--showcase .filmstrip-card {
+  width: min(78vw, 860px);
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  background: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  transform: scale(0.96);
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out), border-color 0.35s ease;
+}
+
+.client-page--showcase .filmstrip-card::before {
+  content: "";
+  display: block;
+  height: 28px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.22));
+  border-bottom: 1px solid rgba(15, 23, 42, 0.06);
+  background-image:
+    radial-gradient(circle at 14px 14px, #ff5f57 0 5px, transparent 6px),
+    radial-gradient(circle at 34px 14px, #febc2e 0 5px, transparent 6px),
+    radial-gradient(circle at 54px 14px, #28c840 0 5px, transparent 6px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.22));
+}
+
+.client-page--showcase .filmstrip-card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  vertical-align: top;
+}
+
+.client-page--showcase .app-filmstrip-track:hover .filmstrip-card {
+  transform: scale(0.94);
+  opacity: 0.85;
+}
+
+.client-page--showcase .filmstrip-card:hover {
+  transform: scale(1.02) !important;
+  opacity: 1 !important;
+  border-color: rgba(0, 200, 255, 0.45);
+  box-shadow:
+    0 28px 70px rgba(15, 23, 42, 0.18),
+    0 0 0 1px rgba(0, 200, 255, 0.12);
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .client-page--showcase .app-filmstrip-track {
+    animation: none;
+  }
+}
+
+.client-page--showcase .pricing-note a {
+  color: #0369a1;
+}
+
+.client-page--showcase .skin-stage-frame {
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(15, 23, 42, 0.14);
+}
+
+.client-page--showcase .skin-nav-btn {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(255, 255, 255, 0.65);
+  color: #0b1220;
+  backdrop-filter: blur(12px);
+}
+
+.client-page--showcase .skin-nav-btn:hover {
+  background: rgba(0, 200, 255, 0.18);
+  border-color: rgba(0, 180, 255, 0.45);
+}
+
+.client-page--showcase .skin-thumb {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.client-page--showcase .skin-thumb.is-active {
+  border-color: rgba(0, 180, 255, 0.65);
+  box-shadow: 0 0 0 1px rgba(0, 180, 255, 0.25), 0 12px 28px rgba(15, 23, 42, 0.12);
+}
+
+.client-page--showcase .cta-inner {
+  border-radius: 24px;
+}
+
+.client-page--showcase .cta-inner:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Staggered entrance */
+.client-page--showcase .reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  filter: blur(6px);
+  transition:
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out),
+    filter 0.7s var(--ease-out);
+}
+
+.client-page--showcase .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+.client-page--showcase .feature-card,
+.client-page--showcase .pricing-card {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.55s var(--ease-out),
+    transform 0.55s var(--ease-out),
+    background 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.45s var(--ease-out);
+}
+
+.client-page--showcase .reveal.is-visible .feature-card,
+.client-page--showcase .reveal.is-visible .pricing-card {
+  opacity: 1;
+  transform: none;
+}
+
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(1),
+.client-page--showcase .reveal.is-visible .pricing-card:nth-child(1) { transition-delay: 0.05s; }
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(2),
+.client-page--showcase .reveal.is-visible .pricing-card:nth-child(2) { transition-delay: 0.12s; }
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(3),
+.client-page--showcase .reveal.is-visible .pricing-card:nth-child(3) { transition-delay: 0.19s; }
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(4) { transition-delay: 0.26s; }
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(5) { transition-delay: 0.33s; }
+.client-page--showcase .reveal.is-visible .feature-card:nth-child(6) { transition-delay: 0.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .client-page--showcase .reveal,
+  .client-page--showcase .feature-card,
+  .client-page--showcase .pricing-card {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
 .skin-showcase {
   position: relative;
   z-index: 1;
