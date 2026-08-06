@@ -143,6 +143,7 @@
 
 
   <link rel="stylesheet" href="styles/site-pages.css?v=13">
+  <link rel="stylesheet" href="styles/client.css?v=0.8.3">
 
 
 
@@ -2250,7 +2251,7 @@
 
 
 
-              <div class="section-header">
+              <div class="section-header" style="margin-bottom: 20px;">
 
 
 
@@ -2262,19 +2263,7 @@
 
 
 
-                <h2>Abonnements &amp; Licences</h2>
-
-
-
-
-
-
-
-
-
-
-
-                <p class="text-muted">Choisis la licence adaptée à tes besoins de modding. La mise à niveau est immédiate dans ton application desktop.</p>
+                <p class="text-muted" style="margin: 0;">Choisis la licence adaptée à tes besoins de modding. La mise à niveau est immédiate dans ton application desktop.</p>
 
 
 
@@ -2840,19 +2829,7 @@
 
 
 
-              <h2>Gestion de la Facturation</h2>
-
-
-
-
-
-
-
-
-
-
-
-              <p class="text-muted">Met à jour ta carte bancaire, consulte ton historique de paiement ou annule ton renouvellement en un clic sur le portail Stripe sécurisé.</p>
+              <p class="text-muted" style="margin-bottom: 20px;">Met à jour ta carte bancaire, consulte ton historique de paiement ou annule ton renouvellement en un clic sur le portail Stripe sécurisé.</p>
 
 
 
@@ -3302,19 +3279,7 @@
 
 
 
-                <h2>Télécharger SR Editer Desktop</h2>
-
-
-
-
-
-
-
-
-
-
-
-                <p class="text-muted">Installe ou mets à jour l'application officielle SR Editer pour Windows (64 bits). Connecte-toi avec ce compte pour débloquer immédiatement l'ensemble de tes fonctionnalités.</p>
+                <p class="text-muted" style="margin-bottom: 20px;">Installe ou mets à jour l'application officielle SR Editer pour Windows (64 bits). Connecte-toi avec ce compte pour débloquer immédiatement l'ensemble de tes fonctionnalités.</p>
 
 
 
@@ -3830,7 +3795,7 @@
 
 
 
-              <div class="section-header">
+              <div class="section-header" style="margin-bottom: 20px;">
 
 
 
@@ -3842,19 +3807,7 @@
 
 
 
-                <h2>Compte &amp; connexions</h2>
-
-
-
-
-
-
-
-
-
-
-
-                <p class="text-muted">Gère la liaison Discord et les données de ton compte SR Editer.</p>
+                <p class="text-muted" style="margin: 0;">Gère la liaison Discord et les données de ton compte SR Editer.</p>
 
 
 
@@ -4300,75 +4253,67 @@
 
           <!-- SUPPORT PANEL -->
           <section class="portal-panel" id="panel-support">
-            <div class="portal-card">
-              <div class="section-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08);">
-                <div>
-                  <h2 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #ffffff;">Support Client &amp; Suivi des Tickets</h2>
-                  <p class="text-muted" style="margin: 0; font-size: 13px; color: rgba(255, 255, 255, 0.65);">Consultez vos tickets en cours, obtenez de l&apos;aide en direct ou rejoignez le Discord SR Editer.</p>
-                </div>
-                <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn primary-btn" style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #5865F2 0%, #4752C4 100%); color: #ffffff; text-decoration: none; padding: 10px 18px; border-radius: 8px; font-weight: 700; font-size: 13px; box-shadow: 0 4px 16px rgba(88, 101, 242, 0.35);">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  Rejoindre le Discord Support
-                </a>
-              </div>
+            <div class="portal-card" style="background: none !important; border: none !important; box-shadow: none !important; padding: 0 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important;">
 
-              <!-- Live Tickets List Section -->
-              <div style="margin-bottom: 24px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
-                  <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 8px;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff007c" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                    Vos Tickets Support en Cours
-                  </h3>
-                  <div style="display: flex; align-items: center; gap: 10px;">
-                    <span id="web-ticket-count-badge" style="font-size: 11px; background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.3); padding: 2px 8px; border-radius: 12px; font-weight: 700;">
-                      Chargement...
-                    </span>
-                    <button type="button" id="open-new-ticket-modal-btn" class="btn primary-btn" style="display: inline-flex; align-items: center; gap: 6px; background: #ff007c; color: #fff; border: none; padding: 6px 14px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; transition: transform 0.2s ease, opacity 0.2s ease;">
-                      + Nouveau Ticket
-                    </button>
-                  </div>
-                </div>
 
-                <div id="web-tickets-list-container">
-                  <div style="text-align: center; padding: 20px; color: rgba(255, 255, 255, 0.5); font-size: 13px;">
-                    Connexion au serveur de support...
-                  </div>
-                </div>
-              </div>
-
-              <div class="card-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                <!-- Card 1: Discord 24/7 -->
-                <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
-                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(88, 101, 242, 0.2); display: flex; align-items: center; justify-content: center; color: #5865F2;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    </div>
-                    <div>
-                      <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff;">Discord Officiel 24/7</h3>
-                      <span style="font-size: 11px; color: #22c55e; font-weight: 600;">● Communauté active &amp; Support direct</span>
+              <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; align-items: start;">
+                <!-- Left: Tickets List -->
+                <div class="portal-card" style="padding: 20px !important; margin: 0;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid rgba(0,0,0,0.06);">
+                    <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ff007c" stroke-width="2.5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                      Tickets en cours
+                    </h3>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <span id="web-ticket-count-badge" class="tier-badge free" style="font-size: 10.5px; padding: 2px 8px;">
+                        Chargement...
+                      </span>
+                      <button type="button" id="open-new-ticket-modal-btn" class="portal-btn primary" style="width: auto; height: 32px; padding: 0 12px; font-size: 12px; font-weight: 700; background: #ff007c !important; box-shadow: 0 4px 12px rgba(255, 0, 124, 0.25) !important;">
+                        + Nouveau Ticket
+                      </button>
                     </div>
                   </div>
-                  <p style="margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.65); line-height: 1.5;">Posez vos questions sur le canal dédié au support. Les administrateurs et modérateurs vous répondent rapidement en direct.</p>
-                  <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="btn outline-btn" style="margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; background: rgba(88, 101, 242, 0.15); color: #5865F2; border: 1px solid rgba(88, 101, 242, 0.3); padding: 8px 14px; border-radius: 6px; text-decoration: none; font-size: 12.5px; font-weight: 700; width: 100%;">
-                    Ouvrir Discord Officiel
-                  </a>
-                </div>
 
-                <!-- Card 2: Guarantee & Response Time -->
-                <div class="dash-card" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 12px; padding: 18px;">
-                  <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
-                    <div style="width: 36px; height: 36px; border-radius: 8px; background: rgba(255, 0, 124, 0.2); display: flex; align-items: center; justify-content: center; color: #ff007c;">
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div>
-                      <h3 style="margin: 0; font-size: 15px; font-weight: 700; color: #ffffff;">Temps de Réponse Garantis</h3>
-                      <span style="font-size: 11px; color: #ff007c; font-weight: 600;">● Réponse sous &lt; 2h • 7j/7</span>
+                  <div id="web-tickets-list-container">
+                    <div style="text-align: center; padding: 20px; color: rgba(15, 23, 42, 0.5); font-size: 13px;">
+                      Connexion au serveur de support...
                     </div>
                   </div>
-                  <p style="margin: 0; font-size: 12.5px; color: rgba(255, 255, 255, 0.65); line-height: 1.5;">Tous vos tickets créés depuis l'Espace Web ou l'App Desktop sont traités en priorité par l'équipe d'administration SR Editer.</p>
-                  <span class="badge" style="margin-top: 14px; display: inline-flex; align-items: center; justify-content: center; width: 100%; background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.3); padding: 6px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700;">
-                    Assistance Prioritaire Active
-                  </span>
+                </div>
+
+                <!-- Right: Shortcuts & Rules -->
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                  <!-- Card 1: Discord -->
+                  <div class="portal-card" style="padding: 16px !important;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                      <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(88, 101, 242, 0.12); display: flex; align-items: center; justify-content: center; color: #5865F2;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">Discord Officiel</h3>
+                        <span style="font-size: 10.5px; color: #22c55e; font-weight: 600;">● Communauté &amp; Support 24/7</span>
+                      </div>
+                    </div>
+                    <a href="https://discord.gg/gNQwHGMRdT" target="_blank" class="portal-btn outline" style="height: 34px; font-size: 12.5px; margin-top: 10px;">
+                      Rejoindre le serveur
+                    </a>
+                  </div>
+
+                  <!-- Card 2: Time responses -->
+                  <div class="portal-card" style="padding: 16px !important;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                      <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255, 0, 124, 0.1); display: flex; align-items: center; justify-content: center; color: #ff007c;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                      </div>
+                      <div>
+                        <h3 style="margin: 0; font-size: 14px; font-weight: 700; color: #0f172a;">Temps de Réponse</h3>
+                        <span style="font-size: 10.5px; color: #ff007c; font-weight: 600;">● Moins de 2h • 7j/7</span>
+                      </div>
+                    </div>
+                    <div class="tier-badge premium" style="display: flex; align-items: center; justify-content: center; width: 100%; height: 30px; font-size: 11px; margin-top: 10px; border-radius: 6px; box-sizing: border-box;">
+                      Assistance Prioritaire Active
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

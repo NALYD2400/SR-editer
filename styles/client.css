@@ -1445,6 +1445,10 @@ section[id],
   position: relative;
 }
 
+.client-page--showcase.portal-body {
+  background: transparent !important;
+}
+
 .client-page--showcase .reveal-bg {
   background-position: 70% 38% !important;
   background-size: cover !important;
@@ -1793,12 +1797,12 @@ section[id],
 /* Staggered entrance */
 .client-page--showcase .reveal {
   opacity: 0;
-  transform: translateY(40px) scale(0.97);
-  filter: blur(8px);
+  transform: translateY(55px) scale(0.96);
+  filter: blur(6px);
   transition:
-    opacity 1.0s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 1.0s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 1.0s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.7s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.1),
+    filter 0.7s ease-out;
 }
 
 .client-page--showcase .reveal.is-visible {
@@ -1810,10 +1814,10 @@ section[id],
 .client-page--showcase .feature-card,
 .client-page--showcase .pricing-card {
   opacity: 0;
-  transform: translateY(30px) scale(0.95);
+  transform: translateY(40px) scale(0.95);
   transition:
-    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 0.65s cubic-bezier(0.25, 1, 0.5, 1),
+    transform 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.1),
     background 0.35s ease,
     border-color 0.35s ease,
     box-shadow 0.45s var(--ease-out);
@@ -2031,5 +2035,664 @@ section[id],
   .client-page--showcase .hero-cta {
     align-items: center;
   }
+}
+
+/* Dashboard Glassmorphism & Light Theme Overrides */
+.client-page--showcase .portal-sidebar {
+  width: 300px !important;
+  background: rgba(255, 255, 255, 0.45) !important;
+  backdrop-filter: blur(28px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(140%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 4px 0 30px rgba(15, 23, 42, 0.05) !important;
+}
+
+.client-page--showcase .portal-main-stage {
+  margin-left: 300px !important;
+  width: calc(100vw - 300px) !important;
+}
+
+.client-page--showcase .profile-card-widget {
+  padding: 8px 10px !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-brand {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-link {
+  color: rgba(15, 23, 42, 0.72) !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-link:hover {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-link.active {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #6366f1 !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-footer {
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+}
+
+.client-page--showcase .portal-sidebar .sidebar-footer .username {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .portal-topbar {
+  background: rgba(255, 255, 255, 0.45) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+  backdrop-filter: blur(28px) !important;
+  -webkit-backdrop-filter: blur(28px) !important;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.02) !important;
+}
+
+.client-page--showcase .topbar-title h1 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .back-to-site-link {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .back-to-site-link:hover {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .welcome-banner {
+  background:
+    radial-gradient(120% 100% at 0% 0%, rgba(99, 102, 241, 0.08), transparent 60%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.38)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.client-page--showcase .welcome-banner h2 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .welcome-banner p {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.38)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card:hover {
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.1), 0 0 24px rgba(99, 102, 241, 0.1) !important;
+}
+
+.client-page--showcase .active-plan-widget {
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  background:
+    radial-gradient(100% 80% at 100% 0%, rgba(99, 102, 241, 0.12), transparent 55%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.45)) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card h3,
+.client-page--showcase .portal-stage-content .portal-card h4,
+.client-page--showcase .portal-stage-content .portal-card .kpi-val,
+.client-page--showcase .portal-stage-content .portal-card .widget-value {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card p,
+.client-page--showcase .portal-stage-content .portal-card span:not(.badge):not(.kpi-trend):not(.tier-badge):not(.profile-email-text),
+.client-page--showcase .portal-stage-content .portal-card .text-muted,
+.client-page--showcase .portal-stage-content .portal-card .kpi-label {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card .feature-list li {
+  color: rgba(15, 23, 42, 0.85) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card .feature-list svg {
+  color: #22c55e !important;
+}
+
+/* Modifs additionnelles pour l'affichage de la sidebar */
+.client-page--showcase .sidebar-footer .user-profile-btn {
+  background: rgba(0, 0, 0, 0.03) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+.client-page--showcase .sidebar-footer .user-profile-btn:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+.client-page--showcase .sidebar-footer .user-email {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+.client-page--showcase .sidebar-footer .logout-btn-link {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+.client-page--showcase .sidebar-footer .logout-btn-link:hover {
+  color: #ef4444 !important;
+}
+.client-page--showcase .topbar-actions .portal-admin-link {
+  color: rgba(15, 23, 42, 0.72) !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+}
+.client-page--showcase .topbar-actions .portal-admin-link:hover {
+  color: #0f172a !important;
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Corrections Quota & Bouton Actualiser */
+.client-page--showcase .ai-quota-box {
+  background: rgba(99, 102, 241, 0.06) !important;
+  border: 1px solid rgba(99, 102, 241, 0.16) !important;
+}
+
+.client-page--showcase .ai-quota-box .summary-label {
+  color: rgba(15, 23, 42, 0.65) !important;
+}
+
+.client-page--showcase .ai-quota-copy {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .ai-quota-copy strong {
+  color: #6366f1 !important; /* Le nombre restant en violet clair */
+  font-weight: 700 !important;
+}
+
+.client-page--showcase .ai-quota-meta {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+.client-page--showcase .portal-btn.ghost,
+.client-page--showcase .ai-quota-refresh {
+  background: rgba(99, 102, 241, 0.1) !important;
+  color: #6366f1 !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.client-page--showcase .portal-btn.outline {
+  background: transparent !important;
+  color: #6366f1 !important;
+  border: 1px solid rgba(99, 102, 241, 0.4) !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.client-page--showcase .portal-btn.outline:hover {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: #4f46e5 !important;
+  border-color: rgba(99, 102, 241, 0.6) !important;
+}
+
+.client-page--showcase .portal-btn.ghost:hover,
+.client-page--showcase .ai-quota-refresh:hover {
+  background: rgba(99, 102, 241, 0.18) !important;
+  color: #4f46e5 !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Corrections Profile Sidebar */
+.client-page--showcase .profile-email-text {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  max-width: none !important;
+  width: auto !important;
+  text-overflow: clip !important;
+}
+
+.client-page--showcase .btn-logout {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.client-page--showcase .btn-logout:hover {
+  color: #ef4444 !important;
+}
+
+.client-page--showcase .profile-avatar-circle {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #6366f1 !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+}
+
+/* Badges d'abonnements */
+.client-page--showcase .tier-badge {
+  box-shadow: none !important;
+  font-weight: 700 !important;
+}
+
+.client-page--showcase .tier-badge.premium,
+.client-page--showcase .tier-badge.lifetime,
+.client-page--showcase .tier-badge.studio {
+  background: rgba(139, 92, 246, 0.15) !important;
+  color: #7c3aed !important;
+  border: 1px solid rgba(139, 92, 246, 0.32) !important;
+}
+
+.client-page--showcase .tier-badge.free {
+  background: rgba(100, 116, 139, 0.12) !important;
+  color: #475569 !important;
+  border: 1px solid rgba(100, 116, 139, 0.25) !important;
+}
+
+.client-page--showcase .tier-badge.pro {
+  background: rgba(99, 102, 241, 0.15) !important;
+  color: #4f46e5 !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+}
+
+/* Elegant Showcase Loading Screen */
+.client-page--showcase .portal-loading-screen {
+  background: rgba(234, 233, 236, 0.75) !important;
+  backdrop-filter: blur(30px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(140%) !important;
+  color: #0f172a !important;
+  font-weight: 500 !important;
+  transition: opacity 0.4s ease, visibility 0.4s ease !important;
+  opacity: 1;
+  visibility: visible;
+}
+
+.client-page--showcase .portal-loading-screen.fade-out {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.client-page--showcase .portal-loading-spinner {
+  border: 3px solid rgba(99, 102, 241, 0.12) !important;
+  border-top-color: #6366f1 !important;
+}
+
+/* Corrections Plans & Licences Tab */
+.client-page--showcase .portal-stage-content .plans-widget h2 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .plan-card-web {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.03) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+}
+
+.client-page--showcase .plan-card-web:hover {
+  background: rgba(255, 255, 255, 0.45) !important;
+  border-color: rgba(99, 102, 241, 0.35) !important;
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.06), 0 0 20px rgba(99, 102, 241, 0.08) !important;
+}
+
+.client-page--showcase .plan-card-web.highlighted {
+  border-color: rgba(99, 102, 241, 0.45) !important;
+  background:
+    radial-gradient(120% 80% at 50% 0%, rgba(99, 102, 241, 0.08), transparent 55%),
+    rgba(255, 255, 255, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(99, 102, 241, 0.15), 0 18px 44px rgba(15, 23, 42, 0.08) !important;
+}
+
+.client-page--showcase .plan-card-web.is-current {
+  border-color: rgba(34, 197, 94, 0.45) !important;
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.15) !important;
+}
+
+.client-page--showcase .plan-card-web h3,
+.client-page--showcase .plan-card-web .plan-price-web {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .plan-card-web .plan-price-web span {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+.client-page--showcase .plan-card-web ul {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .plan-card-web li {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .plan-card-web li::before {
+  background: #6366f1 !important; /* Puces indigo */
+}
+
+.client-page--showcase .plan-card-web .portal-btn:disabled {
+  background: rgba(99, 102, 241, 0.12) !important;
+  color: #6366f1 !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  opacity: 0.85 !important;
+  box-shadow: none !important;
+}
+
+/* Corrections de la section Facturation (Billing Tab) */
+.client-page--showcase .portal-stage-content .portal-card h2 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .docs-table-wrap {
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase .docs-table th {
+  background: rgba(0, 0, 0, 0.03) !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase .docs-table td {
+  color: rgba(15, 23, 42, 0.85) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+.client-page--showcase .docs-table tr:hover td {
+  background: rgba(0, 0, 0, 0.02) !important;
+}
+
+.client-page--showcase .docs-table td[style*="color:var(--text-muted)"],
+.client-page--showcase .docs-table td[colspan="5"] {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+/* Surcharges générales des listes et sous-titres dans les cartes du portail (Téléchargements etc.) */
+.client-page--showcase .portal-stage-content .portal-card h2 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card ul {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card li {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase .portal-stage-content .portal-card li strong {
+  color: #0f172a !important; /* Rend les labels de config comme OS:, Processeur: noirs et lisibles */
+}
+
+/* Surcharges de la section Support */
+.client-page--showcase #panel-support .section-header h2 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase #panel-support .section-header p {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase #panel-support .section-header {
+  border-bottom-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase #panel-support div[style*="margin-bottom: 24px; background: rgba(255, 255, 255, 0.03)"],
+.client-page--showcase #panel-support div[style*="margin-bottom: 24px;background: rgba(255, 255, 255, 0.03)"] {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.client-page--showcase #panel-support h3[style*="color: #ffffff"],
+.client-page--showcase #panel-support h3[style*="color:#ffffff"] {
+  color: #0f172a !important;
+}
+
+.client-page--showcase #panel-support .dash-card {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.03) !important;
+}
+
+.client-page--showcase #panel-support .dash-card h3 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase #panel-support .dash-card p {
+  color: rgba(15, 23, 42, 0.8) !important;
+}
+
+.client-page--showcase #panel-support .dash-card .outline-btn {
+  background: rgba(88, 101, 242, 0.08) !important;
+  color: #5865F2 !important;
+  border: 1px solid rgba(88, 101, 242, 0.25) !important;
+  transition: all 0.2s ease !important;
+}
+
+.client-page--showcase #panel-support .dash-card .outline-btn:hover {
+  background: rgba(88, 101, 242, 0.16) !important;
+  border-color: rgba(88, 101, 242, 0.4) !important;
+}
+
+.client-page--showcase #panel-support .dash-card div[style*="background: rgba(255, 0, 124, 0.08)"],
+.client-page--showcase #panel-support .dash-card div[style*="background:rgba(255, 0, 124, 0.08)"] {
+  background: rgba(255, 0, 124, 0.06) !important;
+  border: 1px solid rgba(255, 0, 124, 0.15) !important;
+}
+
+.client-page--showcase #panel-support .dash-card span[style*="color: #ff007c"],
+.client-page--showcase #panel-support .dash-card span[style*="color:#ff007c"] {
+  color: #e11d48 !important;
+}
+
+/* Surcharges des éléments de tickets générés dynamiquement par JS */
+.client-page--showcase #web-tickets-list-container > div {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.client-page--showcase #web-tickets-list-container > div > div > div:first-child {
+  color: #0f172a !important; /* Titre du ticket */
+}
+
+.client-page--showcase #web-tickets-list-container > div > div > div:last-child {
+  color: rgba(15, 23, 42, 0.55) !important; /* Date d'activité */
+}
+
+.client-page--showcase #web-tickets-list-container div[style*="color: rgba(255, 255, 255, 0.5)"] {
+  color: rgba(15, 23, 42, 0.55) !important;
+}
+
+.client-page--showcase #web-tickets-list-container p[style*="color: rgba(255, 255, 255, 0.8)"] {
+  color: #0f172a !important;
+}
+
+/* Modale de Discussion / Chat Ticket - Style Showcase Light */
+.client-page--showcase #web-ticket-chat-modal {
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal > div {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(40px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal h3 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal span {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal button#close-ticket-chat-modal-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal button#close-ticket-chat-modal-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal form#web-ticket-reply-form {
+  border-top-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal textarea#web-reply-message {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal textarea#web-reply-message::placeholder {
+  color: rgba(15, 23, 42, 0.4) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal textarea#web-reply-message:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal div[style*="border-bottom: 1px solid rgba(255,255,255,0.1)"],
+.client-page--showcase #web-ticket-chat-modal div[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.1)"] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase #web-ticket-chat-modal #web-chat-messages-container {
+  padding: 18px 12px 18px 4px !important;
+}
+
+/* Modale de Création de Ticket (Nouveau Ticket) - Style Showcase Light */
+.client-page--showcase #web-create-ticket-modal {
+  background: rgba(15, 23, 42, 0.3) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal > div {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(40px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(140%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  box-shadow: 0 30px 90px rgba(15, 23, 42, 0.15) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-create-ticket-modal h3 {
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-create-ticket-modal span {
+  color: rgba(15, 23, 42, 0.6) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal button#close-new-ticket-modal-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-create-ticket-modal button#close-new-ticket-modal-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Formulaires et labels */
+.client-page--showcase #web-create-ticket-modal label {
+  color: rgba(15, 23, 42, 0.8) !important;
+  font-weight: 700 !important;
+}
+
+.client-page--showcase #web-create-ticket-modal input,
+.client-page--showcase #web-create-ticket-modal select,
+.client-page--showcase #web-create-ticket-modal textarea {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-create-ticket-modal input::placeholder,
+.client-page--showcase #web-create-ticket-modal textarea::placeholder {
+  color: rgba(15, 23, 42, 0.4) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal input:focus,
+.client-page--showcase #web-create-ticket-modal select:focus,
+.client-page--showcase #web-create-ticket-modal textarea:focus {
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal button#cancel-new-ticket-modal-btn {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #0f172a !important;
+}
+
+.client-page--showcase #web-create-ticket-modal button#cancel-new-ticket-modal-btn:hover {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal button#submit-new-ticket-btn {
+  background: #ff007c !important;
+  box-shadow: 0 4px 12px rgba(255, 0, 124, 0.25) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal div[style*="border-bottom: 1px solid rgba(255, 255, 255, 0.1)"] {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.client-page--showcase #web-create-ticket-modal div[style*="border-top: 1px solid rgba(255, 255, 255, 0.1)"] {
+  border-top: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Surcharge du bouton d'action ticket Consulter & Répondre */
+.client-page--showcase .ticket-action-btn {
+  background: rgba(99, 102, 241, 0.1) !important;
+  color: #6366f1 !important;
+  border: 1px solid rgba(99, 102, 241, 0.25) !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  padding: 5px 12px !important;
+  border-radius: 6px !important;
+  height: auto !important;
+  box-shadow: none !important;
+  transition: all 0.2s ease !important;
+}
+
+.client-page--showcase .ticket-action-btn:hover {
+  background: rgba(99, 102, 241, 0.18) !important;
+  color: #4f46e5 !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+}
+
+/* Corrections de l'onglet Compte (Account Block) */
+.client-page--showcase .portal-account-block {
+  background: rgba(255, 255, 255, 0.35) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.03) !important;
+}
+
+.client-page--showcase .portal-account-block strong {
+  color: #0f172a !important; /* Pseudo Discord et texte principal sombres */
+}
+
+.client-page--showcase .portal-account-block .summary-label {
+  color: rgba(15, 23, 42, 0.5) !important;
+}
+
+.client-page--showcase .portal-account-block .text-muted {
+  color: rgba(15, 23, 42, 0.7) !important;
+}
+
+/* Zone sensible style rouge doux */
+.client-page--showcase .portal-danger-zone {
+  border-color: rgba(239, 68, 68, 0.25) !important;
+  background: rgba(239, 68, 68, 0.04) !important;
 }
 

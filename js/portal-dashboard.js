@@ -64,7 +64,12 @@
   let recoveryPreviousFocus = null;
 
   function showShell() {
-    if (loadingEl) loadingEl.style.display = "none";
+    if (loadingEl) {
+      loadingEl.classList.add("fade-out");
+      setTimeout(function() {
+        loadingEl.style.display = "none";
+      }, 450);
+    }
     if (contentEl) {
       contentEl.style.display = "flex";
       contentEl.removeAttribute("hidden");
@@ -454,7 +459,7 @@
               <span style="font-size: 11px; background: ${st.bg}; color: ${st.color}; padding: 3px 10px; border-radius: 12px; font-weight: 700; border: 1px solid ${st.color}40;">
                 ${st.label}
               </span>
-              <button type="button" onclick="window.openWebTicketChat(${idx})" style="background: rgba(255, 0, 124, 0.15); color: #ff007c; border: 1px solid rgba(255, 0, 124, 0.35); padding: 5px 12px; border-radius: 6px; font-size: 11.5px; font-weight: 700; cursor: pointer;">
+              <button type="button" class="portal-btn ticket-action-btn" onclick="window.openWebTicketChat(${idx})">
                 Consulter &amp; Répondre
               </button>
             </div>
@@ -536,10 +541,24 @@
       container.innerHTML = data.map(function(msg) {
         const isAdmin = msg.author_kind === "admin" || msg.author_kind === "staff";
         const alignSelf = isAdmin ? "flex-start" : "flex-end";
+        const isShowcase = document.body.classList.contains("client-page--showcase");
+
+        // Dynamic theme variables for bubble colors
         const bg = isAdmin 
-          ? "linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%)" 
-          : "linear-gradient(135deg, rgba(255, 0, 124, 0.22) 0%, rgba(217, 0, 104, 0.14) 100%)";
-        const border = isAdmin ? "rgba(139, 92, 246, 0.35)" : "rgba(255, 0, 124, 0.35)";
+          ? (isShowcase ? "rgba(0, 0, 0, 0.05)" : "linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%)") 
+          : (isShowcase ? "#6366f1" : "linear-gradient(135deg, rgba(255, 0, 124, 0.22) 0%, rgba(217, 0, 104, 0.14) 100%)");
+        
+        const border = isAdmin 
+          ? (isShowcase ? "rgba(0, 0, 0, 0.08)" : "rgba(139, 92, 246, 0.35)") 
+          : (isShowcase ? "#4f46e5" : "rgba(255, 0, 124, 0.35)");
+        
+        const textColor = isAdmin 
+          ? (isShowcase ? "#0f172a" : "#ffffff") 
+          : "#ffffff";
+
+        const metaColor = isShowcase ? "rgba(15, 23, 42, 0.6)" : "rgba(255, 255, 255, 0.55)";
+        const boxSh = isShowcase ? "0 4px 12px rgba(0, 0, 0, 0.02)" : "0 6px 20px rgba(0,0,0,0.25)";
+
         const borderRadius = isAdmin ? "14px 14px 14px 4px" : "14px 14px 4px 14px";
         const authorLabel = isAdmin ? "Support SR Editer" : "Vous";
         const avatarBg = isAdmin ? "linear-gradient(135deg, #a855f7, #6366f1)" : "linear-gradient(135deg, #ff007c, #d90068)";
@@ -549,15 +568,15 @@
         const timeStr = new Date(msg.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
         return `
-          <div style="display: flex; gap: 10px; flex-direction: ${isAdmin ? 'row' : 'row-reverse'}; max-width: 85%; align-self: ${alignSelf}; margin-bottom: 6px;">
-            <div style="width: 32px; height: 32px; border-radius: 10px; background: ${avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+          <div style="display: flex; gap: 12px; flex-direction: ${isAdmin ? 'row' : 'row-reverse'}; max-width: 80%; align-self: ${alignSelf}; margin-bottom: 8px;">
+            <div style="width: 32px; height: 32px; border-radius: 10px; background: ${avatarBg}; display: flex; align-items: center; justify-content: center; font-size: 10.5px; font-weight: 800; color: #fff; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
               ${avatarContent}
             </div>
-            <div style="display: flex; flex-direction: column; align-items: ${isAdmin ? 'flex-start' : 'flex-end'};">
-              <div style="font-size: 11px; font-weight: 700; color: rgba(255, 255, 255, 0.55); margin-bottom: 4px; padding: 0 2px;">
-                ${authorLabel} <span style="font-weight: 400; opacity: 0.7;">• ${timeStr}</span>
+            <div style="display: flex; flex-direction: column; align-items: ${isAdmin ? 'flex-start' : 'flex-end'}; max-width: calc(100% - 44px);">
+              <div style="font-size: 11px; font-weight: 700; color: ${metaColor}; margin-bottom: 4px; padding: 0 2px;">
+                ${authorLabel} <span style="font-weight: 400; opacity: 0.85;">• ${timeStr}</span>
               </div>
-              <div style="background: ${bg}; border: 1px solid ${border}; padding: 11px 16px; border-radius: ${borderRadius}; color: #ffffff; font-size: 13.5px; line-height: 1.55; word-break: break-word; box-shadow: 0 6px 20px rgba(0,0,0,0.25);">
+              <div style="background: ${bg}; border: 1px solid ${border}; padding: 10px 16px; border-radius: ${borderRadius}; color: ${textColor}; font-size: 13.5px; line-height: 1.5; word-break: break-word; box-shadow: ${boxSh}; min-width: 50px; text-align: left;">
                 ${escapeHtml(msg.content)}
               </div>
             </div>

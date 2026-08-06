@@ -2534,3 +2534,22 @@ img.site-nav-avatar {
   font-size: 13px !important;
   border-radius: 50% !important;
 }
+
+/* Bouton d'action ticket Consulter & Répondre */
+.ticket-action-btn {
+  background: rgba(255, 0, 124, 0.15);
+  color: #ff007c;
+  border: 1px solid rgba(255, 0, 124, 0.35);
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  height: auto;
+  transition: all 0.2s ease;
+}
+
+.ticket-action-btn:hover {
+  background: rgba(255, 0, 124, 0.25);
+  border-color: rgba(255, 0, 124, 0.5);
+}
