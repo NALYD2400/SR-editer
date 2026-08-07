@@ -1071,14 +1071,14 @@ body.is-soft-nav-leaving .site-main {
 
 .pricing-btn--primary {
   border: none !important;
-  background: linear-gradient(135deg, #7000ff 0%, #a855f7 100%) !important;
+  background: linear-gradient(135deg, #00d4ff 0%, #3b82f6 100%) !important;
   color: #ffffff !important;
-  box-shadow: 0 6px 20px rgba(112, 0, 255, 0.45) !important;
+  box-shadow: 0 8px 24px rgba(0, 212, 255, 0.35) !important;
 }
 
 .pricing-btn--primary:hover {
-  background: linear-gradient(135deg, #8215ff 0%, #c084fc 100%) !important;
-  box-shadow: 0 8px 25px rgba(112, 0, 255, 0.6) !important;
+  background: linear-gradient(135deg, #38bdf8 0%, #2563eb 100%) !important;
+  box-shadow: 0 12px 32px rgba(0, 212, 255, 0.5) !important;
   transform: translateY(-1px) !important;
 }
 
@@ -1689,7 +1689,7 @@ section[id],
   background: linear-gradient(135deg, #00d4ff 0%, #3b82f6 100%) !important;
   color: #041018 !important;
   border: none !important;
-  box-shadow: 0 10px 28px rgba(14, 165, 233, 0.3);
+  box-shadow: 0 10px 28px rgba(0, 212, 255, 0.4) !important;
 }
 
 .client-page--showcase .pricing-card li::before {

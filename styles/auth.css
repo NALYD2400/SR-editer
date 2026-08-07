@@ -49,7 +49,7 @@ body.auth-body.auth-body--locked {
   margin: 16px;
   border-radius: 28px;
   overflow: hidden;
-  background: linear-gradient(135deg, #3b1d60 0%, #150d2a 60%, #080512 100%);
+  background: linear-gradient(135deg, #5b2d90 0%, #28184c 60%, #120b24 100%);
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 0 80px rgba(139, 92, 246, 0.25);
 }
@@ -74,7 +74,7 @@ body.auth-body.auth-body--locked {
   position: absolute;
   inset: 0;
   z-index: 2;
-  background: radial-gradient(circle at 50% 40%, rgba(13, 11, 22, 0.58) 0%, rgba(8, 5, 18, 0.88) 90%);
+  background: radial-gradient(circle at 50% 40%, rgba(13, 11, 22, 0.22) 0%, rgba(8, 5, 18, 0.55) 90%);
 }
 
 /* Top-Left Floating Back Button */
@@ -86,10 +86,10 @@ body.auth-body.auth-body--locked {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   color: #ffffff;
   display: flex;
   align-items: center;
@@ -100,9 +100,9 @@ body.auth-body.auth-body--locked {
 }
 
 .auth-back-btn:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.32);
   transform: scale(1.08);
-  border-color: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Content Inside Left Hero Panel */
@@ -152,71 +152,61 @@ body.auth-body.auth-body--locked {
 .auth-hero-desc {
   font-size: 0.92rem;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.92);
+  color: #ffffff;
   margin: 0 0 36px 0;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95);
-  background: rgba(0, 0, 0, 0.25);
-  padding: 8px 14px;
-  border-radius: 12px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.4);
+  padding: 10px 16px;
+  border-radius: 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Steps / Feature List Pills */
-.auth-steps-list {
+/* Feature Highlight Pills */
+.auth-features-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
   width: 100%;
 }
 
-.auth-step-item {
+.auth-feature-pill {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px 20px;
-  border-radius: 16px;
-  font-size: 0.92rem;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 0.88rem;
   font-weight: 600;
   text-align: left;
-  transition: all 0.3s ease;
-  box-sizing: border-box;
+  background: rgba(13, 11, 22, 0.55);
+  color: rgba(255, 255, 255, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: transform 0.25s var(--ease-spring), border-color 0.25s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
 }
 
-.auth-step-item--active {
-  background: #ffffff;
-  color: #0d0b16;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+.auth-feature-pill:hover {
+  transform: translateX(4px);
+  border-color: rgba(0, 240, 255, 0.4);
+  background: rgba(13, 11, 22, 0.7);
 }
 
-.auth-step-item--inactive {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(10px);
-}
-
-.auth-step-badge {
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
+.auth-feature-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  color: #00f0ff;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
   flex-shrink: 0;
-}
-
-.auth-step-item--active .auth-step-badge {
-  background: #0d0b16;
-  color: #ffffff;
-}
-
-.auth-step-item--inactive .auth-step-badge {
-  background: rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
 }
 
 
