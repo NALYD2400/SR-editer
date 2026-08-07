@@ -18,6 +18,16 @@
   transition: opacity 0.35s ease;
 }
 
+.ambient-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
 .ambient-wallpaper-layer {
   position: absolute;
   inset: 0;

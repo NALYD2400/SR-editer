@@ -13,20 +13,18 @@
     const config = window.SR_CONFIG || {};
 
     const nav = document.querySelector(".site-topnav") || document.querySelector(".client-nav");
-    const versionBadge = document.getElementById("app-version");
-    const fileSizeBadge = document.getElementById("download-file-size");
-    const downloadLinks = ["download-btn", "download-btn-2", "download-nav"]
-      .map(function (id) {
-        return document.getElementById(id);
-      })
-      .filter(Boolean);
-
-    if (!versionBadge && downloadLinks.length === 0 && !document.getElementById("app-filmstrip-track")) {
-      return;
-    }
+    const downloadLinks = Array.from(document.querySelectorAll("#download-btn, #download-btn-2, #download-nav, #download-cta, .btn-download"));
 
     function applyDownload(dlUrl, version, rawSize) {
-      if (versionBadge && version) versionBadge.textContent = "v" + version;
+      if (version) {
+        document.querySelectorAll("#app-version, #cta-app-version, [data-app-version]").forEach(function (el) {
+          if (el.id === "app-version") {
+            el.textContent = "v" + version + " Pro";
+          } else {
+            el.textContent = "v" + version;
+          }
+        });
+      }
 
       if (dlUrl) {
         downloadLinks.forEach(function (link) {
@@ -34,45 +32,64 @@
           link.removeAttribute("aria-disabled");
           link.removeAttribute("title");
         });
+        const fileSizeBadge = document.getElementById("download-file-size");
         if (fileSizeBadge && rawSize) {
           const size = formatFileSize(Number(rawSize));
           if (size) fileSizeBadge.textContent = size;
         }
-        return;
       }
-
-      downloadLinks.forEach(function (link) {
-        link.removeAttribute("href");
-        link.setAttribute("aria-disabled", "true");
-        link.title = "La release publique signée n'est pas encore disponible.";
-      });
     }
 
     downloadLinks.forEach(function (link) {
       if (link.dataset.downloadBound === "1") return;
       link.dataset.downloadBound = "1";
-      link.setAttribute("aria-disabled", "true");
       link.addEventListener("click", function (event) {
         if (link.getAttribute("aria-disabled") === "true") event.preventDefault();
       });
     });
 
     applyDownload(config.downloadUrl, config.appVersion);
-    fetch((config.updateManifestUrl || "/update.json") + "?site=" + Date.now(), { cache: "no-store" })
-      .then(function (response) {
-        return response.ok ? response.json() : null;
-      })
-      .then(function (manifest) {
-        const windows = manifest && manifest.platforms && manifest.platforms["windows-x86_64"];
-        applyDownload(
-          (windows && windows.url) || config.downloadUrl,
-          (manifest && manifest.version) || config.appVersion,
-          windows && windows.size
-        );
-      })
-      .catch(function () {
-        applyDownload(config.downloadUrl, config.appVersion);
-      });
+
+    // Live sync from Supabase release_records table
+    async function syncLiveRelease() {
+      try {
+        const client = (typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null) || window.srSupabase;
+        if (client) {
+          const { data, error } = await client
+            .from("release_records")
+            .select("version, artifact_url")
+            .eq("published", true)
+            .order("updated_at", { ascending: false })
+            .limit(1);
+
+          if (!error && data && data.length && data[0].version) {
+            applyDownload(data[0].artifact_url || config.downloadUrl, data[0].version);
+            return true;
+          }
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    syncLiveRelease().then(function (synced) {
+      if (!synced) {
+        fetch((config.updateManifestUrl || "/update.json") + "?site=" + Date.now(), { cache: "no-store" })
+          .then(function (response) {
+            return response.ok ? response.json() : null;
+          })
+          .then(function (manifest) {
+            const windows = manifest && manifest.platforms && manifest.platforms["windows-x86_64"];
+            applyDownload(
+              (windows && windows.url) || config.downloadUrl,
+              (manifest && manifest.version) || config.appVersion,
+              windows && windows.size
+            );
+          })
+          .catch(function () {
+            applyDownload(config.downloadUrl, config.appVersion);
+          });
+      }
+    });
 
     const skinTrack = document.getElementById("skin-curved-track");
     const filmstripTrack = document.getElementById("app-filmstrip-track");
@@ -448,6 +465,30 @@
       }
       window.addEventListener("scroll", onScroll, { passive: true });
       onScroll();
+    }
+
+    // 3D Card Tilt Mouse Tracker
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.querySelectorAll(".feature-card, .pricing-card").forEach(function (card) {
+        if (card.dataset.tiltBound === "1") return;
+        card.dataset.tiltBound = "1";
+
+        card.addEventListener("mousemove", function (e) {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = (y - centerY) / 16;
+          const rotateY = (centerX - x) / 16;
+
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
+        });
+
+        card.addEventListener("mouseleave", function () {
+          card.style.transform = "";
+        });
+      });
     }
   }
 

@@ -1516,3 +1516,77 @@ section[id],
 .pricing-section {
   padding-top: 48px !important;
 }
+
+/* Modern Hero Badge & Pulse Dot */
+.hero-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  background: rgba(139, 92, 246, 0.12);
+  border: 1px solid rgba(139, 92, 246, 0.28);
+  color: var(--accent-light);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-bottom: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+}
+
+.pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00f0ff;
+  box-shadow: 0 0 10px #00f0ff;
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid #00f0ff;
+  animation: pulse-ring 1.8s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* Interactive Card Specular Glows */
+.feature-card,
+.pricing-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s var(--ease-spring), border-color 0.35s ease, box-shadow 0.35s ease !important;
+}
+
+.feature-card::before,
+.pricing-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(0, 240, 255, 0.5) 50%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.feature-card:hover::before,
+.pricing-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card:hover,
+.pricing-card:hover {
+  transform: translateY(-6px) scale(1.015) !important;
+  border-color: rgba(0, 240, 255, 0.35) !important;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.7), 0 0 30px rgba(0, 240, 255, 0.18) !important;
+}

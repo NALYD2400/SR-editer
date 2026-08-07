@@ -6,7 +6,6 @@ window.SR_SKINS = [
   { src: "assets/showcase/purple-white.png", alt: "Skin sniper SR blanc et violet", tone: "Violet" },
   { src: "assets/showcase/blue-white.png", alt: "Skin sniper SR blanc et bleu", tone: "Ice" },
   { src: "assets/showcase/purple-cyan.png", alt: "Skin sniper SR violet cyan", tone: "Nova" },
-  { src: "assets/showcase/color2.png", alt: "Skin sniper SR verre violet cyan", tone: "Glass" },
   { src: "assets/showcase/5.png", alt: "Skin sniper SR accents rainbow", tone: "Spectrum" },
   { src: "assets/showcase/213.png", alt: "Skin sniper SR corps rainbow", tone: "Chrome" },
   { src: "assets/showcase/3.png", alt: "Skin sniper SR variante 3", tone: "Aether" },
