@@ -74,55 +74,142 @@
         applyDownload(config.downloadUrl, config.appVersion);
       });
 
+    const skinTrack = document.getElementById("skin-curved-track");
     const filmstripTrack = document.getElementById("app-filmstrip-track");
-    const skinStage = document.getElementById("skin-stage-img");
     const skinRail = document.getElementById("skin-rail");
     const skins = window.SR_SKINS || [];
 
-    if (skinStage && skinRail && skins.length > 0 && skinRail.dataset.filled !== "1") {
-      skinRail.dataset.filled = "1";
+    if (skinTrack && skins.length > 0 && skinTrack.dataset.filled !== "1") {
+      skinTrack.dataset.filled = "1";
       let active = 0;
+      const cardElements = [];
+
+      skins.forEach(function (skin, index) {
+        const card = document.createElement("div");
+        card.className = "skin-card-3d";
+        card.dataset.index = index;
+        const img = document.createElement("img");
+        img.src = encodeURI(skin.src);
+        img.alt = skin.alt;
+        img.loading = index < 3 ? "eager" : "lazy";
+        img.decoding = "async";
+        card.appendChild(img);
+        
+        card.addEventListener("click", function () {
+          setActive(index);
+        });
+        
+        skinTrack.appendChild(card);
+        cardElements.push(card);
+
+        if (skinRail) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "skin-thumb" + (index === 0 ? " is-active" : "");
+          btn.setAttribute("aria-label", skin.alt);
+          btn.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+          const thumbImg = document.createElement("img");
+          thumbImg.src = encodeURI(skin.src);
+          thumbImg.alt = "";
+          thumbImg.loading = "lazy";
+          thumbImg.decoding = "async";
+          btn.appendChild(thumbImg);
+          btn.addEventListener("click", function () {
+            setActive(index);
+          });
+          skinRail.appendChild(btn);
+        }
+      });
+
+      function update3DCarousel() {
+        const containerWidth = skinTrack.offsetWidth || window.innerWidth;
+        const spacing = Math.min(340, Math.max(160, containerWidth * 0.28));
+
+        cardElements.forEach(function (card, i) {
+          let offset = i - active;
+          const half = skins.length / 2;
+          if (offset > half) offset -= skins.length;
+          if (offset < -half) offset += skins.length;
+
+          const absOffset = Math.abs(offset);
+          const isCenter = offset === 0;
+
+          card.classList.toggle("is-center", isCenter);
+
+          if (absOffset > 3) {
+            card.style.opacity = "0";
+            card.style.pointerEvents = "none";
+            card.style.transform = "translate3d(0,0,-600px) scale(0.5)";
+            return;
+          }
+
+          const x = offset * spacing;
+          const z = -Math.pow(absOffset, 1.2) * 90;
+          const rotY = offset * -16;
+          const scale = isCenter ? 1.05 : Math.max(0.72, 1 - absOffset * 0.12);
+          const opacity = isCenter ? 1 : Math.max(0.3, 1 - absOffset * 0.26);
+
+          card.style.opacity = String(opacity);
+          card.style.pointerEvents = "auto";
+          card.style.zIndex = String(10 - absOffset);
+          card.style.transform = "translate3d(" + x + "px, 0, " + z + "px) rotateY(" + rotY + "deg) scale(" + scale + ")";
+        });
+
+        const activeSkin = skins[active];
+        const label = document.getElementById("skin-tone-label");
+        if (label && activeSkin) label.textContent = activeSkin.tone || "";
+
+        if (skinRail) {
+          skinRail.querySelectorAll(".skin-thumb").forEach(function (btn, i) {
+            const isActive = i === active;
+            btn.classList.toggle("is-active", isActive);
+            btn.setAttribute("aria-pressed", isActive ? "true" : "false");
+            if (isActive) {
+              btn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+            }
+          });
+        }
+      }
+
+      let skinAutoplayTimer = null;
+      const SKIN_AUTOPLAY_DELAY = 3800;
+
+      function startSkinAutoplay() {
+        stopSkinAutoplay();
+        skinAutoplayTimer = setInterval(function () {
+          setActive(active + 1);
+        }, SKIN_AUTOPLAY_DELAY);
+      }
+
+      function stopSkinAutoplay() {
+        if (skinAutoplayTimer) {
+          clearInterval(skinAutoplayTimer);
+          skinAutoplayTimer = null;
+        }
+      }
 
       function setActive(index) {
         active = (index + skins.length) % skins.length;
-        const skin = skins[active];
-        skinStage.src = encodeURI(skin.src);
-        skinStage.alt = skin.alt;
-        skinRail.querySelectorAll(".skin-thumb").forEach(function (btn, i) {
-          btn.classList.toggle("is-active", i === active);
-          btn.setAttribute("aria-pressed", i === active ? "true" : "false");
-        });
-        const label = document.getElementById("skin-tone-label");
-        if (label) label.textContent = skin.tone || "";
+        update3DCarousel();
+        if (skinAutoplayTimer) {
+          startSkinAutoplay();
+        }
       }
-
-      skins.forEach(function (skin, index) {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.className = "skin-thumb" + (index === 0 ? " is-active" : "");
-        btn.setAttribute("aria-label", skin.alt);
-        btn.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-        const img = document.createElement("img");
-        img.src = encodeURI(skin.src);
-        img.alt = "";
-        img.loading = "lazy";
-        img.decoding = "async";
-        btn.appendChild(img);
-        btn.addEventListener("click", function () {
-          setActive(index);
-        });
-        skinRail.appendChild(btn);
-      });
 
       const prev = document.getElementById("skin-prev");
       const next = document.getElementById("skin-next");
       if (prev) prev.addEventListener("click", function () { setActive(active - 1); });
       if (next) next.addEventListener("click", function () { setActive(active + 1); });
 
-      // Optional keyboard on stage
+      window.addEventListener("resize", update3DCarousel);
+      update3DCarousel();
+      startSkinAutoplay();
+
       const stageWrap = document.getElementById("skin-stage");
       if (stageWrap) {
         stageWrap.tabIndex = 0;
+        stageWrap.addEventListener("mouseenter", stopSkinAutoplay);
+        stageWrap.addEventListener("mouseleave", startSkinAutoplay);
         stageWrap.addEventListener("keydown", function (event) {
           if (event.key === "ArrowLeft") setActive(active - 1);
           if (event.key === "ArrowRight") setActive(active + 1);
@@ -278,6 +365,13 @@
         }
         goToSlide(lightboxActiveIndex);
       }
+
+      document.querySelectorAll(".bento-card[data-lightbox-index]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          const idx = parseInt(card.dataset.lightboxIndex, 10) || 0;
+          openLightbox(idx);
+        });
+      });
 
       if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
       if (lightboxPrev) lightboxPrev.addEventListener("click", function () { navigateLightbox(-1); });
