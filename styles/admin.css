@@ -9515,6 +9515,8 @@ html[data-theme="light"] #panel-activity .filter-tab.is-active {
 }
 
 #panel-audit .audit-target {
+#panel-audit .audit-target,
+#panel-security .audit-target {
   display: inline-block;
   max-width: 100%;
   padding: 3px 8px;
@@ -9530,17 +9532,23 @@ html[data-theme="light"] #panel-activity .filter-tab.is-active {
 }
 
 @media (max-width: 900px) {
-  #panel-audit .audit-toolbar-right { width: 100%; }
-  #panel-audit .ticket-filter-tabs { width: 100%; }
+  #panel-audit .audit-toolbar-right,
+  #panel-security .audit-toolbar-right { width: 100%; }
+  #panel-audit .ticket-filter-tabs,
+  #panel-security .ticket-filter-tabs { width: 100%; }
 }
 
 html[data-theme="light"] #panel-audit .users-count-chip,
+html[data-theme="light"] #panel-security .users-count-chip,
 html[data-theme="light"] #panel-audit #audit-search-input,
-html[data-theme="light"] #panel-audit .ticket-filter-tabs {
+html[data-theme="light"] #panel-security #security-search-input,
+html[data-theme="light"] #panel-audit .ticket-filter-tabs,
+html[data-theme="light"] #panel-security .ticket-filter-tabs {
   background: #fff;
 }
 
-html[data-theme="light"] #panel-audit .filter-tab.is-active {
+html[data-theme="light"] #panel-audit .filter-tab.is-active,
+html[data-theme="light"] #panel-security .filter-tab.is-active {
   background: rgba(0, 0, 0, 0.06);
 }
 
