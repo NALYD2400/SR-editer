@@ -9240,7 +9240,8 @@ html[data-theme="light"] #panel-activity .filter-tab.is-active {
 }
 
 /* ===== Audit panel ===== */
-#panel-audit .audit-toolbar {
+#panel-audit .audit-toolbar,
+#panel-security .audit-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -11327,8 +11328,7 @@ font-size: 12px;
 }
 
 #panel-audit #audit-search-input,
-#panel-security #security-search-input,
-.users-search-wrap input {
+#panel-security #security-search-input {
   width: 100%;
   min-width: 0;
   height: 34px;
@@ -11341,9 +11341,12 @@ font-size: 12px;
   outline: none;
 }
 
-.users-search-wrap input::placeholder { color: var(--text-muted); }
-.users-search-wrap input:hover { border-color: var(--border-hover); }
-.users-search-wrap input:focus {
+#panel-audit #audit-search-input::placeholder,
+#panel-security #security-search-input::placeholder { color: var(--text-muted); }
+#panel-audit #audit-search-input:hover,
+#panel-security #security-search-input:hover { border-color: var(--border-hover); }
+#panel-audit #audit-search-input:focus,
+#panel-security #security-search-input:focus {
   border-color: color-mix(in srgb, var(--accent-blue) 50%, var(--border));
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 16%, transparent);
 }
