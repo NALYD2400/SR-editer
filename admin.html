@@ -92,6 +92,10 @@
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             <span class="nav-title">Audit</span>
           </button>
+          <button type="button" class="sidebar-link" data-panel="security">
+            <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span class="nav-title">Radar Sécurité</span>
+          </button>
           <button type="button" class="sidebar-link" data-panel="system">
             <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
             <span class="nav-title">Système</span>
@@ -1295,6 +1299,55 @@
                     </tr>
                   </thead>
                   <tbody id="audit-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <!-- Security Radar -->
+          <section class="admin-panel" id="panel-security">
+            <div class="audit-toolbar">
+              <div class="audit-toolbar-left">
+                <span class="users-count-chip" aria-live="polite" style="background: rgba(231,76,60,0.15); border-color: rgba(231,76,60,0.4);">
+                  <strong id="security-count" style="color: #e74c3c;">0</strong>
+                  <span id="security-count-label">anomalies interceptées</span>
+                </span>
+                <div class="users-search-wrap">
+                  <svg class="users-search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                  </svg>
+                  <input type="search" id="security-search-input" placeholder="Email, IP, origine, événement…" autocomplete="off" />
+                </div>
+              </div>
+              <div class="audit-toolbar-right">
+                <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer les événements de sécurité">
+                  <button type="button" class="filter-tab is-active" data-security-filter="all">Tous</button>
+                  <button type="button" class="filter-tab" data-security-filter="critical">🚨 Critiques</button>
+                  <button type="button" class="filter-tab" data-security-filter="warning">⚠️ Avertissements</button>
+                  <button type="button" class="filter-tab" data-security-filter="info">ℹ️ Infos</button>
+                </div>
+                <button type="button" class="users-menu-trigger" id="refresh-security-btn" data-refresh="security">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+                  </svg>
+                  Actualiser
+                </button>
+              </div>
+            </div>
+
+            <div class="glass-card panel-card audit-list-card">
+              <div class="users-table-wrap">
+                <table class="data-table audit-table">
+                  <thead>
+                    <tr>
+                      <th class="col-date">Date & Heure</th>
+                      <th class="col-tone">Sévérité</th>
+                      <th class="col-action">Événement</th>
+                      <th class="col-admin">Utilisateur / Suspect</th>
+                      <th class="col-target">Origine / Détails</th>
+                    </tr>
+                  </thead>
+                  <tbody id="security-tbody"></tbody>
                 </table>
               </div>
             </div>

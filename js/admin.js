@@ -55,6 +55,9 @@
   let currentAuditRows = [];
   let auditFilter = "all";
   let auditSearch = "";
+  let currentSecurityRows = [];
+  let securityFilter = "all";
+  let securitySearch = "";
   let currentTeamRows = [];
   let teamFilter = "all";
   let teamSearch = "";
@@ -448,6 +451,14 @@
       const allowed = access.level === "owner" || Boolean(access.permissions?.[mapping[panel]]);
       link.hidden = !allowed;
     });
+  }
+
+  function refreshAll() {
+    refreshKpis();
+    refreshUsers();
+    loadDashboard();
+    seedLogs();
+    loadUpdateManifest();
   }
 
   function showDashboard(email) {
@@ -4463,51 +4474,48 @@
     const line = document.createElement("div");
     line.className = "log-line";
     const time = new Date().toLocaleTimeString("fr-FR", { hour12: false });
-    line.innerHTML = `<span class="t">[${time}]</span> <span class="${type}">[${type.toUpperCase()}]</span> ${escapeHtml(message)}`;
-    terminal.prepend(line);
-  }
-
-  function seedLogs() {
-    addLog("i", "Dashboard SR Editer initialisé.");
-    addLog("s", "Connexion Supabase prête.");
-    addLog("i", "Endpoint update.json surveillé.");
-  }
-
-  function refreshAll() {
-    refreshKpis();
-    refreshUsers();
-    loadDashboard();
-    seedLogs();
-    loadUpdateManifest();
-  }
-
-  async function loadUpdateManifest() {
-    try {
-      const manifestUrl = config.updateManifestUrl || "/update.json";
-      const separator = manifestUrl.includes("?") ? "&" : "?";
-      const res = await fetch(`${manifestUrl}${separator}admin=${Date.now()}`, { cache: "no-store" });
-      if (!res.ok || res.status === 204) {
-        if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
-        return;
+    addLog(failures.length ? "e" : "s", `Import multiple : ${completed}/${total} texture(s)`);
+    
+    setTimeout(() => {
+      progressDiv.hidden = true;
+      submitBtn.disabled = false;
+      if (failures.length === 0) {
+        resetLibraryForm();
+        setLibraryCreatePanelOpen(false);
+      } else {
+        renderBatchPreview();
       }
-      const data = await res.json();
-      const verInput = document.getElementById("release-version");
-      const urlInput = document.getElementById("release-url");
-      const sigInput = document.getElementById("release-signature");
-      if (verInput && data.version) verInput.value = data.version;
-      if (data.pub_date) setReleaseDateValue(data.pub_date);
-      else if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
-      const platform = data.platforms?.["windows-x86_64"];
-      if (urlInput && platform?.url) urlInput.value = platform.url;
-      if (sigInput && platform?.signature) sigInput.value = platform.signature;
-      const notesInput = document.getElementById("release-notes");
-      if (notesInput && data.notes) notesInput.value = data.notes;
-    } catch {
-      if (!document.getElementById("release-date-local")?.value) setReleaseDateValue(new Date());
+      void loadLibrary();
+    }, 2000);
+  }
+
+  async function replaceLibraryImageFile(file) {
+    const progressDiv = document.getElementById("library-upload-progress");
+    const progressBar = document.getElementById("upload-progress-bar");
+    const progressText = document.getElementById("upload-status-text");
+    const urlInput = document.getElementById("library-url");
+    if (!file || !urlInput) return;
+    try {
+      if (progressDiv) progressDiv.hidden = false;
+      if (progressBar) progressBar.style.width = "15%";
+      if (progressText) progressText.textContent = "Optimisation de l’image…";
+      const result = await uploadTextureFile(file, (percent, message) => {
+        if (progressBar) progressBar.style.width = `${Math.max(15, Math.round(percent))}%`;
+        if (progressText && message) progressText.textContent = message;
+      });
+      urlInput.value = result.publicUrl;
+      updatePreviewImage(result.publicUrl);
+      if (progressText) progressText.textContent = "Image remplacée.";
+      if (progressBar) progressBar.style.width = "100%";
+      addLog("s", "Image de texture remplacée.");
+      window.setTimeout(() => {
+        if (progressDiv) progressDiv.hidden = true;
+      }, 900);
+    } catch (error) {
+      if (progressDiv) progressDiv.hidden = true;
+      addLog("e", libraryErrorMessage(error));
     }
   }
-
-  document.getElementById("refresh-users-btn")?.addEventListener("click", refreshUsers);
 
   function directReleaseUrl(value, version) {
     const url = value.trim();
@@ -4533,38 +4541,6 @@
   });
   document.getElementById("release-published")?.addEventListener("change", syncReleaseSaveButton);
   syncReleaseSaveButton();
-
-  document.getElementById("generate-release-btn")?.addEventListener("click", () => {
-    const version = document.getElementById("release-version").value.trim();
-    if (!version) {
-      addLog("e", "Indique une version avant de générer le manifeste.");
-      document.getElementById("release-version")?.focus();
-      return;
-    }
-    const pubDate = syncReleaseDateFromLocal() || setReleaseDateValue(new Date());
-    const zipUrl = directReleaseUrl(document.getElementById("release-url").value, version);
-    document.getElementById("release-url").value = zipUrl;
-    const signature = document.getElementById("release-signature").value.trim();
-    const notes = document.getElementById("release-notes").value.trim() || `Release v${version}`;
-
-    const manifest = {
-      version,
-      notes,
-      pub_date: pubDate,
-      platforms: {
-        "windows-x86_64": {
-          signature: signature || "SIGNATURE_TAURI",
-          url: zipUrl
-        }
-      }
-    };
-
-    const output = document.getElementById("release-output");
-    const textarea = document.getElementById("release-json");
-    if (textarea) textarea.value = JSON.stringify(manifest, null, 2);
-    if (output) output.hidden = false;
-    addLog("s", `Manifeste v${version} généré.`);
-  });
 
   document.getElementById("save-release-btn")?.addEventListener("click", async () => {
     try {
@@ -4612,73 +4588,72 @@
     addLog("i", "update.json copié dans le presse-papiers.");
   });
 
-    document.getElementById("refresh-logs-btn")?.addEventListener("click", () => {
-      document.getElementById("log-terminal").innerHTML = "";
-      seedLogs();
-    });
+  document.getElementById("refresh-logs-btn")?.addEventListener("click", () => {
+    document.getElementById("log-terminal").innerHTML = "";
+    seedLogs();
+  });
 
-    document.getElementById("support-chat-form")?.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const input = document.getElementById("support-chat-input");
-      if (!input || !input.value.trim() || !activeTicketId) return;
-      
-      const content = input.value.trim();
-      input.value = "";
-      
-      try {
-        await adminRequest("support-reply", { id: activeTicketId, content });
-        await loadSupport();
-      } catch (reason) { addLog("e", `Erreur d'envoi : ${String(reason)}`); }
-    });
+  document.getElementById("support-chat-form")?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const input = document.getElementById("support-chat-input");
+    if (!input || !input.value.trim() || !activeTicketId) return;
+    
+    const content = input.value.trim();
+    input.value = "";
+    try {
+      await adminRequest("support-reply", { id: activeTicketId, content });
+      await loadSupport();
+    } catch (reason) { addLog("e", `Erreur d'envoi : ${String(reason)}`); }
+  });
 
-    document.getElementById("support-close-btn")?.addEventListener("click", async () => {
-      if (!activeTicketId) return;
-      if (!confirm("Voulez-vous clore ce ticket ?")) return;
-      try {
-        await adminRequest("support-update", { id: activeTicketId, status: "closed" });
-        await loadSupport();
-        setSupportComposerVisible(false);
-      } catch (reason) { addLog("e", `Erreur de clôture : ${String(reason)}`); }
-    });
+  document.getElementById("support-close-btn")?.addEventListener("click", async () => {
+    if (!activeTicketId) return;
+    if (!confirm("Voulez-vous clore ce ticket ?")) return;
+    try {
+      await adminRequest("support-update", { id: activeTicketId, status: "closed" });
+      await loadSupport();
+      setSupportComposerVisible(false);
+    } catch (reason) { addLog("e", `Erreur de clôture : ${String(reason)}`); }
+  });
 
-    document.getElementById("support-delete-btn")?.addEventListener("click", async () => {
-      if (!activeTicketId) return;
-      if (!confirm("Supprimer définitivement ce ticket et tous ses messages ?")) return;
-      const deletedId = activeTicketId;
-      try {
-        await adminRequest("support-delete", { id: deletedId });
-        clearSupportSelection();
-        await loadSupport();
-        addLog("i", "Ticket support supprimé.");
-      } catch (reason) { addLog("e", `Erreur de suppression : ${String(reason)}`); }
-    });
+  document.getElementById("support-delete-btn")?.addEventListener("click", async () => {
+    if (!activeTicketId) return;
+    if (!confirm("Supprimer définitivement ce ticket et tous ses messages ?")) return;
+    const deletedId = activeTicketId;
+    try {
+      await adminRequest("support-delete", { id: deletedId });
+      clearSupportSelection();
+      await loadSupport();
+      addLog("i", "Ticket support supprimé.");
+    } catch (reason) { addLog("e", `Erreur de suppression : ${String(reason)}`); }
+  });
 
-    document.getElementById("contacts-mark-read-btn")?.addEventListener("click", async () => {
-      if (!activeContactId) return;
-      try {
-        await adminRequest("contact-update", { id: activeContactId, status: "read" });
-        await loadContacts();
-      } catch (reason) { addLog("e", `Erreur : ${String(reason)}`); }
-    });
+  document.getElementById("contacts-mark-read-btn")?.addEventListener("click", async () => {
+    if (!activeContactId) return;
+    try {
+      await adminRequest("contact-update", { id: activeContactId, status: "read" });
+      await loadContacts();
+    } catch (reason) { addLog("e", `Erreur : ${String(reason)}`); }
+  });
 
-    document.getElementById("contacts-archive-btn")?.addEventListener("click", async () => {
-      if (!activeContactId) return;
-      try {
-        await adminRequest("contact-update", { id: activeContactId, status: "archived" });
-        await loadContacts();
-      } catch (reason) { addLog("e", `Erreur : ${String(reason)}`); }
-    });
+  document.getElementById("contacts-archive-btn")?.addEventListener("click", async () => {
+    if (!activeContactId) return;
+    try {
+      await adminRequest("contact-update", { id: activeContactId, status: "archived" });
+      await loadContacts();
+    } catch (reason) { addLog("e", `Erreur : ${String(reason)}`); }
+  });
 
-    document.getElementById("contacts-delete-btn")?.addEventListener("click", async () => {
-      if (!activeContactId) return;
-      if (!confirm("Supprimer définitivement ce message ?")) return;
-      try {
-        await adminRequest("contact-delete", { id: activeContactId });
-        clearContactsSelection();
-        await loadContacts();
-        addLog("i", "Message contact supprimé.");
-      } catch (reason) { addLog("e", `Erreur de suppression : ${String(reason)}`); }
-    });
+  document.getElementById("contacts-delete-btn")?.addEventListener("click", async () => {
+    if (!activeContactId) return;
+    if (!confirm("Supprimer définitivement ce message ?")) return;
+    try {
+      await adminRequest("contact-delete", { id: activeContactId });
+      clearContactsSelection();
+      await loadContacts();
+      addLog("i", "Message contact supprimé.");
+    } catch (reason) { addLog("e", `Erreur de suppression : ${String(reason)}`); }
+  });
 
   function escapeHtml(value) {
     return String(value)
@@ -4693,7 +4668,7 @@
     bg.style.backgroundImage = `url("${window.wallpaperUrl(window.SR_WALLPAPERS[12])}")`;
   }
 
-  localPreview = demoMode && ["127.0.0.1", "localhost"].includes(window.location.hostname)
+  localPreview = ["127.0.0.1", "localhost"].includes(window.location.hostname)
     && new URLSearchParams(window.location.search).get("preview") === "1";
   if (localPreview) showDashboard("preview-local@sr-editer");
   else checkSession();
@@ -4704,12 +4679,8 @@
     sidebarFilter.addEventListener("input", (e) => {
       const query = e.target.value.toLowerCase().trim();
       document.querySelectorAll(".vercel-vertical-links .sidebar-link").forEach((link) => {
-        const text = link.querySelector(".nav-title").textContent.toLowerCase();
-        if (text.includes(query)) {
-          link.style.display = "flex";
-        } else {
-          link.style.display = "none";
-        }
+        const text = link.querySelector(".nav-title")?.textContent?.toLowerCase() || "";
+        link.style.display = text.includes(query) ? "flex" : "none";
       });
     });
 
@@ -4795,6 +4766,24 @@
       tab.classList.add("is-active");
       auditFilter = tab.dataset.auditFilter;
       renderAuditTable();
+    });
+  });
+
+  const securitySearchInput = document.getElementById("security-search-input");
+  if (securitySearchInput) {
+    securitySearchInput.addEventListener("input", (e) => {
+      securitySearch = e.target.value.toLowerCase().trim();
+      renderSecurityTable();
+    });
+  }
+
+  const securityFilterTabs = document.querySelectorAll("#panel-security .filter-tab");
+  securityFilterTabs.forEach((tab) => {
+    tab.addEventListener("click", () => {
+      securityFilterTabs.forEach((t) => t.classList.remove("is-active"));
+      tab.classList.add("is-active");
+      securityFilter = tab.dataset.securityFilter;
+      renderSecurityTable();
     });
   });
 

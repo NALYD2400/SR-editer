@@ -1,4 +1,5 @@
 import { createClient, type User } from "npm:@supabase/supabase-js@2";
+import { logSecurityAlert } from "../_shared/security-alert.ts";
 import {
   announcePatchnoteToDiscord,
   DiscordMembershipRequiredError,
@@ -117,7 +118,7 @@ function permissionFor(action: string) {
   if (action.startsWith("support")) return "support";
   if (action.startsWith("contact")) return "contacts";
   if (action.startsWith("release")) return "releases";
-  if (action.startsWith("audit")) return "audit";
+  if (action.startsWith("audit") || action.startsWith("security")) return "audit";
   if (action.startsWith("health")) return "system";
   if (action.startsWith("team")) return "team";
   if (action.startsWith("library")) return "library";
@@ -142,7 +143,17 @@ Deno.serve(async (request) => {
   const origin = request.headers.get("Origin");
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: headers(origin) });
   if (request.method !== "POST") return json(origin, 405, { ok: false, error: "Méthode refusée." });
-  if (origin && !allowedOrigins.has(origin)) return json(origin, 403, { ok: false, error: "Origine refusée." });
+  const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
+
+  if (origin && !allowedOrigins.has(origin)) {
+    await logSecurityAlert(admin, {
+      severity: "warning",
+      eventType: "CORS_ORIGIN_SPOOF",
+      origin,
+      details: { url: request.url, userAgent: request.headers.get("User-Agent") }
+    });
+    return json(origin, 403, { ok: false, error: "Origine refusée." });
+  }
   if (Number(request.headers.get("content-length") ?? 0) > 5_500_000) return json(origin, 413, { ok: false, error: "Requête trop volumineuse." });
   if (!supabaseUrl || !anonKey || !serviceRoleKey) return json(origin, 503, { ok: false, error: "Service administrateur non configuré." });
 
@@ -152,7 +163,6 @@ Deno.serve(async (request) => {
     global: { headers: { Authorization: authorization } },
     auth: { persistSession: false, autoRefreshToken: false }
   });
-  const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
   const { data: userData, error: userError } = await userClient.auth.getUser();
   const caller = userData.user;
   if (userError || !caller?.id || !caller.email) return json(origin, 401, { ok: false, error: "Session invalide." });
@@ -166,11 +176,31 @@ Deno.serve(async (request) => {
   try { body = await request.json(); } catch { return json(origin, 400, { ok: false, error: "Requête JSON invalide." }); }
   const action = textOf(body.action, 64);
   if (!callerProfile) return json(origin, 403, { ok: false, error: "Profil SR Editer actif requis." });
-  if (callerProfile.role === "suspendu") return json(origin, 403, { ok: false, error: "Ce compte est suspendu." });
+  if (callerProfile.role === "suspendu") {
+    await logSecurityAlert(admin, {
+      severity: "warning",
+      eventType: "SUSPENDED_USER_ADMIN_CALL",
+      actorUserId: caller.id,
+      actorEmail: caller.email,
+      origin,
+      details: { action }
+    });
+    return json(origin, 403, { ok: false, error: "Ce compte est suspendu." });
+  }
   if (action === "me" && !access) {
     return json(origin, 200, { ok: true, profile: callerProfile, level: null, permissions: {} });
   }
-  if (!access) return json(origin, 403, { ok: false, error: "Accès à la superconsole requis." });
+  if (!access) {
+    await logSecurityAlert(admin, {
+      severity: "critical",
+      eventType: "UNAUTHORIZED_ADMIN_ACCESS_ATTEMPT",
+      actorUserId: caller.id,
+      actorEmail: caller.email,
+      origin,
+      details: { action, ip: request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") }
+    });
+    return json(origin, 403, { ok: false, error: "Accès à la superconsole requis." });
+  }
 
   const level = access.level === "owner" ? "owner" : "collaborator";
   const permissions = access.permissions && typeof access.permissions === "object" ? access.permissions as Record<string, boolean> : {};
@@ -292,6 +322,10 @@ Deno.serve(async (request) => {
 
   if (action === "audit-list") {
     const { data, error } = await admin.from("admin_audit_logs").select("*").order("created_at", { ascending: false }).limit(500);
+    return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
+  }
+  if (action === "security-list") {
+    const { data, error } = await admin.from("security_events").select("*").order("created_at", { ascending: false }).limit(500);
     return error ? json(origin, 500, { ok: false, error: error.message }) : json(origin, 200, { ok: true, rows: data ?? [] });
   }
   if (action === "health") {
