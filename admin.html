@@ -1306,11 +1306,10 @@
 
           <!-- Security Radar -->
           <section class="admin-panel" id="panel-security">
-            <h2 class="panel-title">Sécurité</h2>
-            <div class="glass-toolbar security-header">
-              <div class="glass-toolbar-left">
-                <span class="users-count-chip security-count-chip" aria-live="polite" style="background: rgba(231,76,60,0.15); border-color: rgba(231,76,60,0.4);">
-                  <strong id="security-count" style="color: #e74c3c;">0</strong>
+            <div class="audit-toolbar">
+              <div class="audit-toolbar-left">
+                <span class="users-count-chip security-count-chip" aria-live="polite">
+                  <strong id="security-count">0</strong>
                   <span id="security-count-label">anomalies interceptées</span>
                 </span>
                 <div class="users-search-wrap">
@@ -1321,7 +1320,7 @@
                   <input type="search" id="security-search-input" placeholder="Email, IP, origine, événement…" autocomplete="off" />
                 </div>
               </div>
-              <div class="glass-toolbar-right">
+              <div class="audit-toolbar-right">
                 <div class="ticket-filter-tabs" role="tablist" aria-label="Filtrer les événements de sécurité">
                   <button type="button" class="filter-tab is-active" data-security-filter="all">Tous</button>
                   <button type="button" class="filter-tab" data-security-filter="critical">🚨 Critiques</button>
