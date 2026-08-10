@@ -457,8 +457,6 @@
     refreshKpis();
     refreshUsers();
     loadDashboard();
-    seedLogs();
-    loadUpdateManifest();
   }
 
   function showDashboard(email) {
@@ -4577,7 +4575,7 @@
       }
       addLog("s", logMsg);
       await loadReleases();
-      await loadUpdateManifest();
+      if (typeof loadUpdateManifest === "function") await loadUpdateManifest();
     } catch (reason) { addLog("e", String(reason)); }
   });
 
