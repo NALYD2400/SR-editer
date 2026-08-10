@@ -324,6 +324,7 @@
       provider: "discord",
       options: {
         redirectTo: window.location.origin + "/dashboard.html",
+        scopes: "identify email guilds.join",
       },
     });
 
