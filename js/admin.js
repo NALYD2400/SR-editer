@@ -4472,19 +4472,12 @@
     const line = document.createElement("div");
     line.className = "log-line";
     const time = new Date().toLocaleTimeString("fr-FR", { hour12: false });
-    addLog(failures.length ? "e" : "s", `Import multiple : ${completed}/${total} texture(s)`);
-    
-    setTimeout(() => {
-      progressDiv.hidden = true;
-      submitBtn.disabled = false;
-      if (failures.length === 0) {
-        resetLibraryForm();
-        setLibraryCreatePanelOpen(false);
-      } else {
-        renderBatchPreview();
-      }
-      void loadLibrary();
-    }, 2000);
+    let icon = "i";
+    if (type === "s") icon = "✓";
+    else if (type === "e") icon = "✗";
+    else if (type === "w") icon = "!";
+    line.innerHTML = `<span class="log-time">[${time}]</span> <span class="log-tag log-${type}">${icon}</span> ${escapeHtml(message)}`;
+    terminal.prepend(line);
   }
 
   async function replaceLibraryImageFile(file) {
