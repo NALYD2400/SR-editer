@@ -11246,7 +11246,9 @@ font-size: 12px;
   }
 }
 
-.audit-toolbar {
+/* ===== Audit & Security panels ===== */
+#panel-audit .audit-toolbar,
+#panel-security .audit-toolbar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -11255,20 +11257,24 @@ font-size: 12px;
   margin-bottom: 14px;
 }
 
-.audit-toolbar-left,
-.audit-toolbar-right {
+#panel-audit .audit-toolbar-left,
+#panel-audit .audit-toolbar-right,
+#panel-security .audit-toolbar-left,
+#panel-security .audit-toolbar-right {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
 }
 
-.audit-toolbar-left {
+#panel-audit .audit-toolbar-left,
+#panel-security .audit-toolbar-left {
   flex: 1 1 auto;
   min-width: 0;
 }
 
-.users-count-chip {
+#panel-audit .users-count-chip,
+#panel-security .users-count-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -11284,19 +11290,22 @@ font-size: 12px;
   white-space: nowrap;
 }
 
-.users-count-chip strong {
+#panel-audit .users-count-chip strong,
+#panel-security .users-count-chip strong {
   color: var(--text-primary);
   font-size: 13px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
 }
 
-.users-count-chip span {
+#panel-audit .users-count-chip span,
+#panel-security .users-count-chip span {
   color: var(--text-muted);
   font-weight: 500;
 }
 
-.users-search-wrap {
+#panel-audit .users-search-wrap,
+#panel-security .users-search-wrap {
   position: relative;
   display: flex;
   align-items: center;
@@ -11305,7 +11314,8 @@ font-size: 12px;
   max-width: 320px;
 }
 
-.users-search-icon {
+#panel-audit .users-search-icon,
+#panel-security .users-search-icon {
   position: absolute;
   left: 12px;
   top: 50%;
@@ -11316,6 +11326,8 @@ font-size: 12px;
   pointer-events: none;
 }
 
+#panel-audit #audit-search-input,
+#panel-security #security-search-input,
 .users-search-wrap input {
   width: 100%;
   min-width: 0;
@@ -11336,7 +11348,8 @@ font-size: 12px;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-blue) 16%, transparent);
 }
 
-.ticket-filter-tabs {
+#panel-audit .ticket-filter-tabs,
+#panel-security .ticket-filter-tabs {
   display: inline-flex;
   gap: 2px;
   padding: 3px;
@@ -11346,7 +11359,8 @@ font-size: 12px;
   flex-wrap: wrap;
 }
 
-.filter-tab {
+#panel-audit .filter-tab,
+#panel-security .filter-tab {
   min-height: 28px;
   padding: 0 12px;
   border: 0;
@@ -11359,8 +11373,10 @@ font-size: 12px;
   box-shadow: none;
 }
 
-.filter-tab:hover { color: var(--text-primary); }
-.filter-tab.is-active {
+#panel-audit .filter-tab:hover,
+#panel-security .filter-tab:hover { color: var(--text-primary); }
+#panel-audit .filter-tab.is-active,
+#panel-security .filter-tab.is-active {
   background: rgba(255, 255, 255, 0.08);
   color: var(--text-primary);
   box-shadow: none;
