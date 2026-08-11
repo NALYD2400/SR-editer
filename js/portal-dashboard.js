@@ -850,7 +850,7 @@
       if (billingErrorEl) billingErrorEl.style.display = "none";
       btn.disabled = true;
       const original = btn.textContent;
-      btn.textContent = "Préparation du paiement...";
+      btn.textContent = "Redirection vers Stripe...";
 
       try {
         const { data: sessData } = await client.auth.getSession();
@@ -859,18 +859,8 @@
           throw new Error("Session expirée. Veuillez vous re-connecter à votre compte.");
         }
 
-        const meta = PLAN_METADATA[tier] || { title: `Abonnement ${tier}`, price: "" };
-        if (liquidTitleEl) liquidTitleEl.textContent = meta.title;
-        if (liquidPriceEl) liquidPriceEl.innerHTML = meta.price;
-
-        if (liquidModalEl) liquidModalEl.style.display = "flex";
-        if (liquidContainerEl) liquidContainerEl.innerHTML = "";
-        if (liquidLoadingEl) liquidLoadingEl.style.display = "block";
-        if (liquidErrorEl) liquidErrorEl.style.display = "none";
-        if (liquidDirectLinkEl) liquidDirectLinkEl.style.display = "none";
-
         const { data, error } = await client.functions.invoke("stripe-checkout", {
-          body: { tier: tier, return_url: window.location.href, embedded: true },
+          body: { tier: tier, return_url: window.location.href, embedded: false },
         });
 
         if (error) {
@@ -885,43 +875,6 @@
         }
         if (data && data.error) throw new Error(data.error);
 
-        if (data && data.url && liquidDirectLinkEl) {
-          liquidDirectLinkEl.href = data.url;
-          liquidDirectLinkEl.style.display = "inline-block";
-        }
-
-        if (data && data.clientSecret && typeof window.Stripe === "function") {
-          try {
-            if (activeEmbeddedCheckout) {
-              try { if (typeof activeEmbeddedCheckout.destroy === "function") activeEmbeddedCheckout.destroy(); } catch (_) {}
-              try { if (typeof activeEmbeddedCheckout.unmount === "function") activeEmbeddedCheckout.unmount(); } catch (_) {}
-              activeEmbeddedCheckout = null;
-            }
-            const pubKey = data.publishableKey || "pk_test_51Px2vXFsXnUoET6T123456789";
-            const stripe = window.Stripe(pubKey);
-            const checkout = await stripe.initEmbeddedCheckout({
-              clientSecret: data.clientSecret,
-            });
-            if (liquidContainerEl) {
-              while (liquidContainerEl.firstChild) {
-                liquidContainerEl.removeChild(liquidContainerEl.firstChild);
-              }
-            }
-            if (liquidLoadingEl) liquidLoadingEl.style.display = "none";
-            checkout.mount("#stripe-embedded-checkout-container");
-            activeEmbeddedCheckout = checkout;
-            btn.disabled = false;
-            btn.textContent = original;
-            return;
-          } catch (embeddedErr) {
-            console.warn("Basculement automatique vers la page de paiement sécurisée Stripe:", embeddedErr);
-            if (data && data.url) {
-              window.location.href = data.url;
-              return;
-            }
-          }
-        }
-
         if (data && data.url) {
           window.location.href = data.url;
           return;
@@ -931,12 +884,7 @@
       } catch (err) {
         console.error(err);
         const errorMsg = (err && err.message) || "Impossible de démarrer le paiement.";
-        if (liquidErrorEl) {
-          liquidErrorEl.textContent = errorMsg;
-          liquidErrorEl.style.display = "block";
-        } else {
-          showBillingError(errorMsg);
-        }
+        showBillingError(errorMsg);
         btn.disabled = false;
         btn.textContent = original;
       }
