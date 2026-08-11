@@ -47,6 +47,7 @@
 
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://js.stripe.com/v3/"></script>
 
 
 
@@ -130,7 +131,7 @@
 
 
 
-  <link rel="stylesheet" href="styles/portal.css?v=21">
+  <link rel="stylesheet" href="styles/portal.css?v=25">
 
 
 
@@ -4498,7 +4499,7 @@
 
 
 
-  <script src="js/portal-dashboard.js?v=7"></script>
+  <script src="js/portal-dashboard.js?v=25"></script>
 
 
 
@@ -5041,6 +5042,26 @@
 
 
 
+
+  <!-- Liquid Glass Embedded Stripe Checkout Modal -->
+  <div id="liquid-checkout-modal" class="liquid-checkout-backdrop" style="display: none;">
+    <div class="liquid-checkout-modal-content">
+      <button type="button" class="liquid-checkout-close" id="liquid-checkout-close-btn">&times;</button>
+      <div class="liquid-checkout-header">
+        <div class="liquid-checkout-badge">Paiement Sécurisé SR Editer</div>
+        <h2 id="liquid-checkout-plan-title">Abonnement Pro</h2>
+        <p class="liquid-checkout-price" id="liquid-checkout-plan-price">24,99 € <span>/ mois</span></p>
+      </div>
+      <div id="liquid-checkout-error" class="liquid-checkout-error-banner" style="display: none;"></div>
+      <div id="stripe-embedded-checkout-container">
+        <div class="liquid-checkout-spinner">Chargement du module de paiement sécurisé...</div>
+      </div>
+      <div class="liquid-checkout-footer">
+        <span>🔒 Chiffrement SSL 256-bit</span>
+        <span>⚡ Activation instantanée</span>
+      </div>
+    </div>
+  </div>
 
 </body>
 
