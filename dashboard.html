@@ -4499,7 +4499,7 @@
 
 
 
-  <script src="js/portal-dashboard.js?v=26"></script>
+  <script src="js/portal-dashboard.js?v=27"></script>
 
 
 
@@ -5053,9 +5053,8 @@
         <p class="liquid-checkout-price" id="liquid-checkout-plan-price">24,99 € <span>/ mois</span></p>
       </div>
       <div id="liquid-checkout-error" class="liquid-checkout-error-banner" style="display: none;"></div>
-      <div id="stripe-embedded-checkout-container">
-        <div class="liquid-checkout-spinner">Chargement du module de paiement sécurisé...</div>
-      </div>
+      <div id="liquid-checkout-loading" class="liquid-checkout-spinner" style="display: none;">Connexion à la passerelle de paiement sécurisée...</div>
+      <div id="stripe-embedded-checkout-container"></div>
       <div class="liquid-checkout-footer">
         <span>🔒 Chiffrement SSL 256-bit</span>
         <span>⚡ Activation instantanée</span>

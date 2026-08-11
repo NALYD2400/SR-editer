@@ -807,6 +807,7 @@
   const liquidModalEl = document.getElementById("liquid-checkout-modal");
   const liquidCloseBtnEl = document.getElementById("liquid-checkout-close-btn");
   const liquidContainerEl = document.getElementById("stripe-embedded-checkout-container");
+  const liquidLoadingEl = document.getElementById("liquid-checkout-loading");
   const liquidErrorEl = document.getElementById("liquid-checkout-error");
   const liquidTitleEl = document.getElementById("liquid-checkout-plan-title");
   const liquidPriceEl = document.getElementById("liquid-checkout-plan-price");
@@ -826,9 +827,8 @@
     }
     activeEmbeddedCheckout = null;
     if (liquidModalEl) liquidModalEl.style.display = "none";
-    if (liquidContainerEl) {
-      liquidContainerEl.innerHTML = '<div class="liquid-checkout-spinner">Chargement du module de paiement sécurisé...</div>';
-    }
+    if (liquidContainerEl) liquidContainerEl.innerHTML = "";
+    if (liquidLoadingEl) liquidLoadingEl.style.display = "none";
     if (liquidErrorEl) liquidErrorEl.style.display = "none";
   }
 
@@ -863,9 +863,8 @@
         if (liquidPriceEl) liquidPriceEl.innerHTML = meta.price;
 
         if (liquidModalEl) liquidModalEl.style.display = "flex";
-        if (liquidContainerEl) {
-          liquidContainerEl.innerHTML = '<div class="liquid-checkout-spinner">Connexion à la passerelle de paiement sécurisée...</div>';
-        }
+        if (liquidContainerEl) liquidContainerEl.innerHTML = "";
+        if (liquidLoadingEl) liquidLoadingEl.style.display = "block";
         if (liquidErrorEl) liquidErrorEl.style.display = "none";
 
         const { data, error } = await client.functions.invoke("stripe-checkout", {
@@ -890,7 +889,12 @@
           const checkout = await stripe.initEmbeddedCheckout({
             clientSecret: data.clientSecret,
           });
-          if (liquidContainerEl) liquidContainerEl.innerHTML = "";
+          if (liquidContainerEl) {
+            while (liquidContainerEl.firstChild) {
+              liquidContainerEl.removeChild(liquidContainerEl.firstChild);
+            }
+          }
+          if (liquidLoadingEl) liquidLoadingEl.style.display = "none";
           checkout.mount("#stripe-embedded-checkout-container");
           activeEmbeddedCheckout = checkout;
           btn.disabled = false;
