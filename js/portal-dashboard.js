@@ -651,29 +651,31 @@
       return;
     }
 
-    const { data: identityData } = await client.auth.getUserIdentities();
+    const { data: identityData } = await client.auth.getUserIdentities().catch(() => ({ data: { identities: [] } }));
     const freshUser = Object.assign({}, session.user, {
       identities: (identityData && identityData.identities) || session.user.identities || [],
     });
     currentIdentities = freshUser.identities;
+
+    // Show dashboard immediately!
+    applyProfile(session.user.email || "", profile, freshUser);
+    showShell();
 
     const params = new URLSearchParams(window.location.search);
     const returnedSessionId = params.get("session_id");
     const checkoutStatus = params.get("status");
 
     if (returnedSessionId && (checkoutStatus === "success" || !checkoutStatus)) {
-      try {
-        const { data: verifyData } = await client.functions.invoke("stripe-checkout", {
-          body: { action: "verify", session_id: returnedSessionId },
-        });
+      client.functions.invoke("stripe-checkout", {
+        body: { action: "verify", session_id: returnedSessionId },
+      }).then(({ data: verifyData }) => {
         if (verifyData && verifyData.success && verifyData.tier) {
           profile.subscription_tier = verifyData.tier;
           profile.subscription_status = "active";
+          applyProfile(session.user.email || "", profile, freshUser);
           showAccountMessage(`Votre abonnement ${TIER_LABELS[verifyData.tier] || verifyData.tier} a été activé avec succès ! 🎉`, "success");
         }
-      } catch (vErr) {
-        console.warn("Vérification de la session de paiement:", vErr);
-      }
+      }).catch((vErr) => console.warn("Vérification checkout session:", vErr));
       window.history.replaceState({}, document.title, window.location.pathname);
     }
 
@@ -681,60 +683,12 @@
       window.localStorage.getItem("sr-editer:discord-signin-pending") === "1" ||
       params.get("discord_auth") === "1";
     const discordLinkPending = window.localStorage.getItem("sr-editer:discord-link-pending") === "1";
-    let existingDiscordError = null;
-    if (discordSignInPending) {
-      if (!discordIdentity()) {
-        window.localStorage.removeItem("sr-editer:discord-signin-pending");
-        window.localStorage.removeItem("sr-editer:discord-signin-next");
-        await client.auth.signOut({ scope: "local" });
-        redirectToLogin("Discord n'a pas renvoyé de compte utilisable.");
-        return;
-      }
-      try {
-        await invokeAccountAction("sync-discord");
-      } catch (discordError) {
-        window.localStorage.removeItem("sr-editer:discord-signin-pending");
-        window.localStorage.removeItem("sr-editer:discord-signin-next");
-        await client.auth.signOut({ scope: "local" });
-        redirectToLogin(getDiscordErrorMessage(discordError), discordError.code);
-        return;
-      }
-
-      const nextPath = safeNextPath();
-      window.localStorage.removeItem("sr-editer:discord-signin-pending");
-      window.localStorage.removeItem("sr-editer:discord-signin-next");
-      if (nextPath) {
-        window.location.replace(nextPath);
-        return;
-      }
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (!discordLinkPending && discordIdentity()) {
-      try {
-        await invokeAccountAction("sync-discord");
-      } catch (discordError) {
-        const accessRejected = discordError.code === "DISCORD_MEMBERSHIP_REQUIRED" ||
-          discordError.code === "DISCORD_RULES_REQUIRED";
-        const identity = discordIdentity();
-        if (identity && currentIdentities.length > 1 && accessRejected) {
-          await client.auth.unlinkIdentity(identity).catch(function () {});
-          const { data } = await client.auth.getUserIdentities();
-          currentIdentities = (data && data.identities) || [];
-          freshUser.identities = currentIdentities;
-          existingDiscordError = getDiscordErrorMessage(discordError);
-        } else if (currentIdentities.length <= 1) {
-          await client.auth.signOut({ scope: "local" });
-          redirectToLogin(getDiscordErrorMessage(discordError), discordError.code);
-          return;
-        } else {
-          existingDiscordError = getDiscordErrorMessage(discordError);
-        }
-      }
+    
+    if (discordSignInPending || (!discordLinkPending && discordIdentity())) {
+      invokeAccountAction("sync-discord").catch((discordError) => {
+        console.warn("Discord sync warning:", discordError);
+      });
     }
-
-    applyProfile(session.user.email || "", profile, freshUser);
-    showShell();
-
-    if (existingDiscordError) showAccountMessage(existingDiscordError, "error");
 
     if (discordLinkPending && discordIdentity()) {
       try {
