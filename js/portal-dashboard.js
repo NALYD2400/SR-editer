@@ -811,6 +811,7 @@
   const liquidErrorEl = document.getElementById("liquid-checkout-error");
   const liquidTitleEl = document.getElementById("liquid-checkout-plan-title");
   const liquidPriceEl = document.getElementById("liquid-checkout-plan-price");
+  const liquidDirectLinkEl = document.getElementById("liquid-checkout-direct-link");
 
   const PLAN_METADATA = {
     standard: { title: "Abonnement SR Editer Standard", price: "9,99 € <span>/ mois</span>" },
@@ -866,6 +867,7 @@
         if (liquidContainerEl) liquidContainerEl.innerHTML = "";
         if (liquidLoadingEl) liquidLoadingEl.style.display = "block";
         if (liquidErrorEl) liquidErrorEl.style.display = "none";
+        if (liquidDirectLinkEl) liquidDirectLinkEl.style.display = "none";
 
         const { data, error } = await client.functions.invoke("stripe-checkout", {
           body: { tier: tier, return_url: window.location.href, embedded: true },
@@ -882,6 +884,11 @@
           throw new Error(detailedMsg);
         }
         if (data && data.error) throw new Error(data.error);
+
+        if (data && data.url && liquidDirectLinkEl) {
+          liquidDirectLinkEl.href = data.url;
+          liquidDirectLinkEl.style.display = "inline-block";
+        }
 
         if (data && data.clientSecret && typeof window.Stripe === "function") {
           try {
