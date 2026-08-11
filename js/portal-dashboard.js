@@ -772,7 +772,16 @@
           body: { return_url: window.location.href },
         });
 
-        if (error) throw error;
+        if (error) {
+          let detailedMsg = error.message;
+          if (error.context && typeof error.context.json === "function") {
+            try {
+              const body = await error.context.json();
+              if (body && body.error) detailedMsg = body.error;
+            } catch (_) {}
+          }
+          throw new Error(detailedMsg);
+        }
         if (data && data.error) throw new Error(data.error);
         if (data && data.url) {
           window.location.href = data.url;
@@ -805,7 +814,17 @@
         const { data, error } = await client.functions.invoke("stripe-checkout", {
           body: { tier: tier, return_url: window.location.href },
         });
-        if (error) throw error;
+
+        if (error) {
+          let detailedMsg = error.message;
+          if (error.context && typeof error.context.json === "function") {
+            try {
+              const body = await error.context.json();
+              if (body && body.error) detailedMsg = body.error;
+            } catch (_) {}
+          }
+          throw new Error(detailedMsg);
+        }
         if (data && data.error) throw new Error(data.error);
         if (data && data.url) {
           window.location.href = data.url;
