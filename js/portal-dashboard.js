@@ -884,22 +884,35 @@
         if (data && data.error) throw new Error(data.error);
 
         if (data && data.clientSecret && typeof window.Stripe === "function") {
-          const pubKey = data.publishableKey || "pk_test_51Px2vXFsXnUoET6T123456789";
-          const stripe = window.Stripe(pubKey);
-          const checkout = await stripe.initEmbeddedCheckout({
-            clientSecret: data.clientSecret,
-          });
-          if (liquidContainerEl) {
-            while (liquidContainerEl.firstChild) {
-              liquidContainerEl.removeChild(liquidContainerEl.firstChild);
+          try {
+            if (activeEmbeddedCheckout) {
+              try { if (typeof activeEmbeddedCheckout.destroy === "function") activeEmbeddedCheckout.destroy(); } catch (_) {}
+              try { if (typeof activeEmbeddedCheckout.unmount === "function") activeEmbeddedCheckout.unmount(); } catch (_) {}
+              activeEmbeddedCheckout = null;
+            }
+            const pubKey = data.publishableKey || "pk_test_51Px2vXFsXnUoET6T123456789";
+            const stripe = window.Stripe(pubKey);
+            const checkout = await stripe.initEmbeddedCheckout({
+              clientSecret: data.clientSecret,
+            });
+            if (liquidContainerEl) {
+              while (liquidContainerEl.firstChild) {
+                liquidContainerEl.removeChild(liquidContainerEl.firstChild);
+              }
+            }
+            if (liquidLoadingEl) liquidLoadingEl.style.display = "none";
+            checkout.mount("#stripe-embedded-checkout-container");
+            activeEmbeddedCheckout = checkout;
+            btn.disabled = false;
+            btn.textContent = original;
+            return;
+          } catch (embeddedErr) {
+            console.warn("Basculement automatique vers la page de paiement sécurisée Stripe:", embeddedErr);
+            if (data && data.url) {
+              window.location.href = data.url;
+              return;
             }
           }
-          if (liquidLoadingEl) liquidLoadingEl.style.display = "none";
-          checkout.mount("#stripe-embedded-checkout-container");
-          activeEmbeddedCheckout = checkout;
-          btn.disabled = false;
-          btn.textContent = original;
-          return;
         }
 
         if (data && data.url) {
