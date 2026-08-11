@@ -658,6 +658,25 @@
     currentIdentities = freshUser.identities;
 
     const params = new URLSearchParams(window.location.search);
+    const returnedSessionId = params.get("session_id");
+    const checkoutStatus = params.get("status");
+
+    if (returnedSessionId && (checkoutStatus === "success" || !checkoutStatus)) {
+      try {
+        const { data: verifyData } = await client.functions.invoke("stripe-checkout", {
+          body: { action: "verify", session_id: returnedSessionId },
+        });
+        if (verifyData && verifyData.success && verifyData.tier) {
+          profile.subscription_tier = verifyData.tier;
+          profile.subscription_status = "active";
+          showAccountMessage(`Votre abonnement ${TIER_LABELS[verifyData.tier] || verifyData.tier} a été activé avec succès ! 🎉`, "success");
+        }
+      } catch (vErr) {
+        console.warn("Vérification de la session de paiement:", vErr);
+      }
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     const discordSignInPending =
       window.localStorage.getItem("sr-editer:discord-signin-pending") === "1" ||
       params.get("discord_auth") === "1";
