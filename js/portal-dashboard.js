@@ -795,7 +795,7 @@
         console.error(err);
         showBillingError(
           (err && err.message) ||
-            "Impossible d'accéder au portail. Souscris d'abord à un plan.",
+            "Vous n'avez pas encore d'abonnement Stripe actif. Choisissez une formule ci-dessous (Standard, Pro ou Premium) pour démarrer.",
         );
         manageBillingBtn.disabled = false;
         manageBillingBtn.textContent = original;

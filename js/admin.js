@@ -3413,10 +3413,19 @@
 
   async function invokeStripeCoupons(body) {
     if (!supabase) throw new Error("Supabase non configuré.");
+    try {
+      await supabase.auth.getSession();
+    } catch (_) {}
     const { data, error } = await supabase.functions.invoke("stripe-coupons", { body });
     if (error) {
-      const detail = data?.error || data?.message || error.message || "Erreur Stripe";
-      throw new Error(detail);
+      let detail = error.message;
+      if (error.context && typeof error.context.json === "function") {
+        try {
+          const resBody = await error.context.json();
+          if (resBody && resBody.error) detail = resBody.error;
+        } catch (_) {}
+      }
+      throw new Error(detail || "Erreur Stripe");
     }
     if (data?.error) throw new Error(String(data.error));
     return data;
