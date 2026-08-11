@@ -792,7 +792,6 @@
         }
         throw new Error("Lien de redirection introuvable.");
       } catch (err) {
-        console.error(err);
         showBillingError(
           (err && err.message) ||
             "Vous n'avez pas encore d'abonnement Stripe actif. Choisissez une formule ci-dessous (Standard, Pro ou Premium) pour démarrer.",
