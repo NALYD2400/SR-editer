@@ -49,10 +49,38 @@
     return null;
   }
 
+  function instantLogout(e) {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    try {
+      localStorage.removeItem("sr_site_nav_cache_v1");
+      for (var i = 0; i < localStorage.length; i += 1) {
+        var k = localStorage.key(i);
+        if (k && (k.includes("auth-token") || k.startsWith("sb-"))) {
+          localStorage.removeItem(k);
+        }
+      }
+    } catch (_e) {}
+    if (window.srSupabase && window.srSupabase.auth) {
+      window.srSupabase.auth.signOut().finally(function () {
+        window.location.reload();
+      });
+    } else {
+      window.location.reload();
+    }
+  }
+
   try {
     var user = readCachedUser();
+    var existingDivider = document.getElementById("site-nav-divider");
+    var existingLogoutBtn = document.getElementById("site-nav-logout-btn");
+
     if (!user || !user.name) {
       el.textContent = "Se connecter";
+      if (existingDivider) existingDivider.hidden = true;
+      if (existingLogoutBtn) existingLogoutBtn.hidden = true;
       return;
     }
 
@@ -67,8 +95,8 @@
       img.className = "site-nav-avatar";
       img.src = avatarUrl;
       img.alt = "";
-      img.width = 22;
-      img.height = 22;
+      img.width = 28;
+      img.height = 28;
       img.referrerPolicy = "no-referrer";
       el.appendChild(img);
     } else {
@@ -89,6 +117,32 @@
       badge.textContent = "Admin";
       el.appendChild(badge);
     }
+
+    var divider = existingDivider;
+    if (!divider) {
+      divider = document.createElement("span");
+      divider.className = "site-nav-divider";
+      divider.id = "site-nav-divider";
+      divider.setAttribute("aria-hidden", "true");
+      el.after(divider);
+    }
+    divider.hidden = false;
+    divider.removeAttribute("hidden");
+
+    var logoutBtn = existingLogoutBtn;
+    if (!logoutBtn) {
+      logoutBtn = document.createElement("button");
+      logoutBtn.type = "button";
+      logoutBtn.className = "site-nav-logout-btn";
+      logoutBtn.id = "site-nav-logout-btn";
+      logoutBtn.title = "Se déconnecter";
+      logoutBtn.setAttribute("aria-label", "Se déconnecter");
+      logoutBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+      divider.after(logoutBtn);
+    }
+    logoutBtn.hidden = false;
+    logoutBtn.removeAttribute("hidden");
+    logoutBtn.onclick = instantLogout;
   } catch (_e) {
     el.textContent = "Se connecter";
   }

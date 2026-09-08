@@ -1,998 +1,236 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Blog & Nouveautés · Shop Replace</title>
-  <link rel="icon" type="image/png" href="assets/logo_small.png">
-  <script src="js/theme.js"></script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog &amp; Releases · SR Editer</title>
   
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-
-  <!-- Core CSS -->
-  <link rel="stylesheet" href="styles/tokens.css">
-  <link rel="stylesheet" href="styles/base.css">
-  <link rel="stylesheet" href="styles/ambient.css?v=2">
-  <link rel="stylesheet" href="styles/auth.css?v=2">
-  <link rel="stylesheet" href="styles/site-pages.css?v=13">
-  <link rel="stylesheet" href="styles/client.css?v=0.6.6">
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/awwwards.css?v=3" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root {
-      --blog-font: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-      --blog-mono: 'JetBrains Mono', monospace;
-      --accent-purple: #818cf8;
-      --accent-indigo: #6366f1;
-      --accent-cyan: #38bdf8;
-      --accent-emerald: #34d399;
-      --glass-bg: rgba(15, 23, 42, 0.65);
-      --glass-border: rgba(255, 255, 255, 0.08);
-      --glass-hover-border: rgba(129, 140, 248, 0.35);
-    }
-
-    body {
-      font-family: var(--blog-font);
-      background-color: transparent !important;
-      color: #f1f5f9;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    /* Ambient Lighting Mesh */
-    .blog-ambient-mesh {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      overflow: hidden;
-    }
-    .blog-orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(140px);
-      opacity: 0.28;
-      will-change: transform;
-    }
-    .blog-orb-1 {
-      top: -10vw;
-      left: 15vw;
-      width: 50vw;
-      height: 50vw;
-      background: radial-gradient(circle, #6366f1, transparent 70%);
-      animation: floatOrb1 25s ease-in-out infinite alternate;
-    }
-    .blog-orb-2 {
-      bottom: -10vw;
-      right: 10vw;
-      width: 45vw;
-      height: 45vw;
-      background: radial-gradient(circle, #a855f7, transparent 70%);
-      animation: floatOrb2 22s ease-in-out infinite alternate;
-    }
-    .blog-orb-3 {
-      top: 40vh;
-      left: -10vw;
-      width: 40vw;
-      height: 40vw;
-      background: radial-gradient(circle, #0ea5e9, transparent 70%);
-      animation: floatOrb3 28s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatOrb1 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(4vw, 6vw) scale(1.1); } }
-    @keyframes floatOrb2 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-5vw, -4vw) scale(1.08); } }
-    @keyframes floatOrb3 { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(6vw, -5vw) scale(0.95); } }
-
-    /* Header & Navigation Bar Overrides */
-    .blog-container {
-      max-width: 1140px;
-      margin: 0 auto;
-      padding: 0 24px;
-      position: relative;
-      z-index: 5;
-    }
-
-    /* Hero Section - Antigravity Style */
-    .blog-hero-section {
-      padding: 130px 0 50px;
-      text-align: center;
-    }
-
-    .blog-pill-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 6px 16px;
-      border-radius: 30px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(129, 140, 248, 0.3);
-      color: #a5b4fc;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 24px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.15);
-    }
-    .blog-pill-label .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: #34d399;
-      box-shadow: 0 0 10px #34d399;
-    }
-
-    .blog-main-title {
-      font-size: clamp(2.8rem, 6vw, 4.8rem);
-      font-weight: 800;
-      letter-spacing: -0.03em;
-      line-height: 1.15;
-      padding-bottom: 12px;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 45%, #a5b4fc 80%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .blog-main-subtitle {
-      font-size: clamp(1.05rem, 2vw, 1.25rem);
-      color: rgba(226, 232, 240, 0.75);
-      max-width: 680px;
-      margin: 0 auto 40px;
-      line-height: 1.65;
-      font-weight: 400;
-    }
-
-    /* Category Filter Pills */
-    .category-filter-bar {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 40px;
-    }
-    .filter-tab {
-      padding: 8px 18px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .filter-tab:hover {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-    }
-    .filter-tab.is-active {
-      background: rgba(99, 102, 241, 0.2);
-      border-color: rgba(129, 140, 248, 0.5);
-      color: #a5b4fc;
-      font-weight: 600;
-      box-shadow: 0 0 16px rgba(99, 102, 241, 0.2);
-    }
-
-    /* Featured Post Banner (Flagship Post) */
-    .hero-post-card {
-      position: relative;
-      background: linear-gradient(135deg, rgba(20, 16, 38, 0.8) 0%, rgba(12, 10, 26, 0.9) 100%);
-      border: 1px solid var(--glass-border);
-      border-radius: 28px;
-      padding: 48px;
-      margin-bottom: 70px;
-      box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.6), 0 0 40px rgba(99, 102, 241, 0.12);
-      backdrop-filter: blur(20px);
-      overflow: hidden;
-      transition: border-color 0.35s, box-shadow 0.35s, transform 0.35s;
-    }
-    .hero-post-card:hover {
-      border-color: var(--glass-hover-border);
-      box-shadow: 0 35px 90px -20px rgba(0, 0, 0, 0.7), 0 0 50px rgba(99, 102, 241, 0.22);
-      transform: translateY(-3px);
-    }
-    .hero-post-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(129, 140, 248, 0.15), transparent 70%);
-      pointer-events: none;
-    }
-
-    .hero-post-meta {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .badge-featured {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 5px 12px;
-      border-radius: 8px;
-      background: linear-gradient(135deg, #6366f1, #4f46e5);
-      color: #fff;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
-    }
-    .post-date-info {
-      font-size: 13px;
-      color: rgba(255, 255, 255, 0.5);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .hero-post-title {
-      font-size: clamp(1.8rem, 3.5vw, 2.6rem);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-      margin-bottom: 18px;
-      line-height: 1.2;
-    }
-
-    .hero-post-notes {
-      font-size: 15px;
-      line-height: 1.75;
-      color: rgba(226, 232, 240, 0.82);
-      margin-bottom: 32px;
-      white-space: pre-wrap;
-    }
-
-    .hero-post-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-      padding-top: 28px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    .author-info {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .author-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #818cf8, #c084fc);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      color: #fff;
-      box-shadow: 0 0 15px rgba(129, 140, 248, 0.4);
-    }
-    .author-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #f1f5f9;
-    }
-    .author-role {
-      font-size: 12px;
-      color: rgba(255, 255, 255, 0.45);
-    }
-
-    .action-group {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .btn-glow-primary {
-      display: inline-flex;
-      align-items: center;
-      gap: 9px;
-      padding: 12px 26px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #ffffff;
-      font-size: 14px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 8px 25px -4px rgba(99, 102, 241, 0.5);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-glow-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 30px -2px rgba(99, 102, 241, 0.7);
-    }
-
-    .btn-glass-secondary {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 22px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #f1f5f9;
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    .btn-glass-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.25);
-    }
-
-    /* Grid of Posts */
-    .blog-posts-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-      gap: 28px;
-      margin-bottom: 100px;
-    }
-
-    .post-card {
-      background: rgba(15, 12, 28, 0.6);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      backdrop-filter: blur(14px);
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-      cursor: pointer;
-    }
-    .post-card:hover {
-      background: rgba(20, 16, 38, 0.75);
-      border-color: var(--glass-hover-border);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.5), 0 0 25px rgba(99, 102, 241, 0.15);
-    }
-
-    .post-card-tag {
-      font-size: 11px;
-      font-weight: 700;
-      padding: 3px 10px;
-      border-radius: 6px;
-      background: rgba(129, 140, 248, 0.12);
-      color: #818cf8;
-      border: 1px solid rgba(129, 140, 248, 0.25);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .post-card-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #fff;
-      margin: 14px 0 10px;
-      line-height: 1.35;
-      letter-spacing: -0.01em;
-    }
-
-    .post-card-excerpt {
-      font-size: 14px;
-      color: rgba(226, 232, 240, 0.7);
-      line-height: 1.65;
-      margin-bottom: 24px;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .post-card-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 18px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .read-more-link {
-      font-size: 13px;
-      font-weight: 600;
-      color: #818cf8;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: gap 0.2s ease;
-    }
-    .post-card:hover .read-more-link {
-      gap: 10px;
-      color: #a5b4fc;
-    }
-
-    /* Single Dedicated Article View (Full Route View) */
-    .dedicated-article-view {
-      display: none;
-      padding: 120px 0 100px;
-      max-width: 860px;
-      margin: 0 auto;
-    }
-    .dedicated-article-view.is-visible {
-      display: block;
-    }
-
-    .back-btn-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: rgba(255, 255, 255, 0.6);
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      margin-bottom: 30px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .back-btn-link:hover {
-      color: #818cf8;
-    }
-
-    .article-header {
-      margin-bottom: 40px;
-    }
-    .article-title {
-      font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      line-height: 1.12;
-      color: #ffffff;
-      margin-bottom: 20px;
-    }
-
-    .article-body-card {
-      background: rgba(15, 12, 28, 0.65);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 44px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-      margin-bottom: 50px;
-      font-size: 16px;
-      line-height: 1.8;
-      color: rgba(241, 245, 249, 0.88);
-      white-space: pre-wrap;
-    }
-
-    .article-download-widget {
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(168, 85, 247, 0.08));
-      border: 1px solid rgba(129, 140, 248, 0.3);
-      border-radius: 20px;
-      padding: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-top: 40px;
-    }
-  </style>
 </head>
-<body class="client-page client-page--showcase" data-site-page="blog">
-  <div class="sticky-hero-bg" data-image-reveal aria-hidden="true">
-    <div
-      class="reveal-bg reveal-bg--base"
-      data-reveal-base
-      style="background-image: url('assets/showcase/cyan-white.png')"
-    ></div>
-    <div
-      class="reveal-bg reveal-bg--layer"
-      data-reveal-layer
-      style="background-image: url('assets/showcase/electric-blue-2.png')"
-    ></div>
-    <div class="showcase-hero-fade"></div>
-    <svg class="reveal-grid" aria-hidden="true">
-      <defs>
-        <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
-          <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hero-grid)" />
-    </svg>
+<body class="aww-page">
+  <!-- 3D Video Background -->
+  <div class="site-bg-container" aria-hidden="true">
+    <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
+    <div class="site-bg-overlay"></div>
+    <div class="site-bg-grain"></div>
   </div>
 
-  <!-- Ambient Background Orbs -->
-  <div class="blog-ambient-mesh" aria-hidden="true">
-    <div class="blog-orb blog-orb-1"></div>
-    <div class="blog-orb blog-orb-2"></div>
-    <div class="blog-orb blog-orb-3"></div>
-  </div>
+  <div class="custom-cursor"></div>
 
-  <div class="site-shell">
-    <!-- Top Navigation Header -->
-    <header class="site-topnav">
-      <a href="index.html" class="site-topnav-brand">
-        <img src="assets/logo_small.png" alt="SR Editer">
-        <span>Editer</span>
+  <!-- Awwwards Header -->
+  <header class="aww-header" data-gsap="fade-down">
+    <div class="aww-header-inner">
+      <a href="index.html" class="aww-logo" data-magnetic>
+        <img src="assets/logo_small.png" alt="SR Editer" />
+        <span class="aww-logo-text">SR<br>EDITER</span>
       </a>
-
-      <nav class="site-nav-tabs" aria-label="Sections du site">
-        <!-- Dropdown Produits -->
-        <div class="site-nav-dropdown">
-          <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
-            <span>Produits</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </a>
-          <div class="site-nav-dropdown-menu">
-            <a href="index.html" class="dropdown-item">
-              <div class="dropdown-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-              </div>
-              <div class="dropdown-item-text">
-                <span class="dropdown-item-title">SR Editer</span>
-                <span class="dropdown-item-desc">Atelier local de textures 2D & 3D</span>
-              </div>
-            </a>
-            <a href="library.html" class="dropdown-item">
-              <div class="dropdown-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-              </div>
-              <div class="dropdown-item-text">
-                <span class="dropdown-item-title">Bibliothèque Cloud</span>
-                <span class="dropdown-item-desc">Assets, skins & sauvegardes cloud</span>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <!-- Tarifs (Lien simple) -->
-        <a href="index.html#abonnements" data-nav="plans">Tarifs</a>
-
-        <!-- Blog (Lien simple actif) -->
-        <a href="blog.html" data-nav="blog" class="is-active">Blog</a>
-
-        <!-- Dropdown Ressources -->
-        <div class="site-nav-dropdown">
-          <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
-            <span>Ressources</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-          </a>
-          <div class="site-nav-dropdown-menu">
-            <a href="docs.html" class="dropdown-item">
-              <div class="dropdown-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6.5 6H20"/></svg>
-              </div>
-              <div class="dropdown-item-text">
-                <span class="dropdown-item-title">Documentation</span>
-                <span class="dropdown-item-desc">Guides, tutoriels & raccourcis</span>
-              </div>
-            </a>
-            <a href="dashboard.html" class="dropdown-item">
-              <div class="dropdown-item-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-              </div>
-              <div class="dropdown-item-text">
-                <span class="dropdown-item-title">Espace Client</span>
-                <span class="dropdown-item-desc">Gestion du compte & abonnements</span>
-              </div>
-            </a>
-          </div>
-        </div>
+      <nav class="aww-nav">
+        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
+        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
+        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
+        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
+        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
       </nav>
-
-      <div class="site-nav-actions">
-        <a href="login.html?next=blog.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
+      <div class="aww-header-actions">
+        <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
+          <span class="aww-btn-text">PORTAL</span>
+        </a>
+        <button type="button" class="aww-burger-btn" id="aww-burger-btn" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
       </div>
-    </header>
+    </div>
+  </header>
+  
+  <main class="aww-smooth-scroll">
 
-    <main class="site-main">
-      <div class="blog-container">
+      <section class="aww-page-hero" style="height: 45vh; min-height: 380px;">
+        <div class="aww-hero-content">
+          <div class="aww-kicker" data-gsap="fade-up">05 — TRANSMISSIONS</div>
+          <h1 class="aww-page-title" data-gsap="split-text">TRANSMISSIONS<br><span class="aww-text-stroke">&amp; PATCHES</span></h1>
+          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 650px; font-size: 1.2rem;">
+            Journal officiel des mises à jour, notes de version et annonces de développement de SR Editer.
+          </p>
+        </div>
+      </section>
 
-        <!-- VUE 1 : Liste du Blog & Releases (Par défaut) -->
-        <div id="blog-list-view">
-          <!-- Hero Section -->
-          <section class="blog-hero-section">
-            <div class="blog-pill-label">
-              <span class="dot"></span>
-              Le Blog Officiel &amp; Journal de Release
-            </div>
-            <h1 class="blog-main-title">Nouveautés, Patchnotes &amp; Mises à jour</h1>
-            <p class="blog-main-subtitle">
-              Retrouvez l'historique complet des versions stables, l'évolution du moteur WebGL 3D, de Texture Studio 2D et les annonces officielles de l'équipe SR Editer.
-            </p>
-
-            <!-- Filtres par catégorie -->
-            <div class="category-filter-bar">
-              <button class="filter-tab is-active" onclick="filterCategory('all', this)">Tous les articles</button>
-              <button class="filter-tab" onclick="filterCategory('release', this)">Releases stables</button>
-              <button class="filter-tab" onclick="filterCategory('feature', this)">Nouveautés 3D &amp; Studio</button>
-              <button class="filter-tab" onclick="filterCategory('patch', this)">Correctifs &amp; Performance</button>
-            </div>
-          </section>
-
-          <!-- Banner Article à la Une (Dernière release) -->
-          <div id="featured-post-container">
-            <div style="text-align:center; opacity:0.5; padding:60px;">Chargement du journal des releases...</div>
-          </div>
-
-          <!-- Titre Grille -->
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:28px;">
-            <h2 style="font-size:22px; font-weight:800; color:#fff; letter-spacing:-0.01em;">
-              Toutes les mises à jour
-            </h2>
-            <span id="posts-count-label" style="font-size:13px; color:rgba(255,255,255,0.45); font-weight:500;">
-              Chargement...
-            </span>
-          </div>
-
-          <!-- Grille des articles / releases -->
-          <div class="blog-posts-grid" id="blog-posts-grid">
-            <!-- Rempli par JavaScript -->
-          </div>
+      <section class="aww-blog" data-gsap="fade-up">
+        <!-- Conteneur de chargement -->
+        <div id="changelog-loading" style="text-align: center; padding: 4rem 2rem; color: var(--text-secondary);">
+          <div class="aww-spinner" style="margin: 0 auto 1.5rem;"></div>
+          <p>Chargement des versions officielles depuis Supabase...</p>
         </div>
 
-        <!-- VUE 2 : Article Dédié Complet (Format antigravity.google/blog/post) -->
-        <article class="dedicated-article-view" id="dedicated-article-view">
-          <a class="back-btn-link" onclick="showListView()">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-            Retour au Blog &amp; Releases
-          </a>
+        <!-- Dernière Version en Vedette (Featured Hero Card) -->
+        <div id="featured-release-container" style="display: none; margin-bottom: 4rem;"></div>
 
-          <header class="article-header">
-            <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
-              <span id="article-badge" class="badge-featured">Release</span>
-              <span id="article-date" class="post-date-info">Date</span>
-            </div>
-            <h1 class="article-title" id="article-title">Titre de la mise à jour</h1>
-            <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px; padding-bottom:24px; border-bottom:1px solid rgba(255,255,255,0.08);">
-              <div class="author-info">
-                <div class="author-avatar">SR</div>
-                <div>
-                  <div class="author-name">Équipe SR Editer</div>
-                  <div class="author-role">Publication officielle</div>
+        <!-- Titre Versions Antérieures -->
+        <div id="past-releases-header" style="display: none; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; justify-content: space-between; align-items: flex-end;">
+          <h2 style="font-size: 2rem;">Historique des Versions</h2>
+          <span id="releases-count-badge" class="ticket-count-badge">0 version</span>
+        </div>
+
+        <!-- Grille des Versions Antérieures -->
+        <div id="changelog-container" class="aww-blog-list"></div>
+      </section>
+
+      <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+          const loadingEl = document.getElementById("changelog-loading");
+          const featuredEl = document.getElementById("featured-release-container");
+          const pastHeader = document.getElementById("past-releases-header");
+          const countBadge = document.getElementById("releases-count-badge");
+          const listEl = document.getElementById("changelog-container");
+
+          try {
+            const client = (typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null) || window.srSupabase;
+            if (!client) throw new Error("Client Supabase non initialisé");
+
+            const { data, error } = await client
+              .from("release_records")
+              .select("version, notes, artifact_url, updated_at")
+              .eq("published", true)
+              .order("updated_at", { ascending: false });
+
+            if (error) throw error;
+
+            if (loadingEl) loadingEl.style.display = "none";
+
+            const releases = data && data.length ? data : [
+              {
+                version: "0.7.1",
+                updated_at: new Date().toISOString(),
+                notes: "SR Editer 0.7.1 — Version stable officielle avec moteur WebGL 3D et Texture Studio 2D.",
+                artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe"
+              }
+            ];
+
+            const latest = releases[0];
+            const others = releases.slice(1);
+
+            if (countBadge) countBadge.textContent = releases.length + " version" + (releases.length > 1 ? "s" : "");
+
+            // Rendu de la version la plus récente (Featured)
+            if (featuredEl && latest) {
+              const dateStr = new Date(latest.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+              featuredEl.style.display = "block";
+              featuredEl.innerHTML = `
+                <div class="aww-featured-release">
+                  <div class="aww-release-top">
+                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                      <span class="ticket-count-badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3);">
+                        Dernière Version Stable
+                      </span>
+                      <span class="aww-release-tag">v${latest.version}</span>
+                    </div>
+                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Publiée le ${dateStr}</span>
+                  </div>
+                  <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin: 1.5rem 0 1rem;">SR Editer Desktop v${latest.version}</h2>
+                  <div class="aww-release-notes" style="margin-bottom: 2rem;">${formatNotes(latest.notes)}</div>
+                  <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    ${latest.artifact_url ? `
+                      <a href="${latest.artifact_url}" class="aww-btn aww-btn-solid" data-magnetic>
+                        <span class="aww-btn-text">Télécharger v${latest.version} (.exe)</span>
+                      </a>
+                    ` : ''}
+                    <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-btn aww-btn-outline" data-magnetic>
+                      <span class="aww-btn-text">Rejoindre le Discord</span>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <button class="btn-glass-secondary" onclick="copyArticleLink()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
-                Copier le lien
-              </button>
-            </div>
-          </header>
-
-          <div class="article-body-card" id="article-body-content">
-            <!-- Notes et contenu de la release -->
-          </div>
-
-          <div id="article-download-box">
-            <!-- Widget de téléchargement si dispo -->
-          </div>
-        </article>
-
-      </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="client-footer">
-      <div class="footer-container">
-        <div class="footer-grid">
-          <div class="footer-brand-col">
-            <a href="index.html" class="footer-brand">
-              <img src="assets/logo_small.png" alt="SR Editer" />
-              <span>Editer</span>
-            </a>
-            <p class="footer-desc">L'atelier desktop professionnel pour l'inspection, l'édition de textures et la prévisualisation 3D pour GTA V et FiveM.</p>
-          </div>
-
-          <div class="footer-links-col">
-            <h4>Navigation</h4>
-            <ul>
-              <li><a href="index.html">Accueil</a></li>
-              <li><a href="docs.html">Documentation</a></li>
-              <li><a href="blog.html">Blog &amp; Releases</a></li>
-              <li><a href="library.html">Bibliothèque</a></li>
-              <li><a href="dashboard.html">Espace Client</a></li>
-            </ul>
-          </div>
-
-          <div class="footer-links-col">
-            <h4>Communauté</h4>
-            <ul>
-              <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
-              <li><a href="docs.html#changelog">Changelog express</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer-bottom">
-          <p>© 2026 SR Editer. Tous droits réservés.</p>
-        </div>
-      </div>
-    </footer>
-  </div>
-
-  <!-- JavaScript Dynamic Logic -->
-  <script src="js/skins.js?v=1"></script>
-  <script src="js/image-reveal.js?v=2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/sr-supabase.js?v=1"></script>
-  <script src="js/site-nav.js?v=7"></script>
-  <script src="js/site-soft-nav.js?v=2"></script>
-  <script>
-    const DEFAULT_RELEASES = [
-      {
-        version: "0.7.1",
-        updated_at: "2026-08-03T13:06:45.402Z",
-        notes: "SR Editer 0.7.1 — nouvelle version stable.\n\n🚀 Release Note : Refonte Globale, Moteur 3D & Nouveau Texture Studio !\n\n🌟 Nouveautés Globale & Personnalisation\n• Refonte du moteur WebGL 3D : Un rendu plus performant et une gestion nettement plus fluide des scènes complexes.\n• Personnalisation totale des thèmes : Vice Cyan, Vice Rose, Sunset Gold, Neon Purple, Bleu Royal, Émeraude.\n\n🎨 Texture Studio 2D (Refonte Complète)\n• Nouvelle structure & outils repensés pour des performances optimales.\n\n🧊 3D Editor & Génération IA\n• Rendu 3D optimisé et intégration IA (Trellis 2 par Microsoft).",
-        artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe"
-      },
-      {
-        version: "0.4.5",
-        updated_at: "2026-07-23T19:37:34.676Z",
-        notes: "SR Editer 0.4.5 — nouvelle version stable.\n\n• Corrections de bugs 3D\n• Drag & Drop de fichiers 3D (.odr, .ydr, .yft, .ydd)\n• Détection et assemblage automatique des paires de fichiers HD / LD",
-        artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.4.5/SR.Editer_0.4.5_x64-setup.exe"
-      },
-      {
-        version: "0.4.4",
-        updated_at: "2026-07-23T15:31:17.377Z",
-        notes: "SR Editer v0.4.4 — Éditeur 3D & Remplacement de Textures.\n\n1. Remplacement de texture en temps réel sans rafraîchissement\n2. Conservation de la résolution naturelle\n3. Aimantation / Snap sur Grille",
-        artifact_url: "https://github.com/NALYD2400/SR-editer/releases/download/0.4.4/SR.Editer_0.4.4_x64-setup.exe"
-      }
-    ];
-
-    let releases = [];
-    let currentFilter = 'all';
-
-    function initBlog() {
-      if (!releases.length) {
-        releases = DEFAULT_RELEASES;
-        renderBlogView();
-      }
-      loadReleases().then(() => {
-        handleUrlRouting();
-      });
-    }
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initBlog);
-    } else {
-      initBlog();
-    }
-
-    async function loadReleases() {
-      try {
-        const client = (typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null) || window.srSupabase;
-        if (client) {
-          const { data, error } = await client
-            .from("release_records")
-            .select("version, notes, artifact_url, updated_at")
-            .eq("published", true)
-            .order("updated_at", { ascending: false });
-
-          if (!error && data && data.length) {
-            releases = data;
-            renderBlogView();
-          }
-        }
-      } catch (e) {
-        console.error("Supabase load error:", e);
-      }
-    }
-
-    function parseDate(dateStr) {
-      if (!dateStr) return "Récemment";
-      try {
-        const iso = String(dateStr).trim().replace(" ", "T");
-        const d = new Date(iso);
-        if (isNaN(d.getTime())) return "Récemment";
-        return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-      } catch (_) {
-        return "Récemment";
-      }
-    }
-
-    function renderBlogView() {
-      try {
-        const featuredContainer = document.getElementById("featured-post-container");
-        const gridContainer = document.getElementById("blog-posts-grid");
-        const countLabel = document.getElementById("posts-count-label");
-
-        if (!featuredContainer || !gridContainer || !releases.length) return;
-
-        // 1. Render Featured Banner (Version la plus récente)
-        const latest = releases[0];
-        const latestDate = parseDate(latest.updated_at);
-
-        featuredContainer.innerHTML = `
-          <article class="hero-post-card">
-            <div class="hero-post-meta">
-              <span class="badge-featured">⭐ À LA UNE · Release Officielle</span>
-              <span class="post-date-info">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                ${latestDate}
-              </span>
-            </div>
-            <h2 class="hero-post-title">SR Editer v${latest.version} est disponible !</h2>
-            <div class="hero-post-notes">${escapeHtml(latest.notes)}</div>
-            <div class="hero-post-footer">
-              <div class="author-info">
-                <div class="author-avatar">SR</div>
-                <div>
-                  <div class="author-name">Équipe de développement SR Editer</div>
-                  <div class="author-role">Dernière version stable</div>
-                </div>
-              </div>
-              <div class="action-group">
-                ${latest.artifact_url ? `<a href="${latest.artifact_url}" target="_blank" rel="noopener noreferrer" class="btn-glow-primary">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                  Télécharger l'installateur v${latest.version} (.exe)
-                </a>` : ''}
-                <button onclick="openArticleView('v${latest.version}')" class="btn-glass-secondary">
-                  Voir l'article complet →
-                </button>
-              </div>
-            </div>
-          </article>
-        `;
-
-        // 2. Render Posts Grid (Versions précédentes)
-        const otherPosts = releases.slice(1);
-        if (countLabel) countLabel.textContent = `${releases.length} mises à jour publiées`;
-
-        if (!otherPosts.length) {
-          const archivedPosts = [
-            {
-              version: "0.4.2",
-              updated_at: "2026-07-15T14:00:00Z",
-              notes: "SR Editer v0.4.2 — Texture Studio 2D & Viewport WebGL.\n\n• Ajout du nouveau Canvas d'édition de textures 2D\n• Support de l'export direct vers le format DDS et PNG\n• Système d'authentification et de gestion de licences Supabase",
-              artifact_url: null
+              `;
             }
-          ];
-          gridContainer.innerHTML = archivedPosts.map(rel => `
-            <article class="post-card" onclick="openArticleView('v${rel.version}')">
-              <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                  <span class="post-card-tag">Version v${rel.version}</span>
-                  <span style="font-size:12px; color:rgba(255,255,255,0.45);">15 juil. 2026</span>
+
+            // Rendu des versions antérieures
+            if (pastHeader && others.length > 0) pastHeader.style.display = "flex";
+            if (listEl && others.length > 0) {
+              listEl.innerHTML = others.map(rel => {
+                const dateStr = new Date(rel.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+                return `
+                  <article class="aww-blog-post">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="aww-release-tag">v${rel.version}</span>
+                        <span class="ticket-count-badge" style="font-size: 0.75rem;">Archive</span>
+                      </div>
+                      <span style="font-size: 0.85rem; color: var(--text-secondary);">${dateStr}</span>
+                    </div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">Mise à jour v${rel.version}</h3>
+                    <div class="aww-release-notes" style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                      ${formatNotes(rel.notes)}
+                    </div>
+                    ${rel.artifact_url ? `
+                      <a href="${rel.artifact_url}" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
+                        <span class="aww-btn-text">Télécharger v${rel.version}</span>
+                      </a>
+                    ` : ''}
+                  </article>
+                `;
+              }).join("");
+            }
+          } catch (err) {
+            console.error("Erreur chargement changelog:", err);
+            if (loadingEl) {
+              loadingEl.innerHTML = `
+                <div class="aww-featured-release">
+                  <span class="ticket-count-badge">Build Windows Officiel</span>
+                  <h2 style="font-size: 2.2rem; margin: 1rem 0;">SR Editer Desktop v0.7.1</h2>
+                  <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Version stable avec prévisualisation WebGL et Texture Studio 2D.</p>
+                  <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid">
+                    <span class="aww-btn-text">Télécharger v0.7.1 (.exe)</span>
+                  </a>
                 </div>
-                <h3 class="post-card-title">Mise à jour v${rel.version}</h3>
-                <p class="post-card-excerpt">${escapeHtml(rel.notes)}</p>
-              </div>
-              <div class="post-card-footer">
-                <span class="read-more-link">Lire la note complète <span>→</span></span>
-                <span style="font-size:11px; color:rgba(255,255,255,0.4); font-weight:500;">Archive</span>
-              </div>
-            </article>
-          `).join("");
-          return;
+              `;
+            }
+          }
+        });
+
+        function formatNotes(notes) {
+          if (!notes) return "Mise à jour d'amélioration générale.";
+          const escaped = notes
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;");
+          return escaped.replace(/\n/g, "<br>");
         }
+      </script>
 
-        gridContainer.innerHTML = otherPosts.map((rel) => {
-          const dateStr = parseDate(rel.updated_at);
-          return `
-            <article class="post-card" onclick="openArticleView('v${rel.version}')">
-              <div>
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-                  <span class="post-card-tag">Version v${rel.version}</span>
-                  <span style="font-size:12px; color:rgba(255,255,255,0.45);">${dateStr}</span>
-                </div>
-                <h3 class="post-card-title">Mise à jour v${rel.version}</h3>
-                <p class="post-card-excerpt">${escapeHtml(rel.notes)}</p>
-              </div>
-              <div class="post-card-footer">
-                <span class="read-more-link">Lire la note complète <span>→</span></span>
-                <span style="font-size:11px; color:rgba(255,255,255,0.4); font-weight:500;">Archive</span>
-              </div>
-            </article>
-          `;
-        }).join("");
-      } catch (err) {
-        console.error("Error rendering blog view:", err);
-      }
-    }
-
-    function openArticleView(versionTag) {
-      const versionStr = versionTag.replace(/^v/i, "");
-      const latest = releases[0] || { version: "0.4.3" };
-      let rel = releases.find(r => r.version === versionStr);
-      
-      // Fallback si ancienne version non présente dans Supabase
-      if (!rel && versionStr === "0.4.2") {
-        rel = {
-          version: "0.4.2",
-          updated_at: "2026-07-15T14:00:00Z",
-          notes: "SR Editer v0.4.2 — Texture Studio 2D & Viewport WebGL.\n\n• Ajout du nouveau Canvas d'édition de textures 2D\n• Support de l'export direct vers le format DDS et PNG\n• Système d'authentification et de gestion de licences Supabase",
-          artifact_url: null
-        };
-      } else if (!rel) {
-        rel = latest;
-      }
-
-      const isLatest = rel.version === latest.version;
-      const dateStr = new Date(rel.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-
-      document.getElementById("article-badge").textContent = isLatest ? `Version v${rel.version} (Officielle)` : `Version v${rel.version} (Archive)`;
-      document.getElementById("article-date").textContent = `Publié le ${dateStr}`;
-      document.getElementById("article-title").textContent = `Notes de version — SR Editer v${rel.version}`;
-      document.getElementById("article-body-content").innerHTML = escapeHtml(rel.notes || "Publication officielle.");
-
-      const downloadBox = document.getElementById("article-download-box");
-      if (isLatest && rel.artifact_url) {
-        downloadBox.innerHTML = `
-          <div class="article-download-widget">
-            <div>
-              <div style="font-size:18px; font-weight:700; color:#fff; margin-bottom:4px;">Télécharger SR Editer v${rel.version}</div>
-              <div style="font-size:13px; color:rgba(255,255,255,0.6);">Installateur 64-bit officiel pour Windows (.exe)</div>
-            </div>
-            <a href="${rel.artifact_url}" target="_blank" rel="noopener noreferrer" class="btn-glow-primary">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Télécharger v${rel.version} (.exe)
+      <footer class="aww-footer">
+        <div class="aww-footer-content">
+          <div class="aww-footer-top">
+            <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
+            <a href="#" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
+              <span class="aww-btn-text">GET SR EDITER</span>
             </a>
           </div>
-        `;
-      } else {
-        downloadBox.innerHTML = `
-          <div style="margin-top:30px; padding:20px; border-radius:16px; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); text-align:center; color:rgba(255,255,255,0.6); font-size:13px;">
-            ⚠️ Les anciennes versions ne sont plus proposées au téléchargement direct. Veuillez utiliser la dernière version <a href="blog.html?version=${latest.version}" style="color:#818cf8; text-decoration:underline;">v${latest.version}</a>.
+          <div class="aww-footer-bottom">
+            <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
+            <div class="aww-footer-links">
+              <a href="privacy.html" class="aww-link">Privacy</a>
+              <a href="terms.html" class="aww-link">Terms</a>
+            </div>
           </div>
-        `;
-      }
+        </div>
+      </footer>
+  </main>
 
-      document.getElementById("blog-list-view").style.display = "none";
-      document.getElementById("dedicated-article-view").classList.add("is-visible");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // Push history state
-      history.pushState({ version: rel.version }, "", `?version=${rel.version}`);
-    }
-
-    function showListView() {
-      document.getElementById("dedicated-article-view").classList.remove("is-visible");
-      document.getElementById("blog-list-view").style.display = "block";
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      history.pushState({}, "", "blog.html");
-    }
-
-    function handleUrlRouting() {
-      const params = new URLSearchParams(window.location.search);
-      const v = params.get("version");
-      if (v) {
-        openArticleView(v);
-      }
-    }
-
-    window.addEventListener("popstate", (e) => {
-      if (e.state && e.state.version) {
-        openArticleView(e.state.version);
-      } else {
-        showListView();
-      }
-    });
-
-    function filterCategory(cat, btn) {
-      document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('is-active'));
-      btn.classList.add('is-active');
-      currentFilter = cat;
-      renderBlogView();
-    }
-
-    function copyArticleLink() {
-      navigator.clipboard.writeText(window.location.href);
-      alert("Lien de l'article copié dans le presse-papier !");
-    }
-
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;")
-        .replace(/\n/g, "<br>");
-    }
-  </script>
+  <!-- Libraries -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <!-- Core Logic & Animations -->
+  <script src="js/config.js"></script>
+  <script src="js/sr-supabase.js"></script>
+  <script src="js/awwwards.js"></script>
+  
 </body>
 </html>

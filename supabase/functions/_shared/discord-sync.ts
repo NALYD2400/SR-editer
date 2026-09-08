@@ -40,7 +40,7 @@ export async function syncDiscordRole(
   tier: DiscordTier,
   requireMembership = false,
 ): Promise<DiscordSyncResponse> {
-  const botUrl = (Deno.env.get("DISCORD_BOT_URL") || "https://sre-discord-bot.onrender.com")
+  const botUrl = (Deno.env.get("DISCORD_BOT_URL") || "https://sre-discord-bot-1.onrender.com")
     .replace(/\/$/, "");
   const secret = Deno.env.get("SYNC_SECRET_TOKEN")?.trim();
   if (!secret) throw new Error("SYNC_SECRET_TOKEN is not configured.");
@@ -84,7 +84,7 @@ export async function announcePatchnoteToDiscord(
   notes: string,
   artifactUrl?: string,
 ): Promise<DiscordPatchnoteResponse> {
-  const botUrl = (Deno.env.get("DISCORD_BOT_URL") || "https://sre-discord-bot.onrender.com")
+  const botUrl = (Deno.env.get("DISCORD_BOT_URL") || "https://sre-discord-bot-1.onrender.com")
     .replace(/\/$/, "");
   const secret = Deno.env.get("SYNC_SECRET_TOKEN")?.trim();
   if (!secret) throw new Error("SYNC_SECRET_TOKEN is not configured.");

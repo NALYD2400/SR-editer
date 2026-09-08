@@ -128,3 +128,83 @@ html[data-theme="light"] {
   --shadow-panel: 0 20px 60px rgba(75, 60, 100, 0.1);
   --shadow-card-hover: 0 20px 50px rgba(75, 60, 100, 0.15);
 }
+
+/* ── Studio Obsidian & Liquid Smoke Design System (Strictly Scoped to .client-page) ── */
+.client-page {
+  --obsidian-base: #060709;
+  --obsidian-surface: #0b0e14;
+  --obsidian-surface-elevated: #111620;
+  --obsidian-surface-hover: #161c28;
+
+  --obsidian-glass: rgba(10, 12, 16, 0.82);
+  --obsidian-glass-heavy: rgba(8, 10, 14, 0.92);
+  --obsidian-glass-hover: rgba(14, 18, 24, 0.88);
+  --obsidian-glass-tint: rgba(18, 24, 34, 0.76);
+
+  --obsidian-border: rgba(255, 255, 255, 0.08);
+  --obsidian-border-subtle: rgba(255, 255, 255, 0.05);
+  --obsidian-border-hover: rgba(56, 189, 248, 0.35);
+  --obsidian-border-specular: rgba(255, 255, 255, 0.14);
+
+  --obsidian-specular: inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  --obsidian-specular-strong: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --obsidian-shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  --obsidian-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.85), 0 0 24px rgba(56, 189, 248, 0.12);
+
+  --obsidian-blur: blur(32px);
+  --obsidian-blur-deep: blur(40px);
+
+  --obsidian-text: #f8fafc;
+  --obsidian-text-soft: #cbd5e1;
+  --obsidian-text-muted: #94a3b8;
+  --obsidian-text-dim: #64748b;
+
+  --obsidian-cyan: #38bdf8;
+  --obsidian-cyan-soft: rgba(56, 189, 248, 0.12);
+  --obsidian-cyan-border: rgba(56, 189, 248, 0.28);
+  --obsidian-cyan-glow: 0 0 20px rgba(56, 189, 248, 0.25);
+
+  --obsidian-titanium: #e2e8f0;
+  --obsidian-titanium-soft: rgba(226, 232, 240, 0.08);
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+
+  /* Overriding standard theme variables inside .client-page */
+  --bg-deep: #060709;
+  --bg-app: #0b0e14;
+  --bg-panel: rgba(10, 12, 16, 0.82);
+  --bg-glass: rgba(10, 12, 16, 0.82);
+  --bg-glass-strong: rgba(10, 12, 16, 0.92);
+  --bg-glass-hover: rgba(14, 18, 24, 0.88);
+  --bg-elevated: #111620;
+  --bg-input: rgba(10, 12, 16, 0.9);
+
+  --text: #f8fafc;
+  --text-soft: #cbd5e1;
+  --muted: #94a3b8;
+  --muted-dim: rgba(148, 163, 184, 0.6);
+
+  --accent: #38bdf8;
+  --accent-light: #7dd3fc;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(56, 189, 248, 0.35);
+  --border-strong: rgba(255, 255, 255, 0.14);
+
+  --glass-card-bg: rgba(10, 12, 16, 0.82);
+  --glass-card-border: rgba(255, 255, 255, 0.08);
+  --glass-card-border-hover: rgba(56, 189, 248, 0.35);
+  --glass-card-glow: 0 0 24px rgba(56, 189, 248, 0.1);
+  --spotlight-color: rgba(56, 189, 248, 0.08);
+
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #060709;
+  --btn-primary-shadow: 0 4px 16px rgba(255, 255, 255, 0.12);
+  --btn-primary-hover-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+}
+

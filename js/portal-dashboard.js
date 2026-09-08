@@ -71,7 +71,7 @@
       }, 450);
     }
     if (contentEl) {
-      contentEl.style.display = "flex";
+      contentEl.style.display = "block";
       contentEl.removeAttribute("hidden");
     }
   }
@@ -440,7 +440,7 @@
 
       const statusMap = {
         open: { label: "Ouvert", color: "#22c55e", bg: "rgba(34, 197, 94, 0.15)" },
-        pending: { label: "En attente", color: "#a855f7", bg: "rgba(168, 85, 247, 0.15)" },
+        pending: { label: "En attente", color: "#38bdf8", bg: "rgba(56, 189, 248, 0.15)" },
         closed: { label: "Clos", color: "#94a3b8", bg: "rgba(148, 163, 184, 0.15)" }
       };
 
@@ -494,9 +494,9 @@
       const isClosed = ticket.status === "closed";
       const isPending = ticket.status === "pending";
       statusPill.textContent = isClosed ? "Clos" : isPending ? "En attente" : "Ouvert";
-      statusPill.style.background = isClosed ? "rgba(148, 163, 184, 0.2)" : isPending ? "rgba(168, 85, 247, 0.2)" : "rgba(34, 197, 94, 0.2)";
-      statusPill.style.color = isClosed ? "#94a3b8" : isPending ? "#c084fc" : "#4ade80";
-      statusPill.style.border = isClosed ? "1px solid rgba(148, 163, 184, 0.4)" : isPending ? "1px solid rgba(168, 85, 247, 0.4)" : "1px solid rgba(34, 197, 94, 0.4)";
+      statusPill.style.background = isClosed ? "rgba(148, 163, 184, 0.2)" : isPending ? "rgba(56, 189, 248, 0.2)" : "rgba(34, 197, 94, 0.2)";
+      statusPill.style.color = isClosed ? "#94a3b8" : isPending ? "#38bdf8" : "#4ade80";
+      statusPill.style.border = isClosed ? "1px solid rgba(148, 163, 184, 0.4)" : isPending ? "1px solid rgba(56, 189, 248, 0.4)" : "1px solid rgba(34, 197, 94, 0.4)";
     }
 
     if (replyInput && replyBtn) {
@@ -543,27 +543,24 @@
         const alignSelf = isAdmin ? "flex-start" : "flex-end";
         const isShowcase = document.body.classList.contains("client-page--showcase");
 
-        // Dynamic theme variables for bubble colors
+        // Dynamic theme variables for bubble colors (Studio Obsidian)
         const bg = isAdmin 
-          ? (isShowcase ? "rgba(0, 0, 0, 0.05)" : "linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%)") 
-          : (isShowcase ? "#6366f1" : "linear-gradient(135deg, rgba(255, 0, 124, 0.22) 0%, rgba(217, 0, 104, 0.14) 100%)");
+          ? "rgba(255, 255, 255, 0.05)" 
+          : "rgba(56, 189, 248, 0.12)";
         
         const border = isAdmin 
-          ? (isShowcase ? "rgba(0, 0, 0, 0.08)" : "rgba(139, 92, 246, 0.35)") 
-          : (isShowcase ? "#4f46e5" : "rgba(255, 0, 124, 0.35)");
+          ? "rgba(255, 255, 255, 0.1)" 
+          : "rgba(56, 189, 248, 0.35)";
         
-        const textColor = isAdmin 
-          ? (isShowcase ? "#0f172a" : "#ffffff") 
-          : "#ffffff";
+        const textColor = "#f1f5f9";
+        const metaColor = "rgba(255, 255, 255, 0.6)";
+        const boxSh = "0 4px 14px rgba(0, 0, 0, 0.25)";
 
-        const metaColor = isShowcase ? "rgba(15, 23, 42, 0.6)" : "rgba(255, 255, 255, 0.55)";
-        const boxSh = isShowcase ? "0 4px 12px rgba(0, 0, 0, 0.02)" : "0 6px 20px rgba(0,0,0,0.25)";
-
-        const borderRadius = isAdmin ? "14px 14px 14px 4px" : "14px 14px 4px 14px";
+        const borderRadius = isAdmin ? "10px 10px 10px 3px" : "10px 10px 3px 10px";
         const authorLabel = isAdmin ? "Support SR Editer" : "Vous";
-        const avatarBg = isAdmin ? "linear-gradient(135deg, #a855f7, #6366f1)" : "linear-gradient(135deg, #ff007c, #d90068)";
+        const avatarBg = isAdmin ? "rgba(56, 189, 248, 0.2)" : "rgba(255, 255, 255, 0.12)";
         const avatarContent = isAdmin 
-          ? "SR" 
+          ? '<span style="color: #38bdf8; font-weight: 800;">SR</span>' 
           : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>';
         const timeStr = new Date(msg.created_at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" });
 
@@ -915,12 +912,26 @@
     });
   }
   document.addEventListener("keydown", function (event) {
-    if (!discordRequiredModal || discordRequiredModal.hidden) return;
     if (event.key === "Escape") {
-      event.preventDefault();
-      closeDiscordRequiredModal();
-      return;
+      const chatModalEl = document.getElementById("web-ticket-chat-modal");
+      if (chatModalEl && !chatModalEl.hidden) {
+        event.preventDefault();
+        chatModalEl.hidden = true;
+        return;
+      }
+      const createModalEl = document.getElementById("web-create-ticket-modal");
+      if (createModalEl && !createModalEl.hidden) {
+        event.preventDefault();
+        createModalEl.hidden = true;
+        return;
+      }
+      if (discordRequiredModal && !discordRequiredModal.hidden) {
+        event.preventDefault();
+        closeDiscordRequiredModal();
+        return;
+      }
     }
+    if (!discordRequiredModal || discordRequiredModal.hidden) return;
     if (event.key === "Tab" && discordRequiredDialog) {
       const focusable = Array.from(discordRequiredDialog.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])"));
       const first = focusable[0];
@@ -1016,10 +1027,21 @@
     cancelNewBtn.addEventListener("click", function() { createModal.hidden = true; });
   }
 
+  if (createModal) {
+    createModal.addEventListener("click", function (e) {
+      if (e.target === createModal) createModal.hidden = true;
+    });
+  }
+
   const closeChatBtn = document.getElementById("close-ticket-chat-modal-btn");
   const chatModal = document.getElementById("web-ticket-chat-modal");
   if (closeChatBtn && chatModal) {
     closeChatBtn.addEventListener("click", function() { chatModal.hidden = true; });
+  }
+  if (chatModal) {
+    chatModal.addEventListener("click", function (e) {
+      if (e.target === chatModal) chatModal.hidden = true;
+    });
   }
 
   const createForm = document.getElementById("web-create-ticket-form");

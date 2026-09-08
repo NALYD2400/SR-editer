@@ -6,6 +6,7 @@
   }
 
   const authForm = document.getElementById("auth-form");
+  const authTitleHeading = document.getElementById("auth-title-heading");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   const confirmPasswordInput = document.getElementById("confirm-password");
@@ -161,6 +162,9 @@
     }
     if (passwordInput) {
       passwordInput.autocomplete = isSignup ? "new-password" : "current-password";
+    }
+    if (authTitleHeading) {
+      authTitleHeading.innerHTML = isSignup ? "CR&Eacute;ER<br><span class=\"aww-text-stroke\">UN COMPTE</span>" : "SE<br><span class=\"aww-text-stroke\">CONNECTER</span>";
     }
     if (submitBtn) {
       submitBtn.textContent = isSignup ? "Créer mon compte" : "Se connecter";

@@ -1,369 +1,130 @@
+
 <!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SR Editer · Studio par Shop Replace</title>
-  <meta name="description" content="SR Editer : texture studio, explorateur RPF et viewport 3D pour moddeurs GTA V / FiveM." />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="SR Editer · GTA V & FiveM" />
-  <meta property="og:description" content="Édite tes textures GTA V et FiveM." />
-  <meta name="twitter:title" content="SR Editer · GTA V & FiveM" />
-  <meta name="twitter:description" content="Édite tes textures GTA V et FiveM." />
-  <meta property="og:image" content="assets/showcase/cyan-white.png" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <link rel="canonical" href="https://sr-editer.vercel.app/" />
-  <link rel="icon" type="image/png" href="assets/logo_small.png?v=20260705-logo" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <script src="js/theme.js?v=0.3.4-pro"></script>
-  <link rel="stylesheet" href="styles/tokens.css?v=0.3.4" />
-  <link rel="stylesheet" href="styles/base.css?v=0.3.4-light-bg" />
-  <link rel="stylesheet" href="styles/ambient.css?v=2" />
-  <link rel="stylesheet" href="styles/site-pages.css?v=11" />
-  <link rel="stylesheet" href="styles/client.css?v=0.6.6" />
+  <title>Home · SR Editer</title>
+  
+  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles/awwwards.css?v=3" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  
+  <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="client-page client-page--showcase" data-site-page="home">
-  <div class="ambient-background" aria-hidden="true">
-    <div class="ambient-wallpaper-stack" id="ambient-wallpaper-stack"></div>
+<body class="aww-page">
+  <!-- 3D Video Background -->
+  <div class="site-bg-container" aria-hidden="true">
+    <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
+    <div class="site-bg-overlay"></div>
+    <div class="site-bg-grain"></div>
   </div>
-  <div class="ambient-vignette" aria-hidden="true"></div>
 
-  <header class="site-topnav">
-    <a href="index.html" class="site-topnav-brand" aria-label="SR Editer">
-      <img src="assets/logo_small.png" alt="SR Editer" />
-      <span>Editer</span>
-    </a>
+  <div class="custom-cursor"></div>
 
-    <nav class="site-nav-tabs" aria-label="Sections du site">
-      <div class="site-nav-dropdown">
-        <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
-          <span>Produits</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+  <!-- Awwwards Header -->
+  <header class="aww-header" data-gsap="fade-down">
+    <div class="aww-header-inner">
+      <a href="index.html" class="aww-logo" data-magnetic>
+        <img src="assets/logo_small.png" alt="SR Editer" />
+        <span class="aww-logo-text">SR<br>EDITER</span>
+      </a>
+      <nav class="aww-nav">
+        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
+        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
+        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
+        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
+        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
+      </nav>
+      <div class="aww-header-actions">
+        <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
+          <span class="aww-btn-text">PORTAL</span>
         </a>
-        <div class="site-nav-dropdown-menu">
-          <a href="index.html" class="dropdown-item">
-            <div class="dropdown-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-            </div>
-            <div class="dropdown-item-text">
-              <span class="dropdown-item-title">SR Editer</span>
-              <span class="dropdown-item-desc">Atelier local de textures 2D & 3D</span>
-            </div>
-          </a>
-          <a href="library.html" class="dropdown-item">
-            <div class="dropdown-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/></svg>
-            </div>
-            <div class="dropdown-item-text">
-              <span class="dropdown-item-title">Bibliothèque Cloud</span>
-              <span class="dropdown-item-desc">Assets, skins & sauvegardes cloud</span>
-            </div>
-          </a>
-        </div>
+        <button type="button" class="aww-burger-btn" id="aww-burger-btn" aria-label="Menu" aria-expanded="false">
+          <span></span><span></span>
+        </button>
       </div>
-
-      <a href="index.html#abonnements" data-nav="plans">Tarifs</a>
-      <a href="blog.html" data-nav="blog">Blog</a>
-
-      <div class="site-nav-dropdown">
-        <a href="javascript:void(0)" class="site-nav-dropdown-trigger">
-          <span>Ressources</span>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
-        </a>
-        <div class="site-nav-dropdown-menu">
-          <a href="docs.html" class="dropdown-item">
-            <div class="dropdown-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6.5 6H20"/></svg>
-            </div>
-            <div class="dropdown-item-text">
-              <span class="dropdown-item-title">Documentation</span>
-              <span class="dropdown-item-desc">Guides, tutoriels & raccourcis</span>
-            </div>
-          </a>
-          <a href="dashboard.html" class="dropdown-item">
-            <div class="dropdown-item-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
-            </div>
-            <div class="dropdown-item-text">
-              <span class="dropdown-item-title">Espace Client</span>
-              <span class="dropdown-item-desc">Gestion du compte & abonnements</span>
-            </div>
-          </a>
-        </div>
-      </div>
-    </nav>
-
-    <div class="site-nav-actions">
-      <a href="login.html" id="site-nav-account" class="site-nav-cta">Se connecter</a>
     </div>
   </header>
-  <script src="js/nav-bootstrap.js?v=1"></script>
+  
+  <main class="aww-smooth-scroll">
 
-  <!-- Image + reveal : reste fixe pendant le scroll -->
-  <div class="sticky-hero-bg" data-image-reveal aria-hidden="true">
-    <div
-      class="reveal-bg reveal-bg--base"
-      data-reveal-base
-      style="background-image: url('assets/showcase/cyan-white.png')"
-    ></div>
-    <div
-      class="reveal-bg reveal-bg--layer"
-      data-reveal-layer
-      style="background-image: url('assets/showcase/electric-blue-2.png')"
-    ></div>
-    <div class="showcase-hero-fade"></div>
-    <svg class="reveal-grid" aria-hidden="true">
-      <defs>
-        <pattern id="hero-grid" width="48" height="48" patternUnits="userSpaceOnUse">
-          <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#64748b" stroke-width="0.6" />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill="url(#hero-grid)" />
-    </svg>
-  </div>
-
-  <main class="site-overscroll">
-    <section class="showcase-hero" id="telecharger">
-      <div class="showcase-hero-copy" data-hero-copy>
-        <div class="hero-badge-pill">
-          <span class="pulse-dot"></span>
-          <span id="app-version">v0.7.1 Pro</span> · Studio de Textures GTA V &amp; FiveM
-        </div>
-        <h1 class="hero-title">SR Editer</h1>
-        <p class="hero-lead">
-          Visualisez, éditez et prévisualisez vos textures 2D/3D et archives RPF en temps réel — sans relancer le jeu ni interrompre votre workflow.
-        </p>
-        <div class="hero-cta">
-          <a href="#" class="btn btn-hero" id="download-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="18" height="18" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            Télécharger pour Windows
-          </a>
-          <p class="hero-meta-line">
-            <span id="download-file-size">Windows x64</span>
-            <span aria-hidden="true">·</span>
-            <span>Installateur sécurisé</span>
-            <span aria-hidden="true">·</span>
-            <span>Accès Cloud Synced</span>
+      <section class="aww-hero">
+        <div class="aww-hero-content">
+          <div class="aww-kicker" data-gsap="fade-up">01 — NEXT GEN STUDIO</div>
+          <h1 class="aww-hero-heading" data-gsap="split-text">
+            TEXTURE<br>
+            <span class="aww-text-stroke">ENGINEERING</span><br>
+            REDEFINED.
+          </h1>
+          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.4">
+            Real-time modding workshop. 2D textures, 3D viewport, and RPF archives without ever restarting your game.
           </p>
-        </div>
-      </div>
-    </section>
-
-    <div class="site-sheet">
-    <section class="skin-showcase reveal" id="studio">
-      <div class="section-head">
-        <h2>Skins réalisés avec SR Editer</h2>
-        <p>Choisis une variante — mêmes assets, finitions différentes.</p>
-      </div>
-
-      <div class="skin-stage-wrap" id="skin-stage">
-        <button type="button" class="skin-nav-btn skin-nav-btn--prev" id="skin-prev" aria-label="Skin précédent">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 18l-6-6 6-6"/></svg>
-        </button>
-
-        <div class="skin-curved-viewport" id="skin-curved-viewport">
-          <div class="skin-curved-track" id="skin-curved-track"></div>
-        </div>
-
-        <button type="button" class="skin-nav-btn skin-nav-btn--next" id="skin-next" aria-label="Skin suivant">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 18l6-6-6-6"/></svg>
-        </button>
-      </div>
-
-      <p class="skin-tone" id="skin-tone-label">Bleu</p>
-    </section>
-
-
-
-    <section class="features-pro reveal" id="fonctionnalites">
-      <div class="section-head">
-        <h2>Conçu pour le modding</h2>
-        <p>Décodage natif, édition précise, sauvegarde sûre — sans toucher aux originaux.</p>
-      </div>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-          </div>
-          <h3>Texture Studio</h3>
-          <p>Calques 2D, masques alpha, export PNG/DDS et sync live sur le mesh 3D.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <h3>Explorateur RPF</h3>
-          <p>Parcours GTA V, mods FiveM et archives locales sans extraction préalable.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-          </div>
-          <h3>Viewport 3D WebGL</h3>
-          <p>Prévisualisation temps réel synchronisée avec tes modifications de textures.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          </div>
-          <h3>Moteur RSC7 Native</h3>
-          <p>YTD, YDR, YFT, YDD et OpenFormats — sans faux aperçu.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <h3>Sauvegarde sûre</h3>
-          <p>Backups automatiques et écritures atomiques avant toute modif disque.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          </div>
-          <h3>100 % local</h3>
-          <p>Rendu, décodage et projets restent sur ton PC — pas de cloud obligatoire.</p>
-        </div>
-      </div>
-    </section>
-
-    <section class="pricing-section reveal" id="abonnements">
-      <div class="section-head">
-        <h2>Abonnements</h2>
-        <p>Activation immédiate dans l'app après connexion.</p>
-      </div>
-      <div class="pricing-grid">
-        <article class="pricing-card">
-          <h3>Standard</h3>
-          <p class="pricing-amount">9,99€ <span>/ mois</span></p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Enregistrement &amp; export illimités</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Atlas UV jusqu&apos;à 2K</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support tickets (priorité Moyenne)</li>
-          </ul>
-          <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Standard</a>
-        </article>
-
-        <article class="pricing-card pricing-card--featured">
-          <span class="pricing-badge">Recommandé</span>
-          <h3>Pro</h3>
-          <p class="pricing-amount">24,99€ <span>/ mois</span></p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Standard inclus</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> IA texture &amp; TRELLIS 3D (clés API perso)</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Atlas UV 4K + outils expérimentaux</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support prioritaire (priorité Haute)</li>
-          </ul>
-          <a class="btn pricing-btn pricing-btn--primary" href="login.html?next=dashboard.html">S'abonner Pro</a>
-        </article>
-
-        <article class="pricing-card">
-          <h3>Premium</h3>
-          <p class="pricing-amount">49,99€ <span>/ mois</span></p>
-          <ul>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Pro inclus</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support VIP (priorité Urgente)</li>
-            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Priorité sur les retours produit</li>
-          </ul>
-          <a class="btn pricing-btn" href="login.html?next=dashboard.html">S'abonner Premium</a>
-        </article>
-      </div>
-      <p class="pricing-note">Standard débloque l&apos;enregistrement/export. Pro ajoute l&apos;IA et l&apos;atlas 4K. Premium = Pro + file VIP. Déjà un compte ? <a href="dashboard.html">Gérez votre abonnement</a>.</p>
-    </section>
-
-    <section class="client-cta-pro reveal" id="demarrer">
-      <div class="cta-inner">
-        <h2>Prêt à peindre tes skins ?</h2>
-        <p>Télécharge SR Editer <span id="cta-app-version">v0.7.1</span>, connecte-toi et édite immédiatement.</p>
-        <a href="#" class="btn btn-hero" id="download-btn-2">Télécharger l'application</a>
-        <p class="cta-req">Windows 10/11 x64 · 8 Go RAM recommandés · GTA V / FiveM</p>
-      </div>
-    </section>
-
-  <footer class="client-footer">
-    <div class="footer-container">
-      <div class="footer-grid">
-        <div class="footer-brand-col">
-          <a href="index.html" class="footer-brand">
-            <img src="assets/logo_small.png" alt="SR Editer" />
-            <span>Editer</span>
-          </a>
-          <p class="footer-desc">L'atelier desktop pour l'édition de textures et la prévisualisation 3D GTA V / FiveM.</p>
-          <div class="footer-status">
-            <span class="status-dot"></span>
-            <span>Tous les services sont opérationnels</span>
+          <div class="aww-hero-actions" data-gsap="fade-up" data-delay="0.6">
+            <a href="#features" class="aww-btn aww-btn-outline" data-magnetic>
+              <span class="aww-btn-text">EXPLORE CORE</span>
+            </a>
+            <a href="#" class="aww-btn aww-btn-solid btn-download" id="download-btn" data-magnetic>
+              <span class="aww-btn-text">DOWNLOAD x64</span>
+            </a>
           </div>
         </div>
+      </section>
 
-        <div class="footer-links-col">
-          <h4>Navigation</h4>
-          <ul>
-            <li><a href="index.html">Accueil</a></li>
-            <li><a href="index.html#fonctionnalites">Fonctionnalités</a></li>
-            <li><a href="library.html">Bibliothèque</a></li>
-            <li><a href="index.html#abonnements">Abonnements</a></li>
-            <li><a href="docs.html">Documentation</a></li>
-          </ul>
+      <section class="aww-features" id="features">
+        <div class="aww-section-header">
+          <h2 class="aww-section-title" data-gsap="split-text">REVOLUTIONARY<br>WORKFLOW</h2>
         </div>
-
-        <div class="footer-links-col">
-          <h4>Ressources</h4>
-          <ul>
-            <li><a href="dashboard.html">Espace Client</a></li>
-            <li><a href="docs.html#faq">Foire aux questions</a></li>
-            <li><a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener">Serveur Discord</a></li>
-          </ul>
+        <div class="aww-feature-grid">
+          <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-num">01</div>
+            <h3>ATLAS UV & 4K LAYERS</h3>
+            <p>Non-destructive multi-layer editing with real-time alpha masks. Native support for DDS BC7, DXT5, and PNG.</p>
+          </div>
+          <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-num">02</div>
+            <h3>WEBGL 2.0 VIEWPORT</h3>
+            <p>Real-time physical rendering and RAGE shaders. 360° orbit, HDRI studio illumination, and zero sync delay.</p>
+          </div>
+          <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-num">03</div>
+            <h3>ROCKSTAR RSC7</h3>
+            <p>Direct RPF exploration and atomic saves. Surgical injection of .ytd, .ydr, .yft, and .ydd formats.</p>
+          </div>
         </div>
+      </section>
 
-        <div class="footer-links-col">
-          <h4>Légal &amp; Support</h4>
-          <ul>
-            <li><a href="privacy.html">Confidentialité</a></li>
-            <li><a href="terms.html">Conditions d'utilisation</a></li>
-            <li><a href="docs.html#legal">Mentions légales</a></li>
-            <li><a href="docs.html#faq">Support &amp; FAQ</a></li>
-          </ul>
+      <footer class="aww-footer">
+        <div class="aww-footer-content">
+          <div class="aww-footer-top">
+            <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
+            <a href="#" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
+              <span class="aww-btn-text">GET SR EDITER</span>
+            </a>
+          </div>
+          <div class="aww-footer-bottom">
+            <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
+            <div class="aww-footer-links">
+              <a href="privacy.html" class="aww-link">Privacy</a>
+              <a href="terms.html" class="aww-link">Terms</a>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="footer-bottom">
-        <p>© 2026 SR Editer. Tous droits réservés. Non affilié à Rockstar Games, Take-Two Interactive ou Cfx.re.</p>
-      </div>
-    </div>
-  </footer>
-    </div>
+      </footer>
   </main>
-  <!-- Lightbox zoom interface -->
-  <div class="gallery-lightbox" id="gallery-lightbox" aria-hidden="true">
-    <button class="lightbox-close" id="lightbox-close" aria-label="Fermer le zoom">&times;</button>
-    <button class="lightbox-nav lightbox-nav--prev" id="lightbox-nav-prev" aria-label="Image précédente">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
-    </button>
-    <div class="lightbox-content">
-      <img id="lightbox-img" src="" alt="" />
-      <p id="lightbox-caption"></p>
-    </div>
-    <button class="lightbox-nav lightbox-nav--next" id="lightbox-nav-next" aria-label="Image suivante">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
-    </button>
-  </div>
 
-  <script src="js/wallpapers.js?v=0.3.4"></script>
-  <script src="js/skins.js?v=1"></script>
-  <script src="js/screenshots.js?v=0.3.4"></script>
-  <script src="js/config.js?v=0.3.4"></script>
-  <script src="js/sr-supabase.js?v=1"></script>
-  <script src="js/ambient.js?v=6"></script>
-  <script src="js/image-reveal.js?v=2"></script>
-  <script src="js/client.js?v=0.5.0"></script>
-  <script src="js/site-nav.js?v=8"></script>
-  <script src="js/site-soft-nav.js?v=3"></script>
+  <!-- Libraries -->
+  <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  
+  <!-- Core Logic & Animations -->
+  <script src="js/config.js"></script>
+  <script src="js/sr-supabase.js"></script>
+  <script src="js/awwwards.js"></script>
+  <script src="js/client.js"></script>
 </body>
 </html>

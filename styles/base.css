@@ -288,9 +288,9 @@ html[data-theme="light"] .theme-toggle .icon-sun {
 }
 
 @keyframes pulse-glow {
-  0% { box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
-  50% { box-shadow: 0 0 25px rgba(0, 240, 255, 0.45); }
-  100% { box-shadow: 0 0 10px rgba(0, 240, 255, 0.2); }
+  0% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+  50% { box-shadow: 0 0 25px rgba(56, 189, 248, 0.4); }
+  100% { box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
 }
 
 @keyframes pulse-dot {
@@ -303,24 +303,146 @@ html[data-theme="light"] .theme-toggle .icon-sun {
   animation: float 6s ease-in-out infinite;
 }
 
-.pulse-glow-animation {
-  animation: pulse-glow 3s ease-in-out infinite;
-}
-
-
-
-/* Prevent fixed topnav header overlap on anchor scroll targets */
-html {
-  scroll-padding-top: 110px !important;
-}
-
-[id],
-section[id],
-.pricing-section,
+/* Specific Anchor Targets */
+#fonctionnalites,
 #abonnements {
   scroll-margin-top: 110px !important;
 }
 
 .pricing-section {
   padding-top: 48px !important;
+}
+
+/* ── High-Fidelity Video Background System ── */
+.client-page {
+  background: #060709 !important;
+  color: var(--text);
+  position: relative;
+  min-height: 100vh;
+}
+
+.site-bg-container {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.site-bg-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%) scale(1.02);
+  object-fit: cover;
+  filter: brightness(1.15) contrast(1.06) saturate(1.25);
+  will-change: transform;
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site-bg-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 100% 75% at 50% 30%, rgba(6, 7, 9, 0.4) 0%, rgba(6, 7, 9, 0.78) 100%),
+    linear-gradient(180deg, rgba(6, 7, 9, 0.55) 0%, rgba(6, 7, 9, 0.3) 30%, rgba(6, 7, 9, 0.55) 70%, #060709 100%);
+  pointer-events: none;
+}
+
+.site-bg-grain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0.014;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+  background-size: 28px 28px;
+  pointer-events: none;
+}
+
+/* Fallback for unsupported video */
+.no-video .site-bg-video {
+  display: none;
+}
+.no-video .site-bg-container {
+  background: url('../assets/videos/bg-landscape-poster.webp') center / cover no-repeat;
+}
+
+/* ── Webflow / Linear Scroll Reveal & Motion ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  filter: blur(5px);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), filter 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0px);
+}
+
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(4px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1), transform 0.75s cubic-bezier(0.16, 1, 0.3, 1), filter 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal.is-visible.reveal-stagger > *:nth-child(1) { transition-delay: 60ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+.reveal.is-visible.reveal-stagger > *:nth-child(2) { transition-delay: 140ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+.reveal.is-visible.reveal-stagger > *:nth-child(3) { transition-delay: 220ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+.reveal.is-visible.reveal-stagger > *:nth-child(4) { transition-delay: 300ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+.reveal.is-visible.reveal-stagger > *:nth-child(5) { transition-delay: 380ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+.reveal.is-visible.reveal-stagger > *:nth-child(6) { transition-delay: 460ms; opacity: 1; transform: translateY(0); filter: blur(0px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.is-visible,
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Interactive Spotlight Shine on Cards (Studio Obsidian) ── */
+.client-page .spotlight-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  border-radius: var(--obsidian-radius-lg, 16px);
+  backdrop-filter: blur(32px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
+  box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 40px -10px rgba(0, 0, 0, 0.7);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.client-page .spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.08), transparent 60%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+}
+
+.client-page .spotlight-card:hover::after {
+  opacity: 1;
+}
+
+.client-page .spotlight-card:hover {
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.18)), 0 24px 50px -10px rgba(0, 0, 0, 0.85), 0 0 24px rgba(56, 189, 248, 0.12) !important;
+  transform: translateY(-4px);
 }
