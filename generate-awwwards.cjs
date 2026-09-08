@@ -992,4 +992,404 @@ write('blog.html', headTemplate('Blog &amp; Releases') + `
       </script>
 ` + footerTemplate());
 
+// 6. terms.html
+write('terms.html', headTemplate("Conditions d'utilisation") + `
+      <section class="aww-page-hero" style="min-height: 440px; padding-bottom: 3rem;">
+        <div class="aww-hero-content">
+          <div class="aww-kicker" data-gsap="fade-up">05 — CADRE LÉGAL &amp; CGU</div>
+          <h1 class="aww-page-title" data-gsap="split-text">CONDITIONS<br><span class="aww-text-stroke">D'UTILISATION</span></h1>
+          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 780px; font-size: 1.15rem;">
+            Règles et conditions régissant l'utilisation du logiciel SR Editer, de l'espace client, des téléchargements et des services associés pour Grand Theft Auto V et FiveM.
+          </p>
+          <div class="aww-legal-meta" data-gsap="fade-up" data-delay="0.45">
+            <span class="aww-legal-pill aww-legal-pill--accent">Version 0.7.1</span>
+            <span class="aww-legal-pill">Dernière mise à jour : 3 août 2026</span>
+            <span class="aww-legal-pill aww-legal-pill--emerald">Droit Français Applicable</span>
+            <span class="aww-legal-pill">Paiements Sécurisés Stripe</span>
+            <span class="aww-legal-pill">Non affilié à Rockstar Games</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="aww-docs" data-gsap="fade-up">
+        <div class="aww-docs-container">
+          <aside class="aww-docs-sidebar" data-gsap="fade-right">
+            <ul>
+              <li><a href="#editeur" class="aww-link"><span class="aww-link-inner" data-hover="1. Éditeur">1. Éditeur</span></a></li>
+              <li><a href="#objet" class="aww-link"><span class="aww-link-inner" data-hover="2. Objet">2. Objet</span></a></li>
+              <li><a href="#compte" class="aww-link"><span class="aww-link-inner" data-hover="3. Compte">3. Compte</span></a></li>
+              <li><a href="#licence" class="aww-link"><span class="aww-link-inner" data-hover="4. Licence">4. Licence</span></a></li>
+              <li><a href="#abonnements" class="aww-link"><span class="aww-link-inner" data-hover="5. Abonnements">5. Abonnements</span></a></li>
+              <li><a href="#propriete" class="aww-link"><span class="aww-link-inner" data-hover="6. Légalité &amp; Mods">6. Légalité &amp; Mods</span></a></li>
+              <li><a href="#ia" class="aww-link"><span class="aww-link-inner" data-hover="7. IA &amp; Tiers">7. IA &amp; Tiers</span></a></li>
+              <li><a href="#maj" class="aww-link"><span class="aww-link-inner" data-hover="8. Mises à jour">8. Mises à jour</span></a></li>
+              <li><a href="#responsabilite" class="aww-link"><span class="aww-link-inner" data-hover="9. Responsabilité">9. Responsabilité</span></a></li>
+              <li><a href="#droit" class="aww-link"><span class="aww-link-inner" data-hover="10. Juridiction">10. Juridiction</span></a></li>
+            </ul>
+          </aside>
+
+          <div class="aww-docs-content" data-gsap="fade-up">
+            <!-- 1. EDITEUR -->
+            <section id="editeur" class="aww-docs-section">
+              <span class="ticket-count-badge">SECTION 01</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">1. Éditeur du Service</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Le service <strong>SR Editer</strong> (comprenant le site web, l'application desktop Windows, les serveurs d'authentification et les modules cloud) est édité et administré par l'exploitant du produit SR Editer.
+                </p>
+                <p>
+                  <strong>Contact officiel &amp; Assistance :</strong><br>
+                  • Serveur Discord Officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a><br>
+                  • Espace Client : via le gestionnaire de tickets sur <a href="dashboard.html" class="aww-link" style="color: var(--accent);">dashboard.html</a>.
+                </p>
+                <p style="font-size: 0.9rem; opacity: 0.75;">
+                  <em>L'identité civile, l'adresse du siège social et les informations complètes d'immatriculation d'entreprise seront publiées dès validation définitive des formalités d'enregistrement.</em>
+                </p>
+              </div>
+            </section>
+
+            <!-- 2. OBJET -->
+            <section id="objet" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 02</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">2. Objet &amp; Champ d'Application</h2>
+              <div class="aww-legal-card">
+                <p>
+                  SR Editer est un studio d'ingénierie et d'édition assistée pour créateurs de contenus, moddeurs et serveurs FiveM. Il permet d'inspecter en lecture sécurisée, d'éditer en multi-calques et de prévisualiser en 3D des textures et archives de Grand Theft Auto V préalablement extraites.
+                </p>
+                <p>
+                  Les présentes Conditions Générales d'Utilisation régissent de plein droit l'accès au site, le téléchargement de l'application, l'utilisation de l'espace membre et les souscriptions d'abonnements.
+                </p>
+              </div>
+            </section>
+
+            <!-- 3. COMPTE -->
+            <section id="compte" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 03</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">3. Compte Utilisateur &amp; Éligibilité</h2>
+              <div class="aww-legal-card">
+                <p>L'accès aux fonctionnalités connectées nécessite la création d'un compte personnel authentifié via Supabase :</p>
+                <ul>
+                  <li>Vous devez renseigner une adresse électronique valide et maintenir la stricte confidentialité de vos identifiants d'accès.</li>
+                  <li>Toute activité réalisée depuis votre compte est réputée effectuée sous votre entière responsabilité.</li>
+                  <li>Tout partage non autorisé de licence, tentative d'intrusion, abus de bande passante ou comportement hostile entraînera la suspension immédiate du compte sans préavis ni remboursement.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 4. LICENCE -->
+            <section id="licence" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 04</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">4. Licence d'Utilisation &amp; Droits</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Sous réserve de l'acceptation des présentes conditions et du respect de votre formule d'abonnement, nous vous concédons une licence personnelle, non exclusive, révocable et non transférable pour installer et exécuter SR Editer sur vos postes Windows autorisés.
+                </p>
+                <p>
+                  <strong>Restrictions formelles :</strong> Il est strictement interdit d'altérer le binaire, de décompiler ou désassembler le code source, de contourner le mécanisme de protection par clé/jeton JWT, de revendre ou redistribuer les installateurs hors des canaux officiels SR Editer.
+                </p>
+              </div>
+            </section>
+
+            <!-- 5. ABONNEMENTS -->
+            <section id="abonnements" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 05</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">5. Abonnements &amp; Modalités de Paiement</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Les fonctions avancées de sauvegarde, d'export vers archives RPF, d'accès à la bibliothèque de textures 4K et d'assistance prioritaire nécessitent la souscription d'un abonnement actif (Standard, Pro ou VIP).
+                </p>
+                <ul>
+                  <li><strong>Traitement des paiements :</strong> Toutes les transactions financières sont traitées de manière chiffrée par <em>Stripe Inc.</em> certifié PCI-DSS de niveau 1. SR Editer ne stocke aucune coordonnée bancaire.</li>
+                  <li><strong>Tarification :</strong> Les montants sont exprimés en Euros (€) toutes taxes applicables comprises selon votre juridiction de résidence.</li>
+                  <li><strong>Résiliation :</strong> Vous pouvez résilier votre renouvellement automatique à tout moment en 1 clic depuis votre Espace Client (portail client Stripe). L'accès aux privilèges acquis demeure valide jusqu'au terme de l'échéance facturée.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 6. PROPRIETE -->
+            <section id="propriete" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 06</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">6. Contenu Utilisateur &amp; Absence d'Affiliation</h2>
+              <div class="aww-legal-card">
+                <p>
+                  <strong>Avertissement Trademark &amp; Affiliation :</strong> SR Editer est un outil logiciel indépendant développé par des passionnés pour la communauté de création numérique. SR Editer n'est en aucun cas sponsorisé, approuvé, lié ou affilié à Rockstar Games, Take-Two Interactive Software, Inc., Cfx.re ou FiveM. Toutes les marques et droits d'auteur associés aux jeux vidéo cités demeurent la propriété exclusive de leurs détenteurs respectifs.
+                </p>
+                <p>
+                  Vous conservez l'entière propriété intellectuelle des créations, livrées, textures originales et modèles que vous réalisez avec SR Editer. Vous attestez posséder les droits nécessaires sur les ressources importées et vous engagez à respecter les conditions générales d'utilisation des plateformes et serveurs sur lesquels vous déployez vos créations.
+                </p>
+              </div>
+            </section>
+
+            <!-- 7. IA -->
+            <section id="ia" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 07</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">7. Intelligence Artificielle &amp; Services Tiers</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Certaines fonctionnalités avancées de génération de variations de textures font appel à des modèles de vision et de diffusion tiers (OpenAI, Google Gemini, Hugging Face).
+                </p>
+                <ul>
+                  <li>Ces modules s'exécutent au moyen de vos propres clés API renseignées dans l'application.</li>
+                  <li>Les données soumises à ces services sont régies par les politiques de confidentialité de leurs fournisseurs respectifs.</li>
+                  <li>SR Editer décline toute responsabilité quant à la disponibilité, la latence ou l'exactitude des résultats générés par ces API externes.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 8. MAJ -->
+            <section id="maj" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 08</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">8. Disponibilité &amp; Mises à Jour</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Nous mettons en œuvre tous les moyens raisonnables pour assurer la disponibilité continue de l'infrastructure web et de la vérification de licences. Des interruptions pour maintenance ou mise à niveau peuvent survenir occasionnellement.
+                </p>
+                <p>
+                  L'application intègre un protocole de mise à jour sécurisé et signé cryptographiquement. Nous nous réservons le droit de déployer des correctifs de stabilité ou de sécurité nécessaires à la compatibilité du studio.
+                </p>
+              </div>
+            </section>
+
+            <!-- 9. RESPONSABILITE -->
+            <section id="responsabilite" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 09</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">9. Limitation de Responsabilité</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Dans les limites autorisées par la législation applicable, SR Editer est fourni « en l'état » et « selon disponibilité », sans garantie d'adéquation à un besoin spécifique.
+                </p>
+                <p>
+                  L'éditeur ne saurait être tenu responsable d'éventuelles corruptions de fichiers de jeux originaux, de pertes de données de travail, de bugs graphiques ou d'incidents imputables à des manipulations directes d'archives. Il incombe à chaque utilisateur de réaliser des sauvegardes (backups) intégrales de ses dossiers de jeu avant toute opération de remplacement de texture.
+                </p>
+              </div>
+            </section>
+
+            <!-- 10. DROIT -->
+            <section id="droit" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 10</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">10. Droit Applicable &amp; Règlement des Litiges</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Les présentes Conditions Générales d'Utilisation sont exclusivement soumises et interprétées conformément au <strong>droit français</strong>.
+                </p>
+                <p>
+                  En cas de différend relatif à l'interprétation ou à l'exécution des présentes, les parties s'engagent à privilégier une conciliation amiable via notre support technique. À défaut de résolution amiable dans un délai de 30 jours, les tribunaux compétents français seront seuls habilités à trancher le litige.
+                </p>
+              </div>
+            </section>
+
+            <!-- CROSS-LINKS -->
+            <div class="aww-legal-crosslinks">
+              <a href="privacy.html" class="aww-btn aww-btn-solid" data-magnetic>
+                <span class="aww-btn-text">Consulter la Politique de Confidentialité →</span>
+              </a>
+              <a href="docs.html" class="aww-btn aww-btn-outline" data-magnetic>
+                <span class="aww-btn-text">Documentation Technique →</span>
+              </a>
+              <a href="index.html" class="aww-link" style="color: var(--text-secondary); font-size: 0.95rem;">
+                ← Retour à l'accueil
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+` + footerTemplate());
+
+// 7. privacy.html
+write('privacy.html', headTemplate('Politique de confidentialité') + `
+      <section class="aww-page-hero" style="min-height: 440px; padding-bottom: 3rem;">
+        <div class="aww-hero-content">
+          <div class="aww-kicker" data-gsap="fade-up">06 — PROTECTION DES DONNÉES &amp; RGPD</div>
+          <h1 class="aww-page-title" data-gsap="split-text">POLITIQUE DE<br><span class="aww-text-stroke">CONFIDENTIALITÉ</span></h1>
+          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 780px; font-size: 1.15rem;">
+            Transparence intégrale quant à la collecte, au traitement, au stockage et à la protection de vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD - UE 2016/679).
+          </p>
+          <div class="aww-legal-meta" data-gsap="fade-up" data-delay="0.45">
+            <span class="aww-legal-pill aww-legal-pill--emerald">Conforme RGPD UE 2016/679</span>
+            <span class="aww-legal-pill">Autorité : CNIL France</span>
+            <span class="aww-legal-pill aww-legal-pill--accent">Chiffrement TLS 1.3 / AES-256</span>
+            <span class="aww-legal-pill">Mods &amp; Textures 100% Locaux</span>
+            <span class="aww-legal-pill">Zéro Vente de Données</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="aww-docs" data-gsap="fade-up">
+        <div class="aww-docs-container">
+          <aside class="aww-docs-sidebar" data-gsap="fade-right">
+            <ul>
+              <li><a href="#responsable" class="aww-link"><span class="aww-link-inner" data-hover="1. Responsable">1. Responsable</span></a></li>
+              <li><a href="#donnees" class="aww-link"><span class="aww-link-inner" data-hover="2. Données">2. Données</span></a></li>
+              <li><a href="#finalites" class="aww-link"><span class="aww-link-inner" data-hover="3. Finalités">3. Finalités</span></a></li>
+              <li><a href="#sous-traitants" class="aww-link"><span class="aww-link-inner" data-hover="4. Partenaires">4. Partenaires</span></a></li>
+              <li><a href="#conservation" class="aww-link"><span class="aww-link-inner" data-hover="5. Conservation">5. Conservation</span></a></li>
+              <li><a href="#droits" class="aww-link"><span class="aww-link-inner" data-hover="6. Droits RGPD">6. Droits RGPD</span></a></li>
+              <li><a href="#securite" class="aww-link"><span class="aww-link-inner" data-hover="7. Sécurité">7. Sécurité</span></a></li>
+              <li><a href="#ia-donnees" class="aww-link"><span class="aww-link-inner" data-hover="8. Modules IA">8. Modules IA</span></a></li>
+              <li><a href="#contact" class="aww-link"><span class="aww-link-inner" data-hover="9. Contact &amp; DPO">9. Contact &amp; DPO</span></a></li>
+            </ul>
+          </aside>
+
+          <div class="aww-docs-content" data-gsap="fade-up">
+            <!-- 1. RESPONSABLE -->
+            <section id="responsable" class="aww-docs-section">
+              <span class="ticket-count-badge">SECTION 01</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">1. Responsable du Traitement</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Le responsable du traitement des données à caractère personnel collectées sur le site <a href="https://sr-editer.vercel.app/" class="aww-link" style="color: var(--accent);">sr-editer.vercel.app</a> et au travers de l'application desktop est l'exploitant du produit <strong>SR Editer</strong>.
+                </p>
+                <p>
+                  <strong>Contact Délégué / Référent Données :</strong><br>
+                  • Serveur Discord officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a><br>
+                  • Espace Client : messagerie d'assistance sécurisée accessible sur votre tableau de bord.
+                </p>
+                <p style="font-size: 0.9rem; opacity: 0.75;">
+                  <em>Les mentions nominatives du responsable d'exploitation seront actualisées dès l'immatriculation d'entreprise en cours.</em>
+                </p>
+              </div>
+            </section>
+
+            <!-- 2. DONNEES -->
+            <section id="donnees" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 02</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">2. Données Personnelles Collectées</h2>
+              <div class="aww-legal-card">
+                <p>Nous appliquons le principe de minimisation des données. Ne sont collectées que les informations strictement indispensables :</p>
+                <ul>
+                  <li><strong>Données de Compte :</strong> Adresse e-mail, mot de passe hashé de manière cryptographique et irréversible (via Supabase Auth - algorithme Scrypt/Bcrypt), identifiants d'authentification uniques. Si vous optez pour la connexion via Discord OAuth, nous collectons uniquement votre identifiant public Discord, votre nom d'utilisateur et votre avatar.</li>
+                  <li><strong>Données de Facturation &amp; Abonnement :</strong> Identifiant technique de client Stripe (Customer ID), statut d'abonnement actif (Standard, Pro, VIP), date d'échéance. <em>Attention : vos numéros de cartes bancaires sont traités exclusivement par Stripe et ne transitent jamais sur nos serveurs.</em></li>
+                  <li><strong>Données Techniques &amp; Télémétrie Minimale :</strong> Version de l'application, système d'exploitation (Windows 10/11), journaux d'erreurs techniques pour le dépannage de plantages (crash dumps anonymisés).</li>
+                  <li><strong>Fichiers de Modding &amp; Textures (Strictement Locaux) :</strong> Vos archives RPF, fichiers .ytd, projets de peinture 2D et modèles 3D restent hébergés sur votre propre disque dur. SR Editer n'effectue aucun téléversement de vos fichiers de jeu vers nos serveurs sans votre action volontaire explicite.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 3. FINALITES -->
+            <section id="finalites" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 03</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">3. Finalités &amp; Bases Légales</h2>
+              <div class="aww-legal-card">
+                <p>Chaque traitement repose sur une base juridique claire au sens de l'article 6 du RGPD :</p>
+                <ul>
+                  <li><strong>Exécution du Contrat :</strong> Création de votre compte, gestion de vos droits d'accès au studio, vérification de votre licence d'utilisation et livraison des mises à jour logicielles.</li>
+                  <li><strong>Obligation Légale :</strong> Tenue de la comptabilité générale et conservation des justificatifs de facturation par Stripe.</li>
+                  <li><strong>Intérêt Légitime :</strong> Prévention des tentatives de fraude, protection contre les attaques par déni de service, amélioration des performances du moteur graphique et assistance aux utilisateurs via les tickets.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 4. SOUS-TRAITANTS -->
+            <section id="sous-traitants" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 04</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">4. Sous-traitants &amp; Hébergement</h2>
+              <div class="aww-legal-card">
+                <p>Pour assurer la fiabilité et la haute sécurité du service, nous collaborons avec des prestataires d'infrastructure reconnus :</p>
+                <ul>
+                  <li><strong>Supabase Inc. :</strong> Hébergement de la base de données PostgreSQL chiffrée et gestionnaire d'authentification (certifié SOC 2 Type II, conformité RGPD).</li>
+                  <li><strong>Stripe Payments Europe :</strong> Prestataire de paiement en ligne certifié PCI-DSS Level 1.</li>
+                  <li><strong>Vercel Inc. :</strong> Réseau de diffusion de contenu (CDN) et hébergement du portail web avec certificats TLS automatiques.</li>
+                  <li><strong>GitHub Inc. :</strong> Hébergement des artefacts de déploiement, binaires d'installation et notes de version officielles.</li>
+                  <li><strong>Discord Inc. :</strong> Passerelle d'authentification OAuth2 optionnelle et gestion communautaire.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 5. CONSERVATION -->
+            <section id="conservation" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 05</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">5. Durée de Conservation des Données</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Les données associées à votre compte utilisateur sont conservées tant que celui-ci est actif. En cas d'inactivité prolongée supérieure à 24 mois sans abonnement actif, le compte pourra faire l'objet d'un archivage ou d'une suppression après avertissement préalable par e-mail.
+                </p>
+                <p>
+                  En cas de demande de suppression formulée par l'utilisateur, l'effacement de toutes les données personnelles intervient sous un délai maximal de 30 jours, à l'exception des données de facturation dont la conservation est requise par la loi fiscale française (10 ans).
+                </p>
+              </div>
+            </section>
+
+            <!-- 6. DROITS -->
+            <section id="droits" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 06</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">6. Vos Droits Informatique &amp; Libertés (RGPD)</h2>
+              <div class="aww-legal-card">
+                <p>Conformément aux articles 15 à 22 du RGPD, vous disposez des droits suivants à l'égard de vos données :</p>
+                <ul>
+                  <li><strong>Droit d'accès :</strong> Obtenir la confirmation que vos données sont traitées et en obtenir une copie complète.</li>
+                  <li><strong>Droit de rectification :</strong> Modifier toute information inexacte ou incomplète directement depuis votre profil.</li>
+                  <li><strong>Droit à l'effacement (« Droit à l'oubli ») :</strong> Exiger la suppression définitive de votre compte et de vos données.</li>
+                  <li><strong>Droit à la portabilité :</strong> Recevoir vos données dans un format structuré, couramment utilisé et lisible par machine (JSON/CSV).</li>
+                  <li><strong>Droit d'opposition et de limitation :</strong> Vous opposer à certains traitements non essentiels ou demander le gel temporaire de vos données.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 7. SECURITE -->
+            <section id="securite" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 07</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">7. Mesures de Sécurité &amp; Chiffrement</h2>
+              <div class="aww-legal-card">
+                <p>Nous implémentons les meilleures pratiques de sécurité de l'industrie pour prémunir vos informations contre tout accès non autorisé :</p>
+                <ul>
+                  <li>Chiffrement systématique de toutes les communications par le protocole HTTPS avec TLS 1.3.</li>
+                  <li>Mots de passe hashés avec sels cryptographiques puissants via Supabase Auth.</li>
+                  <li>Contrôles d'accès basés sur des jetons JWT à validité éphémère avec rotation automatique des clés de rafraîchissement.</li>
+                  <li>Architecture native Tauri en Rust isolée dans des bacs à sable (sandbox) mémoires rigides.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 8. IA-DONNEES -->
+            <section id="ia-donnees" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 08</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">8. Traitement des Données pour les Outils IA</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Si vous activez les modules d'assistance par Intelligence Artificielle intégrés à SR Editer :
+                </p>
+                <ul>
+                  <li>Vos clés d'API (OpenAI, Google Gemini) sont stockées exclusivement sur votre poste local au sein d'un trousseau chiffré.</li>
+                  <li>Vos prompts de texturation et images générées ne sont ni revendus, ni conservés sur nos serveurs, ni utilisés pour l'entraînement de modèles IA sans votre accord préalable exprès.</li>
+                </ul>
+              </div>
+            </section>
+
+            <!-- 9. CONTACT -->
+            <section id="contact" class="aww-docs-section" style="margin-top: 4rem;">
+              <span class="ticket-count-badge">SECTION 09</span>
+              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">9. Exercice de Vos Droits &amp; Réclamation CNIL</h2>
+              <div class="aww-legal-card">
+                <p>
+                  Pour toute question relative à cette politique de confidentialité ou pour exercer vos droits d'accès, de rectification ou de suppression de données, vous pouvez nous contacter :
+                </p>
+                <p>
+                  • Par l'intermédiaire de votre <strong>Espace Client</strong> (rubrique Support / Tickets)<br>
+                  • Sur notre <strong>Discord Officiel</strong> : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a>
+                </p>
+                <p>
+                  Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous disposez du droit d'introduire une réclamation auprès de la <strong>Commission Nationale de l'Informatique et des Libertés (CNIL)</strong> :<br>
+                  3 Place de Fontenoy - TSA 80715 - 75334 Paris Cedex 07 · Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">cnil.fr</a>.
+                </p>
+              </div>
+            </section>
+
+            <!-- CROSS-LINKS -->
+            <div class="aww-legal-crosslinks">
+              <a href="terms.html" class="aww-btn aww-btn-solid" data-magnetic>
+                <span class="aww-btn-text">Consulter les Conditions d'Utilisation →</span>
+              </a>
+              <a href="dashboard.html" class="aww-btn aww-btn-outline" data-magnetic>
+                <span class="aww-btn-text">Accéder à l'Espace Client →</span>
+              </a>
+              <a href="index.html" class="aww-link" style="color: var(--text-secondary); font-size: 0.95rem;">
+                ← Retour à l'accueil
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+` + footerTemplate());
+
 console.log('All Awwwards pages generated successfully.');
+

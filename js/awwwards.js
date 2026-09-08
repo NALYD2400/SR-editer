@@ -347,4 +347,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     );
   });
+
+  // Table of Contents ScrollSpy for Docs & Legal Pages
+  const tocLinks = document.querySelectorAll('.aww-docs-sidebar ul li a');
+  const tocSections = document.querySelectorAll('.aww-docs-section');
+  if (tocLinks.length && tocSections.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          tocLinks.forEach(link => {
+            if (link.getAttribute('href') === `#${id}`) {
+              link.classList.add('active');
+            } else {
+              link.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, {
+      rootMargin: '-20% 0px -65% 0px'
+    });
+
+    tocSections.forEach(section => observer.observe(section));
+  }
 });
+

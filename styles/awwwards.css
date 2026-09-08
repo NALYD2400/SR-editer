@@ -1192,4 +1192,132 @@ button:disabled {
     width: 95%;
     padding: 1.5rem 1rem;
   }
+  .aww-legal-crosslinks {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .aww-legal-crosslinks .aww-btn {
+    width: 100%;
+    text-align: center;
+  }
 }
+
+/* Legal & Documentation Enhanced Styles */
+.aww-legal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.aww-legal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(10px);
+}
+
+.aww-legal-pill--accent {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: #c4b5fd;
+}
+
+.aww-legal-pill--emerald {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+.aww-legal-card {
+  padding: 2.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(16px);
+  margin-bottom: 2rem;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+
+.aww-legal-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+}
+
+.aww-legal-card h3 {
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+}
+
+.aww-legal-card p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+.aww-legal-card p:last-child {
+  margin-bottom: 0;
+}
+
+.aww-legal-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.aww-legal-card ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.aww-legal-card ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.aww-legal-crosslinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.aww-docs-sidebar ul li a {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  text-decoration: none;
+}
+
+.aww-docs-sidebar ul li a:hover,
+.aww-docs-sidebar ul li a.active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+
