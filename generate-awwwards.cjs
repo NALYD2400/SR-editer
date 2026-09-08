@@ -100,46 +100,146 @@ const write = (filename, content) => {
 // 1. index.html
 write('index.html', headTemplate('Home') + `
       <section class="aww-hero">
-        <div class="aww-hero-content">
-          <div class="aww-kicker" data-gsap="fade-up">01 — NEXT GEN STUDIO</div>
-          <h1 class="aww-hero-heading" data-gsap="split-text">
-            TEXTURE<br>
-            <span class="aww-text-stroke">ENGINEERING</span><br>
-            REDEFINED.
-          </h1>
-          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.4">
-            Real-time modding workshop. 2D textures, 3D viewport, and RPF archives without ever restarting your game.
-          </p>
-          <div class="aww-hero-actions" data-gsap="fade-up" data-delay="0.6">
-            <a href="#features" class="aww-btn aww-btn-outline" data-magnetic>
-              <span class="aww-btn-text">EXPLORE CORE</span>
-            </a>
-            <a href="#" class="aww-btn aww-btn-solid btn-download" id="download-btn" data-magnetic>
-              <span class="aww-btn-text">DOWNLOAD x64</span>
-            </a>
+        <div class="aww-hero-grid">
+          <div class="aww-hero-content">
+            <div class="aww-kicker">01 — NEXT GEN STUDIO</div>
+            <h1 class="aww-hero-heading" data-reveal="text">
+              TEXTURE<br>
+              <span class="aww-text-stroke">ENGINEERING</span><br>
+              REDEFINED.
+            </h1>
+            <p class="aww-hero-desc">
+              Atelier de modding en temps réel pour GTA V et FiveM. Édition 2D multi-calques, rendu 3D RAGE en direct et injection d'archives RPF sans redémarrer le jeu.
+            </p>
+            <div class="aww-hero-actions">
+              <a href="#features" class="aww-btn aww-btn-outline" data-magnetic>
+                <span class="aww-btn-text">EXPLORER</span>
+              </a>
+              <a href="#abonnements" class="aww-btn aww-btn-solid" data-magnetic>
+                <span class="aww-btn-text">OFFRES &amp; ACCÈS</span>
+              </a>
+              <a href="#" class="aww-btn aww-btn-outline btn-download" id="download-btn" data-magnetic>
+                <span class="aww-btn-text">TÉLÉCHARGER x64</span>
+              </a>
+            </div>
+            <div class="aww-hero-stats">
+              <div class="aww-stat-pill">
+                <span class="aww-stat-val">v0.7.1</span>
+                <span class="aww-stat-lbl">Version Stable</span>
+              </div>
+              <div class="aww-stat-pill">
+                <span class="aww-stat-val">145+</span>
+                <span class="aww-stat-lbl">Textures Cloud</span>
+              </div>
+              <div class="aww-stat-pill">
+                <span class="aww-stat-val">60 FPS</span>
+                <span class="aww-stat-lbl">Moteur 3D RAGE</span>
+              </div>
+            </div>
+          </div>
+          <div class="aww-hero-media">
+            <div class="aww-mockup-frame" data-reveal="image">
+              <div class="aww-mockup-bar">
+                <div class="aww-mockup-dots"><span></span><span></span><span></span></div>
+                <div class="aww-mockup-title">SR Editer Studio · Texture UV &amp; RAGE Shaders (v0.7.1 Pro)</div>
+                <div class="aww-mockup-badge">LIVE 60 FPS</div>
+              </div>
+              <div class="aww-mockup-screen">
+                <img src="assets/app-texture-studio.webp" alt="SR Editer Studio Preview" class="aww-mockup-img" id="hero-showcase-img" />
+                <div class="aww-mockup-glow"></div>
+              </div>
+              <div class="aww-mockup-tabs">
+                <button type="button" class="aww-mockup-tab is-active" data-showcase="assets/app-texture-studio.webp">Texture Studio</button>
+                <button type="button" class="aww-mockup-tab" data-showcase="assets/app-viewport-3d.webp">3D Viewport</button>
+                <button type="button" class="aww-mockup-tab" data-showcase="assets/app-rpf-explorer.png">RPF Explorer</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="aww-features" id="features">
         <div class="aww-section-header">
-          <h2 class="aww-section-title" data-gsap="split-text">REVOLUTIONARY<br>WORKFLOW</h2>
+          <div class="aww-kicker">02 — WORKFLOW ATELIER</div>
+          <h2 class="aww-section-title" data-reveal="text">TECHNOLOGIES<br><span class="aww-text-stroke">DE POINTE</span></h2>
         </div>
         <div class="aww-feature-grid">
           <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-img-wrap">
+              <img src="assets/app-texture-studio.webp" alt="Texture Studio 2D &amp; 4K" loading="lazy" />
+            </div>
             <div class="aww-card-num">01</div>
-            <h3>ATLAS UV & 4K LAYERS</h3>
-            <p>Non-destructive multi-layer editing with real-time alpha masks. Native support for DDS BC7, DXT5, and PNG.</p>
+            <h3>ATLAS UV &amp; CALQUES 4K</h3>
+            <p>Édition multi-calques non destructive avec masques alpha en temps réel. Support natif des formats DDS BC7, DXT5 et PNG haute fidélité.</p>
           </div>
           <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-img-wrap">
+              <img src="assets/app-viewport-3d.webp" alt="Viewport 3D RAGE" loading="lazy" />
+            </div>
             <div class="aww-card-num">02</div>
-            <h3>WEBGL 2.0 VIEWPORT</h3>
-            <p>Real-time physical rendering and RAGE shaders. 360° orbit, HDRI studio illumination, and zero sync delay.</p>
+            <h3>VIEWPORT 3D WEBGL</h3>
+            <p>Rendu physique temps réel et shaders RAGE. Orbite 360°, éclairage studio HDRI, et synchronisation instantanée sans délai.</p>
           </div>
           <div class="aww-feature-card" data-gsap="card-reveal">
+            <div class="aww-card-img-wrap">
+              <img src="assets/app-rpf-explorer.png" alt="RPF Explorer Rockstar" loading="lazy" />
+            </div>
             <div class="aww-card-num">03</div>
-            <h3>ROCKSTAR RSC7</h3>
-            <p>Direct RPF exploration and atomic saves. Surgical injection of .ytd, .ydr, .yft, and .ydd formats.</p>
+            <h3>ROCKSTAR RSC7 &amp; RPF</h3>
+            <p>Exploration directe des archives RPF et sauvegardes atomiques. Injection chirurgicale des formats .ytd, .ydr, .yft et .ydd.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="aww-features" id="abonnements" style="padding-top: 2rem;">
+        <div class="aww-section-header">
+          <div class="aww-kicker">03 — PLANS TARIFAIRES</div>
+          <h2 class="aww-section-title" data-reveal="text">CHOISISSEZ<br><span class="aww-text-stroke">VOTRE LICENCE</span></h2>
+        </div>
+        <div class="aww-pricing-grid">
+          <div class="aww-pricing-card">
+            <span class="aww-pricing-tier">STANDARD</span>
+            <div class="aww-pricing-amount">9,99€ <span>/ mois</span></div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Pour les créateurs indépendants et moddeurs occasionnels.</p>
+            <ul class="aww-pricing-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Studio Textures 2D &amp; RPF</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 1 appareil simultané</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mises à jour régulières</li>
+            </ul>
+            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic style="width: 100%;">
+              <span class="aww-btn-text">COMMANDER</span>
+            </a>
+          </div>
+
+          <div class="aww-pricing-card is-featured">
+            <span class="aww-pricing-badge">RECOMMANDÉ</span>
+            <span class="aww-pricing-tier" style="color: var(--accent);">PRO</span>
+            <div class="aww-pricing-amount">24,99€ <span>/ mois</span></div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">L'outil complet pour les moddeurs actifs et créateurs de serveurs.</p>
+            <ul class="aww-pricing-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Standard inclus</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Viewport 3D temps réel &amp; Shaders</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Bibliothèque 145+ textures cloud</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Synchronisation Rôle Discord VIP</li>
+            </ul>
+            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-solid" data-magnetic style="width: 100%;">
+              <span class="aww-btn-text">PASSER EN PRO</span>
+            </a>
+          </div>
+
+          <div class="aww-pricing-card">
+            <span class="aww-pricing-tier">PREMIUM</span>
+            <div class="aww-pricing-amount">49,99€ <span>/ mois</span></div>
+            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Pour les studios FiveM et équipes de modding exigeantes.</p>
+            <ul class="aww-pricing-features">
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Pro inclus</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Multi-appareils (jusqu'à 3 postes)</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support Prioritaire Dédié (Urgent)</li>
+              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Accès anticipé aux builds bêta</li>
+            </ul>
+            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic style="width: 100%;">
+              <span class="aww-btn-text">REJOINDRE L'ÉLITE</span>
+            </a>
           </div>
         </div>
       </section>
@@ -892,1034 +992,4 @@ write('blog.html', headTemplate('Blog &amp; Releases') + `
       </script>
 ` + footerTemplate());
 
-// Write CSS
-const cssContent = `
-/* Awwwards Style CSS */
-:root {
-  --bg-color: #030303;
-  --text-primary: #ffffff;
-  --text-secondary: rgba(255, 255, 255, 0.5);
-  --accent: #8b5cf6;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --font-heading: 'Clash Display', sans-serif;
-  --font-body: 'Satoshi', sans-serif;
-  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-[hidden] { display: none !important; }
-
-body.aww-page {
-  background-color: var(--bg-color);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  overflow-x: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Background Video */
-.site-bg-container {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  z-index: -1;
-  pointer-events: none;
-}
-.site-bg-video {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  opacity: 0.7;
-}
-.site-bg-overlay {
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  background: radial-gradient(circle at center, rgba(3,3,3,0.3) 0%, var(--bg-color) 100%);
-}
-
-/* Background Grain */
-.site-bg-grain {
-  position: absolute;
-  top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.06;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-}
-
-/* Custom Cursor */
-.custom-cursor {
-  position: fixed;
-  top: 0; left: 0;
-  width: 20px; height: 20px;
-  background: var(--accent);
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9999;
-  mix-blend-mode: difference;
-  transform: translate(-50%, -50%);
-  transition: width 0.3s, height 0.3s;
-}
-.custom-cursor.hover {
-  width: 60px; height: 60px;
-}
-
-/* Typography */
-h1, h2, h3, .aww-font-heading {
-  font-family: var(--font-heading);
-  text-transform: uppercase;
-  font-weight: 600;
-  line-height: 0.9;
-}
-.aww-text-stroke {
-  background: linear-gradient(135deg, var(--accent) 0%, #d946ef 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: var(--accent);
-  -webkit-text-stroke: 0;
-  display: inline-block;
-}
-
-/* Header */
-.aww-header {
-  position: fixed;
-  top: 0; left: 0; width: 100%;
-  padding: 2rem 4rem;
-  z-index: 100;
-  mix-blend-mode: difference;
-}
-.aww-header-inner {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.aww-logo {
-  display: flex; align-items: center; gap: 1rem;
-  text-decoration: none; color: var(--text-primary);
-}
-.aww-logo img { width: 40px; border-radius: 8px; }
-.aww-logo-text { font-family: var(--font-heading); font-size: 1.2rem; line-height: 1; }
-.aww-nav {
-  display: flex; gap: 3rem;
-}
-.aww-link {
-  text-decoration: none;
-  color: var(--text-primary);
-  font-size: 0.9rem;
-  font-weight: 500;
-  position: relative;
-  overflow: hidden;
-  display: inline-block;
-}
-.aww-link-inner {
-  display: block;
-  transition: transform 0.4s var(--ease-out-expo);
-}
-.aww-link-inner::after {
-  content: attr(data-hover);
-  position: absolute;
-  left: 0;
-  top: 100%;
-  color: var(--accent);
-}
-.aww-link:hover .aww-link-inner {
-  transform: translateY(-100%);
-}
-
-/* Buttons */
-.aww-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1rem 2rem;
-  border-radius: 100px;
-  font-family: var(--font-heading);
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 1px;
-  text-decoration: none;
-  cursor: pointer;
-  background: transparent;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s var(--ease-out-expo);
-}
-.aww-btn-outline {
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-}
-.aww-btn-outline:hover {
-  background: var(--text-primary);
-  color: var(--bg-color);
-}
-.aww-btn-solid {
-  background: var(--text-primary);
-  color: var(--bg-color);
-  border: 1px solid var(--text-primary);
-}
-.aww-btn-solid:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-.aww-btn-massive {
-  font-size: 1.5rem;
-  padding: 2rem 4rem;
-}
-button.aww-btn {
-  appearance: none;
-}
-button:disabled {
-  opacity: 0.5;
-  pointer-events: none;
-}
-
-/* Hero */
-.aww-hero, .aww-page-hero {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  padding: 0 4rem;
-}
-.aww-hero-content {
-  max-width: 1200px;
-}
-.aww-kicker {
-  color: var(--accent);
-  font-family: var(--font-heading);
-  margin-bottom: 2rem;
-}
-.aww-hero-heading, .aww-page-title {
-  font-size: clamp(4rem, 10vw, 10rem);
-  margin-bottom: 2rem;
-}
-.aww-hero-desc {
-  font-size: 1.5rem;
-  color: var(--text-secondary);
-  max-width: 600px;
-  margin-bottom: 3rem;
-  line-height: 1.4;
-}
-.aww-hero-actions {
-  display: flex; gap: 1rem;
-}
-
-/* Features */
-.aww-features {
-  padding: 10rem 4rem;
-}
-.aww-section-title {
-  font-size: clamp(3rem, 6vw, 6rem);
-  margin-bottom: 5rem;
-}
-.aww-feature-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-.aww-feature-card {
-  padding: 3rem;
-  border: 1px solid var(--border-color);
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.02);
-  backdrop-filter: blur(10px);
-  transition: transform 0.4s var(--ease-out-expo);
-}
-.aww-feature-card:hover {
-  transform: translateY(-10px);
-  border-color: var(--accent);
-}
-.aww-card-num {
-  font-family: var(--font-heading);
-  font-size: 2rem;
-  color: var(--accent);
-  margin-bottom: 4rem;
-}
-.aww-feature-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-.aww-feature-card p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-}
-
-/* Footer */
-.aww-footer {
-  padding: 10rem 4rem 4rem;
-  border-top: 1px solid var(--border-color);
-}
-.aww-footer-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 10rem;
-}
-.aww-footer-title {
-  font-size: clamp(4rem, 8vw, 8rem);
-}
-.aww-footer-bottom {
-  display: flex;
-  justify-content: space-between;
-  color: var(--text-secondary);
-  font-size: 0.9rem;
-}
-.aww-footer-links {
-  display: flex; gap: 2rem;
-}
-
-/* Dashboard */
-.aww-loading {
-  position: fixed;
-  inset: 0; background: var(--bg-color);
-  z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  transition: opacity 0.4s;
-}
-.aww-loading.fade-out { opacity: 0; pointer-events: none; }
-.aww-spinner { width: 40px; height: 40px; border: 2px solid var(--border-color); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1rem; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-.aww-dashboard { padding: 0 4rem 4rem; min-height: 50vh; }
-.aww-dash-grid { display: grid; grid-template-columns: 300px 1fr; gap: 4rem; }
-.aww-dash-sidebar { border-right: 1px solid var(--border-color); padding-right: 4rem; }
-.aww-user-profile { margin-bottom: 4rem; }
-.aww-avatar { width: 64px; height: 64px; background: var(--accent); color: var(--bg-color); border-radius: 50%; margin-bottom: 1rem; display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-size: 2rem; overflow: hidden; }
-.aww-avatar.has-image img { width: 100%; height: 100%; object-fit: cover; }
-.aww-badge { display: inline-block; padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border-radius: 100px; font-size: 0.8rem; font-family: var(--font-heading); margin-top: 0.5rem; text-transform: uppercase; }
-.aww-dash-nav { display: flex; flex-direction: column; gap: 1rem; }
-.aww-dash-tab { background: none; border: none; color: var(--text-secondary); text-align: left; font-size: 1.2rem; font-family: var(--font-heading); cursor: pointer; transition: color 0.3s; text-transform: uppercase; }
-.aww-dash-tab:hover, .aww-dash-tab.active { color: var(--text-primary); }
-.aww-text-danger { color: #ff4e4e !important; }
-.aww-panel { display: none; }
-.aww-panel.active { display: block; animation: fadeIn 0.5s ease; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.aww-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 3rem; }
-.aww-stat-card { padding: 2rem; border: 1px solid var(--border-color); border-radius: 16px; }
-.aww-stat-val { font-size: 2rem; font-family: var(--font-heading); margin-top: 1rem; color: var(--accent); }
-
-/* Pricing Cards */
-.aww-pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
-.aww-pricing-card { padding: 2rem; border: 1px solid var(--border-color); border-radius: 16px; display: flex; flex-direction: column; }
-.aww-pricing-card.is-current { border-color: var(--accent); background: rgba(216, 255, 78, 0.05); }
-.aww-pricing-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-.aww-pricing-card .price { font-size: 2rem; font-family: var(--font-heading); margin-bottom: 2rem; }
-.aww-pricing-card button { margin-top: auto; }
-
-/* Auth */
-.aww-auth-section { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 4rem; }
-.aww-auth-container { width: 100%; max-width: 500px; padding: 4rem; border: 1px solid var(--border-color); border-radius: 24px; background: rgba(0,0,0,0.5); backdrop-filter: blur(20px); }
-.aww-auth-title { font-size: 4rem; margin-bottom: 1rem; text-align: center; }
-.aww-input-group { margin-bottom: 2rem; }
-.aww-input-group label { display: block; font-family: var(--font-heading); margin-bottom: 0.5rem; color: var(--text-secondary); }
-.aww-input { width: 100%; background: none; border: none; border-bottom: 1px solid var(--border-color); color: var(--text-primary); font-size: 1.2rem; padding: 0.5rem 0; outline: none; transition: border-color 0.3s; }
-.aww-input:focus { border-color: var(--accent); }
-.aww-btn-full { width: 100%; margin-top: 1rem; }
-.aww-auth-footer { margin-top: 2rem; text-align: center; }
-.aww-text-btn { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-family: var(--font-body); text-decoration: underline; font-size: 1rem; }
-.aww-auth-error { color: #ff4e4e; margin-top: 1rem; text-align: center; }
-.aww-auth-error.is-visible { display: block; }
-
-/* Misc pages */
-.aww-docs { padding: 0 4rem 10rem; }
-.aww-docs-container { display: grid; grid-template-columns: 250px 1fr; gap: 4rem; }
-.aww-docs-sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 120px; }
-.aww-docs-section { scroll-margin-top: 120px; }
-.aww-docs-content h2 { font-size: 3rem; margin: 4rem 0 2rem; }
-.aww-docs-content p { color: var(--text-secondary); font-size: 1.15rem; margin-bottom: 1.5rem; line-height: 1.65; }
-.aww-docs-card { padding: 2.25rem; border: 1px solid var(--border-color); border-radius: 18px; margin: 2rem 0; background: rgba(255, 255, 255, 0.02); }
-
-/* Library Styles */
-.aww-library { padding: 0 4rem 10rem; }
-.aww-library-gate { padding: 3rem 2rem 8rem; display: flex; justify-content: center; }
-.aww-gate-card { max-width: 620px; width: 100%; padding: 3.5rem; background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 24px; text-align: center; backdrop-filter: blur(20px); }
-.aww-gate-icon { width: 64px; height: 64px; border-radius: 16px; background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: var(--accent); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-.aww-gate-list { list-style: none; text-align: left; margin: 2rem 0; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem; }
-.library-category-pills { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.pill-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: var(--text-secondary); padding: 0.5rem 1.25rem; border-radius: 100px; font-family: var(--font-heading); font-size: 0.85rem; cursor: pointer; transition: all 0.25s; text-transform: uppercase; }
-.pill-btn:hover, .pill-btn.active { background: #fff; color: #000; border-color: #fff; }
-.library-toolbar { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 3rem; }
-.search-input-wrap { position: relative; flex: 1; min-width: 260px; }
-.search-input-wrap .search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; color: var(--text-secondary); pointer-events: none; }
-.library-toolbar input { width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem; border-radius: 12px; border: 1px solid var(--border-color); background: rgba(255, 255, 255, 0.02); color: #fff; font-size: 0.95rem; outline: none; transition: border-color 0.2s; box-sizing: border-box; }
-.library-toolbar input:focus { border-color: var(--accent); }
-.select-filters { display: flex; gap: 0.75rem; }
-.select-filters select { padding: 0.85rem 1.25rem; border-radius: 12px; border: 1px solid var(--border-color); background: #0e0e12; color: #fff; font-size: 0.9rem; outline: none; cursor: pointer; }
-.library-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.75rem; }
-.library-card { border: 1px solid var(--border-color); border-radius: 16px; overflow: hidden; background: rgba(255, 255, 255, 0.02); display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
-.library-card:hover { transform: translateY(-6px); border-color: var(--accent); }
-.library-card-preview { aspect-ratio: 1; background: #0c0c0f; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-.library-card-preview img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.library-card:hover .library-card-preview img { transform: scale(1.06); }
-.library-card-body { padding: 1.25rem; display: flex; flex-direction: column; gap: 0.75rem; flex: 1; }
-.library-card-body h3 { font-size: 1.1rem; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.library-card-meta { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.library-chip { font-size: 0.75rem; padding: 2px 8px; border-radius: 6px; background: rgba(139, 92, 246, 0.15); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.3); font-weight: 600; text-transform: uppercase; }
-.library-download { margin-top: auto; padding: 0.75rem; border-radius: 8px; border: none; background: #fff; color: #000; font-family: var(--font-heading); font-size: 0.85rem; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: background 0.2s, transform 0.2s; }
-.library-download:hover { background: var(--accent); color: #fff; }
-
-/* Blog & Releases Styles */
-.aww-blog { padding: 0 4rem 10rem; max-width: 1000px; margin: 0 auto; }
-.aww-featured-release { padding: 3.5rem; border: 1px solid rgba(139, 92, 246, 0.35); border-radius: 24px; background: rgba(139, 92, 246, 0.03); backdrop-filter: blur(16px); }
-.aww-release-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-.aww-release-tag { font-family: monospace; font-size: 1.1rem; font-weight: 700; color: var(--accent); background: rgba(255,255,255,0.06); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
-.aww-release-notes { line-height: 1.8; color: var(--text-secondary); font-size: 1.05rem; }
-.aww-blog-post { border-bottom: 1px solid var(--border-color); padding: 3rem 0; }
-
-#discord-required-modal {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999;
-  display: flex; align-items: center; justify-content: center;
-}
-.discord-required-dialog {
-  background: var(--bg-color); padding: 2rem; border: 1px solid var(--border-color); border-radius: 16px;
-  max-width: 400px; text-align: center;
-}
-.discord-required-dialog p { margin-bottom: 1.5rem; line-height: 1.4; }
-.discord-required-dialog a, .discord-required-dialog button { display: block; width: 100%; padding: 1rem; margin-bottom: 0.5rem; border-radius: 8px; font-family: var(--font-heading); text-decoration: none; cursor: pointer; }
-.discord-required-dialog a { background: var(--text-primary); color: var(--bg-color); }
-.discord-required-dialog button { background: none; border: 1px solid var(--border-color); color: var(--text-primary); }
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  .aww-feature-grid, 
-  .aww-dash-grid, 
-  .aww-stats-grid, 
-  .aww-pricing-cards, 
-  .aww-docs-container, 
-  .aww-library-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .aww-header {
-    padding: 1.5rem 2rem;
-  }
-  
-  .aww-hero, .aww-page-hero, .aww-auth-section {
-    padding-left: 2rem;
-    padding-right: 2rem;
-  }
-  
-  .aww-features, .aww-footer, .aww-docs, .aww-library, .aww-blog {
-    padding: 6rem 2rem;
-  }
-
-  .aww-dashboard {
-    padding: 0 2rem 2rem;
-  }
-  
-  .aww-dash-sidebar {
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding-right: 0;
-    padding-bottom: 2rem;
-  }
-
-  .aww-hero-heading, .aww-page-title {
-    font-size: clamp(2.5rem, 10vw, 4rem);
-  }
-  
-  .aww-section-title, .aww-footer-title {
-    font-size: clamp(2rem, 8vw, 3rem);
-  }
-  
-  .aww-auth-container {
-    padding: 2rem;
-  }
-}
-
-/* Modals & Dialogs */
-.aww-modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  z-index: 10000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-  opacity: 1;
-  transition: opacity 0.25s ease;
-}
-.aww-modal-backdrop[hidden] {
-  display: none !important;
-}
-.aww-modal-window {
-  background: #0d0d0f;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  width: 100%;
-  max-width: 620px;
-  max-height: 85vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
-  overflow: hidden;
-  position: relative;
-  animation: awwModalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-@keyframes awwModalPop {
-  0% { transform: scale(0.95) translateY(12px); opacity: 0; }
-  100% { transform: scale(1) translateY(0); opacity: 1; }
-}
-
-.aww-modal-header {
-  padding: 1.5rem 2rem;
-  border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
-}
-.aww-modal-title {
-  font-family: var(--font-heading);
-  font-size: 1.3rem;
-  color: #fff;
-  letter-spacing: 0.02em;
-}
-.aww-modal-close {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.7);
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  font-size: 1.25rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-.aww-modal-close:hover {
-  background: rgba(255, 255, 255, 0.15);
-  color: #fff;
-}
-.aww-modal-body {
-  padding: 2rem;
-  overflow-y: auto;
-}
-.aww-modal-footer {
-  padding: 1.25rem 2rem;
-  border-top: 1px solid var(--border-color);
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-}
-
-/* Support Tickets Styles */
-.support-tickets-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 2rem;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.ticket-count-badge {
-  font-size: 0.8rem;
-  background: rgba(139, 92, 246, 0.18);
-  color: #c084fc;
-  border: 1px solid rgba(139, 92, 246, 0.35);
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-.portal-btn.ticket-action-btn {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-.portal-btn.ticket-action-btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-/* Form Controls */
-.aww-select {
-  width: 100%;
-  background: #111114;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  outline: none;
-  transition: border-color 0.2s;
-  cursor: pointer;
-}
-.aww-select:focus {
-  border-color: var(--accent);
-}
-.aww-textarea {
-  width: 100%;
-  background: #111114;
-  border: 1px solid var(--border-color);
-  color: var(--text-primary);
-  font-size: 1rem;
-  padding: 0.85rem 1rem;
-  border-radius: 10px;
-  outline: none;
-  resize: vertical;
-  min-height: 100px;
-  font-family: var(--font-body);
-  transition: border-color 0.2s;
-  box-sizing: border-box;
-}
-.aww-textarea:focus {
-  border-color: var(--accent);
-}
-
-/* Liquid Checkout Styles */
-.liquid-checkout-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  z-index: 10001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
-}
-.liquid-checkout-modal-content {
-  background: #0f0f13;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 2.5rem;
-  position: relative;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
-}
-.liquid-checkout-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.4rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-.liquid-checkout-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.liquid-checkout-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  color: var(--accent);
-  background: rgba(139, 92, 246, 0.15);
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 0.75rem;
-}
-.liquid-checkout-price {
-  font-size: 2rem;
-  font-family: var(--font-heading);
-  color: #fff;
-  margin: 0.5rem 0 1.5rem;
-}
-.liquid-checkout-price span {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-}
-.liquid-checkout-error-banner {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #f87171;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
-}
-.liquid-checkout-spinner {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-secondary);
-}
-.liquid-checkout-footer {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
-}
-
-/* Account delete confirmation */
-.delete-account-box {
-  background: rgba(239, 68, 68, 0.06);
-  border: 1px solid rgba(239, 68, 68, 0.25);
-  border-radius: 14px;
-  padding: 1.5rem;
-  margin-top: 1.5rem;
-}
-.delete-account-box p {
-  color: #fca5a5;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  margin-bottom: 1rem;
-}
-
-/* Mobile Burger & Navigation Drawer */
-.aww-burger-btn {
-  display: none;
-  background: none;
-  border: 1px solid var(--border-color);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  cursor: pointer;
-  padding: 0;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 5px;
-  z-index: 101;
-  transition: border-color 0.2s, background 0.2s;
-}
-.aww-burger-btn span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: #fff;
-  border-radius: 2px;
-  transition: transform 0.3s ease, opacity 0.3s ease;
-}
-.aww-burger-btn:hover {
-  border-color: var(--accent);
-  background: rgba(255, 255, 255, 0.05);
-}
-.is-menu-open .aww-burger-btn span:nth-child(1) {
-  transform: translateY(3.5px) rotate(45deg);
-}
-.is-menu-open .aww-burger-btn span:nth-child(2) {
-  transform: translateY(-3.5px) rotate(-45deg);
-}
-
-@media (max-width: 860px) {
-  .aww-burger-btn {
-    display: flex;
-  }
-  .aww-nav {
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(4, 4, 6, 0.97);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 2.25rem;
-    transform: translateY(-100%);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
-    z-index: 99;
-  }
-  .is-menu-open .aww-nav {
-    transform: translateY(0);
-    opacity: 1;
-    pointer-events: auto;
-  }
-  .is-menu-open .aww-nav .aww-link {
-    font-size: 2rem;
-    font-family: var(--font-heading);
-    letter-spacing: 0.05em;
-  }
-  .aww-header {
-    padding: 1.25rem 1.5rem;
-  }
-  .aww-header-actions .aww-btn-outline {
-    display: none;
-  }
-  .aww-hero-heading, .aww-page-title {
-    font-size: clamp(2.4rem, 9vw, 4.5rem);
-    line-height: 0.95;
-  }
-  .aww-hero-desc {
-    font-size: 1.15rem;
-  }
-  .aww-hero-actions {
-    flex-direction: column;
-    width: 100%;
-    max-width: 320px;
-  }
-  .aww-hero-actions .aww-btn {
-    width: 100%;
-  }
-  .aww-dash-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 0.5rem;
-    padding-bottom: 0.75rem;
-    scrollbar-width: none;
-  }
-  .aww-dash-nav::-webkit-scrollbar {
-    display: none;
-  }
-  .aww-dash-tab {
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 100px;
-    font-size: 0.85rem;
-    white-space: nowrap;
-  }
-  .aww-dash-tab.active {
-    background: var(--text-primary);
-    color: var(--bg-color);
-  }
-  .aww-docs-sidebar ul {
-    position: sticky;
-    top: 70px;
-    flex-direction: row;
-    overflow-x: auto;
-    gap: 0.5rem;
-    padding: 0.6rem 0;
-    background: rgba(3, 3, 3, 0.92);
-    backdrop-filter: blur(16px);
-    z-index: 40;
-    scrollbar-width: none;
-  }
-  .aww-docs-sidebar ul::-webkit-scrollbar {
-    display: none;
-  }
-  .aww-docs-sidebar ul li a {
-    white-space: nowrap;
-    padding: 0.4rem 0.9rem;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 100px;
-    font-size: 0.8rem;
-  }
-  .library-category-pills {
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    padding-bottom: 0.5rem;
-    scrollbar-width: none;
-  }
-  .library-category-pills::-webkit-scrollbar {
-    display: none;
-  }
-  .library-toolbar {
-    flex-direction: column;
-    align-items: stretch;
-  }
-  .select-filters {
-    display: flex;
-    gap: 0.5rem;
-    width: 100%;
-  }
-  .select-filters select {
-    flex: 1;
-  }
-  .library-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
-  }
-  .aww-modal-window {
-    width: 95%;
-    max-height: 90vh;
-  }
-  .liquid-checkout-modal-content {
-    width: 95%;
-    padding: 1.5rem 1rem;
-  }
-}
-`
-
-write('styles/awwwards.css', cssContent);
-
-// Write JS
-const jsContent = `
-// Awwwards Style JS
-document.addEventListener('DOMContentLoaded', () => {
-  // Lenis Smooth Scroll
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 1,
-    smoothTouch: false,
-    touchMultiplier: 2,
-    infinite: false,
-  });
-
-  // Expose Lenis globally
-  window.__srLenis = lenis;
-
-  // Mobile Menu Burger Handler
-  const burgerBtn = document.getElementById('aww-burger-btn');
-  const header = document.querySelector('.aww-header');
-  if (burgerBtn && header) {
-    burgerBtn.addEventListener('click', () => {
-      const isOpen = header.classList.toggle('is-menu-open');
-      burgerBtn.setAttribute('aria-expanded', String(isOpen));
-      if (isOpen) {
-        lenis.stop();
-      } else {
-        lenis.start();
-      }
-    });
-
-    document.querySelectorAll('.aww-nav .aww-link').forEach(link => {
-      link.addEventListener('click', () => {
-        header.classList.remove('is-menu-open');
-        burgerBtn.setAttribute('aria-expanded', 'false');
-        lenis.start();
-      });
-    });
-  }
-
-  // GSAP Animations
-  gsap.registerPlugin(ScrollTrigger);
-  
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
-  });
-  gsap.ticker.lagSmoothing(0);
-
-  // Lenis Anchor Smooth Scroll
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      if (href && href.length > 1) {
-        const target = document.querySelector(href);
-        if (target) {
-          e.preventDefault();
-          lenis.scrollTo(target, { offset: -90 });
-        }
-      }
-    });
-  });
-
-  // Custom Cursor
-  const cursor = document.querySelector('.custom-cursor');
-  if(cursor) {
-    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-    
-    let xTo = gsap.quickTo(cursor, "x", { duration: 0.2, ease: "power3" }),
-        yTo = gsap.quickTo(cursor, "y", { duration: 0.2, ease: "power3" });
-
-    let isFirstMove = true;
-    document.addEventListener('mousemove', (e) => {
-      if (isFirstMove) {
-        gsap.set(cursor, { x: e.clientX, y: e.clientY });
-        isFirstMove = false;
-      }
-      xTo(e.clientX);
-      yTo(e.clientY);
-    });
-    
-    document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-  }
-
-  // Text Split Animations
-  const splitTexts = document.querySelectorAll('[data-gsap="split-text"]');
-  splitTexts.forEach(text => {
-    if (typeof SplitType !== 'undefined') {
-      const split = new SplitType(text, { types: 'lines, words, chars' });
-      gsap.from(split.chars, {
-        y: 100,
-        opacity: 0,
-        stagger: 0.02,
-        duration: 1,
-        ease: "power4.out",
-        scrollTrigger: {
-          trigger: text,
-          start: "top 90%",
-        }
-      });
-    }
-  });
-
-  // Fade Up
-  document.querySelectorAll('[data-gsap="fade-up"]').forEach(el => {
-    const delay = el.dataset.delay || 0;
-    gsap.from(el, {
-      y: 50,
-      opacity: 0,
-      duration: 1,
-      delay: delay,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: el,
-        start: "top 85%",
-      }
-    });
-  });
-
-  // Cards Reveal
-  const cards = document.querySelectorAll('[data-gsap="card-reveal"]');
-  if(cards.length) {
-    gsap.from(cards, {
-      y: 50,
-      opacity: 0,
-      stagger: 0.1,
-      duration: 1,
-      ease: "power3.out",
-      scrollTrigger: {
-        trigger: cards[0],
-        start: "top 85%",
-      }
-    });
-  }
-
-  // Magnetic Buttons
-  const magneticEls = document.querySelectorAll('[data-magnetic]');
-  magneticEls.forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      
-      gsap.to(el, {
-        x: x * 0.3,
-        y: y * 0.3,
-        duration: 0.6,
-        ease: "power3.out"
-      });
-    });
-    
-    el.addEventListener('mouseleave', () => {
-      gsap.to(el, {
-        x: 0,
-        y: 0,
-        duration: 0.6,
-        ease: "elastic.out(1, 0.3)"
-      });
-    });
-  });
-});
-`;
-
-write('js/awwwards.js', jsContent);
+console.log('All Awwwards pages generated successfully.');
