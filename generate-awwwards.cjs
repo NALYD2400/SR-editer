@@ -620,12 +620,12 @@ write('docs.html', headTemplate('Documentation') + `
         <div class="aww-docs-container">
           <aside class="aww-docs-sidebar" data-gsap="fade-right">
             <ul>
-              <li><a href="#getting-started" class="aww-link"><span class="aww-link-inner" data-hover="Démarrage">Démarrage</span></a></li>
-              <li><a href="#installation" class="aww-link"><span class="aww-link-inner" data-hover="Installation">Installation</span></a></li>
-              <li><a href="#texture-studio" class="aww-link"><span class="aww-link-inner" data-hover="Texture Studio">Texture Studio</span></a></li>
-              <li><a href="#viewport-3d" class="aww-link"><span class="aww-link-inner" data-hover="Viewport 3D">Viewport 3D</span></a></li>
-              <li><a href="#rpf-archives" class="aww-link"><span class="aww-link-inner" data-hover="Archives RPF">Archives RPF</span></a></li>
-              <li><a href="#faq" class="aww-link"><span class="aww-link-inner" data-hover="FAQ &amp; Support">FAQ &amp; Support</span></a></li>
+              <li><a href="#getting-started" class="aww-toc-link">Démarrage</a></li>
+              <li><a href="#installation" class="aww-toc-link">Installation</a></li>
+              <li><a href="#texture-studio" class="aww-toc-link">Texture Studio</a></li>
+              <li><a href="#viewport-3d" class="aww-toc-link">Viewport 3D</a></li>
+              <li><a href="#rpf-archives" class="aww-toc-link">Archives RPF</a></li>
+              <li><a href="#faq" class="aww-toc-link">FAQ &amp; Support</a></li>
             </ul>
           </aside>
 
@@ -1015,16 +1015,16 @@ write('terms.html', headTemplate("Conditions d'utilisation") + `
         <div class="aww-docs-container">
           <aside class="aww-docs-sidebar" data-gsap="fade-right">
             <ul>
-              <li><a href="#editeur" class="aww-link"><span class="aww-link-inner" data-hover="1. Éditeur">1. Éditeur</span></a></li>
-              <li><a href="#objet" class="aww-link"><span class="aww-link-inner" data-hover="2. Objet">2. Objet</span></a></li>
-              <li><a href="#compte" class="aww-link"><span class="aww-link-inner" data-hover="3. Compte">3. Compte</span></a></li>
-              <li><a href="#licence" class="aww-link"><span class="aww-link-inner" data-hover="4. Licence">4. Licence</span></a></li>
-              <li><a href="#abonnements" class="aww-link"><span class="aww-link-inner" data-hover="5. Abonnements">5. Abonnements</span></a></li>
-              <li><a href="#propriete" class="aww-link"><span class="aww-link-inner" data-hover="6. Légalité &amp; Mods">6. Légalité &amp; Mods</span></a></li>
-              <li><a href="#ia" class="aww-link"><span class="aww-link-inner" data-hover="7. IA &amp; Tiers">7. IA &amp; Tiers</span></a></li>
-              <li><a href="#maj" class="aww-link"><span class="aww-link-inner" data-hover="8. Mises à jour">8. Mises à jour</span></a></li>
-              <li><a href="#responsabilite" class="aww-link"><span class="aww-link-inner" data-hover="9. Responsabilité">9. Responsabilité</span></a></li>
-              <li><a href="#droit" class="aww-link"><span class="aww-link-inner" data-hover="10. Juridiction">10. Juridiction</span></a></li>
+              <li><a href="#editeur" class="aww-toc-link">1. Éditeur</a></li>
+              <li><a href="#objet" class="aww-toc-link">2. Objet</a></li>
+              <li><a href="#compte" class="aww-toc-link">3. Compte</a></li>
+              <li><a href="#licence" class="aww-toc-link">4. Licence</a></li>
+              <li><a href="#abonnements" class="aww-toc-link">5. Abonnements</a></li>
+              <li><a href="#propriete" class="aww-toc-link">6. Légalité &amp; Mods</a></li>
+              <li><a href="#ia" class="aww-toc-link">7. IA &amp; Tiers</a></li>
+              <li><a href="#maj" class="aww-toc-link">8. Mises à jour</a></li>
+              <li><a href="#responsabilite" class="aww-toc-link">9. Responsabilité</a></li>
+              <li><a href="#droit" class="aww-toc-link">10. Juridiction</a></li>
             </ul>
           </aside>
 
@@ -1218,15 +1218,15 @@ write('privacy.html', headTemplate('Politique de confidentialité') + `
         <div class="aww-docs-container">
           <aside class="aww-docs-sidebar" data-gsap="fade-right">
             <ul>
-              <li><a href="#responsable" class="aww-link"><span class="aww-link-inner" data-hover="1. Responsable">1. Responsable</span></a></li>
-              <li><a href="#donnees" class="aww-link"><span class="aww-link-inner" data-hover="2. Données">2. Données</span></a></li>
-              <li><a href="#finalites" class="aww-link"><span class="aww-link-inner" data-hover="3. Finalités">3. Finalités</span></a></li>
-              <li><a href="#sous-traitants" class="aww-link"><span class="aww-link-inner" data-hover="4. Partenaires">4. Partenaires</span></a></li>
-              <li><a href="#conservation" class="aww-link"><span class="aww-link-inner" data-hover="5. Conservation">5. Conservation</span></a></li>
-              <li><a href="#droits" class="aww-link"><span class="aww-link-inner" data-hover="6. Droits RGPD">6. Droits RGPD</span></a></li>
-              <li><a href="#securite" class="aww-link"><span class="aww-link-inner" data-hover="7. Sécurité">7. Sécurité</span></a></li>
-              <li><a href="#ia-donnees" class="aww-link"><span class="aww-link-inner" data-hover="8. Modules IA">8. Modules IA</span></a></li>
-              <li><a href="#contact" class="aww-link"><span class="aww-link-inner" data-hover="9. Contact &amp; DPO">9. Contact &amp; DPO</span></a></li>
+              <li><a href="#responsable" class="aww-toc-link">1. Responsable</a></li>
+              <li><a href="#donnees" class="aww-toc-link">2. Données</a></li>
+              <li><a href="#finalites" class="aww-toc-link">3. Finalités</a></li>
+              <li><a href="#sous-traitants" class="aww-toc-link">4. Partenaires</a></li>
+              <li><a href="#conservation" class="aww-toc-link">5. Conservation</a></li>
+              <li><a href="#droits" class="aww-toc-link">6. Droits RGPD</a></li>
+              <li><a href="#securite" class="aww-toc-link">7. Sécurité</a></li>
+              <li><a href="#ia-donnees" class="aww-toc-link">8. Modules IA</a></li>
+              <li><a href="#contact" class="aww-toc-link">9. Contact &amp; DPO</a></li>
             </ul>
           </aside>
 

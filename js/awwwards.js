@@ -348,8 +348,23 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   });
 
+  // Header Scrolled Glassmorphism State
+  const headerEl = document.querySelector('.aww-header');
+  if (headerEl) {
+    const onScroll = () => {
+      if (window.scrollY > 25) {
+        headerEl.classList.add('is-scrolled');
+      } else {
+        headerEl.classList.remove('is-scrolled');
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    lenis.on('scroll', onScroll);
+    onScroll();
+  }
+
   // Table of Contents ScrollSpy for Docs & Legal Pages
-  const tocLinks = document.querySelectorAll('.aww-docs-sidebar ul li a');
+  const tocLinks = document.querySelectorAll('.aww-docs-sidebar ul li a, .aww-toc-link');
   const tocSections = document.querySelectorAll('.aww-docs-section');
   if (tocLinks.length && tocSections.length) {
     const observer = new IntersectionObserver((entries) => {
