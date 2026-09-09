@@ -44,8 +44,6 @@ body.auth-body:not(.auth-body--locked) {
   gap: 8px !important;
   border-radius: 12px !important;
   background: rgba(10, 12, 16, 0.85) !important;
-  backdrop-filter: blur(32px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow:
     0 16px 36px -8px rgba(0, 0, 0, 0.65),
@@ -76,8 +74,6 @@ body.auth-body:not(.auth-body--locked) {
   padding: 3px 12px 3px 4px !important;
   border-radius: 8px !important;
   background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   text-decoration: none !important;
@@ -214,8 +210,6 @@ body.auth-body:not(.auth-body--locked) {
   padding: 8px !important;
   border-radius: 10px !important;
   background: rgba(10, 12, 16, 0.94) !important;
-  backdrop-filter: blur(32px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   box-shadow:
     0 20px 48px rgba(0, 0, 0, 0.8),
@@ -294,8 +288,6 @@ body.auth-body:not(.auth-body--locked) {
   border-radius: 8px !important;
   border: 1px solid rgba(56, 189, 248, 0.28) !important;
   background: rgba(56, 189, 248, 0.1) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -347,8 +339,6 @@ body.auth-body:not(.auth-body--locked) {
   padding: 3px 12px 3px 4px !important;
   border-radius: 8px !important;
   background: rgba(255, 255, 255, 0.06) !important;
-  backdrop-filter: blur(16px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   color: #ffffff !important;
@@ -457,8 +447,6 @@ img.site-nav-avatar {
   border: 1px solid rgba(255, 255, 255, 0.45);
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.28);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.7);
   color: #0f172a;
   cursor: pointer;
@@ -494,8 +482,6 @@ img.site-nav-avatar {
     min-height: 52px !important;
     row-gap: 8px !important;
     background: rgba(14, 11, 24, 0.92) !important;
-    backdrop-filter: blur(28px) saturate(210%) brightness(1.08) !important;
-    -webkit-backdrop-filter: blur(28px) saturate(210%) brightness(1.08) !important;
     border: 1px solid rgba(255, 255, 255, 0.3) !important;
     box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.65), inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.5) !important;
   }
@@ -606,15 +592,14 @@ img.site-nav-avatar {
   gap: 8px;
   padding: 6px 14px;
   border-radius: var(--radius-pill);
-  background: rgba(139, 92, 246, 0.12);
-  border: 1px solid rgba(139, 92, 246, 0.28);
+  background: rgba(255, 107, 53, 0.12);
+  border: 1px solid rgba(255, 107, 53, 0.28);
   color: var(--accent-light);
   font-size: 12.5px;
   font-weight: 600;
   letter-spacing: 0.02em;
   margin-bottom: 16px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  box-shadow: 0 4px 20px rgba(255, 107, 53, 0.15);
 }
 
 .pulse-dot {
@@ -704,8 +689,6 @@ img.site-nav-avatar {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 14px !important;
   padding: 32px 36px !important;
-  backdrop-filter: blur(32px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
   box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
   color: #f8fafc !important;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -810,7 +793,6 @@ img.site-nav-avatar {
   font-weight: 500;
   padding: 5px 14px;
   border-radius: 6px;
-  backdrop-filter: blur(10px);
 }
 
 .docs-layout {
@@ -830,8 +812,6 @@ img.site-nav-avatar {
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 12px !important;
   padding: 20px 16px !important;
-  backdrop-filter: blur(32px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
   text-align: left;
 }
@@ -1026,7 +1006,6 @@ img.site-nav-avatar {
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  backdrop-filter: blur(8px);
 }
 
 .pill-btn:hover {
@@ -1082,8 +1061,6 @@ img.site-nav-avatar {
   color: #f1f5f9;
   font-size: 13.5px;
   outline: none;
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12));
   box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -1141,8 +1118,6 @@ img.site-nav-avatar {
   border-radius: var(--obsidian-radius-md, 12px);
   border: 1px solid rgba(255, 255, 255, 0.09);
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82));
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
   display: flex;
   flex-direction: column;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 36px rgba(0, 0, 0, 0.4);
@@ -1271,8 +1246,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82));
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--obsidian-radius-md, 12px);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12));
   text-align: center;
 }
@@ -1286,8 +1259,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.85));
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--obsidian-radius-lg, 16px);
-  backdrop-filter: blur(32px);
-  -webkit-backdrop-filter: blur(32px);
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 24px 60px rgba(0, 0, 0, 0.5);
 }
 

@@ -63,29 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Custom Cursor
-  const cursor = document.querySelector('.custom-cursor');
-  if(cursor) {
-    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
-    
-    let xTo = gsap.quickTo(cursor, "x", { duration: 0.2, ease: "power3" }),
-        yTo = gsap.quickTo(cursor, "y", { duration: 0.2, ease: "power3" });
 
-    let isFirstMove = true;
-    document.addEventListener('mousemove', (e) => {
-      if (isFirstMove) {
-        gsap.set(cursor, { x: e.clientX, y: e.clientY });
-        isFirstMove = false;
-      }
-      xTo(e.clientX);
-      yTo(e.clientY);
-    });
-    
-    document.querySelectorAll('a, button, input, select, textarea').forEach(el => {
-      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
-    });
-  }
 
   // 6. Magnetic Elements
   document.querySelectorAll('[data-magnetic]').forEach(el => {
@@ -96,7 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
       gsap.to(el, { x: x * 0.3, y: y * 0.3, duration: 0.5, ease: "power3.out" });
     });
     el.addEventListener('mouseleave', () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: "elastic.out(1, 0.3)" });
+      gsap.to(el, { x: 0, y: 0, duration: 0.8, ease: "power3.out" });
     });
   });
 
@@ -155,31 +133,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // 8. Text Masking & Webflow Reveal Utility
-  function splitIntoLines(element) {
-    if (element.dataset.splitDone) return;
-    element.dataset.splitDone = "true";
-
-    const originalHtml = element.innerHTML.trim();
-    const parts = originalHtml.split(/<br\s*\/?>/i);
-
-    element.innerHTML = '';
-    parts.forEach((part) => {
-      const lineWrap = document.createElement('span');
-      lineWrap.className = 'aww-mask-line';
-      const lineInner = document.createElement('span');
-      lineInner.className = 'aww-mask-inner';
-      lineInner.innerHTML = part.trim();
-      lineWrap.appendChild(lineInner);
-      element.appendChild(lineWrap);
-    });
-  }
-
-  // Apply masking to headings
+  // 8. Text Masking & Webflow Reveal Utility (OriginKit Style Smoky / Scramble)
+  // We use SplitType to break headings into characters for a modern, smoky text reveal.
   const allRevealHeadings = document.querySelectorAll(
     '.aww-hero-heading, .aww-page-title, .aww-section-title, .aww-footer-title, [data-reveal="text"], [data-gsap="split-text"]'
   );
-  allRevealHeadings.forEach(splitIntoLines);
+  
+  allRevealHeadings.forEach(heading => {
+    // Avoid re-splitting if already done
+    if (heading.dataset.splitDone) return;
+    heading.dataset.splitDone = "true";
+
+    const text = new SplitType(heading, { types: 'lines, words, chars' });
+    
+    // Restore text nodes inside .aww-text-stroke so the continuous gradient background-clip works natively
+    heading.querySelectorAll('.aww-text-stroke').forEach(strokeEl => {
+      strokeEl.innerHTML = strokeEl.textContent;
+    });
+
+    // Set initial OriginKit states for characters and stroke elements
+    const animTargets = heading.querySelectorAll('.char, .aww-text-stroke');
+    gsap.set(animTargets, { 
+      y: 25, 
+      opacity: 0,
+      filter: 'blur(10px)',
+      willChange: 'transform, opacity, filter'
+    });
+  });
 
   // 9. WEBFLOW PAGE LOAD INTRO TIMELINE (Fires on Page Open)
   const introTl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -198,25 +178,24 @@ document.addEventListener('DOMContentLoaded', () => {
     introTl.fromTo(heroKicker, 
       { y: 25, opacity: 0 }, 
       { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 
-      "-=0.6"
+      "<0.1"
     );
   }
 
-  // Hero Title: Words/Lines sliding up from invisible mask
+  // Hero Title: OriginKit Blur-Up Animation
   const heroHeading = document.querySelector('.aww-hero-heading, .aww-page-title, .aww-auth-title');
   if (heroHeading) {
-    const maskInners = heroHeading.querySelectorAll('.aww-mask-inner');
-    if (maskInners.length) {
-      introTl.fromTo(maskInners, 
-        { yPercent: 120, rotate: 1.2, opacity: 0 }, 
-        { yPercent: 0, rotate: 0, opacity: 1, duration: 1.15, stagger: 0.09, ease: "power4.out" }, 
-        "-=0.5"
+    const chars = heroHeading.querySelectorAll('.char, .aww-text-stroke');
+    if (chars.length) {
+      introTl.to(chars, 
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.02, ease: "power3.out", clearProps: "filter,willChange" }, 
+        "<0.1"
       );
     } else {
       introTl.fromTo(heroHeading, 
-        { y: 35, opacity: 0 }, 
-        { y: 0, opacity: 1, duration: 1, ease: "power4.out" }, 
-        "-=0.5"
+        { y: 40, opacity: 0, filter: 'blur(10px)' }, 
+        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: "power3.out", clearProps: "filter,willChange" }, 
+        "<0.1"
       );
     }
   }
@@ -227,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
     introTl.fromTo(heroDesc, 
       { y: 30, opacity: 0 }, 
       { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" }, 
-      "-=0.75"
+      "<0.2"
     );
   }
 
@@ -236,7 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     introTl.fromTo(heroActions, 
       { y: 25, opacity: 0, scale: 0.97 }, 
       { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power3.out" }, 
-      "-=0.6"
+      "<0.2"
     );
   }
 
@@ -245,31 +224,31 @@ document.addEventListener('DOMContentLoaded', () => {
     introTl.fromTo(mockupFrame, 
       { y: 55, opacity: 0, scale: 0.93 }, 
       { y: 0, opacity: 1, scale: 1, duration: 1.25, ease: "power3.out" }, 
-      "-=0.7"
+      "<0.2"
     );
     if (showcaseImg) {
       introTl.fromTo(showcaseImg, 
         { scale: 1.15 }, 
         { scale: 1, duration: 1.5, ease: "power2.out" }, 
-        "-=1.2"
+        "<0.2"
       );
     }
   }
 
   // 10. SCROLL-TRIGGERED WEBFLOW REVEALS (For Sections Below The Fold)
-  // Section Titles below the fold
+  // Section Titles below the fold (OriginKit Blur-Up Text)
   document.querySelectorAll('.aww-section-title, .aww-footer-title').forEach(title => {
     if (title.closest('.aww-hero') || title.closest('.aww-page-hero')) return;
-    const inners = title.querySelectorAll('.aww-mask-inner');
-    if (inners.length) {
-      gsap.fromTo(inners, 
-        { yPercent: 120, rotate: 1.2, opacity: 0 },
+    const chars = title.querySelectorAll('.char, .aww-text-stroke');
+    if (chars.length) {
+      gsap.to(chars, 
         {
-          yPercent: 0, rotate: 0, opacity: 1,
-          duration: 1.1, stagger: 0.08, ease: "power4.out",
+          opacity: 1, filter: "blur(0px)", y: 0,
+          duration: 1.2, stagger: 0.04, ease: "power3.out",
+          clearProps: "filter,willChange",
           scrollTrigger: {
             trigger: title,
-            start: "top 88%",
+            start: "top 85%",
             once: true
           }
         }
@@ -283,10 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const cards = Array.from(grid.children);
     if (cards.length) {
       gsap.fromTo(cards, 
-        { y: 50, opacity: 0, scale: 0.96 },
+        { y: 60, opacity: 0 },
         {
-          y: 0, opacity: 1, scale: 1,
-          duration: 0.9, stagger: 0.12, ease: "power3.out",
+          y: 0, opacity: 1,
+          duration: 1.2, stagger: 0.15, ease: "power3.out",
           scrollTrigger: {
             trigger: grid,
             start: "top 85%",
@@ -346,6 +325,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     );
+  });
+
+  // Parallax elements
+  document.querySelectorAll('[data-gsap="parallax"]').forEach(el => {
+    const speed = parseFloat(el.dataset.speed) || 1;
+    const isHero = el.closest('.aww-hero') || el.closest('.aww-page-hero');
+    gsap.to(el, {
+      y: () => (window.innerHeight * (1 - speed)) * 0.5,
+      ease: "none",
+      scrollTrigger: {
+        trigger: el,
+        start: isHero ? "top top" : "top bottom",
+        end: "bottom top",
+        scrub: 1.5
+      }
+    });
   });
 
   // Header Scrolled Glassmorphism State

@@ -51,8 +51,6 @@ body.auth-body.auth-body--locked {
   border-radius: var(--obsidian-radius-lg, 16px);
   overflow: hidden;
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 24px 60px -12px rgba(0, 0, 0, 0.8) !important;
 }
@@ -90,8 +88,6 @@ body.auth-body.auth-body--locked {
   height: 42px;
   border-radius: var(--obsidian-radius-sm, 8px);
   background: rgba(10, 12, 16, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #ffffff;
   display: flex;
@@ -163,8 +159,6 @@ body.auth-body.auth-body--locked {
   background: rgba(0, 0, 0, 0.4);
   padding: 10px 16px;
   border-radius: 14px;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -188,8 +182,6 @@ body.auth-body.auth-body--locked {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.75));
   color: rgba(255, 255, 255, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.09);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.1));
   transition: transform 0.25s var(--ease-spring), border-color 0.25s ease;
 }
@@ -233,8 +225,6 @@ body.auth-body.auth-body--locked {
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: var(--obsidian-radius-lg, 16px) !important;
   padding: 40px 36px !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 24px 64px -16px rgba(0, 0, 0, 0.85) !important;
   box-sizing: border-box;
 }
@@ -369,9 +359,9 @@ body.auth-body.auth-body--locked {
 }
 
 .auth-field input:focus {
-  border-color: #38bdf8;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  border-color: rgba(255, 107, 53, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.2);
 }
 
 .auth-field[hidden] {
@@ -549,7 +539,6 @@ body.auth-body.auth-body--locked {
   align-items: center;
   justify-content: center;
   background: rgba(6, 5, 11, 0.85);
-  backdrop-filter: blur(12px);
   padding: 20px;
 }
 

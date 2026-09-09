@@ -78,7 +78,7 @@
   background:
     radial-gradient(circle at 50% 35%, rgba(5, 4, 9, 0.02) 0%, rgba(5, 4, 9, 0.22) 78%),
     linear-gradient(180deg, rgba(5, 4, 9, 0.06) 0%, rgba(5, 4, 9, 0.2) 55%, rgba(5, 4, 9, 0.4) 100%),
-    radial-gradient(ellipse 80% 55% at 50% 0%, rgba(139, 92, 246, 0.1), transparent 55%);
+    radial-gradient(ellipse 80% 55% at 50% 0%, rgba(255, 107, 53, 0.1), transparent 55%);
   pointer-events: none;
   transition: background 0.35s;
 }
@@ -87,7 +87,7 @@ html[data-theme="light"] .ambient-vignette {
   background:
     radial-gradient(circle at center, rgba(255, 255, 255, 0.12) 0%, rgba(234, 231, 238, 0.35) 78%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.18) 0%, rgba(234, 231, 238, 0.32) 55%, rgba(234, 231, 238, 0.48) 100%),
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 71, 126, 0.06), transparent 50%);
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 107, 53, 0.06), transparent 50%);
 }
 
 /* Body Reset */
@@ -121,7 +121,7 @@ html[data-theme="light"] .ambient-vignette {
 .portal-loading-spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(139, 92, 246, 0.12);
+  border: 3px solid rgba(255, 107, 53, 0.15);
   border-top-color: var(--accent);
   border-radius: 50%;
   animation: portal-spin 0.8s linear infinite;
@@ -148,8 +148,6 @@ html[data-theme="light"] .ambient-vignette {
 /* Premium Glassmorphic Card */
 .portal-card {
   background: var(--bg-panel) !important;
-  backdrop-filter: blur(28px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(140%) !important;
   border: 1px solid var(--border) !important;
   border-radius: 16px;
   padding: 40px 30px;
@@ -442,8 +440,6 @@ html[data-theme="light"] .portal-btn.outline:hover {
   padding: 18px 32px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(14, 12, 22, 0.65) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
   z-index: 20;
   flex-shrink: 0;
 }
@@ -554,8 +550,6 @@ html[data-theme="light"] .portal-btn.outline:hover {
   width: 268px;
   height: 100%;
   background: rgba(14, 12, 22, 0.58) !important;
-  backdrop-filter: blur(28px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(150%) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
   display: flex;
   flex-direction: column;
@@ -638,11 +632,11 @@ html[data-theme="light"] .sidebar-link:hover {
 }
 
 .sidebar-link.active {
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(99, 102, 241, 0.14) 100%) !important;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.22) 0%, rgba(255, 51, 102, 0.14) 100%) !important;
   color: #ffffff !important;
-  border: 1px solid rgba(139, 92, 246, 0.38) !important;
+  border: 1px solid rgba(255, 107, 53, 0.38) !important;
   font-weight: 600;
-  box-shadow: 0 4px 18px rgba(139, 92, 246, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 18px rgba(255, 107, 53, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
   transform: translateX(3px);
 }
 
@@ -698,16 +692,14 @@ html[data-theme="light"] .sidebar-link:hover {
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.12);
   background:
-    radial-gradient(120% 100% at 0% 0%, rgba(139, 92, 246, 0.2), transparent 60%),
+    radial-gradient(120% 100% at 0% 0%, rgba(255, 107, 53, 0.2), transparent 60%),
     linear-gradient(145deg, rgba(22, 18, 34, 0.72), rgba(12, 10, 20, 0.82));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
   box-shadow: 0 20px 48px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
   transition: transform 0.3s var(--ease-spring), border-color 0.3s ease;
 }
 
 .welcome-banner:hover {
-  border-color: rgba(139, 92, 246, 0.35);
+  border-color: rgba(255, 107, 53, 0.35);
   transform: translateY(-2px);
 }
 
@@ -744,16 +736,16 @@ html[data-theme="light"] .sidebar-link:hover {
 }
 
 .portal-stage-content .portal-card:hover {
-  border-color: rgba(139, 92, 246, 0.35) !important;
+  border-color: rgba(255, 107, 53, 0.35) !important;
   transform: translateY(-3px) !important;
-  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.42), 0 0 24px rgba(139, 92, 246, 0.15) !important;
+  box-shadow: 0 22px 52px rgba(0, 0, 0, 0.42), 0 0 24px rgba(255, 107, 53, 0.15) !important;
 }
 
 .active-plan-widget {
-  border-color: rgba(139, 92, 246, 0.42) !important;
-  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.15), 0 20px 48px rgba(0, 0, 0, 0.38) !important;
+  border-color: rgba(255, 107, 53, 0.42) !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.15), 0 20px 48px rgba(0, 0, 0, 0.38) !important;
   background:
-    radial-gradient(100% 80% at 100% 0%, rgba(139, 92, 246, 0.18), transparent 55%),
+    radial-gradient(100% 80% at 100% 0%, rgba(255, 107, 53, 0.18), transparent 55%),
     linear-gradient(145deg, rgba(24, 20, 36, 0.75), rgba(14, 11, 22, 0.85)) !important;
 }
 
@@ -774,7 +766,7 @@ html[data-theme="light"] .sidebar-link:hover {
   padding: 12px 12px 10px;
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(139, 92, 246, 0.08);
+  background: rgba(255, 107, 53, 0.08);
 }
 
 .ai-quota-box-head {
@@ -901,10 +893,10 @@ html[data-theme="light"] .sidebar-link:hover {
 
 .tier-badge.free { background: rgba(166, 153, 194, 0.12); color: var(--muted); border-color: rgba(166, 153, 194, 0.25); }
 .tier-badge.standard { background: rgba(0, 240, 255, 0.1); color: var(--blue); border-color: rgba(0, 240, 255, 0.3); box-shadow: 0 0 12px rgba(0, 240, 255, 0.2); }
-.tier-badge.pro { background: rgba(139, 92, 246, 0.14); color: var(--accent-light); border-color: rgba(139, 92, 246, 0.35); box-shadow: 0 0 14px rgba(139, 92, 246, 0.25); }
+.tier-badge.pro { background: rgba(255, 107, 53, 0.14); color: var(--accent-light); border-color: rgba(255, 107, 53, 0.35); box-shadow: 0 0 14px rgba(255, 107, 53, 0.25); }
 .tier-badge.premium,
 .tier-badge.lifetime,
-.tier-badge.studio { background: linear-gradient(135deg, rgba(167, 139, 250, 0.2), rgba(217, 70, 239, 0.2)); color: #f0abfc; border-color: rgba(217, 70, 239, 0.4); box-shadow: 0 0 16px rgba(217, 70, 239, 0.3); }
+.tier-badge.studio { background: linear-gradient(135deg, rgba(255, 51, 102, 0.2), rgba(255, 168, 0, 0.2)); color: #ffa800; border-color: rgba(255, 107, 53, 0.4); box-shadow: 0 0 16px rgba(255, 107, 53, 0.3); }
 
 .text-muted {
   color: var(--muted);
@@ -958,16 +950,16 @@ html[data-theme="light"] .sidebar-link:hover {
 
 .plan-card-web:hover {
   transform: translateY(-5px) scale(1.01);
-  border-color: rgba(139, 92, 246, 0.45) !important;
+  border-color: rgba(255, 107, 53, 0.45) !important;
   background: rgba(255, 255, 255, 0.05) !important;
-  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 25px rgba(139, 92, 246, 0.2) !important;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 25px rgba(255, 107, 53, 0.2) !important;
 }
 
 .plan-card-web.highlighted {
-  border-color: rgba(139, 92, 246, 0.6) !important;
-  box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.2), 0 22px 52px rgba(0, 0, 0, 0.45), 0 0 30px rgba(139, 92, 246, 0.25) !important;
+  border-color: rgba(255, 107, 53, 0.6) !important;
+  box-shadow: 0 0 0 1px rgba(255, 107, 53, 0.2), 0 22px 52px rgba(0, 0, 0, 0.45), 0 0 30px rgba(255, 107, 53, 0.25) !important;
   background:
-    radial-gradient(120% 80% at 50% 0%, rgba(139, 92, 246, 0.16), transparent 55%),
+    radial-gradient(120% 80% at 50% 0%, rgba(255, 107, 53, 0.16), transparent 55%),
     rgba(255, 255, 255, 0.04) !important;
 }
 
@@ -1122,8 +1114,6 @@ html[data-theme="light"] .sidebar-link:hover {
 /* Mockup Login Card Overrides */
 .portal-container .portal-card {
   background: rgba(10, 10, 15, 0.45) !important;
-  backdrop-filter: blur(24px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(160%) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: 20px;
   box-shadow: 0 24px 80px rgba(0, 0, 0, 0.65) !important;
@@ -1292,7 +1282,6 @@ html[data-theme="light"] .sidebar-link:hover {
   place-items: center;
   padding: 24px;
   background: rgba(7, 8, 15, 0.7);
-  backdrop-filter: blur(10px);
   animation: discord-required-fade 180ms ease-out;
 }
 
@@ -1542,8 +1531,6 @@ html[data-theme="light"] .sidebar-link:hover {
   width: 260px !important;
   height: 100vh !important;
   background: rgba(10, 12, 22, 0.88) !important;
-  backdrop-filter: blur(28px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(150%) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
   display: flex !important;
   flex-direction: column !important;
@@ -1687,8 +1674,6 @@ html[data-theme="light"] .sidebar-link:hover {
   background: rgba(14, 17, 30, 0.78) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 20px !important;
-  backdrop-filter: blur(20px) !important;
-  -webkit-backdrop-filter: blur(20px) !important;
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4) !important;
   padding: 28px !important;
 }
@@ -1766,8 +1751,6 @@ html[data-theme="light"] .sidebar-link:hover {
   border-radius: 16px !important;
   background: rgba(255, 255, 255, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
@@ -1884,8 +1867,6 @@ html[data-theme="light"] .sidebar-link:hover {
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 24px !important;
   padding: 40px 32px !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45) !important;
 }
 
@@ -2080,8 +2061,6 @@ html[data-theme="light"] .sidebar-link:hover {
   height: calc(100vh - 32px) !important;
   width: 260px !important;
   background: rgba(14, 17, 30, 0.78) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 24px !important;
   display: flex !important;
@@ -2137,8 +2116,6 @@ html[data-theme="light"] .sidebar-link:hover {
   border-radius: 9999px !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   background: rgba(14, 17, 30, 0.78) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
   z-index: 50 !important;
   display: flex !important;
@@ -2234,8 +2211,6 @@ html[data-theme="light"] .sidebar-link:hover {
   height: calc(100vh - 32px) !important;
   width: 250px !important;
   background: rgba(12, 15, 26, 0.85) !important;
-  backdrop-filter: blur(28px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 20px !important;
   display: flex !important;
@@ -2266,8 +2241,6 @@ html[data-theme="light"] .sidebar-link:hover {
   border-radius: 9999px !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   background: rgba(12, 15, 26, 0.82) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
   z-index: 90 !important;
   display: flex !important;
@@ -2359,8 +2332,6 @@ html[data-theme="light"] .sidebar-link:hover {
   height: calc(100vh - 32px) !important;
   width: 250px !important;
   background: rgba(12, 15, 26, 0.88) !important;
-  backdrop-filter: blur(28px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(160%) !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   border-radius: 20px !important;
   display: flex !important;
@@ -2392,8 +2363,6 @@ html[data-theme="light"] .sidebar-link:hover {
   border-radius: 9999px !important;
   border: 1px solid rgba(255, 255, 255, 0.14) !important;
   background: rgba(12, 15, 26, 0.82) !important;
-  backdrop-filter: blur(24px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
   box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
   z-index: 90 !important;
   display: flex !important;
@@ -2566,8 +2535,6 @@ img.site-nav-avatar {
   inset: 0;
   z-index: 9999;
   background: rgba(4, 3, 10, 0.78);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -2698,8 +2665,6 @@ img.site-nav-avatar {
 /* Loading Screen */
 .client-page--showcase .portal-loading-screen {
   background: var(--obsidian-base, #060709) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   color: #f1f5f9 !important;
   font-weight: 500 !important;
   transition: opacity 0.4s ease, visibility 0.4s ease !important;
@@ -2720,8 +2685,6 @@ img.site-nav-avatar {
 /* Sidebar & Navigation */
 .client-page--showcase .portal-sidebar {
   background: rgba(10, 12, 16, 0.85) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
   box-shadow: 8px 0 40px rgba(0, 0, 0, 0.4) !important;
 }
@@ -2759,8 +2722,6 @@ img.site-nav-avatar {
 /* Topbar */
 .client-page--showcase .portal-topbar {
   background: rgba(10, 12, 16, 0.8) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
@@ -2791,8 +2752,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: var(--obsidian-radius-md, 12px) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 20px 48px rgba(0, 0, 0, 0.4) !important;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease !important;
 }
@@ -2806,8 +2765,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: var(--obsidian-radius-md, 12px) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 36px rgba(0, 0, 0, 0.4) !important;
   color: #cbd5e1 !important;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease !important;
@@ -2835,8 +2792,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: var(--obsidian-radius-md, 12px) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 36px rgba(0, 0, 0, 0.4) !important;
   color: #cbd5e1 !important;
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, box-shadow 0.25s ease !important;
@@ -2909,8 +2864,6 @@ img.site-nav-avatar {
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: var(--obsidian-radius-md, 12px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 36px rgba(0, 0, 0, 0.4) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
 }
 
 .client-page--showcase #web-tickets-list-container > div {
@@ -2942,15 +2895,11 @@ img.site-nav-avatar {
 .client-page--showcase #web-ticket-chat-modal,
 .client-page--showcase #web-create-ticket-modal {
   background: rgba(6, 7, 9, 0.85) !important;
-  backdrop-filter: blur(24px) !important;
-  -webkit-backdrop-filter: blur(24px) !important;
 }
 
 .client-page--showcase #web-ticket-chat-modal > div,
 .client-page--showcase #web-create-ticket-modal > div {
   background: var(--obsidian-glass-elevated, rgba(14, 17, 23, 0.94)) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: var(--obsidian-radius-lg, 16px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.15)), 0 30px 90px rgba(0, 0, 0, 0.8) !important;
@@ -2994,8 +2943,6 @@ img.site-nav-avatar {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
   border: 1px solid rgba(255, 255, 255, 0.09) !important;
   border-radius: var(--obsidian-radius-md, 12px) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 36px rgba(0, 0, 0, 0.4) !important;
 }
 
@@ -3151,8 +3098,6 @@ img.site-nav-avatar {
   position: fixed;
   inset: 0;
   background: rgba(6, 7, 9, 0.88) !important;
-  backdrop-filter: blur(28px) !important;
-  -webkit-backdrop-filter: blur(28px) !important;
   z-index: 10005 !important;
   padding: 20px;
   display: flex;

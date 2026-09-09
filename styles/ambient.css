@@ -85,7 +85,7 @@
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(139, 92, 246, 0.12), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 107, 53, 0.12), transparent 70%),
     linear-gradient(180deg, rgba(3, 2, 6, 0.28) 0%, rgba(3, 2, 6, 0.48) 55%, rgba(3, 2, 6, 0.72) 100%);
   transition: background 0.35s ease;
 }

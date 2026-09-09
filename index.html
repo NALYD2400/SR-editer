@@ -1,27 +1,31 @@
-
 <!doctype html>
 <html lang="fr" data-theme="dark">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Home · SR Editer</title>
-  
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=3" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-  
+  <link rel="icon" type="image/png" href="assets/logo_small.png" />
+
+  <link
+    href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles/awwwards.css?v=4" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body class="aww-page">
   <!-- 3D Video Background -->
   <div class="site-bg-container" aria-hidden="true">
-    <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
+    <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline
+      poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
     <div class="site-bg-overlay"></div>
     <div class="site-bg-grain"></div>
   </div>
 
-  <div class="custom-cursor"></div>
 
   <!-- Awwwards Header -->
   <header class="aww-header" data-gsap="fade-down">
@@ -31,11 +35,16 @@
         <span class="aww-logo-text">SR<br>EDITER</span>
       </a>
       <nav class="aww-nav">
-        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
-        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
-        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
-        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
-        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
+        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+            data-hover="HOME">HOME</span></a>
+        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+            data-hover="DASHBOARD">DASHBOARD</span></a>
+        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+            data-hover="LIBRARY">LIBRARY</span></a>
+        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+            data-hover="DOCS">DOCS</span></a>
+        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+            data-hover="BLOG">BLOG</span></a>
       </nav>
       <div class="aww-header-actions">
         <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
@@ -47,171 +56,117 @@
       </div>
     </div>
   </header>
-  
+
   <main class="aww-smooth-scroll">
 
-      <section class="aww-hero">
-        <div class="aww-hero-grid">
-          <div class="aww-hero-content">
-            <div class="aww-kicker">01 — NEXT GEN STUDIO</div>
-            <h1 class="aww-hero-heading" data-reveal="text">
-              TEXTURE<br>
-              <span class="aww-text-stroke">ENGINEERING</span><br>
-              REDEFINED.
-            </h1>
-            <p class="aww-hero-desc">
-              Atelier de modding en temps réel pour GTA V et FiveM. Édition 2D multi-calques, rendu 3D RAGE en direct et injection d'archives RPF sans redémarrer le jeu.
-            </p>
-            <div class="aww-hero-actions">
-              <a href="#features" class="aww-btn aww-btn-outline" data-magnetic>
-                <span class="aww-btn-text">EXPLORER</span>
-              </a>
-              <a href="#abonnements" class="aww-btn aww-btn-solid" data-magnetic>
-                <span class="aww-btn-text">OFFRES &amp; ACCÈS</span>
-              </a>
-              <a href="#" class="aww-btn aww-btn-outline btn-download" id="download-btn" data-magnetic>
-                <span class="aww-btn-text">TÉLÉCHARGER x64</span>
-              </a>
-            </div>
-            <div class="aww-hero-stats">
-              <div class="aww-stat-pill">
-                <span class="aww-stat-val">v0.7.1</span>
-                <span class="aww-stat-lbl">Version Stable</span>
-              </div>
-              <div class="aww-stat-pill">
-                <span class="aww-stat-val">145+</span>
-                <span class="aww-stat-lbl">Textures Cloud</span>
-              </div>
-              <div class="aww-stat-pill">
-                <span class="aww-stat-val">60 FPS</span>
-                <span class="aww-stat-lbl">Moteur 3D RAGE</span>
-              </div>
-            </div>
-          </div>
-          <div class="aww-hero-media">
-            <div class="aww-mockup-frame" data-reveal="image">
-              <div class="aww-mockup-bar">
-                <div class="aww-mockup-dots"><span></span><span></span><span></span></div>
-                <div class="aww-mockup-title">SR Editer Studio · Texture UV &amp; RAGE Shaders (v0.7.1 Pro)</div>
-                <div class="aww-mockup-badge">LIVE 60 FPS</div>
-              </div>
-              <div class="aww-mockup-screen">
-                <img src="assets/app-texture-studio.webp" alt="SR Editer Studio Preview" class="aww-mockup-img" id="hero-showcase-img" />
-                <div class="aww-mockup-glow"></div>
-              </div>
-              <div class="aww-mockup-tabs">
-                <button type="button" class="aww-mockup-tab is-active" data-showcase="assets/app-texture-studio.webp">Texture Studio</button>
-                <button type="button" class="aww-mockup-tab" data-showcase="assets/app-viewport-3d.webp">3D Viewport</button>
-                <button type="button" class="aww-mockup-tab" data-showcase="assets/app-rpf-explorer.png">RPF Explorer</button>
-              </div>
-            </div>
-          </div>
+    <section class="aww-hero minimalist-hero">
+      <div class="aww-hero-content text-center">
+        <div class="aww-kicker" data-gsap="fade-down">01 — NEXT GEN STUDIO</div>
+        <h1 class="aww-hero-heading" data-reveal="text">
+          TEXTURE<br>
+          <span class="aww-text-stroke">ENGINEERING</span><br>
+          REDEFINED.
+        </h1>
+        <p class="aww-hero-desc mx-auto" data-gsap="fade-up" data-delay="0.2">
+          Atelier de modding en temps réel pour GTA V et FiveM. Édition 2D multi-calques, rendu 3D RAGE en direct.
+        </p>
+        <div class="aww-hero-actions justify-center" data-gsap="fade-up" data-delay="0.3">
+          <a href="#features" class="aww-btn aww-btn-outline" data-magnetic>
+            <span class="aww-btn-text">EXPLORER</span>
+          </a>
+          <a href="#abonnements" class="aww-btn aww-btn-solid" data-magnetic>
+            <span class="aww-btn-text">OFFRES &amp; ACCÈS</span>
+          </a>
         </div>
-      </section>
+      </div>
 
-      <section class="aww-features" id="features">
-        <div class="aww-section-header">
-          <div class="aww-kicker">02 — WORKFLOW ATELIER</div>
-          <h2 class="aww-section-title" data-reveal="text">TECHNOLOGIES<br><span class="aww-text-stroke">DE POINTE</span></h2>
-        </div>
-        <div class="aww-feature-grid">
-          <div class="aww-feature-card" data-gsap="card-reveal">
-            <div class="aww-card-img-wrap">
-              <img src="assets/app-texture-studio.webp" alt="Texture Studio 2D &amp; 4K" loading="lazy" />
-            </div>
-            <div class="aww-card-num">01</div>
-            <h3>ATLAS UV &amp; CALQUES 4K</h3>
-            <p>Édition multi-calques non destructive avec masques alpha en temps réel. Support natif des formats DDS BC7, DXT5 et PNG haute fidélité.</p>
-          </div>
-          <div class="aww-feature-card" data-gsap="card-reveal">
-            <div class="aww-card-img-wrap">
-              <img src="assets/app-viewport-3d.webp" alt="Viewport 3D RAGE" loading="lazy" />
-            </div>
-            <div class="aww-card-num">02</div>
-            <h3>VIEWPORT 3D WEBGL</h3>
-            <p>Rendu physique temps réel et shaders RAGE. Orbite 360°, éclairage studio HDRI, et synchronisation instantanée sans délai.</p>
-          </div>
-          <div class="aww-feature-card" data-gsap="card-reveal">
-            <div class="aww-card-img-wrap">
-              <img src="assets/app-rpf-explorer.png" alt="RPF Explorer Rockstar" loading="lazy" />
-            </div>
-            <div class="aww-card-num">03</div>
-            <h3>ROCKSTAR RSC7 &amp; RPF</h3>
-            <p>Exploration directe des archives RPF et sauvegardes atomiques. Injection chirurgicale des formats .ytd, .ydr, .yft et .ydd.</p>
-          </div>
-        </div>
-      </section>
+    </section>
 
-      <section class="aww-features" id="abonnements" style="padding-top: 2rem;">
-        <div class="aww-section-header">
-          <div class="aww-kicker">03 — PLANS TARIFAIRES</div>
-          <h2 class="aww-section-title" data-reveal="text">CHOISISSEZ<br><span class="aww-text-stroke">VOTRE LICENCE</span></h2>
+    <section class="aww-features minimalist-section" id="features">
+      <div class="aww-section-header text-center">
+        <div class="aww-kicker">02 — WORKFLOW ATELIER</div>
+        <h2 class="aww-section-title" data-reveal="text">TECHNOLOGIES<br><span class="aww-text-stroke">DE POINTE</span>
+        </h2>
+      </div>
+      <div class="aww-feature-grid minimalist-grid">
+        <div class="aww-feature-card clean-card stagger-1" data-gsap="card-reveal">
+          <div class="aww-card-img-wrap" data-gsap="parallax" data-speed="1.1">
+            <img src="assets/app-texture-studio.webp" alt="Texture Studio" loading="lazy" />
+          </div>
+          <div class="aww-card-num">01</div>
+          <h3>ATLAS UV &amp; CALQUES 4K</h3>
+          <p>Édition multi-calques non destructive. Support natif des formats DDS BC7, DXT5 et PNG haute fidélité.</p>
         </div>
-        <div class="aww-pricing-grid">
-          <div class="aww-pricing-card">
-            <span class="aww-pricing-tier">STANDARD</span>
-            <div class="aww-pricing-amount">9,99€ <span>/ mois</span></div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Pour les créateurs indépendants et moddeurs occasionnels.</p>
-            <ul class="aww-pricing-features">
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Studio Textures 2D &amp; RPF</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> 1 appareil simultané</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Mises à jour régulières</li>
-            </ul>
-            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic style="width: 100%;">
-              <span class="aww-btn-text">COMMANDER</span>
-            </a>
+        <div class="aww-feature-card clean-card stagger-2" data-gsap="card-reveal">
+          <div class="aww-card-img-wrap" data-gsap="parallax" data-speed="1.15">
+            <img src="assets/app-viewport-3d.webp" alt="Viewport 3D" loading="lazy" />
           </div>
-
-          <div class="aww-pricing-card is-featured">
-            <span class="aww-pricing-badge">RECOMMANDÉ</span>
-            <span class="aww-pricing-tier" style="color: var(--accent);">PRO</span>
-            <div class="aww-pricing-amount">24,99€ <span>/ mois</span></div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">L'outil complet pour les moddeurs actifs et créateurs de serveurs.</p>
-            <ul class="aww-pricing-features">
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Standard inclus</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Viewport 3D temps réel &amp; Shaders</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Bibliothèque 145+ textures cloud</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Synchronisation Rôle Discord VIP</li>
-            </ul>
-            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-solid" data-magnetic style="width: 100%;">
-              <span class="aww-btn-text">PASSER EN PRO</span>
-            </a>
+          <div class="aww-card-num">02</div>
+          <h3>VIEWPORT 3D WEBGL</h3>
+          <p>Rendu physique temps réel et shaders RAGE. Éclairage studio HDRI et synchronisation immédiate.</p>
+        </div>
+        <div class="aww-feature-card clean-card stagger-3" data-gsap="card-reveal">
+          <div class="aww-card-img-wrap" data-gsap="parallax" data-speed="1.2">
+            <img src="assets/app-rpf-explorer.png" alt="RPF Explorer" loading="lazy" />
           </div>
+          <div class="aww-card-num">03</div>
+          <h3>ROCKSTAR RSC7 &amp; RPF</h3>
+          <p>Exploration directe des archives RPF. Injection chirurgicale des formats .ytd, .ydr, .yft et .ydd.</p>
+        </div>
+      </div>
+    </section>
 
-          <div class="aww-pricing-card">
-            <span class="aww-pricing-tier">PREMIUM</span>
-            <div class="aww-pricing-amount">49,99€ <span>/ mois</span></div>
-            <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Pour les studios FiveM et équipes de modding exigeantes.</p>
-            <ul class="aww-pricing-features">
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tout le plan Pro inclus</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Multi-appareils (jusqu'à 3 postes)</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Support Prioritaire Dédié (Urgent)</li>
-              <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Accès anticipé aux builds bêta</li>
-            </ul>
-            <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic style="width: 100%;">
-              <span class="aww-btn-text">REJOINDRE L'ÉLITE</span>
-            </a>
+    <section class="aww-features minimalist-section" id="abonnements">
+      <div class="aww-section-header text-center">
+        <div class="aww-kicker">03 — PLANS TARIFAIRES</div>
+        <h2 class="aww-section-title" data-reveal="text">CHOISISSEZ<br><span class="aww-text-stroke">VOTRE LICENCE</span></h2>
+      </div>
+      <div class="aww-pricing-grid minimalist-pricing">
+        <div class="aww-pricing-card clean-pricing">
+          <span class="aww-pricing-tier">STANDARD</span>
+          <div class="aww-pricing-amount">9,99€</div>
+          <p class="pricing-desc">Pour les créateurs indépendants et moddeurs occasionnels.</p>
+          <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic>
+            <span class="aww-btn-text">COMMANDER</span>
+          </a>
+        </div>
+
+        <div class="aww-pricing-card clean-pricing is-featured">
+          <span class="aww-pricing-badge">PRO</span>
+          <span class="aww-pricing-tier text-accent">STUDIO PRO</span>
+          <div class="aww-pricing-amount">24,99€</div>
+          <p class="pricing-desc">L'outil complet pour les moddeurs actifs et créateurs de serveurs.</p>
+          <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-solid" data-magnetic>
+            <span class="aww-btn-text">PASSER EN PRO</span>
+          </a>
+        </div>
+
+        <div class="aww-pricing-card clean-pricing">
+          <span class="aww-pricing-tier">ENTREPRISE</span>
+          <div class="aww-pricing-amount">49,99€</div>
+          <p class="pricing-desc">Pour les studios professionnels et grands serveurs FiveM.</p>
+          <a href="login.html?redirect=dashboard.html" class="aww-btn aww-btn-outline" data-magnetic>
+            <span class="aww-btn-text">COMMANDER</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="aww-footer minimalist-footer">
+      <div class="aww-footer-content text-center">
+        <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
+        <a href="#" class="aww-btn aww-btn-solid aww-btn-massive mt-2" data-magnetic>
+          <span class="aww-btn-text">GET SR EDITER</span>
+        </a>
+        <div class="aww-footer-bottom mt-4">
+          <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
+          <div class="aww-footer-links">
+            <a href="privacy.html" class="aww-link">Privacy</a>
+            <a href="terms.html" class="aww-link">Terms</a>
           </div>
         </div>
-      </section>
-
-      <footer class="aww-footer">
-        <div class="aww-footer-content">
-          <div class="aww-footer-top">
-            <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
-            <a href="#" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
-              <span class="aww-btn-text">GET SR EDITER</span>
-            </a>
-          </div>
-          <div class="aww-footer-bottom">
-            <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
-            <div class="aww-footer-links">
-              <a href="privacy.html" class="aww-link">Privacy</a>
-              <a href="terms.html" class="aww-link">Terms</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      </div>
+    </footer>
   </main>
 
   <!-- Libraries -->
@@ -220,11 +175,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/split-type"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  
+
   <!-- Core Logic & Animations -->
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js"></script>
   <script src="js/awwwards.js"></script>
   <script src="js/client.js"></script>
 </body>
+
 </html>

@@ -144,7 +144,7 @@
       function getDuration() {
         return (bgVideo.duration && Number.isFinite(bgVideo.duration) && bgVideo.duration > 0)
           ? bgVideo.duration
-          : 7.916;
+          : 7.764;
       }
 
       function updateTarget() {

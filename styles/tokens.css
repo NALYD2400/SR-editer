@@ -19,43 +19,43 @@ html[data-theme="dark"] {
   --muted: #a699c2;
   --muted-dim: rgba(166, 153, 194, 0.55);
 
-  --accent: #8b5cf6;
-  --accent-light: #a78bfa;
-  --accent-soft: rgba(139, 92, 246, 0.16);
+  --accent: #ff6b35;
+  --accent-light: #ffa800;
+  --accent-soft: rgba(255, 107, 53, 0.16);
   --blue: #00f0ff;
-  --purple: #7c3aed;
-  --indigo: #6366f1;
-  --pink: #d946ef;
+  --purple: #ff3366;
+  --indigo: #ff753a;
+  --pink: #ff3366;
   --success: #22c55e;
   --warning: #ffb703;
   --danger: #f43f5e;
 
-  --neon-pink: #a78bfa;
+  --neon-pink: #ff3366;
   --neon-cyan: #00f0ff;
-  --neon-purple: #8b5cf6;
+  --neon-purple: #ff6b35;
 
-  --glow-pink: 0 0 20px rgba(167, 139, 250, 0.35);
+  --glow-pink: 0 0 20px rgba(255, 51, 102, 0.35);
   --glow-cyan: 0 0 20px rgba(0, 240, 255, 0.35);
-  --glow-purple: 0 8px 30px rgba(139, 92, 246, 0.45);
+  --glow-purple: 0 8px 30px rgba(255, 107, 53, 0.45);
 
   --border: rgba(255, 255, 255, 0.08);
-  --border-hover: rgba(139, 92, 246, 0.35);
-  --border-strong: rgba(139, 92, 246, 0.4);
-  --border-neon: rgba(0, 240, 255, 0.2);
+  --border-hover: rgba(255, 107, 53, 0.4);
+  --border-strong: rgba(255, 107, 53, 0.45);
+  --border-neon: rgba(255, 168, 0, 0.25);
 
   --nav-bg: rgba(5, 4, 9, 0.4);
   --nav-bg-scrolled: rgba(5, 4, 9, 0.85);
   --ambient-overlay: linear-gradient(180deg, rgba(5, 4, 9, 0.2) 0%, rgba(5, 4, 9, 0.85) 60%, #050409 100%);
   --ambient-blur-strength: 50px;
-  --hero-title-gradient: linear-gradient(135deg, #ffffff 10%, #d6cfe3 60%, #8b5cf6 120%);
-  --btn-primary-bg: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%);
+  --hero-title-gradient: linear-gradient(135deg, #ffffff 10%, #ffd0bc 60%, #ff6b35 120%);
+  --btn-primary-bg: linear-gradient(135deg, #ff3366 0%, #ff6b35 50%, #ffa800 100%);
   --btn-primary-text: #ffffff;
-  --btn-primary-shadow: 0 8px 32px rgba(139, 92, 246, 0.4);
-  --btn-primary-hover-shadow: 0 12px 40px rgba(139, 92, 246, 0.6), 0 0 20px rgba(0, 240, 255, 0.25);
+  --btn-primary-shadow: 0 8px 32px rgba(255, 107, 53, 0.4);
+  --btn-primary-hover-shadow: 0 12px 40px rgba(255, 107, 53, 0.6), 0 0 20px rgba(255, 168, 0, 0.25);
   --glass-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02));
   --field-bg: rgba(255, 255, 255, 0.03);
   --field-focus-bg: rgba(255, 255, 255, 0.06);
-  --field-focus-border: rgba(139, 92, 246, 0.45);
+  --field-focus-border: rgba(255, 107, 53, 0.55);
 
   --radius-sm: 10px;
   --radius-md: 14px;
@@ -64,7 +64,7 @@ html[data-theme="dark"] {
   --radius-pill: 999px;
 
   --shadow-panel: 0 24px 80px rgba(0, 0, 0, 0.55);
-  --shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 30px rgba(139, 92, 246, 0.2);
+  --shadow-card-hover: 0 20px 48px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 107, 53, 0.25);
 
   --nav-height: 64px;
   --sidebar-width: 260px;
@@ -96,20 +96,20 @@ html[data-theme="light"] {
   --muted: #7b728b;
   --muted-dim: rgba(123, 114, 139, 0.75);
 
-  --accent: #7c3aed;
-  --accent-light: #8b5cf6;
-  --accent-soft: rgba(124, 58, 237, 0.12);
+  --accent: #e65100;
+  --accent-light: #ff6b35;
+  --accent-soft: rgba(255, 107, 53, 0.12);
   --blue: #0087a3;
-  --purple: #6d28d9;
-  --indigo: #4f46e5;
-  --pink: #c026d3;
+  --purple: #d81b60;
+  --indigo: #f4511e;
+  --pink: #e91e63;
   --success: #0f9d6b;
   --warning: #d97706;
   --danger: #e11d48;
 
-  --border: rgba(139, 92, 246, 0.16);
-  --border-hover: rgba(124, 58, 237, 0.35);
-  --border-strong: rgba(124, 58, 237, 0.28);
+  --border: rgba(255, 107, 53, 0.16);
+  --border-hover: rgba(230, 81, 0, 0.35);
+  --border-strong: rgba(230, 81, 0, 0.28);
 
   --nav-bg: rgba(242, 239, 246, 0.65);
   --nav-bg-scrolled: rgba(242, 239, 246, 0.92);
@@ -123,7 +123,7 @@ html[data-theme="light"] {
   --glass-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(255, 255, 255, 0.72));
   --field-bg: rgba(255, 255, 255, 0.88);
   --field-focus-bg: #ffffff;
-  --field-focus-border: rgba(139, 92, 246, 0.35);
+  --field-focus-border: rgba(255, 107, 53, 0.35);
 
   --shadow-panel: 0 20px 60px rgba(75, 60, 100, 0.1);
   --shadow-card-hover: 0 20px 50px rgba(75, 60, 100, 0.15);
@@ -151,8 +151,8 @@ html[data-theme="light"] {
   --obsidian-shadow-card: 0 16px 40px -10px rgba(0, 0, 0, 0.7);
   --obsidian-shadow-hover: 0 24px 50px -10px rgba(0, 0, 0, 0.85), 0 0 24px rgba(56, 189, 248, 0.12);
 
-  --obsidian-blur: blur(32px);
-  --obsidian-blur-deep: blur(40px);
+  --obsidian-blur: none;
+  --obsidian-blur-deep: none;
 
   --obsidian-text: #f8fafc;
   --obsidian-text-soft: #cbd5e1;

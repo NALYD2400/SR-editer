@@ -12,7 +12,7 @@ const headTemplate = (title, extraScripts = '') => `
   <title>${title} · SR Editer</title>
   
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=3" />
+  <link rel="stylesheet" href="styles/awwwards.css?v=4" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
   
   <!-- Supabase -->

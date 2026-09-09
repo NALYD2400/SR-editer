@@ -240,7 +240,7 @@
 
     const particles = [];
     const NUM_PARTICLES = Math.min(35, Math.floor(window.innerWidth / 40));
-    const COLORS = ["rgba(139, 92, 246, ", "rgba(0, 240, 255, ", "rgba(99, 102, 241, "];
+    const COLORS = ["rgba(255, 107, 53, ", "rgba(255, 51, 102, ", "rgba(255, 168, 0, "];
 
     for (let i = 0; i < NUM_PARTICLES; i++) {
       particles.push({
@@ -266,8 +266,8 @@
 
       // Subtle mouse spotlight
       const grad = ctx.createRadialGradient(mouseX, mouseY, 0, mouseX, mouseY, 320);
-      grad.addColorStop(0, "rgba(139, 92, 246, 0.08)");
-      grad.addColorStop(0.5, "rgba(0, 240, 255, 0.03)");
+      grad.addColorStop(0, "rgba(255, 107, 53, 0.08)");
+      grad.addColorStop(0.5, "rgba(255, 51, 102, 0.03)");
       grad.addColorStop(1, "transparent");
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
@@ -300,7 +300,7 @@
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = "rgba(139, 92, 246, " + (0.15 * (1 - dist / 130)) + ")";
+            ctx.strokeStyle = "rgba(255, 107, 53, " + (0.15 * (1 - dist / 130)) + ")";
             ctx.lineWidth = 0.6;
             ctx.stroke();
           }

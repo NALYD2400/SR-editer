@@ -1954,8 +1954,6 @@ html[data-theme="light"] .admin-main {
   min-height: 64px;
   padding: 0 clamp(20px, 3vw, 44px);
   background: color-mix(in srgb, var(--bg-app) 88%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
 }
 
 .breadcrumb-nav {
@@ -4349,7 +4347,7 @@ html[data-theme="light"] #panel-library .texture-preview-box {
 
 #panel-user-detail .plan-pill.free { color: var(--text-muted); }
 #panel-user-detail .plan-pill.standard { color: #93c5fd; border-color: color-mix(in srgb, #60a5fa 35%, var(--border)); }
-#panel-user-detail .plan-pill.pro { color: #c4b5fd; border-color: color-mix(in srgb, #a78bfa 35%, var(--border)); }
+#panel-user-detail .plan-pill.pro { color: #ffa800; border-color: color-mix(in srgb, #ff6b35 35%, var(--border)); }
 #panel-user-detail .plan-pill.studio,
 #panel-user-detail .plan-pill.premium { color: #fcd34d; border-color: color-mix(in srgb, #fbbf24 30%, var(--border)); }
 #panel-user-detail .plan-pill.lifetime { color: #6ee7b7; border-color: color-mix(in srgb, #34d399 30%, var(--border)); }
@@ -5001,7 +4999,7 @@ html[data-theme="light"] #panel-library .texture-preview-box {
 
 #panel-users .plan-pill.free { color: var(--text-muted); }
 #panel-users .plan-pill.standard { color: #93c5fd; border-color: color-mix(in srgb, #60a5fa 35%, var(--border)); }
-#panel-users .plan-pill.pro { color: #c4b5fd; border-color: color-mix(in srgb, #a78bfa 35%, var(--border)); }
+#panel-users .plan-pill.pro { color: #ffa800; border-color: color-mix(in srgb, #ff6b35 35%, var(--border)); }
 #panel-users .plan-pill.studio,
 #panel-users .plan-pill.premium { color: #fcd34d; border-color: color-mix(in srgb, #fbbf24 30%, var(--border)); }
 #panel-users .plan-pill.lifetime { color: #6ee7b7; border-color: color-mix(in srgb, #34d399 30%, var(--border)); }
@@ -5222,7 +5220,6 @@ html[data-theme="light"] #panel-library .texture-preview-box {
   position: absolute;
   inset: 0;
   background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(6px);
 }
 
 .admin-confirm-card {
@@ -7271,7 +7268,7 @@ html[data-theme="light"] #panel-users .users-menu-badge {
 
 #panel-subscriptions .plan-pill.free { color: var(--text-muted); }
 #panel-subscriptions .plan-pill.standard { color: #93c5fd; border-color: color-mix(in srgb, #60a5fa 35%, var(--border)); }
-#panel-subscriptions .plan-pill.pro { color: #c4b5fd; border-color: color-mix(in srgb, #a78bfa 35%, var(--border)); }
+#panel-subscriptions .plan-pill.pro { color: #ffa800; border-color: color-mix(in srgb, #ff6b35 35%, var(--border)); }
 #panel-subscriptions .plan-pill.studio,
 #panel-subscriptions .plan-pill.premium { color: #fcd34d; border-color: color-mix(in srgb, #fbbf24 30%, var(--border)); }
 #panel-subscriptions .plan-pill.lifetime { color: #6ee7b7; border-color: color-mix(in srgb, #34d399 30%, var(--border)); }

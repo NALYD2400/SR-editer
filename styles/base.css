@@ -185,8 +185,6 @@ html[data-theme="light"] .btn-primary {
   background: var(--glass-gradient);
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
   transition: background 0.35s var(--ease-out), border-color 0.35s var(--ease-out);
 }
 
@@ -419,8 +417,6 @@ html[data-theme="light"] .theme-toggle .icon-sun {
   background: var(--obsidian-glass, rgba(10, 12, 16, 0.82)) !important;
   border: 1px solid rgba(255, 255, 255, 0.08) !important;
   border-radius: var(--obsidian-radius-lg, 16px);
-  backdrop-filter: blur(32px) saturate(140%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(140%) !important;
   box-shadow: var(--obsidian-specular, inset 0 1px 0 rgba(255, 255, 255, 0.12)), 0 16px 40px -10px rgba(0, 0, 0, 0.7);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
 }
