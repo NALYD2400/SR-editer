@@ -333,13 +333,13 @@ document.addEventListener('DOMContentLoaded', () => {
           strokeEl.innerHTML = strokeEl.textContent;
         });
 
-        // Set initial OriginKit states for characters and stroke elements
+        // Set initial states for characters and stroke elements (Webflow style classic slide up)
         const animTargets = heading.querySelectorAll('.char, .aww-text-stroke');
         gsap.set(animTargets, { 
-          y: 25, 
+          y: '120%', 
+          rotateZ: 4,
           opacity: 0,
-          filter: 'blur(10px)',
-          willChange: 'transform, opacity, filter'
+          willChange: 'transform, opacity'
         });
       } catch (e) {
         console.warn('SplitType error on heading:', e);
@@ -369,19 +369,19 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // Hero Title: OriginKit Blur-Up Animation
+  // Hero Title: Webflow 3D Text Reveal
   const heroHeading = document.querySelector('.aww-hero-heading, .aww-page-title, .aww-auth-title');
   if (heroHeading) {
     const chars = heroHeading.querySelectorAll('.char, .aww-text-stroke');
     if (chars.length) {
       introTl.to(chars, 
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, stagger: 0.02, ease: "power3.out", clearProps: "filter,willChange" }, 
+        { y: '0%', rotateZ: 0, opacity: 1, duration: 1.2, stagger: 0.03, ease: "power4.out", clearProps: "willChange,transformOrigin" }, 
         "<0.1"
       );
     } else {
       introTl.fromTo(heroHeading, 
-        { y: 40, opacity: 0, filter: 'blur(10px)' }, 
-        { y: 0, opacity: 1, filter: 'blur(0px)', duration: 1.0, ease: "power3.out", clearProps: "filter,willChange" }, 
+        { y: 40, opacity: 0 }, 
+        { y: 0, opacity: 1, duration: 1.0, ease: "power3.out", clearProps: "willChange" }, 
         "<0.1"
       );
     }
@@ -397,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  const heroActions = document.querySelector('.aww-hero-actions, .aww-hero-stats, .aww-auth-container, .aww-dash-sidebar, .aww-docs-sidebar');
+  const heroActions = document.querySelector('.aww-hero-actions, .aww-hero-stats, .aww-auth-container, .aww-docs-sidebar');
   if (heroActions) {
     introTl.fromTo(heroActions, 
       { y: 25, opacity: 0, scale: 0.97 }, 
@@ -424,16 +424,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 10. SCROLL-TRIGGERED WEBFLOW REVEALS (For Sections Below The Fold)
   if (hasGsap && hasScrollTrigger) {
-    // Section Titles below the fold (OriginKit Blur-Up Text)
+    // Section Titles below the fold (Webflow 3D Text Reveal)
     document.querySelectorAll('.aww-section-title, .aww-footer-title').forEach(title => {
       if (title.closest('.aww-hero') || title.closest('.aww-page-hero')) return;
       const chars = title.querySelectorAll('.char, .aww-text-stroke');
       if (chars.length) {
         gsap.to(chars, 
           {
-            opacity: 1, filter: "blur(0px)", y: 0,
-            duration: 1.2, stagger: 0.04, ease: "power3.out",
-            clearProps: "filter,willChange",
+            opacity: 1, rotateZ: 0, y: '0%',
+            duration: 1.2, stagger: 0.03, ease: "power4.out",
+            clearProps: "willChange,transformOrigin",
             scrollTrigger: {
               trigger: title,
               start: "top 85%",

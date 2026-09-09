@@ -17,7 +17,7 @@
 <body class="aww-page">
   <!-- 3D Video Background -->
   <div class="site-bg-container" aria-hidden="true">
-    <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
+    <video class="site-bg-video" src="assets/videos/bg-logo.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
     <div class="site-bg-overlay"></div>
     <div class="site-bg-grain"></div>
   </div>
@@ -56,18 +56,18 @@
         <div class="aww-spinner"></div>
         <span>Loading Command Center...</span>
       </div>
-      <section class="aww-page-hero" style="height: 50vh; min-height: 400px;">
+      <section class="aww-page-hero aww-page-hero--dashboard">
         <h1 class="aww-page-title" data-gsap="split-text">COMMAND<br><span class="aww-text-stroke">CENTER</span></h1>
       </section>
       <section class="aww-dashboard" id="dashboard-content" style="display:none;" hidden>
         <div class="aww-dash-grid">
-          <div class="aww-dash-sidebar" data-gsap="fade-right">
+          <div class="aww-dash-sidebar">
             <div class="aww-user-profile">
               <div class="aww-avatar" id="profile-avatar-char">?</div>
               <div class="aww-user-meta">
                 <h3 id="user-email">Loading...</h3>
                 <span class="aww-badge" id="user-tier">GUEST</span>
-                <span style="display:none;" id="user-role"></span>
+                <span class="aww-badge aww-badge-role" id="user-role" hidden></span>
               </div>
             </div>
             <nav class="aww-dash-nav">
@@ -76,10 +76,12 @@
               <button class="aww-dash-tab" data-tab="support">Support &amp; Tickets</button>
               <button class="aww-dash-tab" data-tab="downloads">Téléchargements</button>
               <button class="aww-dash-tab" data-tab="settings">Paramètres &amp; Sécurité</button>
+              <a href="admin.html" class="aww-dash-tab" id="portal-admin-link" style="color: var(--accent); text-decoration: none;" hidden>Administration ↗</a>
               <button class="aww-dash-tab aww-text-danger" id="logout-btn">Se déconnecter</button>
             </nav>
           </div>
-          <div class="aww-dash-content" data-gsap="fade-up">
+          <div class="aww-dash-content">
+            <div id="account-global-banner" class="aww-global-banner" style="display:none;" hidden></div>
             <!-- 1. OVERVIEW -->
             <div class="aww-panel active" id="panel-overview">
               <h2>Bienvenue dans votre atelier SR Editer</h2>
@@ -226,11 +228,11 @@
               <h2>Paramètres &amp; Sécurité</h2>
               <div style="margin-top: 2rem; padding: 2rem; border: 1px solid var(--border-color); border-radius: 16px; background: rgba(255,255,255,0.02);">
                 <h3>Liaison Discord</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0.5rem 0 1rem;">Link Discord to sync your roles automatically.</p>
+                <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0.5rem 0 1rem;">Associez votre compte Discord pour synchroniser automatiquement vos rôles et avantages.</p>
                 <p id="discord-account-note" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;"></p>
                 <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
                   <button class="aww-btn aww-btn-outline" id="discord-link-btn">Lier mon compte Discord</button>
-                  <button class="aww-btn aww-btn-outline" id="discord-sync-btn" style="display:none;">Synchroniser les rôles</button>
+                  <button class="aww-btn aww-btn-outline" id="discord-sync-btn" hidden>Synchroniser les rôles</button>
                 </div>
                 <div id="account-action-message" style="margin-top:1rem; color:var(--accent);" hidden></div>
               </div>
@@ -245,7 +247,7 @@
                   <input type="email" id="delete-account-email" class="aww-input" placeholder="votre-email@exemple.com" style="margin-bottom: 1rem;" />
                   <div style="display: flex; gap: 1rem; justify-content: flex-end;">
                     <button type="button" class="aww-btn aww-btn-outline" id="delete-account-cancel">Annuler</button>
-                    <button type="button" class="aww-btn aww-btn-solid aww-text-danger" id="delete-account-confirm" disabled>Confirmer la suppression</button>
+                    <button type="button" class="aww-btn aww-btn-solid aww-btn-danger aww-text-danger" id="delete-account-confirm" disabled>Confirmer la suppression</button>
                   </div>
                 </div>
               </div>
@@ -257,13 +259,13 @@
       
       <!-- Modals -->
       <div id="web-create-ticket-modal" class="aww-modal-backdrop" hidden>
-        <div class="aww-modal-window">
+        <div class="aww-modal-window" data-lenis-prevent>
           <div class="aww-modal-header">
             <h3 class="aww-modal-title">Créer un nouveau ticket d'assistance</h3>
             <button type="button" class="aww-modal-close" id="close-new-ticket-modal-btn">&times;</button>
           </div>
           <form id="web-create-ticket-form">
-            <div class="aww-modal-body">
+            <div class="aww-modal-body" data-lenis-prevent>
               <div id="web-create-ticket-error" class="aww-auth-error" style="display:none; margin-bottom: 1rem;"></div>
               <div class="aww-input-group">
                 <label for="web-ticket-subject">SUJET DE LA DEMANDE</label>
@@ -292,26 +294,27 @@
       </div>
 
       <div id="web-ticket-chat-modal" class="aww-modal-backdrop" hidden>
-        <div class="aww-modal-window" style="max-width: 720px; height: 80vh;">
-          <div class="aww-modal-header">
-            <div>
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <h3 class="aww-modal-title" id="web-chat-ticket-subject">Ticket #</h3>
-                <span id="web-chat-ticket-status-pill" class="ticket-count-badge">Ouvert</span>
+        <div class="aww-modal-window" style="max-width: 720px; height: 80vh;" data-lenis-prevent>
+          <div class="aww-modal-header" style="gap: 0.75rem;">
+            <div style="min-width: 0; flex: 1; overflow: hidden;">
+              <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                <h3 class="aww-modal-title" id="web-chat-ticket-subject" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1;">Ticket #</h3>
+                <span id="web-chat-ticket-status-pill" class="ticket-count-badge" style="flex-shrink: 0;">Ouvert</span>
               </div>
             </div>
-            <button type="button" class="aww-modal-close" id="close-ticket-chat-modal-btn">&times;</button>
+            <button type="button" class="aww-modal-close" id="close-ticket-chat-modal-btn" style="flex-shrink: 0;">&times;</button>
           </div>
-          <div id="web-chat-messages-container" style="flex: 1; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
+          <div id="web-ticket-reply-error" class="aww-auth-error" style="display:none; margin: 0.75rem 1.5rem 0;"></div>
+          <div id="web-chat-messages-container" data-lenis-prevent style="flex: 1; min-height: 0; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
           <form id="web-ticket-reply-form" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.75rem; align-items: flex-end;">
-            <textarea id="web-reply-message" rows="2" class="aww-textarea" style="min-height: 48px; padding: 0.6rem 0.85rem;" placeholder="Écrire votre réponse..." required></textarea>
-            <button type="submit" id="submit-ticket-reply-btn" class="aww-btn aww-btn-solid" style="height: 48px; padding: 0 1.5rem;">Envoyer</button>
+            <textarea id="web-reply-message" rows="2" class="aww-textarea" style="min-height: 48px; padding: 0.6rem 0.85rem; flex: 1;" placeholder="Écrire votre réponse..." required></textarea>
+            <button type="submit" id="submit-ticket-reply-btn" class="aww-btn aww-btn-solid" style="height: 48px; padding: 0 1.5rem; flex-shrink: 0;">Envoyer</button>
           </form>
         </div>
       </div>
 
       <div id="liquid-checkout-modal" class="liquid-checkout-backdrop" style="display: none;">
-        <div class="liquid-checkout-modal-content">
+        <div class="liquid-checkout-modal-content" data-lenis-prevent>
           <button type="button" class="liquid-checkout-close" id="liquid-checkout-close-btn">&times;</button>
           <div class="liquid-checkout-header">
             <div class="liquid-checkout-badge">Paiement Sécurisé SR Editer</div>
@@ -334,7 +337,7 @@
       </div>
 
       <div id="discord-required-modal" class="aww-modal-backdrop" hidden>
-        <div class="discord-required-dialog">
+        <div class="discord-required-dialog" data-lenis-prevent>
           <h3 style="font-family: var(--font-heading); margin-bottom: 1rem;">Discord Requis</h3>
           <p id="discord-required-message" style="color: var(--text-secondary);"></p>
           <a id="discord-required-join" target="_blank" rel="noopener" class="aww-btn aww-btn-solid" style="margin-bottom: 0.75rem; text-align: center;">Rejoindre le serveur Discord</a>
@@ -346,28 +349,70 @@
       <a id="discord-recovery-link" hidden></a>
 
       <script>
-        document.querySelectorAll('.aww-dash-tab').forEach(btn => {
-          if(!btn.dataset.tab) return;
-          btn.addEventListener('click', () => {
+        (function() {
+          function switchDashboardTab(tabName) {
+            if (!tabName) return;
+            const targetBtn = document.querySelector('.aww-dash-tab[data-tab="' + tabName + '"]');
+            const targetPanel = document.getElementById('panel-' + tabName);
+            if (!targetBtn || !targetPanel) return;
+
             document.querySelectorAll('.aww-dash-tab').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.aww-panel').forEach(p => {
               p.classList.remove('active');
               p.style.display = 'none';
             });
-            btn.classList.add('active');
-            const target = document.getElementById('panel-' + btn.dataset.tab);
-            if (target) {
-              target.classList.add('active');
-              target.style.display = 'block';
-              if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
-                window.ScrollTrigger.refresh();
-              }
-              if (window.__srLenis && typeof window.__srLenis.resize === 'function') {
-                window.__srLenis.resize();
+
+            targetBtn.classList.add('active');
+            targetPanel.classList.add('active');
+            targetPanel.style.display = 'block';
+
+            if (window.history && window.history.replaceState) {
+              window.history.replaceState(null, '', '#' + tabName);
+            }
+
+            if (targetBtn.scrollIntoView && window.innerWidth <= 860) {
+              targetBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+
+            if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === 'function') {
+              window.ScrollTrigger.refresh();
+            }
+            if (window.__srLenis && typeof window.__srLenis.resize === 'function') {
+              window.__srLenis.resize();
+            }
+          }
+
+          window.switchDashboardTab = switchDashboardTab;
+
+          document.querySelectorAll('.aww-dash-tab').forEach(btn => {
+            if (!btn.dataset.tab) return;
+            btn.addEventListener('click', () => {
+              switchDashboardTab(btn.dataset.tab);
+            });
+          });
+
+          // Check URL hash on page load and on back/forward hash navigation
+          function checkHash() {
+            const hashTab = (window.location.hash || '').replace('#', '').trim();
+            if (hashTab && document.getElementById('panel-' + hashTab)) {
+              switchDashboardTab(hashTab);
+            }
+          }
+          checkHash();
+          window.addEventListener('hashchange', checkHash);
+
+          // Handle anchor clicks targeting dashboard tabs (e.g. href="#subscription")
+          document.addEventListener('click', function(e) {
+            const a = e.target.closest('a[href^="#"]');
+            if (a) {
+              const tab = a.getAttribute('href').replace('#', '').trim();
+              if (tab && document.getElementById('panel-' + tab)) {
+                e.preventDefault();
+                switchDashboardTab(tab);
               }
             }
           });
-        });
+        })();
       </script>
 
       <footer class="aww-footer">
