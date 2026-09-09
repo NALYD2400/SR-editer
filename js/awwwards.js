@@ -26,117 +26,58 @@ document.addEventListener('DOMContentLoaded', () => {
   function setupAutoscrollHarmony(lenisInstance, headerElement) {
     if (!lenisInstance) return;
     let isAutoscrolling = false;
-    let isStickyAutoscroll = false;
-    let middleDownTime = 0;
-    let middleStartX = 0;
-    let middleStartY = 0;
-    let hasMovedMiddle = false;
 
     function startAutoscroll() {
       if (isAutoscrolling) return;
       isAutoscrolling = true;
-      if (lenisInstance && lenisInstance.stop) lenisInstance.stop();
+      document.documentElement.classList.add('is-autoscrolling');
+      if (lenisInstance.stop) lenisInstance.stop();
     }
 
     function endAutoscroll() {
       if (!isAutoscrolling) return;
       isAutoscrolling = false;
-      isStickyAutoscroll = false;
-      hasMovedMiddle = false;
+      document.documentElement.classList.remove('is-autoscrolling');
+      if (lenisInstance.scrollTo) {
+        lenisInstance.scrollTo(window.scrollY, { immediate: true });
+      }
       if (!headerElement || !headerElement.classList.contains('is-menu-open')) {
-        if (lenisInstance && lenisInstance.start) lenisInstance.start();
-        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.update) {
-          ScrollTrigger.update();
-        }
+        if (lenisInstance.start) lenisInstance.start();
+      }
+      if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.update) {
+        ScrollTrigger.update();
       }
     }
 
-    window.addEventListener(
-      'wheel',
-      (e) => {
-        if (isAutoscrolling) {
-          if ((e.buttons & 4) !== 0) {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-            return;
-          }
-          if (isStickyAutoscroll) {
-            endAutoscroll();
-          }
-        }
-      },
-      { capture: true, passive: false }
-    );
-
-    const onButtonDown = (e) => {
-      if (isStickyAutoscroll) {
+    // Middle click mousedown initiates native autoscroll
+    window.addEventListener('mousedown', (e) => {
+      if (isAutoscrolling) {
         endAutoscroll();
         return;
       }
-      if (e.button !== 1) return;
-      const target = e.target;
-      if (target && target.closest && target.closest('a[href]:not([href^="#"])')) {
-        return;
-      }
-      if (isAutoscrolling) return;
-      middleDownTime = performance.now();
-      middleStartX = e.clientX;
-      middleStartY = e.clientY;
-      hasMovedMiddle = false;
-      startAutoscroll();
-    };
-
-    const onButtonMove = (e) => {
-      if (!isAutoscrolling) return;
-      if ((e.buttons & 4) !== 0) {
-        const dist = Math.hypot(e.clientX - middleStartX, e.clientY - middleStartY);
-        if (dist > 4) {
-          hasMovedMiddle = true;
-        }
-      } else if (!isStickyAutoscroll) {
-        if (performance.now() - middleDownTime > 250) {
-          endAutoscroll();
-        }
-      }
-    };
-
-    const onButtonUp = (e) => {
-      if (!isAutoscrolling) return;
       if (e.button === 1) {
-        const elapsed = performance.now() - middleDownTime;
-        if (hasMovedMiddle || elapsed > 200) {
-          endAutoscroll();
-        } else {
-          isStickyAutoscroll = true;
+        const target = e.target;
+        if (target && target.closest && target.closest('a[href]:not([href^="#"]), button, input, textarea, select')) {
+          return;
         }
-      } else if (isStickyAutoscroll) {
-        endAutoscroll();
+        startAutoscroll();
       }
-    };
+    }, { passive: true });
 
-    const onKeyDown = () => {
-      if (isAutoscrolling) endAutoscroll();
-    };
+    // Sync Lenis internal scroll position while native autoscroll runs
+    window.addEventListener('scroll', () => {
+      if (isAutoscrolling && lenisInstance && lenisInstance.scrollTo) {
+        lenisInstance.scrollTo(window.scrollY, { immediate: true });
+      }
+    }, { passive: true });
 
-    const onBlur = () => {
-      if (isAutoscrolling) endAutoscroll();
-    };
-
-    window.addEventListener('pointerdown', onButtonDown, { passive: true });
-    window.addEventListener('mousedown', onButtonDown, { passive: true });
-    window.addEventListener('pointermove', onButtonMove, { passive: true });
-    window.addEventListener('mousemove', onButtonMove, { passive: true });
-    window.addEventListener('pointerup', onButtonUp, { passive: true });
-    window.addEventListener('mouseup', onButtonUp, { passive: true });
-    window.addEventListener('keydown', onKeyDown, { passive: true });
-    window.addEventListener('blur', onBlur, { passive: true });
-    document.addEventListener(
-      'visibilitychange',
-      () => {
-        if (document.hidden && isAutoscrolling) endAutoscroll();
-      },
-      { passive: true }
-    );
+    // End autoscroll when user clicks anywhere, presses a key, or switches windows
+    window.addEventListener('keydown', endAutoscroll, { passive: true });
+    window.addEventListener('blur', endAutoscroll, { passive: true });
+    window.addEventListener('contextmenu', endAutoscroll, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) endAutoscroll();
+    }, { passive: true });
   }
 
   // Mobile Menu Burger Handler & Responsive Navigation
