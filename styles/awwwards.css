@@ -922,25 +922,43 @@ button:disabled {
 
 /* Minimalist Utilities & Layout */
 .minimalist-hero {
+  min-height: 100vh;
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-top: 14rem;
-  gap: 5rem;
+  align-items: center;
+  padding: 6rem 2rem 4rem;
+  box-sizing: border-box;
 }
 .minimalist-hero .aww-hero-content {
-  max-width: 1400px;
+  max-width: 1000px;
   margin: 0 auto;
 }
 .minimalist-hero .aww-hero-heading {
-  font-size: clamp(3.5rem, 8vw, 7.5rem);
-  letter-spacing: -2px;
+  font-size: clamp(2.6rem, 5.8vw, 5rem);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 1.25rem;
 }
 .word {
   white-space: nowrap;
 }
 .minimalist-hero .aww-hero-desc {
-  font-size: 1.35rem;
-  max-width: 650px;
+  font-size: 1.15rem;
+  max-width: 580px;
+  margin-bottom: 2.25rem;
+  opacity: 0.85;
+}
+.minimalist-section {
+  padding-top: 10rem;
+  padding-bottom: 8rem;
+}
+.minimalist-section .aww-section-header {
+  margin-bottom: 3.5rem;
+}
+.minimalist-section .aww-section-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  letter-spacing: -1px;
 }
 .minimalist-media {
   width: 100%;
@@ -1640,16 +1658,18 @@ button:disabled {
 /* --- MINIMALIST UPDATE --- */
 
 .minimalist-hero {
-  padding-top: 10rem;
-  padding-bottom: 2rem;
+  min-height: 100vh;
+  display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  min-height: auto;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 2rem 4rem;
+  box-sizing: border-box;
 }
 
 .minimalist-hero .aww-hero-content {
-  max-width: 800px;
-  margin: 0 auto 4rem auto;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .text-center {
