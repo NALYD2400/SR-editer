@@ -17,9 +17,134 @@ document.addEventListener('DOMContentLoaded', () => {
   // Expose Lenis globally
   window.__srLenis = lenis;
 
+  // ── Native Middle-Click Autoscroll Harmony with Lenis ──
+  // Resolves frame fighting and trembling ("tremblements") when browser native autoscroll
+  // (middle mouse button click / wheel hold) runs concurrently with Lenis smooth scroll.
+  function setupAutoscrollHarmony(lenisInstance, headerElement) {
+    let isAutoscrolling = false;
+    let isStickyAutoscroll = false;
+    let middleDownTime = 0;
+    let middleStartX = 0;
+    let middleStartY = 0;
+    let hasMovedMiddle = false;
+
+    function startAutoscroll() {
+      if (isAutoscrolling) return;
+      isAutoscrolling = true;
+      lenisInstance.stop();
+    }
+
+    function endAutoscroll() {
+      if (!isAutoscrolling) return;
+      isAutoscrolling = false;
+      isStickyAutoscroll = false;
+      hasMovedMiddle = false;
+      // Do not restart smooth scroll if mobile menu burger is currently open
+      if (!headerElement || !headerElement.classList.contains('is-menu-open')) {
+        lenisInstance.start();
+      }
+    }
+
+    // Intercept wheel events in capture phase:
+    // 1) Swallow hardware switch micro-ticks while the middle button is held down.
+    // 2) If in sticky autoscroll mode and the user intentionally turns the wheel (buttons === 0),
+    //    immediately exit autoscroll and resume normal smooth scrolling.
+    window.addEventListener(
+      'wheel',
+      (e) => {
+        if (isAutoscrolling) {
+          if ((e.buttons & 4) !== 0) {
+            e.stopImmediatePropagation();
+            return;
+          }
+          if (isStickyAutoscroll) {
+            endAutoscroll();
+          }
+        }
+      },
+      { capture: true, passive: false }
+    );
+
+    const onPointerDown = (e) => {
+      // Any mouse click terminates sticky autoscroll mode
+      if (isStickyAutoscroll) {
+        endAutoscroll();
+        return;
+      }
+
+      if (e.button !== 1) return;
+
+      // Do not intercept middle-clicks on interactive elements (e.g. links opening in a new tab)
+      const target = e.target;
+      if (target && target.closest && target.closest('a[href], button, input, textarea, select, label')) {
+        return;
+      }
+
+      middleDownTime = performance.now();
+      middleStartX = e.clientX;
+      middleStartY = e.clientY;
+      hasMovedMiddle = false;
+      startAutoscroll();
+    };
+
+    const onPointerMove = (e) => {
+      if (!isAutoscrolling) return;
+
+      if ((e.buttons & 4) !== 0) {
+        const dist = Math.hypot(e.clientX - middleStartX, e.clientY - middleStartY);
+        if (dist > 5) {
+          hasMovedMiddle = true;
+        }
+      } else if (!isStickyAutoscroll) {
+        // Safety guard: middle button is no longer held down and we are not in sticky mode
+        endAutoscroll();
+      }
+    };
+
+    const onPointerUp = (e) => {
+      if (!isAutoscrolling) return;
+
+      if (e.button === 1) {
+        const elapsed = performance.now() - middleDownTime;
+        // If the user held the button or dragged it, releasing terminates autoscroll immediately
+        if (hasMovedMiddle || elapsed > 200) {
+          endAutoscroll();
+        } else {
+          // Quick tap without move enters sticky autoscroll (pan mode)
+          isStickyAutoscroll = true;
+        }
+      } else if (isStickyAutoscroll) {
+        endAutoscroll();
+      }
+    };
+
+    const onKeyDown = () => {
+      if (isAutoscrolling) {
+        endAutoscroll();
+      }
+    };
+
+    const onBlur = () => {
+      if (isAutoscrolling) {
+        endAutoscroll();
+      }
+    };
+
+    window.addEventListener('pointerdown', onPointerDown, { passive: true });
+    window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('pointerup', onPointerUp, { passive: true });
+    window.addEventListener('mouseup', onPointerUp, { passive: true });
+    window.addEventListener('keydown', onKeyDown, { passive: true });
+    window.addEventListener('blur', onBlur, { passive: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden && isAutoscrolling) endAutoscroll();
+    }, { passive: true });
+  }
+
   // Mobile Menu Burger Handler
   const burgerBtn = document.getElementById('aww-burger-btn');
   const header = document.querySelector('.aww-header');
+  setupAutoscrollHarmony(lenis, header);
   if (burgerBtn && header) {
     burgerBtn.addEventListener('click', () => {
       const isOpen = header.classList.toggle('is-menu-open');
