@@ -1,26 +1,30 @@
 
 // Awwwards Style JS
 document.addEventListener('DOMContentLoaded', () => {
-  // Lenis Smooth Scroll
-  const lenis = new Lenis({
-    duration: 1.2,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-    direction: 'vertical',
-    gestureDirection: 'vertical',
-    smooth: true,
-    mouseMultiplier: 1,
-    smoothTouch: false,
-    touchMultiplier: 2,
-    infinite: false,
-  });
-
-  // Expose Lenis globally
-  window.__srLenis = lenis;
+  // Lenis Smooth Scroll (with fallback if blocked or unavailable)
+  let lenis = null;
+  if (typeof Lenis !== 'undefined') {
+    try {
+      lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        mouseMultiplier: 1,
+        smoothTouch: false,
+        touchMultiplier: 2,
+        infinite: false,
+      });
+      window.__srLenis = lenis;
+    } catch (err) {
+      console.warn('Lenis init failed, using native scroll:', err);
+    }
+  }
 
   // ── Native Middle-Click Autoscroll Harmony with Lenis ──
-  // Resolves frame fighting and trembling ("tremblements") when browser native autoscroll
-  // (middle mouse button click / wheel hold) runs concurrently with Lenis smooth scroll.
   function setupAutoscrollHarmony(lenisInstance, headerElement) {
+    if (!lenisInstance) return;
     let isAutoscrolling = false;
     let isStickyAutoscroll = false;
     let middleDownTime = 0;
@@ -31,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startAutoscroll() {
       if (isAutoscrolling) return;
       isAutoscrolling = true;
-      lenisInstance.stop();
+      if (lenisInstance && lenisInstance.stop) lenisInstance.stop();
     }
 
     function endAutoscroll() {
@@ -39,21 +43,14 @@ document.addEventListener('DOMContentLoaded', () => {
       isAutoscrolling = false;
       isStickyAutoscroll = false;
       hasMovedMiddle = false;
-      // Do not restart smooth scroll if mobile menu burger is currently open
       if (!headerElement || !headerElement.classList.contains('is-menu-open')) {
-        lenisInstance.start();
+        if (lenisInstance && lenisInstance.start) lenisInstance.start();
         if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.update) {
           ScrollTrigger.update();
         }
       }
     }
 
-    // Intercept wheel events in capture phase:
-    // 1) Swallow hardware switch micro-ticks while the middle button is held down.
-    //    Both preventDefault() and stopImmediatePropagation() ensure neither Lenis nor
-    //    the browser's native wheel step can trigger a conflicting scroll jump.
-    // 2) If in sticky autoscroll mode and the user intentionally turns the wheel (buttons === 0),
-    //    immediately exit autoscroll and resume normal smooth scrolling.
     window.addEventListener(
       'wheel',
       (e) => {
@@ -72,22 +69,16 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     const onButtonDown = (e) => {
-      // Any mouse click terminates sticky autoscroll mode
       if (isStickyAutoscroll) {
         endAutoscroll();
         return;
       }
-
       if (e.button !== 1) return;
-
-      // Do not intercept middle-clicks on navigational links opening in a new tab
       const target = e.target;
       if (target && target.closest && target.closest('a[href]:not([href^="#"])')) {
         return;
       }
-
       if (isAutoscrolling) return;
-
       middleDownTime = performance.now();
       middleStartX = e.clientX;
       middleStartY = e.clientY;
@@ -97,14 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onButtonMove = (e) => {
       if (!isAutoscrolling) return;
-
       if ((e.buttons & 4) !== 0) {
         const dist = Math.hypot(e.clientX - middleStartX, e.clientY - middleStartY);
         if (dist > 4) {
           hasMovedMiddle = true;
         }
       } else if (!isStickyAutoscroll) {
-        // Safety guard: middle button is released without entering sticky mode
         if (performance.now() - middleDownTime > 250) {
           endAutoscroll();
         }
@@ -113,14 +102,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const onButtonUp = (e) => {
       if (!isAutoscrolling) return;
-
       if (e.button === 1) {
         const elapsed = performance.now() - middleDownTime;
-        // If the user held the button or dragged it, releasing terminates autoscroll immediately
         if (hasMovedMiddle || elapsed > 200) {
           endAutoscroll();
         } else {
-          // Quick tap without move enters sticky autoscroll (pan mode)
           isStickyAutoscroll = true;
         }
       } else if (isStickyAutoscroll) {
@@ -129,15 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const onKeyDown = () => {
-      if (isAutoscrolling) {
-        endAutoscroll();
-      }
+      if (isAutoscrolling) endAutoscroll();
     };
 
     const onBlur = () => {
-      if (isAutoscrolling) {
-        endAutoscroll();
-      }
+      if (isAutoscrolling) endAutoscroll();
     };
 
     window.addEventListener('pointerdown', onButtonDown, { passive: true });
@@ -157,40 +139,83 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  // Mobile Menu Burger Handler
+  // Mobile Menu Burger Handler & Responsive Navigation
   const burgerBtn = document.getElementById('aww-burger-btn');
   const header = document.querySelector('.aww-header');
-  setupAutoscrollHarmony(lenis, header);
+  if (lenis) setupAutoscrollHarmony(lenis, header);
+
   if (burgerBtn && header) {
-    burgerBtn.addEventListener('click', () => {
-      const isOpen = header.classList.toggle('is-menu-open');
-      burgerBtn.setAttribute('aria-expanded', String(isOpen));
-      if (isOpen) {
-        lenis.stop();
+    const toggleMobileMenu = (forceState) => {
+      const isCurrentlyOpen = header.classList.contains('is-menu-open');
+      const newState = typeof forceState === 'boolean' ? forceState : !isCurrentlyOpen;
+      header.classList.toggle('is-menu-open', newState);
+      burgerBtn.setAttribute('aria-expanded', String(newState));
+      if (newState) {
+        if (lenis && lenis.stop) lenis.stop();
+        document.body.style.overflow = 'hidden';
       } else {
-        lenis.start();
+        if (lenis && lenis.start) lenis.start();
+        document.body.style.overflow = '';
+      }
+    };
+
+    burgerBtn.addEventListener('click', () => toggleMobileMenu());
+
+    // Close on link click
+    document.querySelectorAll('.aww-nav .aww-link').forEach(link => {
+      link.addEventListener('click', () => toggleMobileMenu(false));
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && header.classList.contains('is-menu-open')) {
+        toggleMobileMenu(false);
       }
     });
 
-    document.querySelectorAll('.aww-nav .aww-link').forEach(link => {
-      link.addEventListener('click', () => {
-        header.classList.remove('is-menu-open');
-        burgerBtn.setAttribute('aria-expanded', 'false');
-        lenis.start();
-      });
-    });
+    // Close when resizing above tablet breakpoint
+    window.addEventListener('resize', () => {
+      if (window.innerWidth > 860 && header.classList.contains('is-menu-open')) {
+        toggleMobileMenu(false);
+      }
+    }, { passive: true });
   }
 
-  // GSAP Animations
-  gsap.registerPlugin(ScrollTrigger);
-  
-  lenis.on('scroll', ScrollTrigger.update);
-  gsap.ticker.add((time) => {
-    lenis.raf(time * 1000);
+  // Auto-mark Active Navigation Link
+  const currentPathname = (window.location.pathname.split('/').pop() || 'index.html').toLowerCase();
+  document.querySelectorAll('.aww-nav .aww-link').forEach(link => {
+    const href = (link.getAttribute('href') || '').toLowerCase();
+    if (href === currentPathname || (currentPathname === 'index.html' && (href === 'index.html' || href === './'))) {
+      link.classList.add('is-active');
+      link.setAttribute('aria-current', 'page');
+    }
   });
-  gsap.ticker.lagSmoothing(0);
 
-  // Lenis Anchor Smooth Scroll
+  // Auto-wire Official Download Buttons
+  const officialDownloadUrl = (window.SR_CONFIG && window.SR_CONFIG.downloadUrl) || "https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe";
+  document.querySelectorAll('#download-btn, #download-btn-2, .btn-download, #download-app-link').forEach(link => {
+    const currentHref = link.getAttribute('href');
+    if (!currentHref || currentHref === '#' || currentHref === '') {
+      link.setAttribute('href', officialDownloadUrl);
+    }
+  });
+
+  // GSAP & ScrollTrigger Animations (Safe Init)
+  const hasGsap = typeof gsap !== 'undefined';
+  const hasScrollTrigger = hasGsap && typeof ScrollTrigger !== 'undefined';
+
+  if (hasScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    if (lenis && lenis.on) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => {
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0);
+    }
+  }
+
+  // Lenis Anchor Smooth Scroll (with native fallback)
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -198,26 +223,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = document.querySelector(href);
         if (target) {
           e.preventDefault();
-          lenis.scrollTo(target, { offset: -90 });
+          if (lenis && lenis.scrollTo) {
+            lenis.scrollTo(target, { offset: -90 });
+          } else {
+            const rect = target.getBoundingClientRect();
+            const top = rect.top + window.scrollY - 90;
+            window.scrollTo({ top, behavior: 'smooth' });
+          }
         }
       }
     });
   });
 
-
-
-  // 6. Magnetic Elements
-  document.querySelectorAll('[data-magnetic]').forEach(el => {
-    el.addEventListener('mousemove', (e) => {
-      const rect = el.getBoundingClientRect();
-      const x = e.clientX - rect.left - rect.width / 2;
-      const y = e.clientY - rect.top - rect.height / 2;
-      gsap.to(el, { x: x * 0.3, y: y * 0.3, duration: 0.5, ease: "power3.out" });
+  // 6. Magnetic Elements (Desktop only)
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.querySelectorAll('[data-magnetic]').forEach(el => {
+      el.addEventListener('mousemove', (e) => {
+        if (!hasGsap) return;
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        gsap.to(el, { x: x * 0.3, y: y * 0.3, duration: 0.5, ease: "power3.out" });
+      });
+      el.addEventListener('mouseleave', () => {
+        if (!hasGsap) return;
+        gsap.to(el, { x: 0, y: 0, duration: 0.8, ease: "power3.out" });
+      });
     });
-    el.addEventListener('mouseleave', () => {
-      gsap.to(el, { x: 0, y: 0, duration: 0.8, ease: "power3.out" });
-    });
-  });
+  }
 
   // 7. Interactive Hero Mockup Tab Switcher & 3D Tilt
   const showcaseImg = document.getElementById('hero-showcase-img');
@@ -231,28 +264,33 @@ document.addEventListener('DOMContentLoaded', () => {
         tab.classList.add('is-active');
         const newSrc = tab.dataset.showcase;
         if (newSrc && showcaseImg.getAttribute('src') !== newSrc) {
-          gsap.to(showcaseImg, {
-            opacity: 0.2,
-            scale: 0.97,
-            duration: 0.2,
-            ease: "power2.in",
-            onComplete: () => {
-              showcaseImg.src = newSrc;
-              gsap.to(showcaseImg, {
-                opacity: 1,
-                scale: 1,
-                duration: 0.45,
-                ease: "power3.out"
-              });
-            }
-          });
+          if (hasGsap) {
+            gsap.to(showcaseImg, {
+              opacity: 0.2,
+              scale: 0.97,
+              duration: 0.2,
+              ease: "power2.in",
+              onComplete: () => {
+                showcaseImg.src = newSrc;
+                gsap.to(showcaseImg, {
+                  opacity: 1,
+                  scale: 1,
+                  duration: 0.45,
+                  ease: "power3.out"
+                });
+              }
+            });
+          } else {
+            showcaseImg.src = newSrc;
+          }
         }
       });
     });
   }
 
-  if (mockupFrame) {
+  if (mockupFrame && window.matchMedia('(pointer: fine)').matches) {
     mockupFrame.addEventListener('mousemove', (e) => {
+      if (!hasGsap) return;
       const rect = mockupFrame.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width - 0.5;
       const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -265,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
     mockupFrame.addEventListener('mouseleave', () => {
+      if (!hasGsap) return;
       gsap.to(mockupFrame, {
         rotateX: 0,
         rotateY: 0,
@@ -280,30 +319,37 @@ document.addEventListener('DOMContentLoaded', () => {
     '.aww-hero-heading, .aww-page-title, .aww-section-title, .aww-footer-title, [data-reveal="text"], [data-gsap="split-text"]'
   );
   
-  allRevealHeadings.forEach(heading => {
-    // Avoid re-splitting if already done
-    if (heading.dataset.splitDone) return;
-    heading.dataset.splitDone = "true";
+  if (typeof SplitType !== 'undefined' && hasGsap) {
+    allRevealHeadings.forEach(heading => {
+      // Avoid re-splitting if already done
+      if (heading.dataset.splitDone) return;
+      heading.dataset.splitDone = "true";
 
-    const text = new SplitType(heading, { types: 'lines, words, chars' });
-    
-    // Restore text nodes inside .aww-text-stroke so the continuous gradient background-clip works natively
-    heading.querySelectorAll('.aww-text-stroke').forEach(strokeEl => {
-      strokeEl.innerHTML = strokeEl.textContent;
-    });
+      try {
+        const text = new SplitType(heading, { types: 'lines, words, chars' });
+        
+        // Restore text nodes inside .aww-text-stroke so the continuous gradient background-clip works natively
+        heading.querySelectorAll('.aww-text-stroke').forEach(strokeEl => {
+          strokeEl.innerHTML = strokeEl.textContent;
+        });
 
-    // Set initial OriginKit states for characters and stroke elements
-    const animTargets = heading.querySelectorAll('.char, .aww-text-stroke');
-    gsap.set(animTargets, { 
-      y: 25, 
-      opacity: 0,
-      filter: 'blur(10px)',
-      willChange: 'transform, opacity, filter'
+        // Set initial OriginKit states for characters and stroke elements
+        const animTargets = heading.querySelectorAll('.char, .aww-text-stroke');
+        gsap.set(animTargets, { 
+          y: 25, 
+          opacity: 0,
+          filter: 'blur(10px)',
+          willChange: 'transform, opacity, filter'
+        });
+      } catch (e) {
+        console.warn('SplitType error on heading:', e);
+      }
     });
-  });
+  }
 
   // 9. WEBFLOW PAGE LOAD INTRO TIMELINE (Fires on Page Open)
-  const introTl = gsap.timeline({ defaults: { ease: "power4.out" } });
+  if (hasGsap) {
+    const introTl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
   // Header fade-down
   if (header) {
@@ -377,112 +423,115 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 10. SCROLL-TRIGGERED WEBFLOW REVEALS (For Sections Below The Fold)
-  // Section Titles below the fold (OriginKit Blur-Up Text)
-  document.querySelectorAll('.aww-section-title, .aww-footer-title').forEach(title => {
-    if (title.closest('.aww-hero') || title.closest('.aww-page-hero')) return;
-    const chars = title.querySelectorAll('.char, .aww-text-stroke');
-    if (chars.length) {
-      gsap.to(chars, 
-        {
-          opacity: 1, filter: "blur(0px)", y: 0,
-          duration: 1.2, stagger: 0.04, ease: "power3.out",
-          clearProps: "filter,willChange",
-          scrollTrigger: {
-            trigger: title,
-            start: "top 85%",
-            once: true
+  if (hasGsap && hasScrollTrigger) {
+    // Section Titles below the fold (OriginKit Blur-Up Text)
+    document.querySelectorAll('.aww-section-title, .aww-footer-title').forEach(title => {
+      if (title.closest('.aww-hero') || title.closest('.aww-page-hero')) return;
+      const chars = title.querySelectorAll('.char, .aww-text-stroke');
+      if (chars.length) {
+        gsap.to(chars, 
+          {
+            opacity: 1, filter: "blur(0px)", y: 0,
+            duration: 1.2, stagger: 0.04, ease: "power3.out",
+            clearProps: "filter,willChange",
+            scrollTrigger: {
+              trigger: title,
+              start: "top 85%",
+              once: true
+            }
           }
-        }
-      );
-    }
-  });
-
-  // Feature Cards & Pricing Cards (Stagger Entrance)
-  const cardGrids = document.querySelectorAll('.aww-feature-grid, .aww-pricing-grid');
-  cardGrids.forEach(grid => {
-    const cards = Array.from(grid.children);
-    if (cards.length) {
-      gsap.fromTo(cards, 
-        { y: 60, opacity: 0 },
-        {
-          y: 0, opacity: 1,
-          duration: 1.2, stagger: 0.15, ease: "power3.out",
-          scrollTrigger: {
-            trigger: grid,
-            start: "top 85%",
-            once: true
-          }
-        }
-      );
-    }
-  });
-
-  // Card Image Curtain Reveal (Inner Image zooms out on scroll)
-  document.querySelectorAll('.aww-card-img-wrap img').forEach(img => {
-    gsap.fromTo(img, 
-      { scale: 1.18, opacity: 0.4 },
-      {
-        scale: 1, opacity: 1,
-        duration: 1.2, ease: "power2.out",
-        scrollTrigger: {
-          trigger: img,
-          start: "top 90%",
-          once: true
-        }
-      }
-    );
-  });
-
-  // Elements with [data-gsap="fade-up"]
-  document.querySelectorAll('[data-gsap="fade-up"]').forEach(el => {
-    if (el.closest('.aww-hero') || el.closest('.aww-page-hero')) return;
-    const delay = parseFloat(el.dataset.delay) || 0;
-    gsap.fromTo(el, 
-      { y: 40, opacity: 0 },
-      {
-        y: 0, opacity: 1,
-        duration: 0.9, delay: delay, ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          once: true
-        }
-      }
-    );
-  });
-
-  // Elements with [data-gsap="fade-right"]
-  document.querySelectorAll('[data-gsap="fade-right"]').forEach(el => {
-    if (el.closest('.aww-hero') || el.closest('.aww-page-hero')) return;
-    gsap.fromTo(el, 
-      { x: -35, opacity: 0 },
-      {
-        x: 0, opacity: 1,
-        duration: 0.9, ease: "power3.out",
-        scrollTrigger: {
-          trigger: el,
-          start: "top 88%",
-          once: true
-        }
-      }
-    );
-  });
-
-  // Parallax elements
-  document.querySelectorAll('[data-gsap="parallax"]').forEach(el => {
-    const speed = parseFloat(el.dataset.speed) || 1;
-    const isHero = el.closest('.aww-hero') || el.closest('.aww-page-hero');
-    gsap.to(el, {
-      y: () => (window.innerHeight * (1 - speed)) * 0.5,
-      ease: "none",
-      scrollTrigger: {
-        trigger: el,
-        start: isHero ? "top top" : "top bottom",
-        end: "bottom top",
-        scrub: 1.5
+        );
       }
     });
-  });
+
+    // Feature Cards & Pricing Cards (Stagger Entrance)
+    const cardGrids = document.querySelectorAll('.aww-feature-grid, .aww-pricing-grid');
+    cardGrids.forEach(grid => {
+      const cards = Array.from(grid.children);
+      if (cards.length) {
+        gsap.fromTo(cards, 
+          { y: 60, opacity: 0 },
+          {
+            y: 0, opacity: 1,
+            duration: 1.2, stagger: 0.15, ease: "power3.out",
+            scrollTrigger: {
+              trigger: grid,
+              start: "top 85%",
+              once: true
+            }
+          }
+        );
+      }
+    });
+
+    // Card Image Curtain Reveal (Inner Image zooms out on scroll)
+    document.querySelectorAll('.aww-card-img-wrap img').forEach(img => {
+      gsap.fromTo(img, 
+        { scale: 1.18, opacity: 0.4 },
+        {
+          scale: 1, opacity: 1,
+          duration: 1.2, ease: "power2.out",
+          scrollTrigger: {
+            trigger: img,
+            start: "top 90%",
+            once: true
+          }
+        }
+      );
+    });
+
+    // Elements with [data-gsap="fade-up"]
+    document.querySelectorAll('[data-gsap="fade-up"]').forEach(el => {
+      if (el.closest('.aww-hero') || el.closest('.aww-page-hero')) return;
+      const delay = parseFloat(el.dataset.delay) || 0;
+      gsap.fromTo(el, 
+        { y: 40, opacity: 0 },
+        {
+          y: 0, opacity: 1,
+          duration: 0.9, delay: delay, ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            once: true
+          }
+        }
+      );
+    });
+
+    // Elements with [data-gsap="fade-right"]
+    document.querySelectorAll('[data-gsap="fade-right"]').forEach(el => {
+      if (el.closest('.aww-hero') || el.closest('.aww-page-hero')) return;
+      gsap.fromTo(el, 
+        { x: -35, opacity: 0 },
+        {
+          x: 0, opacity: 1,
+          duration: 0.9, ease: "power3.out",
+          scrollTrigger: {
+            trigger: el,
+            start: "top 88%",
+            once: true
+          }
+        }
+      );
+    });
+
+    // Parallax elements
+    document.querySelectorAll('[data-gsap="parallax"]').forEach(el => {
+      const speed = parseFloat(el.dataset.speed) || 1;
+      const isHero = el.closest('.aww-hero') || el.closest('.aww-page-hero');
+      gsap.to(el, {
+        y: () => (window.innerHeight * (1 - speed)) * 0.5,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: isHero ? "top top" : "top bottom",
+          end: "bottom top",
+          scrub: 1.5
+        }
+      });
+    });
+  }
+}
 
   // Header Scrolled Glassmorphism State
   const headerEl = document.querySelector('.aww-header');
@@ -495,7 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
-    lenis.on('scroll', onScroll);
+    if (lenis && typeof lenis.on === 'function') {
+      lenis.on('scroll', onScroll);
+    }
     onScroll();
   }
 
@@ -510,6 +561,9 @@ document.addEventListener('DOMContentLoaded', () => {
           tocLinks.forEach(link => {
             if (link.getAttribute('href') === `#${id}`) {
               link.classList.add('active');
+              if (window.innerWidth <= 860 && typeof link.scrollIntoView === 'function') {
+                link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+              }
             } else {
               link.classList.remove('active');
             }

@@ -204,6 +204,13 @@
       card.appendChild(body);
       nodes.gridEl.appendChild(card);
     });
+
+    if (window.ScrollTrigger && typeof window.ScrollTrigger.refresh === "function") {
+      window.ScrollTrigger.refresh();
+    }
+    if (window.__srLenis && typeof window.__srLenis.resize === "function") {
+      window.__srLenis.resize();
+    }
   }
 
   function showLoadError(nodes, title, message) {

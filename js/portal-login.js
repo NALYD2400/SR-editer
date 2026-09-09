@@ -188,7 +188,8 @@
   }
 
   function safeNextPath() {
-    const next = new URLSearchParams(window.location.search).get("next");
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("next") || params.get("redirect");
     if (!next) return "dashboard.html";
     // Only allow same-origin relative HTML pages
     if (!/^[a-zA-Z0-9._-]+\.html([?#].*)?$/.test(next)) return "dashboard.html";

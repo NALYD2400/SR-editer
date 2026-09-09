@@ -535,7 +535,22 @@
     });
   });
 
-  menuButton?.addEventListener("click", () => sidebar?.classList.toggle("is-open"));
+  menuButton?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    sidebar?.classList.toggle("is-open");
+  });
+
+  document.addEventListener("click", (e) => {
+    if (sidebar?.classList.contains("is-open") && !sidebar.contains(e.target) && !menuButton?.contains(e.target)) {
+      sidebar.classList.remove("is-open");
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && sidebar?.classList.contains("is-open")) {
+      sidebar.classList.remove("is-open");
+    }
+  });
 
   document.getElementById("back-to-users-btn")?.addEventListener("click", () => {
     showPanel("users");

@@ -126,6 +126,20 @@
     const bgVideo = document.querySelector(".site-bg-video");
     if (bgVideo && bgVideo.dataset.scrubBound !== "1") {
       bgVideo.dataset.scrubBound = "1";
+      const isTouchOrMobile = window.matchMedia("(max-width: 860px)").matches || 'ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
+      if (isTouchOrMobile) {
+        bgVideo.preload = "auto";
+        bgVideo.muted = true;
+        bgVideo.playsInline = true;
+        bgVideo.autoplay = true;
+        bgVideo.loop = true;
+        try {
+          const p = bgVideo.play();
+          if (p && typeof p.catch === "function") p.catch(() => {});
+        } catch (_) {}
+        return;
+      }
+
       bgVideo.preload = "auto";
       bgVideo.muted = true;
       bgVideo.playsInline = true;

@@ -41,6 +41,7 @@ const headTemplate = (title, extraScripts = '') => `
         <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
         <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
         <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
+        <a href="login.html" class="aww-link aww-nav-portal-mobile" data-magnetic><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
       </nav>
       <div class="aww-header-actions">
         <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
@@ -61,7 +62,7 @@ const footerTemplate = (extraScripts = '') => `
         <div class="aww-footer-content">
           <div class="aww-footer-top">
             <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
-            <a href="#" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
+            <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
               <span class="aww-btn-text">GET SR EDITER</span>
             </a>
           </div>
@@ -392,7 +393,7 @@ write('dashboard.html', headTemplate('Dashboard') + `
             <div class="aww-panel" id="panel-downloads" style="display:none;">
               <h2>Téléchargements &amp; Versions</h2>
               <p style="color: var(--text-secondary); margin-top: 0.5rem;">Téléchargez la dernière version officielle de SR Editer pour Windows.</p>
-              <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5rem;">
+              <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 1.5rem;">
                 <div style="padding: 2rem; border: 1px solid var(--border-color); border-radius: 16px; background: rgba(255,255,255,0.02);">
                   <span style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">Build Officiel Windows</span>
                   <h3 style="font-size: 1.4rem; margin: 0.5rem 0 1rem;">SR Editer Desktop <span data-app-version>v0.7.1</span></h3>
