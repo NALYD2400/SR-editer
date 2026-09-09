@@ -126,8 +126,8 @@
     const bgVideo = document.querySelector(".site-bg-video");
     if (bgVideo && bgVideo.dataset.scrubBound !== "1") {
       bgVideo.dataset.scrubBound = "1";
-      const isTouchOrMobile = window.matchMedia("(max-width: 860px)").matches || 'ontouchstart' in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0);
-      if (isTouchOrMobile) {
+      const isMobile = window.matchMedia("(max-width: 768px)").matches;
+      if (isMobile) {
         bgVideo.preload = "auto";
         bgVideo.muted = true;
         bgVideo.playsInline = true;
@@ -145,15 +145,12 @@
       bgVideo.playsInline = true;
       bgVideo.autoplay = false;
       bgVideo.loop = false;
-      bgVideo.pause();
-
-      if (bgVideo.readyState === 0) {
-        try { bgVideo.load(); } catch (_) {}
-      }
+      try { bgVideo.pause(); } catch (_) {}
 
       let targetTime = 0;
       let isSeeking = false;
-      let rafId = null;
+      let pendingSeek = null;
+      let rafActive = false;
 
       function getDuration() {
         return (bgVideo.duration && Number.isFinite(bgVideo.duration) && bgVideo.duration > 0)
@@ -161,87 +158,90 @@
           : 7.764;
       }
 
-      function updateTarget() {
+      function calculateTarget() {
         const doc = document.documentElement;
-        const body = document.body;
-        const maxScroll = Math.max(1, (doc ? doc.scrollHeight : (body ? body.scrollHeight : 1000)) - window.innerHeight);
-        const scrollY = window.scrollY || window.pageYOffset || (doc ? doc.scrollTop : 0) || 0;
+        const maxScroll = Math.max(1, doc.scrollHeight - window.innerHeight);
+        const scrollY = window.pageYOffset || doc.scrollTop || 0;
         const progress = Math.min(1, Math.max(0, scrollY / maxScroll));
         const duration = getDuration();
-        targetTime = progress * Math.max(0, duration - 0.05);
+        return progress * Math.max(0, duration - 0.05);
       }
 
-      function applySeek() {
-        if (isSeeking) return;
-        if (bgVideo.readyState < 1) return;
-        if (Math.abs(bgVideo.currentTime - targetTime) < 0.015) return;
+      function performSeek() {
+        rafActive = false;
+        targetTime = calculateTarget();
+
+        if (isSeeking) {
+          pendingSeek = targetTime;
+          return;
+        }
+
+        if (bgVideo.readyState < 2) {
+          return;
+        }
+
+        if (Math.abs(bgVideo.currentTime - targetTime) < 0.02) {
+          return;
+        }
 
         isSeeking = true;
+        pendingSeek = null;
+
         try {
-          bgVideo.currentTime = targetTime;
+          if (typeof bgVideo.fastSeek === "function") {
+            bgVideo.fastSeek(targetTime);
+          } else {
+            bgVideo.currentTime = targetTime;
+          }
         } catch (_) {
           isSeeking = false;
         }
       }
 
-      function onFrame() {
-        rafId = null;
-        updateTarget();
-        applySeek();
-        if (Math.abs(bgVideo.currentTime - targetTime) >= 0.015) {
-          rafId = window.requestAnimationFrame(onFrame);
-        }
-      }
-
-      function scheduleFrame() {
-        updateTarget();
-        if (!rafId) {
-          rafId = window.requestAnimationFrame(onFrame);
+      function queueUpdate() {
+        if (!rafActive) {
+          rafActive = true;
+          window.requestAnimationFrame(performSeek);
         }
       }
 
       bgVideo.addEventListener("seeked", function () {
         isSeeking = false;
-        if (Math.abs(bgVideo.currentTime - targetTime) >= 0.015) {
-          scheduleFrame();
-        }
-      });
-
-      // Watchdog in case seeked doesn't fire
-      setInterval(function () {
-        if (isSeeking) {
-          isSeeking = false;
-          scheduleFrame();
-        }
-      }, 100);
-
-      function warmUpVideo() {
-        if (bgVideo.paused) {
-          const p = bgVideo.play();
-          if (p && typeof p.then === "function") {
-            p.then(function () {
-              bgVideo.pause();
-              scheduleFrame();
-            }).catch(function () {
-              scheduleFrame();
-            });
+        if (pendingSeek !== null) {
+          queueUpdate();
+        } else {
+          targetTime = calculateTarget();
+          if (Math.abs(bgVideo.currentTime - targetTime) >= 0.03) {
+            queueUpdate();
           }
         }
-      }
+      });
 
-      bgVideo.addEventListener("loadedmetadata", function () {
-        warmUpVideo();
-        scheduleFrame();
+      bgVideo.addEventListener("seeking", function () {
+        clearTimeout(bgVideo._seekTimeout);
+        bgVideo._seekTimeout = setTimeout(function () {
+          isSeeking = false;
+          if (pendingSeek !== null) queueUpdate();
+        }, 150);
       });
-      bgVideo.addEventListener("canplay", function () {
-        warmUpVideo();
-        scheduleFrame();
-      });
-      window.addEventListener("scroll", scheduleFrame, { passive: true });
-      window.addEventListener("resize", scheduleFrame, { passive: true });
-      window.addEventListener("load", scheduleFrame, { passive: true });
-      warmUpVideo();
-      scheduleFrame();
+
+      window.addEventListener("scroll", queueUpdate, { passive: true });
+      window.addEventListener("resize", queueUpdate, { passive: true });
+      window.addEventListener("load", queueUpdate, { passive: true });
+
+      const checkLenis = setInterval(function () {
+        const lenis = window.__srLenis || window.lenis;
+        if (lenis && typeof lenis.on === "function") {
+          lenis.on("scroll", queueUpdate);
+          clearInterval(checkLenis);
+        }
+      }, 50);
+      setTimeout(() => clearInterval(checkLenis), 3000);
+
+      bgVideo.addEventListener("loadedmetadata", queueUpdate);
+      bgVideo.addEventListener("canplay", queueUpdate);
+
+      queueUpdate();
     }
 
     // Hero copy fade on scroll
