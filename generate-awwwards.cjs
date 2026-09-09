@@ -164,7 +164,7 @@ write('index.html', headTemplate('Home') + `
           <h2 class="aww-section-title" data-reveal="text">TECHNOLOGIES<br><span class="aww-text-stroke">DE POINTE</span></h2>
         </div>
         <div class="aww-feature-grid">
-          <div class="aww-feature-card" data-gsap="card-reveal">
+          <div class="aww-feature-card clean-card stagger-1" data-gsap="card-reveal">
             <div class="aww-card-img-wrap">
               <img src="assets/app-texture-studio.webp" alt="Texture Studio 2D &amp; 4K" loading="lazy" />
             </div>
@@ -172,7 +172,7 @@ write('index.html', headTemplate('Home') + `
             <h3>ATLAS UV &amp; CALQUES 4K</h3>
             <p>Édition multi-calques non destructive avec masques alpha en temps réel. Support natif des formats DDS BC7, DXT5 et PNG haute fidélité.</p>
           </div>
-          <div class="aww-feature-card" data-gsap="card-reveal">
+          <div class="aww-feature-card clean-card stagger-2" data-gsap="card-reveal">
             <div class="aww-card-img-wrap">
               <img src="assets/app-viewport-3d.webp" alt="Viewport 3D RAGE" loading="lazy" />
             </div>
@@ -180,7 +180,7 @@ write('index.html', headTemplate('Home') + `
             <h3>VIEWPORT 3D WEBGL</h3>
             <p>Rendu physique temps réel et shaders RAGE. Orbite 360°, éclairage studio HDRI, et synchronisation instantanée sans délai.</p>
           </div>
-          <div class="aww-feature-card" data-gsap="card-reveal">
+          <div class="aww-feature-card clean-card stagger-3" data-gsap="card-reveal">
             <div class="aww-card-img-wrap">
               <img src="assets/app-rpf-explorer.png" alt="RPF Explorer Rockstar" loading="lazy" />
             </div>
