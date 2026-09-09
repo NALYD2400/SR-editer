@@ -42,11 +42,16 @@ document.addEventListener('DOMContentLoaded', () => {
       // Do not restart smooth scroll if mobile menu burger is currently open
       if (!headerElement || !headerElement.classList.contains('is-menu-open')) {
         lenisInstance.start();
+        if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.update) {
+          ScrollTrigger.update();
+        }
       }
     }
 
     // Intercept wheel events in capture phase:
     // 1) Swallow hardware switch micro-ticks while the middle button is held down.
+    //    Both preventDefault() and stopImmediatePropagation() ensure neither Lenis nor
+    //    the browser's native wheel step can trigger a conflicting scroll jump.
     // 2) If in sticky autoscroll mode and the user intentionally turns the wheel (buttons === 0),
     //    immediately exit autoscroll and resume normal smooth scrolling.
     window.addEventListener(
@@ -54,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
       (e) => {
         if (isAutoscrolling) {
           if ((e.buttons & 4) !== 0) {
+            e.preventDefault();
             e.stopImmediatePropagation();
             return;
           }
@@ -65,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { capture: true, passive: false }
     );
 
-    const onPointerDown = (e) => {
+    const onButtonDown = (e) => {
       // Any mouse click terminates sticky autoscroll mode
       if (isStickyAutoscroll) {
         endAutoscroll();
@@ -74,11 +80,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (e.button !== 1) return;
 
-      // Do not intercept middle-clicks on interactive elements (e.g. links opening in a new tab)
+      // Do not intercept middle-clicks on navigational links opening in a new tab
       const target = e.target;
-      if (target && target.closest && target.closest('a[href], button, input, textarea, select, label')) {
+      if (target && target.closest && target.closest('a[href]:not([href^="#"])')) {
         return;
       }
+
+      if (isAutoscrolling) return;
 
       middleDownTime = performance.now();
       middleStartX = e.clientX;
@@ -87,21 +95,23 @@ document.addEventListener('DOMContentLoaded', () => {
       startAutoscroll();
     };
 
-    const onPointerMove = (e) => {
+    const onButtonMove = (e) => {
       if (!isAutoscrolling) return;
 
       if ((e.buttons & 4) !== 0) {
         const dist = Math.hypot(e.clientX - middleStartX, e.clientY - middleStartY);
-        if (dist > 5) {
+        if (dist > 4) {
           hasMovedMiddle = true;
         }
       } else if (!isStickyAutoscroll) {
-        // Safety guard: middle button is no longer held down and we are not in sticky mode
-        endAutoscroll();
+        // Safety guard: middle button is released without entering sticky mode
+        if (performance.now() - middleDownTime > 250) {
+          endAutoscroll();
+        }
       }
     };
 
-    const onPointerUp = (e) => {
+    const onButtonUp = (e) => {
       if (!isAutoscrolling) return;
 
       if (e.button === 1) {
@@ -130,15 +140,21 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    window.addEventListener('pointerdown', onPointerDown, { passive: true });
-    window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('pointerup', onPointerUp, { passive: true });
-    window.addEventListener('mouseup', onPointerUp, { passive: true });
+    window.addEventListener('pointerdown', onButtonDown, { passive: true });
+    window.addEventListener('mousedown', onButtonDown, { passive: true });
+    window.addEventListener('pointermove', onButtonMove, { passive: true });
+    window.addEventListener('mousemove', onButtonMove, { passive: true });
+    window.addEventListener('pointerup', onButtonUp, { passive: true });
+    window.addEventListener('mouseup', onButtonUp, { passive: true });
     window.addEventListener('keydown', onKeyDown, { passive: true });
     window.addEventListener('blur', onBlur, { passive: true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden && isAutoscrolling) endAutoscroll();
-    }, { passive: true });
+    document.addEventListener(
+      'visibilitychange',
+      () => {
+        if (document.hidden && isAutoscrolling) endAutoscroll();
+      },
+      { passive: true }
+    );
   }
 
   // Mobile Menu Burger Handler
