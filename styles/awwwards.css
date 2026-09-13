@@ -1244,13 +1244,13 @@ button:disabled {
   max-width: 620px;
   width: 100%;
   padding: 3.5rem 3rem;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(28px);
-  -webkit-backdrop-filter: blur(28px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: transparent;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 26px;
   text-align: center;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: none;
   box-sizing: border-box;
 }
 
@@ -1258,14 +1258,14 @@ button:disabled {
   width: 64px;
   height: 64px;
   border-radius: 18px;
-  background: rgba(255, 107, 53, 0.12);
-  border: 1px solid rgba(255, 107, 53, 0.3);
+  background: transparent;
+  border: 1px solid rgba(255, 107, 53, 0.35);
   color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  box-shadow: 0 0 24px rgba(255, 107, 53, 0.2);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
 }
 
 /* Empty State Card in Library */
@@ -1273,12 +1273,12 @@ button:disabled {
   max-width: 520px !important;
   margin: 3.5rem auto !important;
   padding: 3.25rem 2.5rem !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  backdrop-filter: blur(32px) !important;
-  -webkit-backdrop-filter: blur(32px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: transparent !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
   border-radius: 26px !important;
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1300,14 +1300,14 @@ button:disabled {
   width: 68px;
   height: 68px;
   border-radius: 20px;
-  background: rgba(255, 107, 53, 0.12);
-  border: 1px solid rgba(255, 107, 53, 0.28);
+  background: transparent;
+  border: 1px solid rgba(255, 107, 53, 0.35);
   color: var(--accent);
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 1.5rem;
-  box-shadow: 0 0 30px rgba(255, 107, 53, 0.22);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
 }
 
 .library-empty-icon svg {
@@ -1375,10 +1375,10 @@ button:disabled {
 .aww-gate-list { list-style: none; text-align: left; margin: 2rem 0; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem; }
 .library-category-pills { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
 .pill-btn {
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   color: var(--text-secondary);
   padding: 0.55rem 1.25rem;
   border-radius: 100px;
@@ -1389,9 +1389,9 @@ button:disabled {
   text-transform: uppercase;
 }
 .pill-btn:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
-  border-color: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 .pill-btn.active {
   background: #fff;
@@ -1405,8 +1405,8 @@ button:disabled {
   width: 100%;
   padding: 0.75rem 1.25rem 0.75rem 2.75rem;
   border-radius: 100px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: transparent;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   color: #fff;
@@ -1414,13 +1414,14 @@ button:disabled {
   outline: none;
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-sizing: border-box;
+  box-shadow: none;
 }
 .library-toolbar input:hover {
-  background: rgba(255, 255, 255, 0.07);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.22);
 }
 .library-toolbar input:focus {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.08);
   border-color: var(--accent);
   box-shadow: 0 0 16px rgba(255, 107, 53, 0.25);
 }
@@ -1454,10 +1455,10 @@ button:disabled {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.72rem 1.25rem;
-  background: rgba(255, 255, 255, 0.04);
+  background: transparent;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 100px;
   color: #f4f4f5;
   font-family: var(--font-body);
@@ -1471,13 +1472,13 @@ button:disabled {
 }
 
 .sr-select-trigger:hover {
-  background: rgba(255, 255, 255, 0.09);
+  background: rgba(255, 255, 255, 0.06);
   border-color: rgba(255, 255, 255, 0.22);
   transform: translateY(-1px);
 }
 
 .sr-custom-select.is-open .sr-select-trigger {
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.1);
   border-color: var(--accent);
   box-shadow: 0 0 16px rgba(255, 107, 53, 0.25);
 }
@@ -1533,13 +1534,13 @@ button:disabled {
   left: 0;
   min-width: 220px;
   max-width: 290px;
-  background: rgba(16, 16, 24, 0.82);
+  background: rgba(16, 16, 24, 0.75);
   backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 18px;
   padding: 6px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   z-index: 120;
   opacity: 0;
   visibility: hidden;
