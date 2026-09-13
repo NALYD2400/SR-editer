@@ -858,23 +858,19 @@ write('blog.html', headTemplate('Blog &amp; Releases') + `
           <p>Chargement des versions officielles depuis Supabase...</p>
         </div>
 
-        <!-- Dernière Version en Vedette (Featured Hero Card) -->
-        <div id="featured-release-container" style="display: none; margin-bottom: 4rem;"></div>
-
-        <!-- Titre Versions Antérieures -->
+        <!-- Titre Versions -->
         <div id="past-releases-header" style="display: none; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; justify-content: space-between; align-items: flex-end;">
           <h2 style="font-size: 2rem;">Historique des Versions</h2>
           <span id="releases-count-badge" class="ticket-count-badge">0 version</span>
         </div>
 
-        <!-- Grille des Versions Antérieures -->
+        <!-- Grille des Versions -->
         <div id="changelog-container" class="aww-blog-list"></div>
       </section>
 
       <script>
         document.addEventListener("DOMContentLoaded", async () => {
           const loadingEl = document.getElementById("changelog-loading");
-          const featuredEl = document.getElementById("featured-release-container");
           const pastHeader = document.getElementById("past-releases-header");
           const countBadge = document.getElementById("releases-count-badge");
           const listEl = document.getElementById("changelog-container");
@@ -902,53 +898,22 @@ write('blog.html', headTemplate('Blog &amp; Releases') + `
               }
             ];
 
-            const latest = releases[0];
-            const others = releases.slice(1);
-
             if (countBadge) countBadge.textContent = releases.length + " version" + (releases.length > 1 ? "s" : "");
 
-            // Rendu de la version la plus récente (Featured)
-            if (featuredEl && latest) {
-              const dateStr = new Date(latest.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
-              featuredEl.style.display = "block";
-              featuredEl.innerHTML = \`
-                <div class="aww-featured-release">
-                  <div class="aww-release-top">
-                    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                      <span class="ticket-count-badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3);">
-                        Dernière Version Stable
-                      </span>
-                      <span class="aww-release-tag">v\${latest.version}</span>
-                    </div>
-                    <span style="font-size: 0.9rem; color: var(--text-secondary);">Publiée le \${dateStr}</span>
-                  </div>
-                  <h2 style="font-size: clamp(2rem, 4vw, 3rem); margin: 1.5rem 0 1rem;">SR Editer Desktop v\${latest.version}</h2>
-                  <div class="aww-release-notes" style="margin-bottom: 2rem;">\${formatNotes(latest.notes)}</div>
-                  <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
-                    \${latest.artifact_url ? \`
-                      <a href="\${latest.artifact_url}" class="aww-btn aww-btn-solid" data-magnetic>
-                        <span class="aww-btn-text">Télécharger v\${latest.version} (.exe)</span>
-                      </a>
-                    \` : ''}
-                    <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-btn aww-btn-outline" data-magnetic>
-                      <span class="aww-btn-text">Rejoindre le Discord</span>
-                    </a>
-                  </div>
-                </div>
-              \`;
-            }
-
-            // Rendu des versions antérieures
-            if (pastHeader && others.length > 0) pastHeader.style.display = "flex";
-            if (listEl && others.length > 0) {
-              listEl.innerHTML = others.map(rel => {
+            if (pastHeader && releases.length > 0) pastHeader.style.display = "flex";
+            if (listEl && releases.length > 0) {
+              listEl.innerHTML = releases.map((rel, index) => {
                 const dateStr = new Date(rel.updated_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+                const isLatest = index === 0;
                 return \`
                   <article class="aww-blog-post">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
                       <div style="display: flex; align-items: center; gap: 10px;">
                         <span class="aww-release-tag">v\${rel.version}</span>
-                        <span class="ticket-count-badge" style="font-size: 0.75rem;">Archive</span>
+                        \${isLatest 
+                          ? '<span class="ticket-count-badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3); font-size: 0.75rem;">Dernière Version Stable</span>'
+                          : '<span class="ticket-count-badge" style="font-size: 0.75rem;">Archive</span>'
+                        }
                       </div>
                       <span style="font-size: 0.85rem; color: var(--text-secondary);">\${dateStr}</span>
                     </div>
@@ -956,27 +921,50 @@ write('blog.html', headTemplate('Blog &amp; Releases') + `
                     <div class="aww-release-notes" style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
                       \${formatNotes(rel.notes)}
                     </div>
-                    \${rel.artifact_url ? \`
-                      <a href="\${rel.artifact_url}" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
-                        <span class="aww-btn-text">Télécharger v\${rel.version}</span>
-                      </a>
-                    \` : ''}
+                    <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                      \${rel.artifact_url ? \`
+                        <a href="\${rel.artifact_url}" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
+                          <span class="aww-btn-text">Télécharger v\${rel.version}</span>
+                        </a>
+                      \` : ''}
+                      \${isLatest ? \`
+                        <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
+                          <span class="aww-btn-text">Rejoindre le Discord</span>
+                        </a>
+                      \` : ''}
+                    </div>
                   </article>
                 \`;
               }).join("");
             }
           } catch (err) {
             console.error("Erreur chargement changelog:", err);
-            if (loadingEl) {
-              loadingEl.innerHTML = \`
-                <div class="aww-featured-release">
-                  <span class="ticket-count-badge">Build Windows Officiel</span>
-                  <h2 style="font-size: 2.2rem; margin: 1rem 0;">SR Editer Desktop v0.7.1</h2>
-                  <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Version stable avec prévisualisation WebGL et Texture Studio 2D.</p>
-                  <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid">
-                    <span class="aww-btn-text">Télécharger v0.7.1 (.exe)</span>
-                  </a>
-                </div>
+            if (loadingEl) loadingEl.style.display = "none";
+            if (pastHeader) pastHeader.style.display = "flex";
+            if (countBadge) countBadge.textContent = "1 version";
+            if (listEl) {
+              listEl.innerHTML = \`
+                <article class="aww-blog-post">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                      <span class="aww-release-tag">v0.7.1</span>
+                      <span class="ticket-count-badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; border-color: rgba(52, 211, 153, 0.3); font-size: 0.75rem;">Dernière Version Stable</span>
+                    </div>
+                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Officiel</span>
+                  </div>
+                  <h3 style="font-size: 1.8rem; margin-bottom: 1rem;">Mise à jour v0.7.1</h3>
+                  <div class="aww-release-notes" style="font-size: 1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                    Version stable officielle avec prévisualisation WebGL et Texture Studio 2D.
+                  </div>
+                  <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                    <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
+                      <span class="aww-btn-text">Télécharger v0.7.1</span>
+                    </a>
+                    <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-btn aww-btn-outline" style="padding: 0.6rem 1.2rem; font-size: 0.8rem;" data-magnetic>
+                      <span class="aww-btn-text">Rejoindre le Discord</span>
+                    </a>
+                  </div>
+                </article>
               \`;
             }
           }
