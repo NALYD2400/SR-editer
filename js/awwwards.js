@@ -60,23 +60,9 @@
 
     var initial = String(displayName || user.email || "C").trim().charAt(0).toUpperCase();
 
-    // 3. Resolve Avatar Decoration (Discord Avatar Presets)
-    var decoData = discordData.avatar_decoration_data || meta.avatar_decoration_data || discordData.avatar_decoration || meta.avatar_decoration;
-    var decoAsset = null;
-    if (decoData && typeof decoData === "object" && decoData.asset) {
-      decoAsset = decoData.asset;
-    } else if (typeof decoData === "string" && decoData.length > 0) {
-      decoAsset = decoData;
-    }
-
-    var avatarDecorationUrl = decoAsset
-      ? "https://cdn.discordapp.com/avatar-decoration-presets/" + decoAsset + ".png?size=96&passthrough=true"
-      : null;
-
     return {
       displayName: displayName,
       avatarUrl: avatarUrl,
-      avatarDecorationUrl: avatarDecorationUrl,
       initial: initial,
       isDiscord: isDiscord,
       email: user.email || ""
@@ -104,20 +90,12 @@
     }
 
     var avatarHtml = '';
-    var hasDeco = Boolean(userData.avatarDecorationUrl);
-    var decoImg = hasDeco
-      ? '<img class="aww-avatar-decoration" src="' + escapeAttr(userData.avatarDecorationUrl) + '" alt="" aria-hidden="true" onerror="this.remove()">'
-      : '';
-
     if (userData.avatarUrl) {
-      avatarHtml = '<span class="aww-user-avatar' + (userData.isDiscord ? ' is-discord' : '') + (hasDeco ? ' has-decoration' : '') + '">' +
-        '<span class="aww-user-avatar-inner">' +
+      avatarHtml = '<span class="aww-user-avatar' + (userData.isDiscord ? ' is-discord' : '') + '">' +
         '<img src="' + escapeAttr(userData.avatarUrl) + '" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML=\'<span class=\\\'aww-user-initial\\\'>' + escapeHtml(userData.initial) + '</span>\'">' +
-        '</span>' +
-        decoImg +
         '</span>';
     } else {
-      avatarHtml = '<span class="aww-user-avatar"><span class="aww-user-avatar-inner"><span class="aww-user-initial">' + escapeHtml(userData.initial) + '</span></span>' + decoImg + '</span>';
+      avatarHtml = '<span class="aww-user-avatar"><span class="aww-user-initial">' + escapeHtml(userData.initial) + '</span></span>';
     }
 
     if (headerPortalBtn) {

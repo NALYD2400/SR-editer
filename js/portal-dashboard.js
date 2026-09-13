@@ -443,21 +443,16 @@
         avatarUrl = "https://cdn.discordapp.com/avatars/" + (discordData.id || discordIdObj.id) + "/" + discordData.avatar + ".png";
       }
 
-      const decoData = discordData.avatar_decoration_data || meta.avatar_decoration_data || discordData.avatar_decoration || meta.avatar_decoration;
-      let decoAsset = null;
-      if (decoData && typeof decoData === "object" && decoData.asset) decoAsset = decoData.asset;
-      else if (typeof decoData === "string" && decoData.length > 0) decoAsset = decoData;
-      const decoUrl = decoAsset ? "https://cdn.discordapp.com/avatar-decoration-presets/" + decoAsset + ".png?size=160&passthrough=true" : null;
-
       if (avatarUrl) {
         avatarEl.classList.add("has-image");
         const cleanUrl = String(avatarUrl).replace(/"/g, "");
         const initialChar = (email || "?").charAt(0).toUpperCase();
         avatarEl.innerHTML =
-          '<div class="aww-avatar-inner">' +
-          '<img class="aww-avatar-img" src="' + cleanUrl + '" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.textContent=\'' + initialChar + '\';">' +
-          '</div>' +
-          (decoUrl ? '<img class="aww-avatar-decoration" src="' + decoUrl + '" alt="" aria-hidden="true" onerror="this.remove()">' : '');
+          '<img src="' +
+          cleanUrl +
+          '" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.textContent=\'' +
+          initialChar +
+          '\';">';
       } else {
         avatarEl.classList.remove("has-image");
         avatarEl.textContent = (email || "?").charAt(0).toUpperCase();
