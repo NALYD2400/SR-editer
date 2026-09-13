@@ -282,10 +282,6 @@ h1, h2, h3, .aww-font-heading {
   display: block;
 }
 
-.aww-user-avatar.is-discord {
-  border-color: rgba(88, 101, 242, 0.6);
-  box-shadow: 0 0 10px rgba(88, 101, 242, 0.3);
-}
 
 .aww-user-initial {
   font-family: var(--font-heading);
