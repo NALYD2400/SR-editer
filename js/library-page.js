@@ -61,6 +61,191 @@
     };
   }
 
+  const COLOR_SWATCHES = {
+    "Toutes": "conic-gradient(from 0deg, #ff0055, #ffaa00, #2ecc71, #00bbff, #9b59b6, #ff0055)",
+    "Noir": "#16161a",
+    "Blanc": "#ffffff",
+    "Gris": "#71717a",
+    "Rouge": "#ef4444",
+    "Bleu": "#3b82f6",
+    "Vert": "#10b981",
+    "Jaune": "#eab308",
+    "Orange": "#f97316",
+    "Violet": "#a855f7",
+    "Rose": "#ec4899",
+    "Marron": "#78350f",
+    "Beige": "#d6c7b2",
+    "Multicolore": "linear-gradient(135deg, #ff007a 0%, #7928ca 50%, #00dfd8 100%)",
+  };
+
+  const ICONS = {
+    category: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>',
+    color: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.563-2.512 5.563-5.563C22 6.5 17.5 2 12 2z"></path></svg>',
+    arrow: '<svg class="sr-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>',
+    check: '<svg class="sr-select-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>',
+  };
+
+  function createCustomSelect(selectEl, type) {
+    if (!selectEl || selectEl.dataset.customized === "1") return;
+    selectEl.dataset.customized = "1";
+    selectEl.classList.add("sr-select-native");
+
+    const isColor = type === "color";
+    const wrapper = document.createElement("div");
+    wrapper.className = "sr-custom-select";
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "sr-select-trigger";
+    trigger.setAttribute("aria-haspopup", "listbox");
+    trigger.setAttribute("aria-expanded", "false");
+
+    const triggerContent = document.createElement("div");
+    triggerContent.className = "sr-select-trigger-content";
+
+    const iconSpan = document.createElement("span");
+    iconSpan.className = "sr-select-icon";
+    iconSpan.innerHTML = isColor ? ICONS.color : ICONS.category;
+
+    const labelSpan = document.createElement("span");
+    labelSpan.className = "sr-select-label";
+
+    triggerContent.appendChild(iconSpan);
+    triggerContent.appendChild(labelSpan);
+
+    trigger.appendChild(triggerContent);
+    trigger.insertAdjacentHTML("beforeend", ICONS.arrow);
+
+    const menu = document.createElement("div");
+    menu.className = "sr-select-menu";
+    menu.setAttribute("role", "listbox");
+
+    const optionsContainer = document.createElement("div");
+    optionsContainer.className = "sr-select-options";
+    menu.appendChild(optionsContainer);
+
+    wrapper.appendChild(trigger);
+    wrapper.appendChild(menu);
+
+    selectEl.parentNode.insertBefore(wrapper, selectEl);
+    wrapper.appendChild(selectEl);
+
+    function updateOptions() {
+      optionsContainer.innerHTML = "";
+      Array.from(selectEl.options).forEach(function (opt) {
+        const optionBtn = document.createElement("button");
+        optionBtn.type = "button";
+        optionBtn.className = "sr-select-option" + (opt.value === selectEl.value ? " is-selected" : "");
+        optionBtn.setAttribute("data-value", opt.value);
+
+        const leftSpan = document.createElement("span");
+        leftSpan.className = "sr-select-option-left";
+
+        if (isColor) {
+          const swatch = document.createElement("span");
+          swatch.className = "sr-select-color-dot";
+          swatch.style.background = COLOR_SWATCHES[opt.value] || "#888888";
+          leftSpan.appendChild(swatch);
+        }
+
+        const textSpan = document.createElement("span");
+        textSpan.textContent = opt.textContent;
+        leftSpan.appendChild(textSpan);
+
+        optionBtn.appendChild(leftSpan);
+        optionBtn.insertAdjacentHTML("beforeend", ICONS.check);
+
+        optionBtn.addEventListener("click", function (e) {
+          e.stopPropagation();
+          selectEl.value = opt.value;
+          selectEl.dispatchEvent(new Event("change", { bubbles: true }));
+          closeMenu();
+        });
+
+        optionsContainer.appendChild(optionBtn);
+      });
+      syncLabel();
+    }
+
+    function syncLabel() {
+      const selectedOpt = selectEl.options[selectEl.selectedIndex] || selectEl.options[0];
+      const val = selectEl.value;
+      let display = selectedOpt ? selectedOpt.textContent : "";
+      if (!isColor && (val === "Tous" || !val)) {
+        display = "Toutes les catégories";
+      } else if (isColor && (val === "Toutes" || !val)) {
+        display = "Toutes les couleurs";
+      }
+      labelSpan.textContent = display;
+
+      if (isColor) {
+        if (val !== "Toutes" && COLOR_SWATCHES[val]) {
+          iconSpan.innerHTML = '<span class="sr-select-color-dot" style="background:' + COLOR_SWATCHES[val] + '"></span>';
+        } else {
+          iconSpan.innerHTML = ICONS.color;
+        }
+      }
+
+      Array.from(optionsContainer.children).forEach(function (btn) {
+        const btnVal = btn.getAttribute("data-value");
+        btn.classList.toggle("is-selected", btnVal === val);
+      });
+    }
+
+    function openMenu() {
+      document.querySelectorAll(".sr-custom-select.is-open").forEach(function (other) {
+        if (other !== wrapper) {
+          other.classList.remove("is-open");
+          const otherTrig = other.querySelector(".sr-select-trigger");
+          if (otherTrig) otherTrig.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      const rect = wrapper.getBoundingClientRect();
+      if (rect.left + 280 > window.innerWidth) {
+        wrapper.classList.add("align-right");
+      } else {
+        wrapper.classList.remove("align-right");
+      }
+
+      wrapper.classList.add("is-open");
+      trigger.setAttribute("aria-expanded", "true");
+    }
+
+    function closeMenu() {
+      wrapper.classList.remove("is-open");
+      trigger.setAttribute("aria-expanded", "false");
+    }
+
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      if (wrapper.classList.contains("is-open")) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    document.addEventListener("click", function (e) {
+      if (!wrapper.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && wrapper.classList.contains("is-open")) {
+        closeMenu();
+      }
+    });
+
+    selectEl.addEventListener("change", syncLabel);
+
+    updateOptions();
+    wrapper.updateOptions = updateOptions;
+    wrapper.syncLabel = syncLabel;
+    selectEl._customSelect = wrapper;
+  }
+
   function fillSelect(select, values, skipFirst) {
     if (!select || select.dataset.filled === "1") return;
     values.forEach(function (value, index) {
@@ -71,6 +256,9 @@
       select.appendChild(opt);
     });
     select.dataset.filled = "1";
+    if (select._customSelect && typeof select._customSelect.updateOptions === "function") {
+      select._customSelect.updateOptions();
+    }
   }
 
   function showGate(nodes) {
@@ -288,8 +476,14 @@
       resetBtn.dataset.bound = "1";
       resetBtn.addEventListener("click", function () {
         if (nodes.searchEl) nodes.searchEl.value = "";
-        if (nodes.categoryEl) nodes.categoryEl.value = "Tous";
-        if (nodes.colorEl) nodes.colorEl.value = "Toutes";
+        if (nodes.categoryEl) {
+          nodes.categoryEl.value = "Tous";
+          nodes.categoryEl.dispatchEvent(new Event("change", { bubbles: true }));
+        }
+        if (nodes.colorEl) {
+          nodes.colorEl.value = "Toutes";
+          nodes.colorEl.dispatchEvent(new Event("change", { bubbles: true }));
+        }
         syncPills("Tous");
         render();
       });
@@ -301,7 +495,10 @@
       pill.dataset.bound = "1";
       pill.addEventListener("click", function () {
         const cat = pill.getAttribute("data-pill-cat");
-        if (nodes.categoryEl) nodes.categoryEl.value = cat;
+        if (nodes.categoryEl) {
+          nodes.categoryEl.value = cat;
+          nodes.categoryEl.dispatchEvent(new Event("change", { bubbles: true }));
+        }
         syncPills(cat);
         render();
       });
@@ -323,6 +520,10 @@
 
     fillSelect(nodes.categoryEl, CATEGORIES, true);
     fillSelect(nodes.colorEl, COLORS, true);
+
+    createCustomSelect(nodes.categoryEl, "category");
+    createCustomSelect(nodes.colorEl, "color");
+
     bindFilters(nodes);
 
     client.auth.getSession().then(function (result) {
