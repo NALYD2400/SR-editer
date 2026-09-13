@@ -71,6 +71,7 @@
   let currentTier = "free";
   let currentEmail = "";
   let currentIdentities = [];
+  let currentUser = null;
   let discordActionInFlight = false;
   let recoveryPreviousFocus = null;
   let activeTicketChannel = null;
@@ -283,6 +284,9 @@
       discordSyncBtn.hidden = !identity;
       discordSyncBtn.style.display = identity ? "" : "none";
     }
+    if (currentUser && typeof window.updateSRHeaderAuth === "function") {
+      window.updateSRHeaderAuth(currentUser);
+    }
   }
 
   async function invokeAccountAction(action, confirmation) {
@@ -419,6 +423,7 @@
     const prof = profile || {};
     currentTier = prof.subscription_tier || "free";
     currentEmail = email;
+    currentUser = user || currentUser;
     currentIdentities = (user && user.identities) || [];
     const tierLabel = TIER_LABELS[currentTier] || currentTier;
 
@@ -487,20 +492,8 @@
       else adminLink.setAttribute("hidden", "");
     }
 
-    const headerPortalBtn = document.querySelector(".aww-header-actions .aww-btn");
-    if (headerPortalBtn) {
-      headerPortalBtn.href = "dashboard.html";
-      const textSpan = headerPortalBtn.querySelector(".aww-btn-text");
-      if (textSpan) textSpan.textContent = "COMPTE";
-    }
-    const navPortalMobile = document.querySelector(".aww-nav-portal-mobile");
-    if (navPortalMobile) {
-      navPortalMobile.href = "dashboard.html";
-      const inner = navPortalMobile.querySelector(".aww-link-inner");
-      if (inner) {
-        inner.textContent = "COMPTE";
-        inner.setAttribute("data-hover", "COMPTE");
-      }
+    if (typeof window.updateSRHeaderAuth === "function") {
+      window.updateSRHeaderAuth(user);
     }
 
     syncPlanButtons();
@@ -1091,6 +1084,7 @@
         if (error) throw error;
         const { data } = await client.auth.getUserIdentities();
         currentIdentities = (data && data.identities) || [];
+        if (currentUser) currentUser.identities = currentIdentities;
         renderDiscordConnection();
         showAccountMessage("Compte Discord délié et rôles retirés.", "success");
       } catch (error) {
