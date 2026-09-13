@@ -119,10 +119,18 @@
     const menu = document.createElement("div");
     menu.className = "sr-select-menu";
     menu.setAttribute("role", "listbox");
+    menu.setAttribute("data-lenis-prevent", "true");
 
     const optionsContainer = document.createElement("div");
     optionsContainer.className = "sr-select-options";
+    optionsContainer.setAttribute("data-lenis-prevent", "true");
     menu.appendChild(optionsContainer);
+
+    function stopWheel(e) {
+      e.stopPropagation();
+    }
+    menu.addEventListener("wheel", stopWheel, { passive: true });
+    optionsContainer.addEventListener("wheel", stopWheel, { passive: true });
 
     wrapper.appendChild(trigger);
     wrapper.appendChild(menu);
@@ -201,8 +209,13 @@
         }
       });
 
+      const triggerWidth = trigger.offsetWidth;
+      if (triggerWidth > 0) {
+        menu.style.minWidth = triggerWidth + "px";
+      }
+
       const rect = wrapper.getBoundingClientRect();
-      if (rect.left + 280 > window.innerWidth) {
+      if (rect.left + (triggerWidth || 280) > window.innerWidth - 20) {
         wrapper.classList.add("align-right");
       } else {
         wrapper.classList.remove("align-right");
