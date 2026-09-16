@@ -714,19 +714,6 @@
         overflow: visible;
         padding-right: 0;
       }
-      .doc-sidebar-mobile-close {
-        position: absolute;
-        top: 1.5rem;
-        right: 1.5rem;
-        background: rgba(255, 255, 255, 0.08);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: #fff;
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
-        font-family: inherit;
-        font-size: 0.84rem;
-        cursor: pointer;
-      }
       .doc-pagination {
         grid-template-columns: 1fr;
       }
@@ -814,7 +801,6 @@
           
           <!-- Sticky Sidebar Navigation -->
           <aside class="aww-docs-sidebar" id="docSidebar">
-            <button type="button" class="doc-sidebar-mobile-close" id="docSidebarClose" aria-label="Fermer le menu">✕ Fermer</button>
             <div class="docs-sidebar-inner">
               
               <!-- Search Bar with Ctrl+K support -->
@@ -2124,7 +2110,6 @@
       // 2. Mobile Drawer Navigation Toggle
       const mobileToggle = document.getElementById('docMobileNavToggle');
       const mobileSidebar = document.getElementById('docSidebar');
-      const mobileClose = document.getElementById('docSidebarClose');
 
       if (mobileToggle && mobileSidebar) {
         mobileToggle.addEventListener('click', () => {
@@ -2132,14 +2117,6 @@
           mobileToggle.setAttribute('aria-expanded', String(isOpen));
           document.body.style.overflow = isOpen ? 'hidden' : '';
         });
-
-        if (mobileClose) {
-          mobileClose.addEventListener('click', () => {
-            mobileSidebar.classList.remove('is-open');
-            mobileToggle.setAttribute('aria-expanded', 'false');
-            document.body.style.overflow = '';
-          });
-        }
 
         // Close mobile drawer on link click
         document.querySelectorAll('.docs-nav-list li a').forEach(link => {
