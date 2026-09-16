@@ -25,6 +25,10 @@ html {
   -webkit-text-size-adjust: 100%;
 }
 
+html, body {
+  scroll-behavior: auto !important;
+}
+
 html.lenis, html.lenis body {
   height: auto;
 }

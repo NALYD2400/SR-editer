@@ -1,10 +1,9 @@
-
 <!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Documentation · SR Editer</title>
+  <title>Documentation Technique Officielle · SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
@@ -13,6 +12,734 @@
   
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* ─── Documentation Theme & Enhancements ─── */
+    :root {
+      --doc-bg-card: rgba(255, 255, 255, 0.02);
+      --doc-border: rgba(255, 255, 255, 0.08);
+      --doc-border-hover: rgba(255, 107, 53, 0.35);
+      --doc-code-bg: #090a0f;
+    }
+
+    .doc-page-header {
+      padding: 3rem 0 2.5rem;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 3.5rem;
+    }
+    .doc-version-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      background: rgba(255, 107, 53, 0.12);
+      border: 1px solid rgba(255, 107, 53, 0.35);
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+      box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
+    }
+    .doc-version-tag span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+    }
+
+    /* Layout override for modern doc style */
+    .aww-docs {
+      padding: 0 4rem 10rem;
+      position: relative;
+    }
+    .aww-docs-container {
+      display: grid;
+      grid-template-columns: 300px minmax(0, 1fr);
+      gap: 4rem;
+      align-items: start;
+    }
+
+    /* Sidebar navigation */
+    .aww-docs-sidebar {
+      position: sticky;
+      top: 100px;
+      align-self: start;
+      max-height: calc(100vh - 120px);
+    }
+    .docs-sidebar-inner {
+      height: 100%;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      padding-right: 1.25rem;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+    }
+    .docs-sidebar-inner::-webkit-scrollbar {
+      width: 4px;
+    }
+    .docs-sidebar-inner::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 4px;
+    }
+
+    /* Search Box & Controls */
+    .doc-search-box {
+      position: relative;
+      margin-bottom: 1.25rem;
+    }
+    .doc-search-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 0.65rem 3.6rem 0.65rem 2.4rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.84rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+    .doc-search-input:focus {
+      border-color: var(--accent);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.18);
+    }
+    .doc-search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255, 255, 255, 0.35);
+      pointer-events: none;
+    }
+    .doc-search-kbd {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.68rem;
+      padding: 0.15rem 0.35rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+      color: rgba(255, 255, 255, 0.5);
+      pointer-events: none;
+    }
+    .doc-search-clear {
+      position: absolute;
+      right: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: none;
+      padding: 0.2rem 0.4rem;
+      line-height: 1;
+      border-radius: 4px;
+    }
+    .doc-search-clear:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .doc-search-status {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-bottom: 1rem;
+      padding: 0 0.5rem;
+      display: none;
+    }
+
+    /* Navigation Groups */
+    .docs-nav-group {
+      margin-bottom: 1.5rem;
+    }
+    .docs-nav-title {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.38);
+      padding: 0 0.75rem;
+      margin-bottom: 0.45rem;
+    }
+    .docs-nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      padding: 0;
+      margin: 0;
+    }
+    .docs-nav-list li a.aww-toc-link {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      font-weight: 500;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.2s ease;
+    }
+    .docs-nav-list li a.aww-toc-link:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.04);
+      transform: translateX(3px);
+    }
+    .docs-nav-list li a.aww-toc-link.active {
+      color: #fff;
+      background: rgba(255, 107, 53, 0.15);
+      border-color: rgba(255, 107, 53, 0.35);
+      font-weight: 600;
+      transform: translateX(3px);
+      box-shadow: 0 0 16px rgba(255, 107, 53, 0.12);
+    }
+
+    /* Mobile Sticky Nav Bar */
+    .doc-mobile-nav-bar {
+      display: none;
+      position: sticky;
+      top: 72px;
+      z-index: 40;
+      background: rgba(10, 11, 16, 0.92);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0.65rem 1rem;
+      margin: -1rem -1rem 2rem;
+    }
+    .doc-mobile-nav-toggle {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 0.6rem 0.9rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .doc-mobile-nav-toggle svg {
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .doc-mobile-active-section {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 55%;
+    }
+
+    /* Content styling */
+    .aww-docs-section {
+      scroll-margin-top: 130px;
+      margin-top: 5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .aww-docs-section:first-of-type {
+      margin-top: 0;
+      padding-top: 0;
+      border-top: none;
+    }
+
+    .doc-section-header {
+      margin-bottom: 1.75rem;
+    }
+    .doc-section-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    .doc-section-title {
+      font-size: clamp(2rem, 3.5vw, 2.75rem);
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+    .doc-section-lead {
+      font-size: 1.15rem;
+      color: rgba(255, 255, 255, 0.75);
+      line-height: 1.6;
+      max-width: 840px;
+    }
+
+    /* Callout components */
+    .doc-callout {
+      display: flex;
+      gap: 1rem;
+      padding: 1.25rem 1.4rem;
+      border-radius: 12px;
+      margin: 1.75rem 0;
+      border-left: 4px solid;
+      font-size: 0.94rem;
+      line-height: 1.65;
+      backdrop-filter: blur(12px);
+    }
+    .doc-callout-icon {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      margin-top: 3px;
+    }
+    .doc-callout-warning {
+      background: rgba(245, 158, 11, 0.08);
+      border-color: #f59e0b;
+      color: #fde68a;
+    }
+    .doc-callout-warning strong { color: #fbbf24; }
+    .doc-callout-info {
+      background: rgba(56, 189, 248, 0.08);
+      border-color: #38bdf8;
+      color: #bae6fd;
+    }
+    .doc-callout-info strong { color: #7dd3fc; }
+    .doc-callout-danger {
+      background: rgba(239, 68, 68, 0.08);
+      border-color: #ef4444;
+      color: #fecaca;
+    }
+    .doc-callout-danger strong { color: #f87171; }
+    .doc-callout-success {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: #10b981;
+      color: #a7f3d0;
+    }
+    .doc-callout-success strong { color: #34d399; }
+
+    /* Code Blocks & Token Syntax Highlighting */
+    .doc-code-block {
+      background: var(--doc-code-bg);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      border-radius: 12px;
+      margin: 1.6rem 0;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    }
+    .doc-code-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 1.1rem;
+      background: rgba(255, 255, 255, 0.035);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      font-size: 0.78rem;
+      color: rgba(255, 255, 255, 0.6);
+      font-family: inherit;
+    }
+    .doc-code-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+    }
+    .token-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.75);
+    }
+    .doc-copy-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.75);
+      padding: 0.25rem 0.7rem;
+      font-size: 0.74rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      font-weight: 500;
+    }
+    .doc-copy-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .doc-code-block pre {
+      margin: 0;
+      padding: 1.25rem 1.35rem;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
+      font-size: 0.86rem;
+      line-height: 1.65;
+      color: #e2e8f0;
+      scrollbar-width: thin;
+    }
+
+    /* Syntax Tokens */
+    .token-keyword { color: #ff7b72; font-weight: 600; }
+    .token-fn { color: #d2a8ff; }
+    .token-string { color: #a5d6ff; }
+    .token-comment { color: #8b949e; font-style: italic; }
+    .token-type { color: #7ee787; }
+    .token-number { color: #79c0ff; }
+    .token-prop { color: #79c0ff; }
+    .token-tag { color: #7ee787; }
+
+    /* Comparison Tables */
+    .doc-table-wrapper {
+      overflow-x: auto;
+      margin: 1.75rem 0;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.015);
+      scrollbar-width: thin;
+    }
+    .doc-table {
+      width: 100%;
+      min-width: 680px;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+    .doc-table th {
+      padding: 0.95rem 1.15rem;
+      background: rgba(255, 255, 255, 0.04);
+      font-weight: 600;
+      color: #fff;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .doc-table td {
+      padding: 0.85rem 1.15rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-secondary);
+      vertical-align: middle;
+    }
+    .doc-table tr:last-child td {
+      border-bottom: none;
+    }
+    .doc-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* Badges */
+    .doc-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .doc-badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+    .doc-badge-orange { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .doc-badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+    .doc-badge-blue { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .doc-badge-purple { background: rgba(168, 85, 247, 0.15); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.3); }
+    .doc-badge-gray { background: rgba(156, 163, 175, 0.12); color: #9ca3af; border: 1px solid rgba(156, 163, 175, 0.25); }
+
+    /* Keycaps Keyboard Shortcuts */
+    kbd {
+      display: inline-block;
+      padding: 0.2rem 0.45rem;
+      font-size: 0.76rem;
+      font-family: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Cards Grid */
+    .doc-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .doc-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .doc-card-item {
+      padding: 1.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.02);
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .doc-card-item:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.035);
+    }
+    .doc-card-item h4 {
+      font-size: 1.05rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+    .doc-card-icon-wrap {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: rgba(255, 107, 53, 0.12);
+      border: 1px solid rgba(255, 107, 53, 0.28);
+      color: var(--accent);
+      flex-shrink: 0;
+    }
+    .doc-card-icon-wrap svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2.2;
+    }
+    .doc-card-icon-wrap.success {
+      background: rgba(16, 185, 129, 0.12);
+      border-color: rgba(16, 185, 129, 0.3);
+      color: #34d399;
+    }
+    .doc-card-icon-wrap.danger {
+      background: rgba(239, 68, 68, 0.12);
+      border-color: rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+    .doc-card-icon-wrap.warning {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+    .doc-card-icon-wrap.info {
+      background: rgba(56, 189, 248, 0.12);
+      border-color: rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+    }
+    .doc-card-icon-wrap.purple {
+      background: rgba(168, 85, 247, 0.12);
+      border-color: rgba(168, 85, 247, 0.3);
+      color: #c084fc;
+    }
+    .doc-card-item p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Step flow diagram */
+    .doc-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin: 1.75rem 0;
+    }
+    .doc-flow-step {
+      display: flex;
+      gap: 1.25rem;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+    }
+    .doc-flow-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 107, 53, 0.15);
+      border: 1px solid rgba(255, 107, 53, 0.4);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .doc-flow-content h5 {
+      color: #fff;
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .doc-flow-content p {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin: 0;
+      line-height: 1.55;
+    }
+
+    /* Next / Previous Pagination Footer */
+    .doc-pagination {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1.5rem;
+      margin-top: 5rem;
+      padding-top: 2.5rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .doc-pagination-card {
+      display: flex;
+      flex-direction: column;
+      padding: 1.25rem 1.5rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .doc-pagination-card:hover {
+      border-color: var(--accent);
+      background: rgba(255, 107, 53, 0.04);
+      transform: translateY(-2px);
+    }
+    .doc-pagination-card.next {
+      text-align: right;
+      align-items: flex-end;
+    }
+    .doc-pagination-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 0.35rem;
+    }
+    .doc-pagination-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    /* Floating Back to Top */
+    .doc-back-to-top {
+      position: fixed;
+      bottom: 2.5rem;
+      right: 2.5rem;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(18, 19, 26, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      padding: 0.55rem 1rem;
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    }
+    .doc-back-to-top.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+    .doc-back-to-top:hover {
+      border-color: var(--accent);
+      background: rgba(255, 107, 53, 0.15);
+      color: var(--accent);
+    }
+
+    /* Responsive Mobile & Tablet */
+    @media (max-width: 992px) {
+      .aww-docs {
+        padding: 0 1.25rem 6rem;
+      }
+      .aww-docs-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      .doc-mobile-nav-bar {
+        display: block;
+      }
+      .aww-docs-sidebar {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 100;
+        background: rgba(10, 11, 16, 0.96);
+        backdrop-filter: blur(20px);
+        padding: 5rem 1.5rem 2rem;
+        overflow-y: auto;
+      }
+      .aww-docs-sidebar.is-open {
+        display: block;
+      }
+      .docs-sidebar-inner {
+        position: static;
+        max-height: none;
+        overflow: visible;
+        padding-right: 0;
+      }
+      .doc-sidebar-mobile-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-family: inherit;
+        font-size: 0.84rem;
+        cursor: pointer;
+      }
+      .doc-pagination {
+        grid-template-columns: 1fr;
+      }
+      .doc-pagination-card.next {
+        text-align: left;
+        align-items: flex-start;
+      }
+      .doc-back-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+      }
+    }
+  </style>
 </head>
 <body class="aww-page">
   <!-- 3D Video Background -->
@@ -35,7 +762,7 @@
         <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
         <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
         <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
-        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
+        <a href="docs.html" class="aww-link active" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
         <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
         <a href="login.html" class="aww-link aww-nav-portal-mobile" data-magnetic><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
       </nav>
@@ -52,172 +779,1213 @@
   
   <main class="aww-smooth-scroll">
 
-      <section class="aww-page-hero" style="height: 45vh; min-height: 380px;">
+      <!-- Hero Header -->
+      <section class="aww-page-hero" style="height: 44vh; min-height: 380px;">
         <div class="aww-hero-content">
-          <div class="aww-kicker" data-gsap="fade-up">03 — DOCUMENTATION &amp; GUIDES</div>
+          <div class="doc-version-tag" data-gsap="fade-up">
+            <span class="dot"></span> VERSION OFFICIELLE v0.7.1 · TAURI v2 NATIVE
+          </div>
           <h1 class="aww-page-title" data-gsap="split-text">SYSTEM<br><span class="aww-text-stroke">MANUAL</span></h1>
-          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 650px; font-size: 1.2rem;">
-            Guide technique officiel et spécifications de l'atelier SR Editer pour GTA V, FiveM et les archives RPF.
+          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.2" style="max-width: 680px; font-size: 1.15rem;">
+            Documentation technique officielle et spécifications d'ingénierie de l'atelier SR Editer pour GTA V Legacy, Enhanced / Gen9 et FiveM.
           </p>
         </div>
       </section>
 
+      <!-- Docs Section -->
       <section class="aww-docs">
+        
+        <!-- Mobile Sticky Nav Bar -->
+        <div class="doc-mobile-nav-bar">
+          <button type="button" class="doc-mobile-nav-toggle" id="docMobileNavToggle" aria-expanded="false">
+            <span style="display: flex; align-items: center; gap: 0.5rem;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+              </svg>
+              <span>Table des Matières</span>
+            </span>
+            <span class="doc-mobile-active-section" id="docMobileActiveTitle">01 · Démarrage &amp; Setup</span>
+          </button>
+        </div>
+
         <div class="aww-docs-container">
-          <aside class="aww-docs-sidebar" data-gsap="fade-right">
-            <ul>
-              <li><a href="#getting-started" class="aww-toc-link">Démarrage</a></li>
-              <li><a href="#installation" class="aww-toc-link">Installation</a></li>
-              <li><a href="#texture-studio" class="aww-toc-link">Texture Studio</a></li>
-              <li><a href="#viewport-3d" class="aww-toc-link">Viewport 3D</a></li>
-              <li><a href="#rpf-archives" class="aww-toc-link">Archives RPF</a></li>
-              <li><a href="#faq" class="aww-toc-link">FAQ &amp; Support</a></li>
-            </ul>
+          
+          <!-- Sticky Sidebar Navigation -->
+          <aside class="aww-docs-sidebar" id="docSidebar">
+            <button type="button" class="doc-sidebar-mobile-close" id="docSidebarClose" aria-label="Fermer le menu">✕ Fermer</button>
+            <div class="docs-sidebar-inner">
+              
+              <!-- Search Bar with Ctrl+K support -->
+              <div class="doc-search-box">
+                <svg class="doc-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" id="docSearch" class="doc-search-input" placeholder="Filtrer la documentation..." autocomplete="off" />
+                <kbd class="doc-search-kbd" id="docSearchKbd">Ctrl K</kbd>
+                <button type="button" class="doc-search-clear" id="docSearchClear" aria-label="Effacer">✕</button>
+              </div>
+              <div class="doc-search-status" id="docSearchStatus"></div>
+
+              <!-- Navigation Groups with keywords for instant search -->
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">01 · Démarrage</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="setup installation telechargement windows exe sha-256 config minimale gpu ram cpu tauri v2 version 0.7.1">
+                    <a href="#getting-started" class="aww-toc-link">Prise en Main &amp; Setup</a>
+                  </li>
+                  <li data-keywords="architecture tauri v2 rust react 18 webgl three.js pbr rage shaders ipc memory zero-copy memmap2">
+                    <a href="#architecture" class="aww-toc-link">Architecture Tauri v2</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">02 · Moteur RAGE</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="formats rsc7 ytd ydr yft ydd odr otx openformats dds bc1 bc3 bc7 0x50000000 0x60000000 mipmaps codewalker openiv sollumz">
+                    <a href="#supported-formats" class="aww-toc-link">Formats RSC7 Décodés</a>
+                  </li>
+                  <li data-keywords="gen9 enhanced ps5 xbox rsc7 v154 v159 v171 vertexdeclarationg9 52 slots 32-bit indices bc6h shaderfx gta vi">
+                    <a href="#gen9-enhanced" class="aww-toc-link">Support Gen9 / Enhanced</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">03 · Explorateur &amp; RPF</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="rpf memmap2 projection memoire zero-copy archives imbriquees 16 niveaux 500000 entrees x64e patchday anti-ban lecture seule">
+                    <a href="#rpf-memmap" class="aww-toc-link">Mappage Mémoire &amp; RPF</a>
+                  </li>
+                  <li data-keywords="cache extraction temporaire tracabilite rpf-origin.json physicalpath archivechain internalpath securise">
+                    <a href="#rpf-cache" class="aww-toc-link">Cache d'Extraction Sécurisé</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">04 · Texture Studio</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="texture studio calques layers fusion blend modes normal multiply overlay screen reglages hsl green channel y+ y- dds png webp">
+                    <a href="#texture-studio" class="aww-toc-link">Studio 2D Multi-Calques</a>
+                  </li>
+                  <li data-keywords="ia generative surfaces procedurale fibre de carbone cuir nappa metal brosse usure openai dall-e gpt-4o gemini upscaling">
+                    <a href="#procedural-ai" class="aww-toc-link">IA Générative &amp; Surfaces</a>
+                  </li>
+                  <li data-keywords="dds compression directdraw surface bc1 bc3 bc7 dxt1 dxt5 rgba32 mipmaps gpu bcn vram alpha">
+                    <a href="#dds-compression" class="aww-toc-link">Compression DDS (BCn)</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">05 · Viewport 3D</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="viewport 3d webgl three.js pbr carpaint clearcoat specular normal dirt level poussiere salete uv paint peinture uv">
+                    <a href="#viewport-3d" class="aww-toc-link">Rendu PBR &amp; Shaders</a>
+                  </li>
+                  <li data-keywords="controles raccourcis clavier shortcuts kbd orbite pan zoom fil de fer wireframe ctrl+z ctrl+y ctrl+s ctrl+j f espace">
+                    <a href="#shortcuts-controls" class="aww-toc-link">Contrôles &amp; Raccourcis</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">06 · Enregistrement</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="save pipeline sauvegarde modes direct dossier projet .bak transactions atomique staging gta-asset-studio">
+                    <a href="#save-pipeline" class="aww-toc-link">Pipeline &amp; Modes de Sauvegarde</a>
+                  </li>
+                  <li data-keywords="backups securite .bak fivem fxmanifest stream ensure reload redemarrer hot-swap cache vram txadmin restauration">
+                    <a href="#backups-safety" class="aww-toc-link">Backups .bak &amp; FiveM</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">07 · Limites &amp; Périmètre</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="limites perimetre hors perimetre crash deformation ragdoll squelettes gta vi odr ydr encodeur decompilation recompilation">
+                    <a href="#technical-limits" class="aww-toc-link">Limites Connues</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">08 · Licences &amp; Sécurité</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="authentification auth supabase rust entitlement 60 minutes 3600s max_entitlement_age hors-ligne jwt mutex offline securite">
+                    <a href="#auth-entitlement" class="aww-toc-link">Authentification &amp; Rust Cache</a>
+                  </li>
+                  <li data-keywords="abonnements tiers tarifs prix standard pro studio entreprise premium communaute gratuit 9.99 24.99 49.99 matrice">
+                    <a href="#tiers-matrix" class="aww-toc-link">Matrice des Offres</a>
+                  </li>
+                </ul>
+              </div>
+
+              <div class="docs-nav-group">
+                <div class="docs-nav-title">09 · Assistance</div>
+                <ul class="docs-nav-list">
+                  <li data-keywords="depannage faq aide questions assistance resolution verrouille session expiree restaurer fivem textures discord support">
+                    <a href="#troubleshooting-faq" class="aww-toc-link">Dépannage &amp; FAQ</a>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
           </aside>
 
-          <div class="aww-docs-content" data-gsap="fade-up">
-            <!-- DÉMARRAGE -->
+          <!-- Main Documentation Content -->
+          <div class="aww-docs-content">
+            
+            <!-- SECTION 1: GETTING STARTED -->
             <section id="getting-started" class="aww-docs-section">
-              <span class="ticket-count-badge">01 · INTRODUCTION</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Prise en Main Rapide</h2>
-              <p>
-                <strong>SR Editer</strong> est une suite logicielle native pour Windows conçue pour les moddeurs, créateurs de véhicules, graphistes et développeurs FiveM.
-                Elle remplace les anciens flux de travail lents et destructifs par un pipeline moderne en temps réel, incluant l'inspection d'archives RPF, un studio 2D et un viewport 3D physically-based (PBR).
-              </p>
-              <div class="aww-docs-card">
-                <h3 style="margin-bottom: 0.75rem; color: #fff;">Points Clés de la Version v0.7.1</h3>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; color: var(--text-secondary); font-size: 0.95rem;">
-                  <li>⚡ <strong>Décodeur RSC7 Natif en Rust :</strong> Décompression ultra-rapide des conteneurs sans corruptions mémoires.</li>
-                  <li>🎨 <strong>Texture Studio Multi-Calques :</strong> Peinture, masques vectoriels, calques de réglages et export direct en DDS (DXT1, DXT5, BC7).</li>
-                  <li>🧊 <strong>Moteur WebGL 3D RAGE-Compliant :</strong> Rendu fidèle des shaders GTA V (carpaint, specular, normal maps, dirt level).</li>
-                  <li>🔄 <strong>Hot-Swap RPF :</strong> Remplacement des textures à chaud sans redémarrer le client FiveM ou le jeu.</li>
-                </ul>
-              </div>
-            </section>
-
-            <!-- INSTALLATION -->
-            <section id="installation" class="aww-docs-section" style="margin-top: 5rem;">
-              <span class="ticket-count-badge">02 · SETUP</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Installation &amp; Prérequis</h2>
-              <p>
-                L'application est distribuée sous forme d'installateur officiel Windows 64-bit autonome avec signature cryptographique.
-              </p>
-              <div class="aww-docs-card" style="border-color: rgba(255, 107, 53, 0.3); background: rgba(255, 107, 53, 0.04);">
-                <h3 style="margin-bottom: 0.75rem; color: #fff;">Téléchargement Recommandé</h3>
-                <p style="margin-bottom: 1.25rem;">Obtenez la dernière version stable directement depuis notre serveur sécurisé :</p>
-                <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid" data-magnetic>
-                  <span class="aww-btn-text">Télécharger SR Editer v0.7.1 (.exe)</span>
-                </a>
-              </div>
-              <div style="margin-top: 1.5rem;">
-                <h4 style="font-size: 1.1rem; margin-bottom: 0.5rem; color: #fff;">Configuration Minimale :</h4>
-                <p>Système : Windows 10 (version 1903+) ou Windows 11 (64-bit).<br>Processeur : Intel Core i3 / AMD Ryzen 3 ou supérieur.<br>Mémoire : 8 Go RAM (16 Go conseillés pour les textures 4K).<br>Carte Graphique : NVIDIA GeForce GTX 960 / AMD Radeon R9 280 ou supérieure (compatible DirectX 11 / OpenGL 4.5).</p>
-              </div>
-            </section>
-
-            <!-- TEXTURE STUDIO -->
-            <section id="texture-studio" class="aww-docs-section" style="margin-top: 5rem;">
-              <span class="ticket-count-badge">03 · WORKSHOP</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Texture Studio 2D</h2>
-              <p>
-                Le module Texture Studio permet de manipuler directement les dictionnaires de textures (.ytd) et les fichiers bruts. Vous pouvez importer des fichiers PNG, JPEG ou DDS, ajuster les canaux de couleurs et prévisualiser immédiatement le résultat.
-              </p>
-              <div class="aww-docs-card">
-                <h3 style="margin-bottom: 0.75rem; color: #fff;">Formats et Algorithmes Supportés</h3>
-                <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; color: var(--text-secondary); font-size: 0.95rem;">
-                  <li><strong>DXT1 (BC1) :</strong> Idéal pour les livrées simples, badges et textures opaques sans transparence complexe.</li>
-                  <li><strong>DXT5 (BC3) :</strong> Format standard pour les textures avec canal alpha progressif (verre, décalcomanies, fumées).</li>
-                  <li><strong>BC7 (DirectX 11) :</strong> Qualité maximale pour les rendus HD 4K avec compression de blocs avancée et réduction des artefacts.</li>
-                  <li><strong>Génération Automatique de Mipmaps :</strong> Calcul GPU des niveaux de détails pour éviter le scintillement en jeu.</li>
-                </ul>
-              </div>
-            </section>
-
-            <!-- VIEWPORT 3D -->
-            <section id="viewport-3d" class="aww-docs-section" style="margin-top: 5rem;">
-              <span class="ticket-count-badge">04 · REALTIME 3D</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Viewport 3D &amp; Shaders</h2>
-              <p>
-                Le viewport 3D intègre une réplique fidèle du moteur d'éclairage de GTA V. Il prend en charge les modèles 3D (.ydr, .yft, .ydd, .odr) et synchronise les textures éditées en une fraction de seconde.
-              </p>
-              <div class="aww-docs-card">
-                <h3 style="margin-bottom: 0.75rem; color: #fff;">Contrôles et Raccourcis Clavier</h3>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
-                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 8px;">
-                    <strong style="color: var(--accent);">Clic Gauche + Glisser :</strong><br><span style="font-size: 0.9rem; color: var(--text-secondary);">Rotation de la caméra (Orbite)</span>
-                  </div>
-                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 8px;">
-                    <strong style="color: var(--accent);">Clic Droit + Glisser :</strong><br><span style="font-size: 0.9rem; color: var(--text-secondary);">Panoramique (Pan)</span>
-                  </div>
-                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 8px;">
-                    <strong style="color: var(--accent);">Molette Souris :</strong><br><span style="font-size: 0.9rem; color: var(--text-secondary);">Zoom avant / arrière progressif</span>
-                  </div>
-                  <div style="padding: 1rem; background: rgba(255,255,255,0.02); border-radius: 8px;">
-                    <strong style="color: var(--accent);">Ctrl + Z / Ctrl + Y :</strong><br><span style="font-size: 0.9rem; color: var(--text-secondary);">Annuler / Rétablir modifications</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <!-- RPF ARCHIVES -->
-            <section id="rpf-archives" class="aww-docs-section" style="margin-top: 5rem;">
-              <span class="ticket-count-badge">05 · FILE SYSTEM</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Archives RPF &amp; Remplacement</h2>
-              <p>
-                L'explorateur RPF de SR Editer inspecte les fichiers du jeu en lecture sécurisée avec checksum d'intégrité, protégeant vos installations originales contre toute corruption.
-              </p>
-              <div class="aww-docs-card">
-                <h3 style="margin-bottom: 0.75rem; color: #fff;">Sécurité &amp; Compatibilité FiveM</h3>
-                <p>
-                  Toutes les opérations d'export respectent la structure interne des fichiers DLC (.rpf) et stream folders FiveM. Vous pouvez exporter vos ressources directement prêtes à être intégrées dans votre dossier de serveur sans outil tiers.
+              <div class="doc-section-header">
+                <span class="doc-section-badge">01 · INTRODUCTION &amp; SETUP</span>
+                <h2 class="doc-section-title">Prise en Main Rapide</h2>
+                <p class="doc-section-lead">
+                  <strong>SR Editer</strong> (identifiant technique <code>gta-asset-studio</code>, version <strong>0.7.1</strong>) est un atelier desktop de précision destiné aux créateurs de véhicules, moddeurs d'environnements et développeurs de serveurs <strong>FiveM / GTA V</strong>.
                 </p>
               </div>
+
+              <p>
+                Contrairement aux utilitaires historiques génériques, SR Editer unifie l'exploration des répertoires de mod, l'extraction sécurisée d'archives RPF, la retouche 2D par calques, la prévisualisation 3D en temps réel et l'injection directe avec sécurisation transactionnelle.
+              </p>
+
+              <!-- Callout Info -->
+              <div class="doc-callout doc-callout-info">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <div>
+                  <strong>Philosophie d'ingénierie :</strong> Aucun aperçu factice ou mesh simulé. Lorsqu'un fichier est corrompu ou qu'une version non prise en charge est détectée, le moteur renvoie une erreur explicite détaillée plutôt que de fabriquer un faux résultat.
+                </div>
+              </div>
+
+              <div class="doc-card-item" style="margin: 2rem 0; border-color: rgba(255, 107, 53, 0.35); background: rgba(255, 107, 53, 0.03);">
+                <h3 style="color: #fff; margin-bottom: 0.75rem; font-size: 1.25rem;">Téléchargement Officiel Windows</h3>
+                <p style="margin-bottom: 1.25rem;">Installeur binaire x64 officiel avec signature cryptographique :</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+                  <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid" data-magnetic>
+                    <span class="aww-btn-text">Télécharger SR Editer v0.7.1 (.exe)</span>
+                  </a>
+                  <span style="font-size: 0.85rem; color: var(--text-secondary);">SHA-256 Vérifié · Windows 10/11 64-bit</span>
+                </div>
+              </div>
+
+              <div class="doc-grid-2">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="4" y="4" width="16" height="16" rx="2"></rect><rect x="9" y="9" width="6" height="6"></rect><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"></path></svg></span>
+                    Configuration Minimale
+                  </h4>
+                  <p>
+                    <strong>OS :</strong> Windows 10 (1903+) ou Windows 11 (64-bit)<br>
+                    <strong>CPU :</strong> Intel Core i3 / AMD Ryzen 3 (4 cœurs)<br>
+                    <strong>RAM :</strong> 8 Go de mémoire vive<br>
+                    <strong>GPU :</strong> NVIDIA GeForce GTX 960 / AMD R9 280 (DirectX 11 / OpenGL 4.5 / WebGL 2.0)
+                  </p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+                    Configuration Recommandée
+                  </h4>
+                  <p>
+                    <strong>OS :</strong> Windows 11 64-bit à jour<br>
+                    <strong>CPU :</strong> Intel Core i7 / AMD Ryzen 7 (8 cœurs)<br>
+                    <strong>RAM :</strong> 16 Go à 32 Go (textures 4K haute résolution)<br>
+                    <strong>GPU :</strong> NVIDIA GeForce RTX 3060 / AMD RX 6600 (8 Go VRAM)
+                  </p>
+                </div>
+              </div>
             </section>
 
-            <!-- FAQ -->
-            <section id="faq" class="aww-docs-section" style="margin-top: 5rem;">
-              <span class="ticket-count-badge">06 · ASSISTANCE</span>
-              <h2 style="font-size: clamp(2.2rem, 4vw, 3.5rem); margin: 1rem 0 1.5rem;">Foire Aux Questions &amp; Support</h2>
-              <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="aww-docs-card">
-                  <h3 style="margin-bottom: 0.5rem; color: #fff;">Puis-je utiliser SR Editer sans connexion internet ?</h3>
-                  <p>Oui. Une fois votre licence validée lors de la première connexion, SR Editer conserve un cache chiffré de votre autorisation permettant de travailler hors-ligne pendant 14 jours.</p>
+            <!-- SECTION 2: ARCHITECTURE -->
+            <section id="architecture" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">02 · SYSTÈME &amp; PERFORMANCE</span>
+                <h2 class="doc-section-title">Architecture Tauri v2</h2>
+                <p class="doc-section-lead">
+                  SR Editer repose sur le framework moderne <strong>Tauri v2</strong>, combinant un backend natif en <strong>Rust</strong> et une interface réactive en <strong>React 18</strong>.
+                </p>
+              </div>
+
+              <p>
+                Contrairement aux environnements basés sur Electron qui intègrent une instance complète de Chromium et Node.js (gourmands en mémoire vive et pénalisés par le garbage collector JavaScript), Tauri sépare strictement le décodage binaire lourd de l'affichage.
+              </p>
+
+              <div class="doc-grid-3">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                    Moteur Rust (src-tauri)
+                  </h4>
+                  <p>Décodage RSC7, projection mémoire <code>memmap2</code>, encodage DDS GPU, cryptographie Supabase et transactions disques avec sécurité mémoire absolue.</p>
                 </div>
-                <div class="aww-docs-card">
-                  <h3 style="margin-bottom: 0.5rem; color: #fff;">Comment synchroniser mon abonnement avec Discord ?</h3>
-                  <p>Rendez-vous dans l'Espace Client &gt; Paramètres, puis cliquez sur « Lier mon compte Discord ». Votre rôle (Membre, Pro ou VIP) vous sera automatiquement attribué par notre bot officiel.</p>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"></rect><path d="M3 9h18M9 21V9"></path></svg></span>
+                    Interface React 18
+                  </h4>
+                  <p>Composants graphiques professionnels, gestion des calques Texture Studio, arborescence d'explorateur virtuel et synchronisation d'état fluide.</p>
                 </div>
-                <div class="aww-docs-card">
-                  <h3 style="margin-bottom: 0.5rem; color: #fff;">Comment obtenir de l'aide technique ?</h3>
-                  <p>Ouvrez un ticket d'assistance directement depuis l'onglet « Support » de votre Espace Client ou de l'application desktop. Notre équipe technique vous répond en direct sous quelques heures.</p>
-                  <div style="margin-top: 1rem;">
-                    <a href="dashboard.html" class="aww-btn aww-btn-outline" data-magnetic><span class="aww-btn-text">Ouvrir un Ticket</span></a>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg></span>
+                    Viewport WebGL PBR
+                  </h4>
+                  <p>Shaders physiques temps réel simulant le moteur RAGE de GTA V (peinture carrosserie, spéculaire, normales et curseur de saleté dynamique).</p>
+                </div>
+              </div>
+
+              <div class="doc-code-block">
+                <div class="doc-code-header">
+                  <span class="doc-code-title"><span class="token-badge">ARBORESCENCE</span>Structure du projet &amp; Architecture binaire</span>
+                  <button class="doc-copy-btn" onclick="copyCodeSnippet(this)">Copier</button>
+                </div>
+                <pre><code>SR_EDITER/
+├── <span class="token-type">src/</span>                    <span class="token-comment"># Frontend React 18 (Interface, Store, Viewport WebGL)</span>
+│   ├── <span class="token-prop">features/</span>           <span class="token-comment"># Texture Studio, 3D Canvas, File Explorer UI</span>
+│   ├── <span class="token-prop">core/engine/</span>        <span class="token-comment"># Client IPC asynchrone (invocations Tauri typées)</span>
+│   └── <span class="token-prop">core/auth/</span>          <span class="token-comment"># Authentification Supabase &amp; Entitlement Bridge</span>
+└── <span class="token-type">src-tauri/</span>              <span class="token-comment"># Moteur Rust natif haute performance</span>
+    ├── <span class="token-prop">src/rage/</span>           <span class="token-comment"># Décodeurs RSC7, YTD, YDR, YFT, Gen9, DDS/BCn, OpenFormats</span>
+    ├── <span class="token-prop">src/explorer/</span>       <span class="token-comment"># Mappage mémoire memmap2, navigation RPF, cache d'extraction</span>
+    ├── <span class="token-prop">src/commands/</span>       <span class="token-comment"># Sauvegarde transactionnelle, injection directe, backups .bak</span>
+    └── <span class="token-prop">src/entitlement.rs</span>  <span class="token-comment"># Vérification cryptographique des licences en mémoire (60 min)</span></code></pre>
+              </div>
+            </section>
+
+            <!-- SECTION 3: FORMATS SUPPORTES -->
+            <section id="supported-formats" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">03 · MOTEUR RAGE</span>
+                <h2 class="doc-section-title">Formats RSC7 Pris en Charge</h2>
+                <p class="doc-section-lead">
+                  Le module <code>src/rage/</code> implémente des décodeurs natifs en Rust pour les ressources propriétaires des moteurs RAGE (Rockstar Advanced Game Engine) de GTA V Legacy et Enhanced.
+                </p>
+              </div>
+
+              <p>
+                Les conteneurs <code>RSC7</code> encodent leurs structures en deux blocs mémoires disjoints identifiés par leurs bases virtuelles : <code>0x50000000</code> (bloc système / structures de métadonnées) et <code>0x60000000</code> (bloc graphique / buffers de textures et sommets). SR Editer valide ces pointeurs à la volée pour éliminer tout risque de dépassement de tampon ou de plantage silencieux.
+              </p>
+
+              <!-- Format Support Matrix Table -->
+              <div class="doc-table-wrapper">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Extension</th>
+                      <th>Type de Ressource</th>
+                      <th>Niveau de Support</th>
+                      <th>Décodage Moteur</th>
+                      <th>Export / Sauvegarde</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>.ytd</strong></td>
+                      <td>Texture Dictionary</td>
+                      <td><span class="doc-badge doc-badge-green">Natif Complet</span></td>
+                      <td>Extraction mipmaps, DDS (BC1, BC3, BC7) &amp; PNG</td>
+                      <td>Injection directe + Export PNG/DDS</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.ydr</strong></td>
+                      <td>Drawable Mesh (3D)</td>
+                      <td><span class="doc-badge doc-badge-green">Natif Complet</span></td>
+                      <td>Géométrie, buffers sommets/indices, shaders</td>
+                      <td>Mise à jour textures embarquées</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.yft</strong></td>
+                      <td>Fragment (Véhicules)</td>
+                      <td><span class="doc-badge doc-badge-blue">Partiel (Statique)</span></td>
+                      <td>Géométrie véhicule, vitrages, portières, hiérarchie</td>
+                      <td>Textures de livrées &amp; shaders</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.ydd</strong></td>
+                      <td>Drawable Dictionary</td>
+                      <td><span class="doc-badge doc-badge-green">Natif</span></td>
+                      <td>Indexation &amp; inspection des meshes multiples</td>
+                      <td>Inspection &amp; lecture</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.odr / .otx</strong></td>
+                      <td>OpenFormats</td>
+                      <td><span class="doc-badge doc-badge-green">Natif</span></td>
+                      <td>Parsing ASCII OpenFormats, matériaux, textures</td>
+                      <td>Édition directe + Export dossier</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.dds</strong></td>
+                      <td>DirectDraw Surface</td>
+                      <td><span class="doc-badge doc-badge-green">Natif GPU</span></td>
+                      <td>BC1 (DXT1), BC3 (DXT5), BC7 (DX11), non-compressé</td>
+                      <td>Génération mipmaps automatique</td>
+                    </tr>
+                    <tr>
+                      <td><strong>.rpf</strong></td>
+                      <td>Archive Conteneur</td>
+                      <td><span class="doc-badge doc-badge-orange">Lecture Seule</span></td>
+                      <td>Mappage <code>memmap2</code> sans décompression totale</td>
+                      <td>Extraction vers cache (Pas de réécriture RPF)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="doc-callout doc-callout-warning">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <div>
+                  <strong>Compilation ODR vers YDR :</strong> SR Editer analyse et manipule nativement les formats ouverts <code>.odr</code> et <code>.otx</code>. Toutefois, l'application ne contient pas de compilateur binaire ODR &rarr; YDR/YFT autonome. Pour la recompilation binaire finale d'assets exportés en OpenFormats, utilisez votre outil d'assemblage favori (CodeWalker, OpenIV ou Sollumz dans Blender).
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 4: GEN9 / ENHANCED -->
+            <section id="gen9-enhanced" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">04 · NOUVELLE GÉNÉRATION</span>
+                <h2 class="doc-section-title">Support GTA V Enhanced / Gen9</h2>
+                <p class="doc-section-lead">
+                  La version Enhanced (PlayStation 5, Xbox Series X|S et mise à niveau PC) introduit des variantes structurelles de l'architecture RSC7 nécessitant une prise en charge spécifique.
+                </p>
+              </div>
+
+              <p>
+                Le module <code>src/rage/gen9.rs</code> prend en charge les spécifications techniques suivantes :
+              </p>
+
+              <div class="doc-grid-2">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+                    Versions RSC7 v154, v159 &amp; v171
+                  </h4>
+                  <p>Détection automatique des fragments et drawables Enhanced, y compris le conteneur véhicule <strong>YFT v171</strong> avec décalages de pointeurs 64-bit ajustés.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><line x1="3.27" y1="6.96" x2="12" y2="12.01"></line><line x1="12" y1="22.08" x2="12" y2="12"></line><line x1="20.73" y1="6.96" x2="12" y2="12.01"></line></svg></span>
+                    Déclarations Gen9 (52 Slots)
+                  </h4>
+                  <p>Parsing exact de la structure <code>VertexDeclarationG9</code> (offsets u32, tailles u8, sémantiques POSITION, NORMAL, TEXCOORD0..5, BLENDWEIGHT).</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="9" x2="20" y2="9"></line><line x1="4" y1="15" x2="20" y2="15"></line><line x1="10" y1="3" x2="8" y2="21"></line><line x1="16" y1="3" x2="14" y2="21"></line></svg></span>
+                    Index Buffers 16-bit &amp; 32-bit
+                  </h4>
+                  <p>Support complet des maillages géométriques à haute densité de polygones avec indices 32-bit étendus sans troncature de géométrie.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg></span>
+                    Aperçu Textures BC6H &amp; ShaderFX
+                  </h4>
+                  <p>Décompression et prévisualisation directe dans le Viewport 3D des textures HDR compressées en BC6H (aperçu dynamique).</p>
+                </div>
+              </div>
+
+              <div class="doc-callout doc-callout-info">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <div>
+                  <strong>Statut GTA VI :</strong> SR Editer intègre d'ores et déjà la détection de l'arborescence et des répertoires d'installation pour GTA VI. Aucun format binaire n'est décodé à ce stade, les spécifications officielles des conteneurs n'ayant pas encore été rendues publiques par Rockstar Games.
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 5: RPF MEMMAP -->
+            <section id="rpf-memmap" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">05 · SYSTÈME DE FICHIERS</span>
+                <h2 class="doc-section-title">Mappage Mémoire &amp; Archives RPF</h2>
+                <p class="doc-section-lead">
+                  L'explorateur de fichiers de SR Editer inspecte les archives du jeu en lecture seule ultra-sécurisée grâce à la bibliothèque Rust <code>memmap2</code>.
+                </p>
+              </div>
+
+              <p>
+                Lors de l'ouverture d'une archive <code>.rpf</code> pesant plusieurs gigaoctets (ex: <code>x64e.rpf</code>, <code>patchday28ng.rpf</code>), le fichier n'est <strong>jamais chargé intégralement en mémoire vive</strong>. Le système d'exploitation mappe les blocs du fichier dans l'espace d'adressage virtuel à la demande (zero-copy memory mapping).
+              </p>
+
+              <div class="doc-grid-3">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></span>
+                    Vitesse Instantanée
+                  </h4>
+                  <p>Ouverture et affichage de l'arborescence en moins de 15 millisecondes, même sur des archives de plus de 4 Go.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="12" y1="11" x2="12" y2="17"></line><line x1="9" y1="14" x2="15" y2="14"></line></svg></span>
+                    Archives Imbriquées
+                  </h4>
+                  <p>Traversée récursive jusqu'à <strong>16 niveaux</strong> d'archives RPF imbriquées (ex: <code>dlc.rpf &gt; x64 &gt; vehicles.rpf</code>).</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+                    Recherche Indexée
+                  </h4>
+                  <p>Recherche instantanée et filtrage multicritères supportant jusqu'à <strong>500 000 entrées d'archives</strong> simultanées.</p>
+                </div>
+              </div>
+
+              <div class="doc-callout doc-callout-danger">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+                  <line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <div>
+                  <strong>Sécurité Absolue &amp; Anti-Ban : Pas de Réécriture des RPF Originaux</strong><br>
+                  SR Editer ne réécrit <strong>JAMAIS</strong> directement dans les fichiers <code>.rpf</code> originaux installés dans votre répertoire de jeu. Toute modification directe d'un RPF officiel altère la signature du jeu, entraîne des corruptions irréversibles de la table d'allocation et expose à des exclusions immédiates par les serveurs FiveM ou le lanceur officiel. Les modifications s'opèrent toujours via extraction sécurisée ou dans des dossiers de mods dédiés.
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 6: RPF CACHE -->
+            <section id="rpf-cache" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">06 · TRAÇABILITÉ</span>
+                <h2 class="doc-section-title">Cache d'Extraction Sécurisé</h2>
+                <p class="doc-section-lead">
+                  Lorsqu'une ressource (comme un <code>.ytd</code> ou un <code>.ydr</code>) est ouverte depuis une archive RPF pour être visualisée ou éditée, SR Editer l'extrait vers un répertoire temporaire isolé.
+                </p>
+              </div>
+
+              <p>
+                Pour garantir la parfaite traçabilité de l'asset sans jamais risquer de modifier l'archive source, un fichier de métadonnées nommé <code>.gta-asset-studio/rpf-origin.json</code> est automatiquement généré à côté du cache extrait.
+              </p>
+
+              <div class="doc-code-block">
+                <div class="doc-code-header">
+                  <span class="doc-code-title"><span class="token-badge">JSON</span>Exemple de manifeste d'origine · .gta-asset-studio/rpf-origin.json</span>
+                  <button class="doc-copy-btn" onclick="copyCodeSnippet(this)">Copier</button>
+                </div>
+                <pre><code>{
+  <span class="token-prop">"version"</span>: <span class="token-number">1</span>,
+  <span class="token-prop">"physicalPath"</span>: <span class="token-string">"C:\\Games\\Grand Theft Auto V\\update\\x64\\dlcpacks\\mptuner\\dlc.rpf"</span>,
+  <span class="token-prop">"archiveChain"</span>: [
+    <span class="token-string">"dlc.rpf"</span>,
+    <span class="token-string">"x64"</span>,
+    <span class="token-string">"levels"</span>,
+    <span class="token-string">"gta5"</span>,
+    <span class="token-string">"vehicles"</span>,
+    <span class="token-string">"vehshare.rpf"</span>
+  ],
+  <span class="token-prop">"internalPath"</span>: <span class="token-string">"vehicle_generic_detail2.ytd"</span>
+}</code></pre>
+              </div>
+
+              <p>
+                Ce manifeste permet à l'application de savoir exactement de quelle archive et sous-chemin provient l'asset, facilitant l'export vers un mod FiveM sans polluer votre installation propre.
+              </p>
+            </section>
+
+            <!-- SECTION 7: TEXTURE STUDIO -->
+            <section id="texture-studio" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">07 · ATELIER 2D</span>
+                <h2 class="doc-section-title">Texture Studio Multi-Calques</h2>
+                <p class="doc-section-lead">
+                  Texture Studio est un éditeur matriciel 2D complet directement connecté aux dictionnaires de textures RAGE (.ytd) et aux fichiers bruts.
+                </p>
+              </div>
+
+              <div class="doc-grid-2">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg></span>
+                    Pile de Calques Dynamiques
+                  </h4>
+                  <p>Ajout de calques d'images transparentes, logos de sponsors, bandes de carrosserie, plaques et textures avec opacité réglable et masques de fusion.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="9" cy="12" r="6" stroke-dasharray="3 3"></circle><circle cx="15" cy="12" r="6"></circle></svg></span>
+                    Modes de Fusion Standard
+                  </h4>
+                  <p>Prise en charge des modes <em>Normal</em>, <em>Multiplier</em>, <em>Incrustation (Overlay)</em>, <em>Écran</em>, <em>Éclaircir</em> et <em>Assombrir</em> pour fusionner décalcomanies et textures de base.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg></span>
+                    Calques de Réglages
+                  </h4>
+                  <p>Ajustements non destructifs de la balance des blancs, de l'exposition, de la teinte/saturation (HSL), du contraste et ré-inversion du canal vert de Normal Map (Y+ / Y-).</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span>
+                    Import / Export Multiformat
+                  </h4>
+                  <p>Glisser-déposer immédiat de fichiers PNG, JPEG, WebP ou DDS directement dans l'empilement de calques avec mise à l'échelle automatique.</p>
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 8: PROCEDURAL & AI -->
+            <section id="procedural-ai" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">08 · IA &amp; SURFACES</span>
+                <h2 class="doc-section-title">IA Générative &amp; Bibliothèque Procédurale</h2>
+                <p class="doc-section-lead">
+                  SR Editer combine des algorithmes procéduraux locaux et des connecteurs cloud d'intelligence artificielle pour accélérer la création de textures complexes.
+                </p>
+              </div>
+
+              <div class="doc-grid-2">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+                    Bibliothèque de Surfaces Procédurales
+                  </h4>
+                  <p>
+                    Générez instantanément des motifs répétitifs sans couture (seamless tiling) sans quitter l'interface :
+                  </p>
+                  <ul style="margin: 0.75rem 0 0 1.25rem; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6;">
+                    <li><strong>Fibre de Carbone :</strong> Tissage 2x2 twill ou sergé fin avec specular map coordonnée.</li>
+                    <li><strong>Cuir Automobile :</strong> Grain micro-perforé ou cuir Nappa pour selleries intérieures.</li>
+                    <li><strong>Métaux Brossés :</strong> Anodisé noir, aluminium strié, échappements bleuis par la chaleur.</li>
+                    <li><strong>Usure &amp; Asphalte :</strong> Micro-rayures, éraflures d'arêtes, poussière et goudron granuleux.</li>
+                  </ul>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"></path></svg></span>
+                    Génération &amp; Amélioration par IA
+                  </h4>
+                  <p>
+                    Intégration directe des API officielles <strong>OpenAI</strong> (DALL-E / GPT-4o) et <strong>Google Gemini</strong> :
+                  </p>
+                  <ul style="margin: 0.75rem 0 0 1.25rem; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6;">
+                    <li><strong>Génération de Livrées :</strong> Créez des motifs de course, stickers et décalcomanies depuis une simple description textuelle.</li>
+                    <li><strong>Upscaling &amp; Amélioration :</strong> Débruitage et suréchantillonnage de vieilles textures GTA V en 2K ou 4K ultra-détaillé.</li>
+                    <li><strong>Confidentialité Cloud :</strong> Les requêtes ne sont envoyées aux serveurs d'IA que lors d'un clic explicite sur le bouton de génération.</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 9: DDS COMPRESSION -->
+            <section id="dds-compression" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">09 · PIPELINE GPU</span>
+                <h2 class="doc-section-title">Compression DDS &amp; Formats de Blocs</h2>
+                <p class="doc-section-lead">
+                  Le moteur d'encodage GPU de SR Editer (<code>src/rage/dds.rs</code> et <code>bcn.rs</code>) convertit vos calques en textures compressées DirectDraw Surface (DDS) compatibles avec le moteur graphique de GTA V.
+                </p>
+              </div>
+
+              <div class="doc-table-wrapper">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Algorithme</th>
+                      <th>Nom DirectX</th>
+                      <th>Canal Alpha</th>
+                      <th>Usage GTA V Recommandé</th>
+                      <th>Ratio de Compression</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>BC1</strong></td>
+                      <td>DXT1</td>
+                      <td>Aucun ou Alpha 1-bit (découpe franche)</td>
+                      <td>Carrosseries, livrées opaques, enseignes sans transparence</td>
+                      <td>6:1 (0.5 octet / pixel)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>BC3</strong></td>
+                      <td>DXT5</td>
+                      <td>Alpha 8-bit progressif (interpolé)</td>
+                      <td>Vitrages, phares dégradés, décalcomanies, saleté transparente</td>
+                      <td>4:1 (1 octet / pixel)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>BC7</strong></td>
+                      <td>BC7 (DX11)</td>
+                      <td>Canaux RGB + Alpha de haute précision</td>
+                      <td>Textures 2K/4K premium, intérieurs haute fidélité, réduction d'artefacts</td>
+                      <td>4:1 (qualité quasi sans perte)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>RGBA32</strong></td>
+                      <td>Non compressé</td>
+                      <td>Alpha complet 32-bit</td>
+                      <td>Minimaps d'interface, icônes HUD ou textures d'étalonnage</td>
+                      <td>1:1 (Lourd en mémoire VRAM)</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <p>
+                <strong>Génération Automatique de Mipmaps :</strong> Lors de chaque export en DDS ou injection YTD, SR Editer calcule l'ensemble de la pyramide de sous-niveaux (mipmaps) par filtrage bilinéaire GPU, éliminant tout risque de scintillement ou d'effet de moirage lors des déplacements de caméra en jeu.
+              </p>
+            </section>
+
+            <!-- SECTION 10: VIEWPORT 3D -->
+            <section id="viewport-3d" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">10 · RENDU TEMPS RÉEL</span>
+                <h2 class="doc-section-title">Viewport 3D &amp; Shaders Physiques</h2>
+                <p class="doc-section-lead">
+                  Le viewport 3D intégré intègre un moteur de rendu WebGL / Three.js avec approximation PBR (Physically-Based Rendering) des shaders du moteur RAGE de GTA V.
+                </p>
+              </div>
+
+              <p>
+                Lorsque vous retouchez une texture dans le Texture Studio, le modèle 3D est mis à jour en quelques millisecondes sans rechargement de fichier.
+              </p>
+
+              <div class="doc-grid-3">
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="6" rx="2"></rect><path d="M5 11l2-5h10l2 5"></path><circle cx="7.5" cy="17" r="2"></circle><circle cx="16.5" cy="17" r="2"></circle></svg></span>
+                    Carpaint Shader
+                  </h4>
+                  <p>Simulation fidèle de la peinture automobile avec base de couleur, couche de vernis transparent (clearcoat), paillettes métalliques et réflexion environnementale HDRI.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="4" y1="6" x2="20" y2="6"></line><line x1="4" y1="12" x2="20" y2="12"></line><line x1="4" y1="18" x2="20" y2="18"></line><circle cx="8" cy="6" r="2" fill="currentColor"></circle><circle cx="16" cy="12" r="2" fill="currentColor"></circle><circle cx="10" cy="18" r="2" fill="currentColor"></circle></svg></span>
+                    Curseur Dirt Level
+                  </h4>
+                  <p>Curseur interactif de niveau de poussière (0% à 100%) appliquant dynamiquement le shader de saleté sur la carrosserie pour vérifier le rendu en jeu.</p>
+                </div>
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="m9.06 11.9 8.07-8.06a2.85 2.85 0 1 1 4.03 4.03l-8.06 8.08"></path><path d="M7.07 14.94c-1.66 0-3 1.35-3 3.02 0 1.33-2.5 1.52-2 2.02 1.08 1.1 2.49 2.02 4 2.02 2.2 0 4-1.8 4-4.04a3.01 3.01 0 0 0-3-3.02z"></path></svg></span>
+                    Peinture UV Expérimentale
+                  </h4>
+                  <p>Pinceau 3D interactif projetant directement la couleur ou les stickers sur les coordonnées UV du modèle en vue perspective.</p>
+                </div>
+              </div>
+
+              <div class="doc-callout doc-callout-info">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <div>
+                  <strong>Note sur le moteur de rendu :</strong> Le Viewport 3D constitue une <em>approximation PBR avancée</em> des shaders GTA V dans le navigateur/Tauri. Il reproduit fidèlement la disposition des textures et reflets, mais n'est pas le moteur propriétaire DirectX de Rockstar Games.
+                </div>
+              </div>
+            </section>
+
+            <!-- SECTION 11: SHORTCUTS -->
+            <section id="shortcuts-controls" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">11 · ERGONOMIE</span>
+                <h2 class="doc-section-title">Contrôles &amp; Raccourcis Clavier</h2>
+                <p class="doc-section-lead">
+                  Guide des raccourcis et interactions pour naviguer rapidement dans le Viewport 3D et le Texture Studio.
+                </p>
+              </div>
+
+              <div class="doc-table-wrapper">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Action</th>
+                      <th>Raccourci / Souris</th>
+                      <th>Contexte</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Ouvrir un Dossier / RPF</strong></td>
+                      <td><kbd>Ctrl</kbd> + <kbd>O</kbd></td>
+                      <td>Global</td>
+                      <td>Ouvre l'explorateur système pour charger un mod ou archive</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Orbite Caméra</strong></td>
+                      <td><kbd>Clic Gauche</kbd> + Glisser</td>
+                      <td>Viewport 3D</td>
+                      <td>Rotation orbitale de la caméra autour du centre de l'asset</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Panoramique (Pan)</strong></td>
+                      <td><kbd>Clic Droit</kbd> + Glisser / <kbd>Shift</kbd> + <kbd>Molette</kbd></td>
+                      <td>Viewport 3D</td>
+                      <td>Déplacement latéral et vertical de la caméra</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Zoom Progressif</strong></td>
+                      <td><kbd>Molette Souris</kbd></td>
+                      <td>Viewport 3D &amp; 2D</td>
+                      <td>Agrandissement / rétrécissement continu sans à-coups</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Recadrer la Vue</strong></td>
+                      <td><kbd>F</kbd> ou <kbd>Espace</kbd></td>
+                      <td>Viewport 3D</td>
+                      <td>Recentrer la caméra sur le modèle ou le maillage sélectionné</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Mode Fil de Fer</strong></td>
+                      <td><kbd>W</kbd></td>
+                      <td>Viewport 3D</td>
+                      <td>Bascule l'affichage en mode Wireframe pour inspecter la topologie</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Annuler / Rétablir</strong></td>
+                      <td><kbd>Ctrl</kbd> + <kbd>Z</kbd> / <kbd>Ctrl</kbd> + <kbd>Y</kbd></td>
+                      <td>Global</td>
+                      <td>Historique des modifications de textures et calques</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sauvegarder</strong></td>
+                      <td><kbd>Ctrl</kbd> + <kbd>S</kbd></td>
+                      <td>Global</td>
+                      <td>Enregistre selon le mode actif (Direct, Dossier ou Projet)</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Dupliquer le Calque</strong></td>
+                      <td><kbd>Ctrl</kbd> + <kbd>J</kbd></td>
+                      <td>Texture Studio</td>
+                      <td>Duplique immédiatement le calque sélectionné</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Masquer / Afficher</strong></td>
+                      <td><kbd>H</kbd></td>
+                      <td>Texture &amp; 3D</td>
+                      <td>Bascule la visibilité de l'élément sélectionné</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- SECTION 12: SAVE PIPELINE -->
+            <section id="save-pipeline" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">12 · PERSISTANCE</span>
+                <h2 class="doc-section-title">Pipeline &amp; Modes de Sauvegarde</h2>
+                <p class="doc-section-lead">
+                  SR Editer propose trois modes d'enregistrement distincts pour s'adapter à chaque étape de votre flux de travail de modding.
+                </p>
+              </div>
+
+              <!-- Save Modes Comparison -->
+              <div class="doc-table-wrapper">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Mode</th>
+                      <th>Cible d'Écriture</th>
+                      <th>Comportement Transactionnel</th>
+                      <th>Sauvegarde de Secours (.bak)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Mode Direct</strong></td>
+                      <td>Fichiers YTD/YDR/YFT du dossier ouvert</td>
+                      <td>Injection directe atomique dans le binaire</td>
+                      <td><span class="doc-badge doc-badge-green">Oui (.gta-asset-studio.bak)</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Mode Dossier</strong></td>
+                      <td>Dossier externe sélectionné</td>
+                      <td>Exporte tous les assets modifiés vers un répertoire propre</td>
+                      <td><span class="doc-badge doc-badge-gray">Non requis (Originaux intacts)</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Mode Projet</strong></td>
+                      <td>Manifeste local <code>.gta-asset-studio/edits</code></td>
+                      <td>Conserve les calques 2D, masques et réglages sans toucher aux originaux</td>
+                      <td><span class="doc-badge doc-badge-blue">Intégré au manifeste</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="doc-flow">
+                <div class="doc-flow-step">
+                  <div class="doc-flow-num">1</div>
+                  <div class="doc-flow-content">
+                    <h5>Validation &amp; Écriture en Zone Temporaire</h5>
+                    <p>Les données compressées sont d'abord écrites dans un fichier temporaire isolé (<code>gta-asset-studio-transactions</code>). Si une panne électrique ou un plantage survient, l'asset d'origine n'est pas corrompu.</p>
+                  </div>
+                </div>
+                <div class="doc-flow-step">
+                  <div class="doc-flow-num">2</div>
+                  <div class="doc-flow-content">
+                    <h5>Création du Backup de Secours</h5>
+                    <p>En Mode Direct, l'état initial du fichier est copié dans le sous-dossier <code>.gta-asset-studio/&lt;nom&gt;.gta-asset-studio.bak</code> avant tout remplacement.</p>
+                  </div>
+                </div>
+                <div class="doc-flow-step">
+                  <div class="doc-flow-num">3</div>
+                  <div class="doc-flow-content">
+                    <h5>Remplacement Atomique</h5>
+                    <p>L'ancien fichier est remplacé de façon atomique au niveau du système de fichiers Windows, garantissant l'intégrité de la ressource.</p>
                   </div>
                 </div>
               </div>
             </section>
+
+            <!-- SECTION 13: BACKUPS & FIVEM -->
+            <section id="backups-safety" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">13 · SÉCURITÉ MODDING</span>
+                <h2 class="doc-section-title">Backups .bak &amp; Compatibilité FiveM</h2>
+                <p class="doc-section-lead">
+                  Comment restaurer facilement vos créations et préparer des livrables exploitables sans casser vos dossiers de ressources de serveur.
+                </p>
+              </div>
+
+              <p>
+                Toutes les sauvegardes créées par SR Editer sont logées dans le sous-dossier <code>.gta-asset-studio</code> du projet ouvert. Si vous souhaitez annuler vos modifications et restaurer le fichier original, il vous suffit de supprimer l'extension <code>.gta-asset-studio.bak</code>.
+              </p>
+
+              <div class="doc-callout doc-callout-warning">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                  <line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                <div>
+                  <strong>Clarification sur le « Hot-Swap » en Jeu :</strong><br>
+                  Les moteurs de GTA V et de FiveM mettent en cache les textures dans la VRAM de votre carte graphique lors du chargement des modèles. L'injection d'une nouvelle texture dans votre dossier de mod nécessite donc soit de redémarrer la ressource dans la console serveur FiveM (<code>ensure [nom_ressource]</code>), soit de recharger la zone/véhicule en jeu pour que les changements soient visibles à l'écran.
+                </div>
+              </div>
+
+              <div class="doc-code-block">
+                <div class="doc-code-header">
+                  <span class="doc-code-title"><span class="token-badge">TREE</span>Structure recommandée d'un dossier ressource FiveM</span>
+                  <button class="doc-copy-btn" onclick="copyCodeSnippet(this)">Copier</button>
+                </div>
+                <pre><code>[my-custom-vehicle]/
+├── <span class="token-prop">fxmanifest.lua</span>          <span class="token-comment"># Manifeste officiel FiveM (game 'gta5')</span>
+├── <span class="token-type">stream/</span>                 <span class="token-comment"># Dossier cible pour le Mode Dossier de SR Editer</span>
+│   ├── <span class="token-string">adder.ytd</span>           <span class="token-comment"># Dictionnaire de textures injecté</span>
+│   ├── <span class="token-string">adder.ydr</span>           <span class="token-comment"># Mesh 3D haute fidélité</span>
+│   └── <span class="token-string">adder.yft</span>           <span class="token-comment"># Modèle de collision &amp; géométrie véhicule</span>
+└── <span class="token-type">.gta-asset-studio/</span>      <span class="token-comment"># Métadonnées &amp; sauvegardes automatiques</span>
+    ├── <span class="token-prop">rpf-origin.json</span>     <span class="token-comment"># Traçabilité d'extraction RPF</span>
+    └── <span class="token-string">adder.ytd.gta-asset-studio.bak</span> <span class="token-comment"># Backup de secours instantané</span></code></pre>
+              </div>
+            </section>
+
+            <!-- SECTION 14: LIMITES TECHNIQUES -->
+            <section id="technical-limits" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">14 · TRANSPARENCE TECHNIQUE</span>
+                <h2 class="doc-section-title">Limites Connues &amp; Périmètre Réel</h2>
+                <p class="doc-section-lead">
+                  Dans une démarche d'exactitude professionnelle, voici le périmètre précis des fonctionnalités prises en charge et celles qui restent hors périmètre dans la version v0.7.1.
+                </p>
+              </div>
+
+              <div class="doc-grid-2">
+                <div class="doc-card-item" style="border-color: rgba(16, 185, 129, 0.3);">
+                  <h4 style="color: #34d399;">
+                    <span class="doc-card-icon-wrap success"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="20 6 9 17 4 12"></polyline></svg></span>
+                    Totalement Pris en Charge
+                  </h4>
+                  <p>
+                    • Décodage natif RSC7 (YTD, YDR, YDD, OpenFormats ODR/OTX)<br>
+                    • Mappage mémoire RPF <code>memmap2</code> en lecture seule (jusqu'à 16 niveaux)<br>
+                    • Texture Studio 2D multi-calques et réglages HSL/Normal<br>
+                    • Viewport 3D WebGL PBR (carpaint, specular, normal, curseur dirt)<br>
+                    • Encodage GPU DDS (BC1, BC3, BC7) avec mipmaps automatiques<br>
+                    • Enregistrement direct avec backup <code>.gta-asset-studio.bak</code><br>
+                    • Support Gen9 / Enhanced (RSC7 v154/v159/v171, VertexDecl 52 slots)
+                  </p>
+                </div>
+                <div class="doc-card-item" style="border-color: rgba(239, 68, 68, 0.3);">
+                  <h4 style="color: #f87171;">
+                    <span class="doc-card-icon-wrap danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></span>
+                    Hors Périmètre (v0.7.1)
+                  </h4>
+                  <p>
+                    • Pas de réécriture directe dans les fichiers RPF officiels du jeu<br>
+                    • Pas d'encodeur/compilateur natif de texte ODR vers binaire YDR<br>
+                    • YFT : géométrie statique uniquement (déformation de crash, squelettes d'animation et ragdolls non gérés)<br>
+                    • GTA VI : détection de l'installation uniquement (formats non publics)<br>
+                    • Textures BC6H en prévisualisation uniquement (pas d'écriture)
+                  </p>
+                </div>
+              </div>
+            </section>
+
+
+            <!-- SECTION 16: AUTH & ENTITLEMENT -->
+            <section id="auth-entitlement" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">16 · SÉCURITÉ &amp; LICENCE</span>
+                <h2 class="doc-section-title">Authentification &amp; Moteur de Droits Rust</h2>
+                <p class="doc-section-lead">
+                  La sécurité des licences et des fonctionnalités payantes repose sur une vérification cryptographique inviolable côté backend Rust (<code>src-tauri/src/entitlement.rs</code>).
+                </p>
+              </div>
+
+              <p>
+                Le frontend React ne se contente pas d'affirmer le niveau d'abonnement : le jeton de session JWT fourni par Supabase est transmis au backend Rust via la commande <code>sync_entitlement</code>. C'est le binaire natif qui interroge directement Supabase avec un timeout réseau strict de 10 secondes et stocke l'état d'autorisation dans un mutex protégé en mémoire vive.
+              </p>
+
+              <!-- Callout Warning on Cache Duration -->
+              <div class="doc-callout doc-callout-warning">
+                <svg class="doc-callout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                <div>
+                  <strong>Cache en Mémoire Vive : 60 Minutes (Politique Hors-Ligne) :</strong><br>
+                  Le cache d'autorisation conservé par le moteur Rust a une durée de validité de <strong>60 minutes</strong> (<code>MAX_ENTITLEMENT_AGE = 3600 s</code>). Si vous perdez votre connexion Internet, vous disposez d'un délai d'une heure pour finaliser vos enregistrements. Au-delà, l'enregistrement des modifications est suspendu jusqu'au rétablissement du réseau afin de garantir la validité de la licence.
+                </div>
+              </div>
+
+              <div class="doc-code-block">
+                <div class="doc-code-header">
+                  <span class="doc-code-title"><span class="token-badge">RUST</span>Extrait du moteur Rust · src-tauri/src/entitlement.rs</span>
+                  <button class="doc-copy-btn" onclick="copyCodeSnippet(this)">Copier</button>
+                </div>
+                <pre><code><span class="token-comment">/// Durée maximale de fraîcheur du droit mis en cache en mémoire vive.</span>
+<span class="token-keyword">const</span> <span class="token-prop">MAX_ENTITLEMENT_AGE</span>: <span class="token-type">Duration</span> = <span class="token-type">Duration</span>::<span class="token-fn">from_secs</span>(<span class="token-number">60</span> * <span class="token-number">60</span>); <span class="token-comment">// 60 minutes</span>
+
+<span class="token-keyword">pub</span>(<span class="token-keyword">crate</span>) <span class="token-keyword">fn</span> <span class="token-fn">require_paid_features</span>(&amp;<span class="token-keyword">self</span>) -> <span class="token-type">Result</span>&lt;(), <span class="token-type">String</span>&gt; {
+    <span class="token-keyword">self</span>.<span class="token-fn">require_min_tier</span>(
+        <span class="token-string">"standard"</span>,
+        <span class="token-string">"L'enregistrement des modifications nécessite un abonnement Standard ou supérieur."</span>,
+    )
+}</code></pre>
+              </div>
+            </section>
+
+            <!-- SECTION 17: TIERS MATRIX -->
+            <section id="tiers-matrix" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">17 · ABONNEMENTS</span>
+                <h2 class="doc-section-title">Matrice Comparative des Offres</h2>
+                <p class="doc-section-lead">
+                  Détail exhaustif des fonctionnalités accessibles selon votre niveau de licence actif (Gratuit, Standard, Pro et Entreprise).
+                </p>
+              </div>
+
+              <div class="doc-table-wrapper">
+                <table class="doc-table">
+                  <thead>
+                    <tr>
+                      <th>Fonctionnalité Technique</th>
+                      <th>Communauté (Gratuit)</th>
+                      <th>Standard (9,99€/m)</th>
+                      <th>Pro / Studio (24,99€/m)</th>
+                      <th>Entreprise (49,99€/m)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Inspection RPF (memmap2)</strong></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Décodage RSC7 (YTD / YDR / YFT)</strong></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Viewport 3D WebGL PBR</strong></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Enregistrement Direct &amp; Backups .bak</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">Lecture seule</span></td>
+                      <td><span class="doc-badge doc-badge-green">Illimité</span></td>
+                      <td><span class="doc-badge doc-badge-green">Illimité</span></td>
+                      <td><span class="doc-badge doc-badge-green">Illimité</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Texture Studio Multi-Calques</strong></td>
+                      <td><span class="doc-badge doc-badge-orange">Aperçu 2D</span></td>
+                      <td><span class="doc-badge doc-badge-green">Complet</span></td>
+                      <td><span class="doc-badge doc-badge-green">Complet</span></td>
+                      <td><span class="doc-badge doc-badge-green">Complet</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Surfaces Procédurales</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">3 Presets</span></td>
+                      <td><span class="doc-badge doc-badge-green">Bibliothèque Complète</span></td>
+                      <td><span class="doc-badge doc-badge-green">Bibliothèque Complète</span></td>
+                      <td><span class="doc-badge doc-badge-purple">Bibliothèque + Custom</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Génération IA (OpenAI &amp; Gemini)</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">Non disponible</span></td>
+                      <td><span class="doc-badge doc-badge-blue">50 req / mois</span></td>
+                      <td><span class="doc-badge doc-badge-purple">250 req Haute Réf</span></td>
+                      <td><span class="doc-badge doc-badge-green">Quota Illimité Dédié</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Support Gen9 / Enhanced (v171, ShaderFX)</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">Non</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                      <td><span class="doc-badge doc-badge-green">Inclus</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Postes Simultanés &amp; Équipe</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">1 poste</span></td>
+                      <td><span class="doc-badge doc-badge-blue">1 poste actif</span></td>
+                      <td><span class="doc-badge doc-badge-purple">Jusqu'à 3 postes</span></td>
+                      <td><span class="doc-badge doc-badge-green">Sièges Équipe Illimités</span></td>
+                    </tr>
+                    <tr>
+                      <td><strong>Support Technique &amp; SLA</strong></td>
+                      <td><span class="doc-badge doc-badge-gray">Discord Public</span></td>
+                      <td><span class="doc-badge doc-badge-blue">Tickets Standard (&lt;24h)</span></td>
+                      <td><span class="doc-badge doc-badge-green">Prioritaire (&lt;4h)</span></td>
+                      <td><span class="doc-badge doc-badge-purple">Dédié 24/7 + Canal Privé</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <!-- SECTION 18: TROUBLESHOOTING & FAQ -->
+            <section id="troubleshooting-faq" class="aww-docs-section">
+              <div class="doc-section-header">
+                <span class="doc-section-badge">18 · ASSISTANCE &amp; RÉSOLUTION</span>
+                <h2 class="doc-section-title">Dépannage &amp; FAQ Technique</h2>
+                <p class="doc-section-lead">
+                  Solutions immédiates aux questions et erreurs fréquemment rencontrées lors de l'inspection ou de la retouche d'assets GTA / FiveM.
+                </p>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 1.5rem; margin: 2rem 0;">
+                
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap danger"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span>
+                    Erreur : « Impossible de projeter l’archive en mémoire : Le fichier est verrouillé »
+                  </h4>
+                  <p>
+                    <strong>Cause :</strong> Un autre processus (généralement le jeu GTA V, le client FiveM ou OpenIV en mode édition) détient un verrou exclusif en écriture sur le fichier <code>.rpf</code>.<br>
+                    <strong>Résolution :</strong> Fermez votre jeu ou OpenIV avant d'ouvrir l'archive dans SR Editer.
+                  </p>
+                </div>
+
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap warning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg></span>
+                    Erreur : « Abonnement non revérifié depuis trop longtemps »
+                  </h4>
+                  <p>
+                    <strong>Cause :</strong> Votre ordinateur est déconnecté d'Internet depuis plus de 60 minutes ou votre jeton de session Supabase a expiré.<br>
+                    <strong>Résolution :</strong> Rétablissez votre connexion réseau, accédez au menu <em>Réglages &gt; Compte</em> et cliquez sur <em>Rafraîchir la session</em>.
+                  </p>
+                </div>
+
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg></span>
+                    Comment restaurer un asset altéré ou corrompu ?
+                  </h4>
+                  <p>
+                    Rendez-vous dans le répertoire de votre mod. Ouvrez le dossier masqué <code>.gta-asset-studio</code>, localisez le fichier nommé <code>&lt;nom&gt;.gta-asset-studio.bak</code>, puis copiez-le dans votre dossier principal en retirant l'extension <code>.gta-asset-studio.bak</code>.
+                  </p>
+                </div>
+
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap info"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="6" width="20" height="12" rx="2"></rect><line x1="6" y1="12" x2="10" y2="12"></line><line x1="8" y1="10" x2="8" y2="14"></line><circle cx="15" cy="13" r="1"></circle><circle cx="18" cy="11" r="1"></circle></svg></span>
+                    Pourquoi mes textures éditées n'apparaissent-elles pas immédiatement sur mon serveur FiveM ?
+                  </h4>
+                  <p>
+                    Le client FiveM garde en mémoire tampon les textures téléchargées au démarrage dans la VRAM. Dans votre console serveur ou txAdmin, exécutez <code>refresh</code> puis <code>ensure [nom_ressource]</code> pour forcer le rechargement côté client, ou reconnectez-vous au serveur.
+                  </p>
+                </div>
+
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg></span>
+                    Puis-je utiliser mes propres clés API pour l'IA ?
+                  </h4>
+                  <p>
+                    Oui. Dans les <em>Réglages &gt; Intelligence Artificielle</em> de l'application, vous pouvez renseigner vos clés privées OpenAI ou Google Gemini. Dans ce cas, les requêtes sont directement envoyées aux fournisseurs cloud avec vos propres quotas et sans restrictions.
+                  </p>
+                </div>
+
+                <div class="doc-card-item">
+                  <h4>
+                    <span class="doc-card-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></span>
+                    Comment contacter le support technique officiel ?
+                  </h4>
+                  <p>
+                    Ouvrez un ticket officiel depuis le <a href="dashboard.html" style="color: var(--accent); text-decoration: underline;">Dashboard Client</a> ou rejoignez notre communauté d'entraide technique sur le serveur Discord officiel de SR Editer.
+                  </p>
+                </div>
+
+              </div>
+            </section>
+
+            <!-- Dynamic Next / Previous Pagination -->
+            <div class="doc-pagination">
+              <a href="#getting-started" class="doc-pagination-card prev" id="docPrevBtn">
+                <span class="doc-pagination-label">Chapitre Précédent</span>
+                <span class="doc-pagination-title" id="docPrevTitle">01 · Prise en Main &amp; Setup</span>
+              </a>
+              <a href="#architecture" class="doc-pagination-card next" id="docNextBtn">
+                <span class="doc-pagination-label">Chapitre Suivant</span>
+                <span class="doc-pagination-title" id="docNextTitle">02 · Architecture Tauri v2</span>
+              </a>
+            </div>
+
           </div>
         </div>
       </section>
 
+      <!-- Footer -->
       <footer class="aww-footer">
         <div class="aww-footer-content">
           <div class="aww-footer-top">
             <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
             <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
-              <span class="aww-btn-text">GET SR EDITER</span>
+              <span class="aww-btn-text">TÉLÉCHARGER v0.7.1</span>
             </a>
           </div>
           <div class="aww-footer-bottom">
-            <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
+            <p>© 2026 SR Editer · Logiciel indépendant non affilié à Rockstar Games, Take-Two Interactive ou Cfx.re.</p>
             <div class="aww-footer-links">
-              <a href="privacy.html" class="aww-link">Privacy</a>
-              <a href="terms.html" class="aww-link">Terms</a>
+              <a href="privacy.html" class="aww-link">Confidentialité</a>
+              <a href="terms.html" class="aww-link">Conditions d'Utilisation</a>
+              <a href="dashboard.html" class="aww-link">Espace Client</a>
             </div>
           </div>
         </div>
       </footer>
   </main>
+
+  <!-- Floating Back to Top Button -->
+  <button type="button" class="doc-back-to-top" id="docBackToTop" aria-label="Retour en haut" title="Retour en haut">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 15l-6-6-6 6"/>
+    </svg>
+    <span>Haut de page</span>
+  </button>
 
   <!-- Libraries -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
@@ -230,6 +1998,260 @@
   <script src="js/config.js"></script>
   <script src="js/sr-supabase.js"></script>
   <script src="js/awwwards.js"></script>
-  
+
+  <!-- Documentation Interactive Logic -->
+  <script>
+    // Copy code snippet helper
+    function copyCodeSnippet(button) {
+      const codeBlock = button.closest('.doc-code-block');
+      if (!codeBlock) return;
+      const codeText = codeBlock.querySelector('pre code').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        const originalText = button.innerHTML;
+        button.innerHTML = '✓ Copié !';
+        button.style.borderColor = '#10b981';
+        button.style.color = '#34d399';
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.borderColor = '';
+          button.style.color = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('Erreur copie :', err);
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Search filter with keyword matching and keyboard shortcut
+      const searchInput = document.getElementById('docSearch');
+      const searchClear = document.getElementById('docSearchClear');
+      const searchStatus = document.getElementById('docSearchStatus');
+      const searchKbd = document.getElementById('docSearchKbd');
+      const navLinks = document.querySelectorAll('.docs-nav-list li');
+      const navGroups = document.querySelectorAll('.docs-nav-group');
+
+      function filterDocs(query) {
+        query = (query || '').toLowerCase().trim();
+
+        if (!query) {
+          navLinks.forEach(li => li.style.display = '');
+          navGroups.forEach(group => group.style.display = '');
+          if (searchClear) searchClear.style.display = 'none';
+          if (searchKbd) searchKbd.style.display = '';
+          if (searchStatus) searchStatus.style.display = 'none';
+          return;
+        }
+
+        if (searchClear) searchClear.style.display = 'block';
+        if (searchKbd) searchKbd.style.display = 'none';
+
+        let totalVisible = 0;
+        navGroups.forEach(group => {
+          let hasVisible = false;
+          const links = group.querySelectorAll('.docs-nav-list li');
+          links.forEach(li => {
+            const text = li.innerText.toLowerCase();
+            const keywords = (li.getAttribute('data-keywords') || '').toLowerCase();
+            const href = (li.querySelector('a')?.getAttribute('href') || '').toLowerCase();
+
+            if (text.includes(query) || keywords.includes(query) || href.includes(query)) {
+              li.style.display = '';
+              hasVisible = true;
+              totalVisible++;
+            } else {
+              li.style.display = 'none';
+            }
+          });
+          group.style.display = hasVisible ? '' : 'none';
+        });
+
+        if (searchStatus) {
+          searchStatus.style.display = 'block';
+          if (totalVisible === 0) {
+            searchStatus.textContent = 'Aucun chapitre correspondant.';
+          } else {
+            searchStatus.textContent = `${totalVisible} chapitre${totalVisible > 1 ? 's' : ''} trouvé${totalVisible > 1 ? 's' : ''}`;
+          }
+        }
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => filterDocs(e.target.value));
+
+        // Jump to first result on Enter
+        searchInput.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const firstVisibleLink = document.querySelector('.docs-nav-list li:not([style*="display: none"]) a');
+            if (firstVisibleLink) {
+              firstVisibleLink.click();
+              searchInput.blur();
+            }
+          } else if (e.key === 'Escape') {
+            searchInput.value = '';
+            filterDocs('');
+            searchInput.blur();
+          }
+        });
+      }
+
+      if (searchClear) {
+        searchClear.addEventListener('click', () => {
+          if (searchInput) {
+            searchInput.value = '';
+            filterDocs('');
+            searchInput.focus();
+          }
+        });
+      }
+
+      // Keyboard shortcut Ctrl+K or / to focus search
+      window.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+          e.preventDefault();
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+          }
+        } else if (e.key === '/' && document.activeElement !== searchInput && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          e.preventDefault();
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.select();
+          }
+        }
+      });
+
+      // 2. Mobile Drawer Navigation Toggle
+      const mobileToggle = document.getElementById('docMobileNavToggle');
+      const mobileSidebar = document.getElementById('docSidebar');
+      const mobileClose = document.getElementById('docSidebarClose');
+
+      if (mobileToggle && mobileSidebar) {
+        mobileToggle.addEventListener('click', () => {
+          const isOpen = mobileSidebar.classList.toggle('is-open');
+          mobileToggle.setAttribute('aria-expanded', String(isOpen));
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+        });
+
+        if (mobileClose) {
+          mobileClose.addEventListener('click', () => {
+            mobileSidebar.classList.remove('is-open');
+            mobileToggle.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+          });
+        }
+
+        // Close mobile drawer on link click
+        document.querySelectorAll('.docs-nav-list li a').forEach(link => {
+          link.addEventListener('click', () => {
+            if (window.innerWidth <= 992) {
+              mobileSidebar.classList.remove('is-open');
+              mobileToggle.setAttribute('aria-expanded', 'false');
+              document.body.style.overflow = '';
+            }
+          });
+        });
+      }
+
+      // 3. Dynamic Next / Previous Pagination & Active Sync
+      const allSections = Array.from(document.querySelectorAll('.aww-docs-section'));
+      const prevBtn = document.getElementById('docPrevBtn');
+      const nextBtn = document.getElementById('docNextBtn');
+      const prevTitle = document.getElementById('docPrevTitle');
+      const nextTitle = document.getElementById('docNextTitle');
+      const mobileActiveTitle = document.getElementById('docMobileActiveTitle');
+
+      function updatePagination(currentSectionId) {
+        const currentIndex = allSections.findIndex(s => s.id === currentSectionId);
+        if (currentIndex === -1) return;
+
+        const currentSection = allSections[currentIndex];
+        const currentTitleText = currentSection.querySelector('.doc-section-title')?.textContent || '';
+        const currentBadgeText = currentSection.querySelector('.doc-section-badge')?.textContent || '';
+
+        if (mobileActiveTitle) {
+          mobileActiveTitle.textContent = currentBadgeText.split('·')[0].trim() + ' · ' + currentTitleText;
+        }
+
+        // Update Prev Button
+        if (currentIndex > 0) {
+          const prevSection = allSections[currentIndex - 1];
+          const prevTitleText = prevSection.querySelector('.doc-section-title')?.textContent || '';
+          const prevBadge = prevSection.querySelector('.doc-section-badge')?.textContent.split('·')[0].trim() || '';
+          if (prevBtn) {
+            prevBtn.style.visibility = 'visible';
+            prevBtn.href = `#${prevSection.id}`;
+            if (prevTitle) prevTitle.textContent = prevBadge + ' · ' + prevTitleText;
+          }
+        } else if (prevBtn) {
+          prevBtn.style.visibility = 'hidden';
+        }
+
+        // Update Next Button
+        if (currentIndex < allSections.length - 1) {
+          const nextSection = allSections[currentIndex + 1];
+          const nextTitleText = nextSection.querySelector('.doc-section-title')?.textContent || '';
+          const nextBadge = nextSection.querySelector('.doc-section-badge')?.textContent.split('·')[0].trim() || '';
+          if (nextBtn) {
+            nextBtn.style.visibility = 'visible';
+            nextBtn.href = `#${nextSection.id}`;
+            if (nextTitle) nextTitle.textContent = nextBadge + ' · ' + nextTitleText;
+          }
+        } else if (nextBtn) {
+          nextBtn.style.visibility = 'hidden';
+        }
+
+        // Auto-scroll active link inside desktop sticky sidebar WITHOUT scrolling the window
+        if (window.innerWidth > 992) {
+          const activeSidebarLink = document.querySelector(`.docs-nav-list li a[href="#${currentSectionId}"]`);
+          const sidebarInner = document.querySelector('.docs-sidebar-inner');
+          if (activeSidebarLink && sidebarInner) {
+            const containerRect = sidebarInner.getBoundingClientRect();
+            const linkRect = activeSidebarLink.getBoundingClientRect();
+            const linkTopOffset = linkRect.top - containerRect.top;
+            const linkBottomOffset = linkRect.bottom - containerRect.bottom;
+
+            if (linkTopOffset < 20) {
+              sidebarInner.scrollTop += (linkTopOffset - 30);
+            } else if (linkBottomOffset > -20) {
+              sidebarInner.scrollTop += (linkBottomOffset + 30);
+            }
+          }
+        }
+      }
+
+      // Hook into IntersectionObserver for active section pagination update
+      const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            updatePagination(entry.target.id);
+          }
+        });
+      }, { rootMargin: '-20% 0px -65% 0px' });
+
+      allSections.forEach(sec => sectionObserver.observe(sec));
+      if (allSections.length) updatePagination(allSections[0].id);
+
+      // 4. Floating Back to Top Button
+      const backToTopBtn = document.getElementById('docBackToTop');
+      if (backToTopBtn) {
+        window.addEventListener('scroll', () => {
+          if (window.scrollY > 400) {
+            backToTopBtn.classList.add('is-visible');
+          } else {
+            backToTopBtn.classList.remove('is-visible');
+          }
+        }, { passive: true });
+
+        backToTopBtn.addEventListener('click', () => {
+          if (window.__srLenis && typeof window.__srLenis.scrollTo === 'function') {
+            window.__srLenis.scrollTo(0, { duration: 1.2 });
+          } else {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>

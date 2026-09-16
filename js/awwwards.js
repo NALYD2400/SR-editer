@@ -237,11 +237,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof Lenis !== 'undefined') {
     try {
       lenis = new Lenis({
-        duration: 1.2,
+        duration: 1.1,
         easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
         direction: 'vertical',
         gestureDirection: 'vertical',
-        smooth: true,
+        smoothWheel: true,
         mouseMultiplier: 1,
         smoothTouch: false,
         touchMultiplier: 2,
@@ -253,68 +253,106 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ── Native Middle-Click Autoscroll Harmony with Lenis ──
-  function setupAutoscrollHarmony(lenisInstance, headerElement) {
+  // ── Native Scrollbar Drag, Mouse Hold & Autoscroll Harmony with Lenis ──
+  function setupScrollAndAutoscrollHarmony(lenisInstance, headerElement) {
     if (!lenisInstance) return;
-    let isAutoscrolling = false;
+    let isUserInteracting = false;
+    let lastDispatchedScroll = window.scrollY;
 
-    function startAutoscroll() {
-      if (isAutoscrolling) return;
-      isAutoscrolling = true;
-      document.documentElement.classList.add('is-autoscrolling');
-      if (lenisInstance.stop) lenisInstance.stop();
+    // Intercept setScroll to record the exact scroll coordinate dispatched by Lenis animation frames
+    if (typeof lenisInstance.setScroll === 'function') {
+      const origSetScroll = lenisInstance.setScroll.bind(lenisInstance);
+      lenisInstance.setScroll = function (val) {
+        lastDispatchedScroll = val;
+        origSetScroll(val);
+      };
     }
 
-    function endAutoscroll() {
-      if (!isAutoscrolling) return;
-      isAutoscrolling = false;
-      document.documentElement.classList.remove('is-autoscrolling');
-      if (lenisInstance.scrollTo) {
-        lenisInstance.scrollTo(window.scrollY, { immediate: true });
+    function syncLenisToNative() {
+      const currentY = window.scrollY;
+      lastDispatchedScroll = currentY;
+      if (lenisInstance.animate && typeof lenisInstance.animate.stop === 'function') {
+        lenisInstance.animate.stop();
       }
-      if (!headerElement || !headerElement.classList.contains('is-menu-open')) {
-        if (lenisInstance.start) lenisInstance.start();
-      }
+      lenisInstance.isScrolling = false;
+      lenisInstance.animatedScroll = currentY;
+      lenisInstance.targetScroll = currentY;
+      lenisInstance.velocity = 0;
       if (typeof ScrollTrigger !== 'undefined' && ScrollTrigger.update) {
         ScrollTrigger.update();
       }
     }
 
-    // Middle click mousedown initiates native autoscroll
-    window.addEventListener('mousedown', (e) => {
-      if (isAutoscrolling) {
-        endAutoscroll();
+    // Capture pointer & mouse interactions anywhere (native scrollbar, track, arrows, text selection)
+    const onPointerDown = () => {
+      isUserInteracting = true;
+      // If an active wheel animation is currently running, halt it immediately so it doesn't fight the user
+      if (lenisInstance.isScrolling || (lenisInstance.animate && lenisInstance.animate.isRunning)) {
+        syncLenisToNative();
+      }
+    };
+
+    const onPointerUp = () => {
+      isUserInteracting = false;
+      syncLenisToNative();
+    };
+
+    window.addEventListener('pointerdown', onPointerDown, { capture: true, passive: true });
+    window.addEventListener('mousedown', onPointerDown, { capture: true, passive: true });
+    window.addEventListener('pointerup', onPointerUp, { capture: true, passive: true });
+    window.addEventListener('mouseup', onPointerUp, { capture: true, passive: true });
+    window.addEventListener('pointercancel', onPointerUp, { capture: true, passive: true });
+
+    // Synchronize whenever native scroll occurs
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      const diff = Math.abs(currentY - lastDispatchedScroll);
+
+      // 1. If mouse button is held down (scrollbar thumb drag, track hold, arrow hold, selection drag):
+      // User is actively driving scroll; keep Lenis completely synchronized without fighting
+      if (isUserInteracting) {
+        syncLenisToNative();
         return;
       }
-      if (e.button === 1) {
-        const target = e.target;
-        if (target && target.closest && target.closest('a[href]:not([href^="#"]), button, input, textarea, select')) {
-          return;
-        }
-        startAutoscroll();
+
+      // 2. If the scroll position has diverged from what Lenis dispatched (> 2.5px):
+      // This indicates native browser scrolling (middle-click autoscroll, keyboard nav, track clicks)
+      if (diff > 2.5) {
+        syncLenisToNative();
+        return;
       }
     }, { passive: true });
 
-    // Sync Lenis internal scroll position while native autoscroll runs
-    window.addEventListener('scroll', () => {
-      if (isAutoscrolling && lenisInstance && lenisInstance.scrollTo) {
-        lenisInstance.scrollTo(window.scrollY, { immediate: true });
+    // Sync on navigation keys, blur, contextmenu, visibilitychange
+    window.addEventListener('keydown', (e) => {
+      const scrollNavKeys = ['Space', 'PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown'];
+      if (scrollNavKeys.includes(e.code) || scrollNavKeys.includes(e.key)) {
+        requestAnimationFrame(syncLenisToNative);
       }
     }, { passive: true });
 
-    // End autoscroll when user clicks anywhere, presses a key, or switches windows
-    window.addEventListener('keydown', endAutoscroll, { passive: true });
-    window.addEventListener('blur', endAutoscroll, { passive: true });
-    window.addEventListener('contextmenu', endAutoscroll, { passive: true });
+    window.addEventListener('blur', () => {
+      isUserInteracting = false;
+      syncLenisToNative();
+    }, { passive: true });
+
+    window.addEventListener('contextmenu', () => {
+      isUserInteracting = false;
+      syncLenisToNative();
+    }, { passive: true });
+
     document.addEventListener('visibilitychange', () => {
-      if (document.hidden) endAutoscroll();
+      if (document.hidden) {
+        isUserInteracting = false;
+        syncLenisToNative();
+      }
     }, { passive: true });
   }
 
   // Mobile Menu Burger Handler & Responsive Navigation
   const burgerBtn = document.getElementById('aww-burger-btn');
   const header = document.querySelector('.aww-header');
-  if (lenis) setupAutoscrollHarmony(lenis, header);
+  if (lenis) setupScrollAndAutoscrollHarmony(lenis, header);
 
   if (burgerBtn && header) {
     const toggleMobileMenu = (forceState) => {
@@ -385,6 +423,12 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       gsap.ticker.lagSmoothing(0);
     }
+  } else if (lenis) {
+    function fallbackRaf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(fallbackRaf);
+    }
+    requestAnimationFrame(fallbackRaf);
   }
 
   // Lenis Anchor Smooth Scroll (with native fallback)
@@ -573,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (heroActions) {
     introTl.fromTo(heroActions, 
       { y: 25, opacity: 0, scale: 0.97 }, 
-      { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power3.out" }, 
+      { y: 0, opacity: 1, scale: 1, duration: 0.85, ease: "power3.out", clearProps: "transform,scale" }, 
       "<0.2"
     );
   }
@@ -733,9 +777,6 @@ document.addEventListener('DOMContentLoaded', () => {
           tocLinks.forEach(link => {
             if (link.getAttribute('href') === `#${id}`) {
               link.classList.add('active');
-              if (window.innerWidth <= 860 && typeof link.scrollIntoView === 'function') {
-                link.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-              }
             } else {
               link.classList.remove('active');
             }
