@@ -1,0 +1,429 @@
+/* ==========================================================================
+   SR Editer — Site public · Layout
+   Header + navigation (burger mobile), héros de page, sections, footer.
+   ========================================================================== */
+
+/* ── Header ── */
+.aww-header {
+  position: fixed;
+  top: 0; left: 0; width: 100%;
+  padding: 1.25rem 4rem;
+  z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: padding 0.3s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease, border-color 0.3s ease;
+}
+.aww-header.is-scrolled {
+  padding: 0.9rem 4rem;
+  background: rgba(0, 0, 0, 0.95);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.aww-header-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.aww-logo {
+  display: flex; align-items: center; gap: 1rem;
+  text-decoration: none; color: var(--text-primary);
+}
+.aww-logo img { width: 40px; border-radius: 8px; }
+.aww-logo-text { font-family: var(--font-heading); font-size: 1.2rem; line-height: 1; }
+
+/* ── Navigation ── */
+.aww-nav {
+  display: flex; gap: 3rem;
+}
+.aww-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+.aww-link-inner {
+  display: block;
+  transition: transform 0.4s var(--ease-out-expo);
+}
+.aww-link-inner::after {
+  content: attr(data-hover);
+  position: absolute;
+  left: 0;
+  top: 100%;
+  color: var(--accent);
+}
+.aww-link:hover .aww-link-inner {
+  transform: translateY(-100%);
+}
+.aww-link.is-active,
+.aww-link[aria-current="page"] {
+  color: var(--accent) !important;
+}
+.aww-link.is-active .aww-link-inner,
+.aww-link[aria-current="page"] .aww-link-inner {
+  color: var(--accent) !important;
+}
+
+/* Lien "Portal" affiché uniquement dans le menu mobile */
+.aww-nav-portal-mobile {
+  display: none !important;
+}
+
+/* ── Burger (mobile) ── */
+.aww-burger-btn {
+  display: none;
+  background: none;
+  border: 1px solid var(--border-color);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 101;
+  transition: border-color 0.2s, background 0.2s;
+}
+.aww-burger-btn span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.aww-burger-btn:hover {
+  border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+}
+.is-menu-open .aww-burger-btn span:nth-child(1) {
+  transform: translateY(3.5px) rotate(45deg);
+}
+.is-menu-open .aww-burger-btn span:nth-child(2) {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+/* ── Héros ── */
+.aww-hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 8rem 4rem 4rem;
+  position: relative;
+}
+.aww-page-hero {
+  min-height: 42vh;
+  display: flex;
+  align-items: center;
+  padding: 8.5rem 4rem 3.5rem;
+}
+/* Variantes de hauteur des pages de contenu */
+.aww-page-hero--tall {
+  height: 45vh;
+  min-height: 380px;
+}
+.aww-page-hero--docs {
+  height: 44vh;
+  min-height: 380px;
+}
+.aww-page-hero--legal {
+  min-height: 440px;
+  padding-bottom: 3rem;
+}
+.aww-page-hero--dashboard {
+  min-height: 250px;
+  height: auto;
+  padding: 7.5rem 4rem 2rem;
+}
+.aww-hero-content {
+  max-width: 720px;
+}
+.aww-kicker {
+  color: var(--accent);
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.aww-hero-heading, .aww-page-title {
+  font-size: clamp(3rem, 6.5vw, 5.8rem);
+  font-weight: 400;
+  margin-bottom: 1.75rem;
+  letter-spacing: -2px;
+  line-height: 0.92;
+}
+.aww-hero-desc {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  max-width: 600px;
+  margin-bottom: 2.25rem;
+  line-height: 1.5;
+}
+.aww-hero-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ── Sections ── */
+.aww-features {
+  padding: 8rem 4rem;
+  position: relative;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.aww-section-header {
+  margin-bottom: 4rem;
+}
+.aww-section-title {
+  font-size: clamp(2.6rem, 5.5vw, 5rem);
+  line-height: 0.95;
+  letter-spacing: -1px;
+}
+
+/* ── Footer ── */
+.aww-footer {
+  padding: 10rem 4rem 4rem;
+  border-top: 1px solid var(--border-color);
+}
+.aww-footer-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 10rem;
+}
+.aww-footer-title {
+  font-size: clamp(4rem, 8vw, 8rem);
+}
+.aww-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.aww-footer-links {
+  display: flex; gap: 2rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  /* Header compact */
+  .aww-header,
+  .aww-header.is-scrolled {
+    padding: calc(0.85rem + env(safe-area-inset-top, 0px)) 1.25rem 0.85rem !important;
+    background: rgba(3, 3, 3, 0.95);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+  }
+  .aww-logo {
+    position: relative;
+    z-index: 105;
+  }
+  .aww-logo-text {
+    font-size: 1.05rem;
+  }
+  .aww-logo img {
+    width: 32px;
+    height: 32px;
+  }
+  .aww-header-actions {
+    position: relative;
+    z-index: 105;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .aww-header-actions .aww-btn-outline,
+  .aww-header-actions .aww-btn-profile {
+    display: none !important;
+  }
+  .aww-burger-btn {
+    position: relative;
+    z-index: 106;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+  }
+
+  /* Menu plein écran */
+  .aww-nav {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    background: rgba(4, 4, 6, 0.98);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: calc(5rem + env(safe-area-inset-top, 0px)) 1.5rem calc(2.5rem + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+    z-index: 99;
+  }
+  .is-menu-open .aww-nav {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .is-menu-open .aww-nav .aww-link {
+    font-size: clamp(1.4rem, 5.5vw, 2rem);
+    font-family: var(--font-heading);
+    letter-spacing: 0.05em;
+    padding: 0.35rem 1rem;
+  }
+  .aww-nav-portal-mobile {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent) !important;
+    border: 1px solid rgba(255, 107, 53, 0.4);
+    border-radius: 100px;
+    padding: 0.65rem 2.2rem !important;
+    background: rgba(255, 107, 53, 0.1);
+    margin-top: 0.5rem;
+    font-size: 1.15rem !important;
+    letter-spacing: 1px;
+  }
+  .aww-nav-portal-mobile.is-user {
+    gap: 0.85rem !important;
+    padding: 0.65rem 1.6rem !important;
+    color: var(--text-primary) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    text-transform: none !important;
+  }
+  .aww-nav-portal-mobile.is-user .aww-link-inner {
+    text-transform: none !important;
+    letter-spacing: 0.3px;
+  }
+  .aww-nav-portal-mobile.is-user .aww-user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Héros */
+  .aww-hero {
+    padding: 6.5rem 1.25rem 3rem !important;
+    min-height: calc(100vh - 50px);
+    min-height: calc(100dvh - 50px);
+  }
+  .aww-hero-heading {
+    font-size: clamp(2rem, 7.5vw, 3.6rem) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -1px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+  .aww-hero-desc {
+    font-size: 1.05rem !important;
+    margin-bottom: 1.75rem !important;
+    max-width: 100%;
+  }
+  .aww-hero-actions {
+    flex-direction: column !important;
+    width: 100% !important;
+    max-width: 380px !important;
+    margin: 0 auto !important;
+    gap: 0.75rem !important;
+  }
+  .aww-hero-actions .aww-btn {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 0.9rem 1.5rem !important;
+  }
+  .aww-page-hero {
+    padding: 6.5rem 1.25rem 2.5rem !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+  .aww-page-hero--dashboard {
+    padding: 4.25rem 1.25rem 1rem !important;
+    min-height: auto !important;
+    height: auto !important;
+  }
+  .aww-page-title {
+    font-size: clamp(2rem, 7vw, 3.4rem) !important;
+    line-height: 1.05 !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  /* Footer */
+  .aww-footer {
+    padding: 4rem 1.25rem 2.5rem !important;
+  }
+  .aww-footer-top {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 2rem !important;
+    margin-bottom: 3rem !important;
+  }
+  .aww-footer-title {
+    font-size: clamp(2.4rem, 7vw, 4.5rem) !important;
+  }
+  .aww-footer-bottom {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+    gap: 1rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .aww-page-hero--dashboard {
+    padding: 3.6rem 1rem 0.5rem !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .aww-hero-heading {
+    font-size: clamp(1.75rem, 7vw, 2.3rem) !important;
+  }
+  .aww-page-title {
+    font-size: clamp(1.75rem, 6.8vw, 2.3rem) !important;
+  }
+}
+
+/* ── Modificateurs de contenu ──
+   Déclarés après les media queries : ils remplacent d'anciens style="" inline
+   et doivent garder la priorité sur les règles responsive non !important. */
+.aww-hero-desc--wide {
+  max-width: 650px;
+  font-size: 1.2rem;
+}
+.aww-hero-desc--docs {
+  max-width: 680px;
+  font-size: 1.15rem;
+}
+.aww-hero-desc--legal {
+  max-width: 780px;
+  font-size: 1.15rem;
+}
+.aww-link--accent {
+  color: var(--accent);
+}
+.aww-link--muted {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}

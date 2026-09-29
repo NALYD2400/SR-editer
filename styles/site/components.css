@@ -1,0 +1,391 @@
+/* ==========================================================================
+   SR Editer — Site public · Composants
+   Boutons, bouton profil (header connecté), badges, spinners, formulaires,
+   carte tarif, modale "Discord requis".
+   ========================================================================== */
+
+/* ── Boutons ── */
+.aww-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem 2rem;
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-decoration: none;
+  cursor: pointer;
+  background: transparent;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s var(--ease-out-expo);
+}
+button.aww-btn {
+  appearance: none;
+}
+.aww-btn-outline {
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.aww-btn-outline:hover {
+  background: var(--text-primary);
+  color: var(--bg-color);
+}
+.aww-btn-solid {
+  background: var(--text-primary);
+  color: var(--bg-color);
+  border: 1px solid var(--text-primary);
+}
+.aww-btn-solid:hover {
+  background: transparent;
+  color: var(--text-primary);
+}
+.aww-btn-massive {
+  font-size: 1.5rem;
+  padding: 2rem 4rem;
+}
+.aww-btn-sm {
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+}
+.aww-btn-danger,
+.aww-btn-solid.aww-text-danger {
+  background: #dc2626 !important;
+  color: #ffffff !important;
+  border-color: #dc2626 !important;
+}
+.aww-btn-danger:hover,
+.aww-btn-solid.aww-text-danger:hover {
+  background: #ef4444 !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
+}
+
+/* Bouton pleine largeur (formulaires) */
+.auth-submit-btn,
+.aww-btn-full {
+  width: 100%;
+  padding: 14px 24px;
+  margin-top: 6px;
+  border-radius: 9999px;
+  border: none;
+  background: #ffffff;
+  color: #06050b;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.25);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-submit-btn:hover:not(:disabled),
+.aww-btn-full:hover:not(:disabled) {
+  background: #f1f5f9;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255, 255, 255, 0.35);
+}
+.auth-submit-btn:active:not(:disabled),
+.aww-btn-full:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+.auth-submit-btn:disabled,
+.aww-btn-full:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+/* ── Bouton profil (header, utilisateur connecté) ── */
+.aww-btn-profile {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.35rem 1.15rem 0.35rem 0.45rem !important;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 0.86rem;
+  letter-spacing: 0.3px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  text-transform: none !important;
+  cursor: pointer;
+}
+.aww-btn-profile:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45), 0 0 20px rgba(255, 107, 53, 0.2);
+  color: #ffffff;
+}
+.aww-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+.aww-user-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+.aww-user-initial {
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #ffffff;
+  background: linear-gradient(135deg, rgba(255, 107, 53, 0.5) 0%, rgba(255, 51, 102, 0.3) 100%);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+}
+.aww-user-name {
+  font-weight: 600;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-transform: none !important;
+  letter-spacing: 0.2px;
+}
+
+/* ── Badges ── */
+.ticket-count-badge {
+  font-size: 0.8rem;
+  background: rgba(255, 107, 53, 0.18);
+  color: #ffa800;
+  border: 1px solid rgba(255, 107, 53, 0.35);
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* ── Spinners ── */
+.aww-spinner {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+.portal-loading-spinner {
+  width: 38px;
+  height: 38px;
+  border: 2px solid var(--border-color);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+/* ── Formulaires ── */
+.aww-input-group {
+  margin-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+.aww-input-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #cbd5e1;
+  letter-spacing: normal;
+  text-transform: none;
+  margin-bottom: 0;
+}
+.aww-input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.aww-input::placeholder {
+  color: rgba(148, 163, 184, 0.45);
+}
+.aww-input:focus {
+  border-color: rgba(255, 107, 53, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(255, 51, 102, 0.2);
+}
+.aww-select {
+  width: 100%;
+  background: #111114;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+.aww-select:focus {
+  border-color: var(--accent);
+}
+.aww-textarea {
+  width: 100%;
+  background: #111114;
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+  font-family: var(--font-body);
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+.aww-textarea:focus {
+  border-color: var(--accent);
+}
+.aww-auth-error {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(239, 68, 68, 0.14);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  font-size: 0.86rem;
+  display: none;
+  text-align: left;
+}
+.aww-auth-error.is-visible {
+  display: block;
+}
+
+/* ── Carte tarif (accueil + dashboard) ── */
+.aww-pricing-card {
+  position: relative;
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), background 0.6s ease;
+}
+.aww-pricing-card:hover {
+  transform: translateY(-4px);
+  background: rgba(255, 255, 255, 0.02);
+}
+.aww-pricing-card.is-featured {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.03);
+}
+.aww-pricing-card.is-current {
+  border-color: var(--accent);
+  background: rgba(255, 107, 53, 0.06);
+  box-shadow: 0 0 25px rgba(255, 107, 53, 0.1);
+}
+.aww-pricing-card h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+.aww-pricing-card .price { font-size: 2rem; font-family: var(--font-heading); margin-bottom: 2rem; }
+.aww-pricing-card button { margin-top: auto; }
+
+/* ── Modale "Discord requis" (login + dashboard) ── */
+#discord-required-modal {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 10001;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+.discord-required-dialog {
+  background: #0d0d0f;
+  padding: 2.25rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  max-width: 440px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  animation: awwModalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+}
+.discord-required-dialog h3 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+.discord-required-dialog p {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.discord-required-dialog a.aww-btn,
+.discord-required-dialog button.aww-btn {
+  display: flex;
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  margin-bottom: 0.65rem;
+  border-radius: 100px;
+  font-family: var(--font-heading);
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.discord-required-dialog button.aww-btn-outline {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+.discord-required-dialog button.aww-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .aww-btn-massive {
+    font-size: 1.1rem !important;
+    padding: 1.1rem 2rem !important;
+    width: 100% !important;
+    max-width: 320px !important;
+  }
+}

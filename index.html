@@ -10,15 +10,17 @@
   <link
     href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=6" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="styles/site/base.css" />
+  <link rel="stylesheet" href="styles/site/layout.css" />
+  <link rel="stylesheet" href="styles/site/components.css" />
+  <link rel="stylesheet" href="styles/pages/home.css" />
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="aww-page">
-  <!-- 3D Video Background -->
+  <!-- Fond vidéo -->
   <div class="site-bg-container" aria-hidden="true">
     <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline
       loop autoplay></video>
@@ -27,7 +29,7 @@
   </div>
 
 
-  <!-- Awwwards Header -->
+  <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
       <a href="index.html" class="aww-logo" data-magnetic>
@@ -165,18 +167,20 @@
     </footer>
   </main>
 
-  <!-- Libraries -->
+  <!-- Librairies -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/split-type"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 
-  <!-- Core Logic & Animations -->
-  <script src="js/config.js"></script>
-  <script src="js/sr-supabase.js"></script>
-  <script src="js/awwwards.js"></script>
-  <script src="js/client.js"></script>
+  <!-- Site -->
+  <script src="js/core/config.js"></script>
+  <script src="js/core/supabase.js"></script>
+  <script src="js/core/header-auth.js"></script>
+  <script src="js/core/site.js"></script>
+
+  <!-- Page -->
+  <script src="js/pages/home.js"></script>
 </body>
 
 </html>

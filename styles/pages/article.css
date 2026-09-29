@@ -1,0 +1,217 @@
+/* ==========================================================================
+   SR Editer — Pages article : docs.html, privacy.html, terms.html
+   Mise en page sommaire latéral + contenu, cartes et pastilles juridiques.
+   ========================================================================== */
+
+.aww-docs { padding: 0 4rem 10rem; }
+.aww-docs-container { display: grid; grid-template-columns: 250px 1fr; gap: 4rem; }
+
+/* ── Sommaire latéral ── */
+.aww-docs-sidebar ul { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; position: sticky; top: 120px; }
+.aww-docs-sidebar ul li a,
+.aww-toc-link {
+  display: block;
+  padding: 0.6rem 1rem;
+  border-radius: 12px;
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 500;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  background: transparent;
+  border: 1px solid transparent;
+}
+.aww-docs-sidebar ul li a:hover,
+.aww-toc-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+  transform: translateX(4px);
+}
+.aww-docs-sidebar ul li a.active,
+.aww-toc-link.active {
+  color: #fff;
+  background: rgba(255, 107, 53, 0.15);
+  border-color: rgba(255, 107, 53, 0.35);
+  font-weight: 600;
+  box-shadow: 0 0 16px rgba(255, 107, 53, 0.15);
+  transform: translateX(4px);
+}
+
+/* ── Contenu ── */
+.aww-docs-section { scroll-margin-top: 140px; }
+.aww-docs-content h2 { font-size: 3rem; margin: 4rem 0 2rem; }
+.aww-docs-content p { color: var(--text-secondary); font-size: 1.15rem; margin-bottom: 1.5rem; line-height: 1.65; }
+
+/* ── Pages juridiques ── */
+.aww-legal-content > .aww-docs-section + .aww-docs-section {
+  margin-top: 4rem;
+}
+.aww-docs-content .aww-legal-heading {
+  font-size: clamp(2rem, 3.5vw, 2.8rem);
+  margin: 1rem 0 1.25rem;
+}
+.aww-legal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.aww-legal-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 1rem;
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+.aww-legal-pill--accent {
+  background: rgba(255, 107, 53, 0.12);
+  border-color: rgba(255, 107, 53, 0.3);
+  color: #ffa800;
+}
+.aww-legal-pill--emerald {
+  background: rgba(52, 211, 153, 0.1);
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+.aww-legal-card {
+  padding: 2.25rem;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  background: rgba(10, 10, 15, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  margin-bottom: 2rem;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.aww-legal-card:hover {
+  border-color: rgba(255, 107, 53, 0.4);
+}
+.aww-legal-card h3 {
+  font-size: 1.4rem;
+  color: #fff;
+  margin-bottom: 1rem;
+  font-family: var(--font-heading);
+}
+.aww-legal-card p {
+  color: var(--text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+.aww-legal-card p:last-child {
+  margin-bottom: 0;
+}
+.aww-legal-card .aww-legal-note {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+.aww-legal-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.aww-legal-card ul li {
+  position: relative;
+  padding-left: 1.5rem;
+  color: var(--text-secondary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+.aww-legal-card ul li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.aww-legal-crosslinks {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border-color);
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  .aww-docs {
+    padding: 0 1.25rem 4rem !important;
+  }
+  .aww-docs-container {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  /* Sommaire → barre de pastilles horizontale collante */
+  .aww-docs-sidebar {
+    position: sticky;
+    top: 62px;
+    z-index: 45;
+    background: rgba(3, 3, 3, 0.96);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border-color);
+    margin: 0 -1.25rem 1.5rem;
+    padding: 0.6rem 1.25rem;
+  }
+  .aww-docs-sidebar ul {
+    position: static !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 0.5rem !important;
+    padding: 0 !important;
+    background: transparent !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .aww-docs-sidebar ul::-webkit-scrollbar {
+    display: none !important;
+  }
+  .aww-docs-sidebar ul li {
+    flex-shrink: 0;
+  }
+  .aww-docs-sidebar ul li a,
+  .aww-toc-link {
+    white-space: nowrap !important;
+    padding: 0.45rem 1rem !important;
+    border-radius: 999px !important;
+    font-size: 0.82rem !important;
+    border: 1px solid var(--border-color) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+  }
+  .aww-docs-sidebar ul li a.active,
+  .aww-toc-link.active {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #fff !important;
+    box-shadow: none !important;
+    transform: none !important;
+  }
+  .aww-docs-section {
+    scroll-margin-top: 130px !important;
+  }
+  .aww-docs-content h2 {
+    font-size: clamp(1.8rem, 5.5vw, 2.6rem) !important;
+    margin: 2.5rem 0 1.25rem !important;
+  }
+  .aww-legal-card {
+    padding: 1.5rem 1.25rem !important;
+    border-radius: 16px !important;
+  }
+  .aww-legal-crosslinks {
+    flex-direction: column;
+  }
+  .aww-legal-crosslinks .aww-btn {
+    width: 100%;
+    text-align: center;
+  }
+}

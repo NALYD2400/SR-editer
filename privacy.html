@@ -8,23 +8,21 @@
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=6" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-  
-  <!-- Supabase -->
+  <link rel="stylesheet" href="styles/site/base.css" />
+  <link rel="stylesheet" href="styles/site/layout.css" />
+  <link rel="stylesheet" href="styles/site/components.css" />
+  <link rel="stylesheet" href="styles/pages/article.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="aww-page">
-  <!-- 3D Video Background -->
+  <!-- Fond vidéo -->
   <div class="site-bg-container" aria-hidden="true">
     <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
     <div class="site-bg-overlay"></div>
     <div class="site-bg-grain"></div>
   </div>
 
-  <div class="custom-cursor"></div>
-
-  <!-- Awwwards Header -->
+  <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
       <a href="index.html" class="aww-logo" data-magnetic>
@@ -52,11 +50,11 @@
   
   <main class="aww-smooth-scroll">
 
-      <section class="aww-page-hero" style="min-height: 440px; padding-bottom: 3rem;">
+      <section class="aww-page-hero aww-page-hero--legal">
         <div class="aww-hero-content">
           <div class="aww-kicker" data-gsap="fade-up">06 — PROTECTION DES DONNÉES &amp; RGPD</div>
           <h1 class="aww-page-title" data-gsap="split-text">POLITIQUE DE<br><span class="aww-text-stroke">CONFIDENTIALITÉ</span></h1>
-          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 780px; font-size: 1.15rem;">
+          <p class="aww-hero-desc aww-hero-desc--legal" data-gsap="fade-up" data-delay="0.3">
             Transparence intégrale quant à la collecte, au traitement, au stockage et à la protection de vos données personnelles conformément au Règlement Général sur la Protection des Données (RGPD - UE 2016/679).
           </p>
           <div class="aww-legal-meta" data-gsap="fade-up" data-delay="0.45">
@@ -85,30 +83,30 @@
             </ul>
           </aside>
 
-          <div class="aww-docs-content" data-gsap="fade-up">
+          <div class="aww-docs-content aww-legal-content" data-gsap="fade-up">
             <!-- 1. RESPONSABLE -->
             <section id="responsable" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 01</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">1. Responsable du Traitement</h2>
+              <h2 class="aww-legal-heading">1. Responsable du Traitement</h2>
               <div class="aww-legal-card">
                 <p>
-                  Le responsable du traitement des données à caractère personnel collectées sur le site <a href="https://sr-editer.vercel.app/" class="aww-link" style="color: var(--accent);">sr-editer.vercel.app</a> et au travers de l'application desktop est l'exploitant du produit <strong>SR Editer</strong>.
+                  Le responsable du traitement des données à caractère personnel collectées sur le site <a href="https://sr-editer.vercel.app/" class="aww-link aww-link--accent">sr-editer.vercel.app</a> et au travers de l'application desktop est l'exploitant du produit <strong>SR Editer</strong>.
                 </p>
                 <p>
                   <strong>Contact Délégué / Référent Données :</strong><br>
-                  • Serveur Discord officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a><br>
+                  • Serveur Discord officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link aww-link--accent">discord.gg/gNQwHGMRdT</a><br>
                   • Espace Client : messagerie d'assistance sécurisée accessible sur votre tableau de bord.
                 </p>
-                <p style="font-size: 0.9rem; opacity: 0.75;">
+                <p class="aww-legal-note">
                   <em>Les mentions nominatives du responsable d'exploitation seront actualisées dès l'immatriculation d'entreprise en cours.</em>
                 </p>
               </div>
             </section>
 
             <!-- 2. DONNEES -->
-            <section id="donnees" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="donnees" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 02</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">2. Données Personnelles Collectées</h2>
+              <h2 class="aww-legal-heading">2. Données Personnelles Collectées</h2>
               <div class="aww-legal-card">
                 <p>Nous appliquons le principe de minimisation des données. Ne sont collectées que les informations strictement indispensables :</p>
                 <ul>
@@ -121,9 +119,9 @@
             </section>
 
             <!-- 3. FINALITES -->
-            <section id="finalites" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="finalites" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 03</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">3. Finalités &amp; Bases Légales</h2>
+              <h2 class="aww-legal-heading">3. Finalités &amp; Bases Légales</h2>
               <div class="aww-legal-card">
                 <p>Chaque traitement repose sur une base juridique claire au sens de l'article 6 du RGPD :</p>
                 <ul>
@@ -135,9 +133,9 @@
             </section>
 
             <!-- 4. SOUS-TRAITANTS -->
-            <section id="sous-traitants" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="sous-traitants" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 04</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">4. Sous-traitants &amp; Hébergement</h2>
+              <h2 class="aww-legal-heading">4. Sous-traitants &amp; Hébergement</h2>
               <div class="aww-legal-card">
                 <p>Pour assurer la fiabilité et la haute sécurité du service, nous collaborons avec des prestataires d'infrastructure reconnus :</p>
                 <ul>
@@ -151,9 +149,9 @@
             </section>
 
             <!-- 5. CONSERVATION -->
-            <section id="conservation" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="conservation" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 05</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">5. Durée de Conservation des Données</h2>
+              <h2 class="aww-legal-heading">5. Durée de Conservation des Données</h2>
               <div class="aww-legal-card">
                 <p>
                   Les données associées à votre compte utilisateur sont conservées tant que celui-ci est actif. En cas d'inactivité prolongée supérieure à 24 mois sans abonnement actif, le compte pourra faire l'objet d'un archivage ou d'une suppression après avertissement préalable par e-mail.
@@ -165,9 +163,9 @@
             </section>
 
             <!-- 6. DROITS -->
-            <section id="droits" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="droits" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 06</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">6. Vos Droits Informatique &amp; Libertés (RGPD)</h2>
+              <h2 class="aww-legal-heading">6. Vos Droits Informatique &amp; Libertés (RGPD)</h2>
               <div class="aww-legal-card">
                 <p>Conformément aux articles 15 à 22 du RGPD, vous disposez des droits suivants à l'égard de vos données :</p>
                 <ul>
@@ -181,9 +179,9 @@
             </section>
 
             <!-- 7. SECURITE -->
-            <section id="securite" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="securite" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 07</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">7. Mesures de Sécurité &amp; Chiffrement</h2>
+              <h2 class="aww-legal-heading">7. Mesures de Sécurité &amp; Chiffrement</h2>
               <div class="aww-legal-card">
                 <p>Nous implémentons les meilleures pratiques de sécurité de l'industrie pour prémunir vos informations contre tout accès non autorisé :</p>
                 <ul>
@@ -196,9 +194,9 @@
             </section>
 
             <!-- 8. IA-DONNEES -->
-            <section id="ia-donnees" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="ia-donnees" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 08</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">8. Traitement des Données pour les Outils IA</h2>
+              <h2 class="aww-legal-heading">8. Traitement des Données pour les Outils IA</h2>
               <div class="aww-legal-card">
                 <p>
                   Si vous activez les modules d'assistance par Intelligence Artificielle intégrés à SR Editer :
@@ -211,20 +209,20 @@
             </section>
 
             <!-- 9. CONTACT -->
-            <section id="contact" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="contact" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 09</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">9. Exercice de Vos Droits &amp; Réclamation CNIL</h2>
+              <h2 class="aww-legal-heading">9. Exercice de Vos Droits &amp; Réclamation CNIL</h2>
               <div class="aww-legal-card">
                 <p>
                   Pour toute question relative à cette politique de confidentialité ou pour exercer vos droits d'accès, de rectification ou de suppression de données, vous pouvez nous contacter :
                 </p>
                 <p>
                   • Par l'intermédiaire de votre <strong>Espace Client</strong> (rubrique Support / Tickets)<br>
-                  • Sur notre <strong>Discord Officiel</strong> : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a>
+                  • Sur notre <strong>Discord Officiel</strong> : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link aww-link--accent">discord.gg/gNQwHGMRdT</a>
                 </p>
                 <p>
                   Si vous estimez, après nous avoir contactés, que vos droits ne sont pas respectés, vous disposez du droit d'introduire une réclamation auprès de la <strong>Commission Nationale de l'Informatique et des Libertés (CNIL)</strong> :<br>
-                  3 Place de Fontenoy - TSA 80715 - 75334 Paris Cedex 07 · Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">cnil.fr</a>.
+                  3 Place de Fontenoy - TSA 80715 - 75334 Paris Cedex 07 · Site web : <a href="https://www.cnil.fr" target="_blank" rel="noopener" class="aww-link aww-link--accent">cnil.fr</a>.
                 </p>
               </div>
             </section>
@@ -237,7 +235,7 @@
               <a href="dashboard.html" class="aww-btn aww-btn-outline" data-magnetic>
                 <span class="aww-btn-text">Accéder à l'Espace Client →</span>
               </a>
-              <a href="index.html" class="aww-link" style="color: var(--text-secondary); font-size: 0.95rem;">
+              <a href="index.html" class="aww-link aww-link--muted">
                 ← Retour à l'accueil
               </a>
             </div>
@@ -264,17 +262,16 @@
       </footer>
   </main>
 
-  <!-- Libraries -->
+  <!-- Librairies -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/split-type"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  
-  <!-- Core Logic & Animations -->
-  <script src="js/config.js"></script>
-  <script src="js/sr-supabase.js"></script>
-  <script src="js/awwwards.js"></script>
-  
+
+  <!-- Site -->
+  <script src="js/core/config.js"></script>
+  <script src="js/core/supabase.js"></script>
+  <script src="js/core/header-auth.js"></script>
+  <script src="js/core/site.js"></script>
 </body>
 </html>

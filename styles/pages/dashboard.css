@@ -1,0 +1,663 @@
+/* ==========================================================================
+   SR Editer — Espace client (dashboard.html)
+   Profil, onglets, stats, abonnement, support (tickets + chat), paiement.
+   ========================================================================== */
+
+/* ── Écran de chargement ── */
+.aww-loading {
+  position: fixed;
+  inset: 0; background: var(--bg-color);
+  z-index: 1000; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  transition: opacity 0.4s;
+}
+.aww-loading.fade-out { opacity: 0; pointer-events: none; }
+
+/* ── Grille principale ── */
+.aww-dashboard { padding: 0 4rem 4rem; min-height: 50vh; }
+.aww-dash-grid { display: grid; grid-template-columns: 300px 1fr; gap: 4rem; }
+.aww-dash-sidebar { border-right: 1px solid var(--border-color); padding-right: 4rem; }
+
+/* ── Profil ── */
+.aww-user-profile { margin-bottom: 3rem; }
+.aww-user-meta { min-width: 0; overflow: hidden; }
+.aww-user-meta h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.aww-avatar {
+  width: 64px;
+  height: 64px;
+  background: var(--accent);
+  color: var(--bg-color);
+  border-radius: 50%;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.aww-avatar.has-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.aww-badge { display: inline-block; padding: 0.25rem 0.75rem; background: rgba(255,255,255,0.1); border-radius: 100px; font-size: 0.8rem; font-family: var(--font-heading); margin-top: 0.5rem; text-transform: uppercase; }
+.aww-badge.aww-badge-role { background: rgba(255, 107, 53, 0.15); color: var(--accent); border: 1px solid rgba(255, 107, 53, 0.3); margin-left: 0.4rem; }
+
+/* Badges d'abonnement */
+.tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.3rem 0.85rem;
+  border-radius: 100px;
+  font-size: 0.75rem;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  margin-top: 0.4rem;
+  transition: all 0.3s ease;
+}
+.tier-badge.free {
+  background: rgba(148, 163, 184, 0.12);
+  color: #94a3b8;
+  border-color: rgba(148, 163, 184, 0.3);
+}
+.tier-badge.standard {
+  background: rgba(56, 189, 248, 0.15);
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+}
+.tier-badge.pro {
+  background: rgba(255, 107, 53, 0.18);
+  color: #ff6b35;
+  border-color: rgba(255, 107, 53, 0.45);
+  box-shadow: 0 0 16px rgba(255, 107, 53, 0.25);
+}
+.tier-badge.premium {
+  background: linear-gradient(135deg, rgba(255, 51, 102, 0.25), rgba(255, 168, 0, 0.25));
+  color: #ffa800;
+  border-color: rgba(255, 168, 0, 0.5);
+  box-shadow: 0 0 18px rgba(255, 168, 0, 0.3);
+}
+
+/* ── Onglets ── */
+.aww-dash-nav { display: flex; flex-direction: column; gap: 0.65rem; }
+.aww-dash-tab {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  text-align: left;
+  font-size: 1.05rem;
+  font-family: var(--font-heading);
+  cursor: pointer;
+  padding: 0.8rem 1.25rem;
+  border-radius: 12px;
+  transition: all 0.25s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.aww-dash-tab:hover {
+  color: var(--text-primary);
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.aww-dash-tab.active {
+  color: #fff;
+  background: rgba(255, 107, 53, 0.12);
+  border-color: rgba(255, 107, 53, 0.35);
+  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
+}
+.aww-panel { display: none; }
+.aww-panel.active { display: block; animation: fadeIn 0.4s ease; }
+
+/* ── Stats & cartes ── */
+.aww-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2.5rem; }
+.aww-stat-card {
+  padding: 1.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 155px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.aww-stat-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.03);
+}
+.aww-stat-card h4 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-secondary);
+  font-family: var(--font-heading);
+}
+.aww-stat-val {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-top: 0.75rem;
+}
+.aww-dash-card {
+  padding: 2rem;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.02);
+}
+.aww-dash-card--danger {
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.03);
+}
+
+/* Quota IA */
+#ai-quota-copy {
+  font-size: 1.12rem;
+  line-height: 1.35;
+  font-family: var(--font-heading);
+  margin-top: 0.65rem;
+  color: #fff;
+  text-transform: none;
+  word-break: break-word;
+}
+#ai-quota-copy strong {
+  color: var(--accent);
+  font-size: 1.5rem;
+}
+#ai-quota-meter-fill {
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Compte & Discord */
+#discord-account-status[data-state="active"] {
+  color: #4ade80 !important;
+  font-weight: 600;
+}
+#discord-account-status[data-state="idle"] {
+  color: var(--text-secondary);
+}
+#account-action-message {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+#account-action-message[data-state="success"] {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #4ade80 !important;
+}
+#account-action-message[data-state="error"] {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171 !important;
+}
+#account-action-message[data-state="info"] {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8 !important;
+}
+.delete-account-box {
+  background: rgba(239, 68, 68, 0.06);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 14px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+}
+.delete-account-box p {
+  color: #fca5a5;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+/* ── Bannière de notification ── */
+.aww-global-banner {
+  margin-bottom: 2rem;
+  padding: 1.1rem 1.4rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aww-global-banner[data-state="success"] {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.35);
+  color: #4ade80 !important;
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
+}
+.aww-global-banner[data-state="error"] {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171 !important;
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+}
+.aww-global-banner[data-state="info"] {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #38bdf8 !important;
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.1);
+}
+
+/* ── Abonnement ── */
+.aww-pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
+
+/* ── Modales ── */
+.aww-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+.aww-modal-backdrop[hidden] {
+  display: none !important;
+}
+.aww-modal-window {
+  background: #0d0d0f;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 620px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  position: relative;
+  animation: awwModalPop 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.aww-modal-header {
+  padding: 1.5rem 2rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.aww-modal-title {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+.aww-modal-close {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: rgba(255, 255, 255, 0.7);
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.aww-modal-close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+.aww-modal-window form {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.aww-modal-body {
+  padding: 2rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  flex: 1;
+  min-height: 0;
+}
+.aww-modal-footer {
+  padding: 1.25rem 2rem;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+body.aww-modal-open {
+  overflow: hidden !important;
+}
+
+/* ── Support : tickets & chat ── */
+.support-tickets-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.aww-ticket-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  gap: 1rem;
+  transition: all 0.2s ease;
+}
+.aww-ticket-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.aww-ticket-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.ticket-action-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-heading);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+.ticket-action-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 14px rgba(255, 107, 53, 0.35);
+}
+#web-chat-messages-container {
+  min-height: 0;
+}
+.aww-chat-bubble {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* ── Paiement (checkout) ── */
+.liquid-checkout-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+.liquid-checkout-modal-content {
+  background: #0f0f13;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 24px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
+}
+.liquid-checkout-close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: #fff;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+.liquid-checkout-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.liquid-checkout-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+  color: var(--accent);
+  background: rgba(255, 107, 53, 0.15);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin-bottom: 0.75rem;
+}
+.liquid-checkout-price {
+  font-size: 2rem;
+  font-family: var(--font-heading);
+  color: #fff;
+  margin: 0.5rem 0 1.5rem;
+}
+.liquid-checkout-price span {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+.liquid-checkout-error-banner {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #f87171;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+.liquid-checkout-spinner {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-secondary);
+}
+.liquid-checkout-footer {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 1.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .aww-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.25rem;
+  }
+  .aww-dashboard {
+    padding: 0 2.5rem 3.5rem;
+  }
+  .aww-dash-grid {
+    grid-template-columns: 240px 1fr;
+    gap: 2.5rem;
+  }
+  .aww-dash-sidebar {
+    padding-right: 2.5rem;
+  }
+  .aww-pricing-cards {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .aww-dashboard {
+    padding: 0 1.25rem 3rem !important;
+  }
+  .aww-dash-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  .aww-dash-sidebar {
+    border-right: none !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding-right: 0 !important;
+    padding-bottom: 1.5rem !important;
+  }
+  .aww-user-profile {
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+  }
+  .aww-avatar {
+    margin-bottom: 0 !important;
+    width: 54px !important;
+    height: 54px !important;
+    font-size: 1.5rem !important;
+    flex-shrink: 0 !important;
+  }
+  /* Onglets en barre horizontale collante */
+  .aww-dash-nav {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    gap: 0.5rem !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+    position: sticky !important;
+    top: 60px !important;
+    z-index: 25 !important;
+    background: rgba(4, 4, 6, 0.94) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    margin: 0 -1.25rem 1.5rem !important;
+    padding: 0.6rem 1.25rem !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  }
+  .aww-dash-nav::-webkit-scrollbar {
+    display: none !important;
+  }
+  .aww-dash-tab {
+    padding: 0.55rem 1.1rem !important;
+    border-radius: 999px !important;
+    font-size: 0.85rem !important;
+    white-space: nowrap !important;
+    flex-shrink: 0 !important;
+    border: 1px solid var(--border-color) !important;
+    background: rgba(255, 255, 255, 0.04) !important;
+  }
+  .aww-dash-tab.active {
+    background: #fff !important;
+    color: #000 !important;
+    border-color: #fff !important;
+    font-weight: 700 !important;
+  }
+  .aww-dash-card {
+    padding: 1.25rem 1rem !important;
+  }
+  .aww-stat-card {
+    padding: 1.25rem 1rem !important;
+    min-height: auto !important;
+  }
+  .aww-stats-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+    margin-top: 1.5rem !important;
+  }
+  .aww-pricing-cards {
+    grid-template-columns: 1fr !important;
+    max-width: 480px !important;
+    margin: 1.5rem auto 0 !important;
+  }
+  .aww-modal-window {
+    width: 95%;
+    max-height: 90vh;
+  }
+  .liquid-checkout-modal-content {
+    width: 95%;
+    padding: 1.5rem 1rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .aww-ticket-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .aww-ticket-card-actions {
+    width: 100%;
+    justify-content: space-between;
+    padding-top: 0.6rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+}
+
+@media (max-width: 480px) {
+  .liquid-checkout-backdrop {
+    padding: 0.75rem !important;
+  }
+  .liquid-checkout-modal-content {
+    width: 96% !important;
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    padding: 1.5rem 1.25rem !important;
+    border-radius: 18px !important;
+  }
+  .aww-modal-window {
+    width: 96% !important;
+    max-height: 90vh !important;
+    max-height: 90dvh !important;
+    border-radius: 18px !important;
+  }
+  .aww-modal-header {
+    padding: 1rem 1.2rem !important;
+  }
+  .aww-modal-body {
+    padding: 1.25rem 1rem !important;
+  }
+  .aww-modal-footer {
+    padding: 0.9rem 1.2rem !important;
+  }
+  .aww-modal-close {
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+}

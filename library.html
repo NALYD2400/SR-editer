@@ -8,23 +8,21 @@
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=11" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-  
-  <!-- Supabase -->
+  <link rel="stylesheet" href="styles/site/base.css" />
+  <link rel="stylesheet" href="styles/site/layout.css" />
+  <link rel="stylesheet" href="styles/site/components.css" />
+  <link rel="stylesheet" href="styles/pages/library.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="aww-page">
-  <!-- 3D Video Background -->
+  <!-- Fond vidéo -->
   <div class="site-bg-container" aria-hidden="true">
     <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
     <div class="site-bg-overlay"></div>
     <div class="site-bg-grain"></div>
   </div>
 
-  <div class="custom-cursor"></div>
-
-  <!-- Awwwards Header -->
+  <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
       <a href="index.html" class="aww-logo" data-magnetic>
@@ -52,11 +50,11 @@
   
   <main class="aww-smooth-scroll">
 
-      <section class="aww-page-hero" style="height: 45vh; min-height: 380px;">
+      <section class="aww-page-hero aww-page-hero--tall">
         <div class="aww-hero-content">
           <div class="aww-kicker" data-gsap="fade-up">04 — CLOUD ASSETS</div>
           <h1 class="aww-page-title" data-gsap="split-text">ASSET<br><span class="aww-text-stroke">LIBRARY</span></h1>
-          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 650px; font-size: 1.2rem;">
+          <p class="aww-hero-desc aww-hero-desc--wide" data-gsap="fade-up" data-delay="0.3">
             Explorez, filtrez et téléchargez en 1-clic des textures PBR 4K &amp; HD (Carbone, Métal, Cuir, Véhicules GTA V) prêtes pour l'atelier SR Editer.
           </p>
         </div>
@@ -78,8 +76,8 @@
           <a href="login.html?next=library.html" class="aww-btn aww-btn-solid aww-btn-full" data-magnetic>
             <span class="aww-btn-text">Se connecter au studio</span>
           </a>
-          <p style="margin-top: 1.2rem; font-size: 0.9rem; color: var(--text-secondary);">
-            Pas encore de compte ? <a href="login.html?mode=signup&amp;next=library.html" class="aww-link" style="color: var(--accent);">Créer un compte</a>
+          <p class="aww-gate-note">
+            Pas encore de compte ? <a href="login.html?mode=signup&amp;next=library.html" class="aww-link aww-link--accent">Créer un compte</a>
           </p>
         </div>
       </section>
@@ -156,17 +154,19 @@
       </footer>
   </main>
 
-  <!-- Libraries -->
+  <!-- Librairies -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/split-type"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  
-  <!-- Core Logic & Animations -->
-  <script src="js/config.js"></script>
-  <script src="js/sr-supabase.js"></script>
-  <script src="js/awwwards.js"></script>
-  <script src="js/library-page.js"></script>
+
+  <!-- Site -->
+  <script src="js/core/config.js"></script>
+  <script src="js/core/supabase.js"></script>
+  <script src="js/core/header-auth.js"></script>
+  <script src="js/core/site.js"></script>
+
+  <!-- Page -->
+  <script src="js/pages/library.js"></script>
 </body>
 </html>

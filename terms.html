@@ -8,23 +8,21 @@
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
   <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles/awwwards.css?v=6" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
-  
-  <!-- Supabase -->
+  <link rel="stylesheet" href="styles/site/base.css" />
+  <link rel="stylesheet" href="styles/site/layout.css" />
+  <link rel="stylesheet" href="styles/site/components.css" />
+  <link rel="stylesheet" href="styles/pages/article.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body class="aww-page">
-  <!-- 3D Video Background -->
+  <!-- Fond vidéo -->
   <div class="site-bg-container" aria-hidden="true">
     <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
     <div class="site-bg-overlay"></div>
     <div class="site-bg-grain"></div>
   </div>
 
-  <div class="custom-cursor"></div>
-
-  <!-- Awwwards Header -->
+  <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
       <a href="index.html" class="aww-logo" data-magnetic>
@@ -52,11 +50,11 @@
   
   <main class="aww-smooth-scroll">
 
-      <section class="aww-page-hero" style="min-height: 440px; padding-bottom: 3rem;">
+      <section class="aww-page-hero aww-page-hero--legal">
         <div class="aww-hero-content">
           <div class="aww-kicker" data-gsap="fade-up">05 — CADRE LÉGAL &amp; CGU</div>
           <h1 class="aww-page-title" data-gsap="split-text">CONDITIONS<br><span class="aww-text-stroke">D'UTILISATION</span></h1>
-          <p class="aww-hero-desc" data-gsap="fade-up" data-delay="0.3" style="max-width: 780px; font-size: 1.15rem;">
+          <p class="aww-hero-desc aww-hero-desc--legal" data-gsap="fade-up" data-delay="0.3">
             Règles et conditions régissant l'utilisation du logiciel SR Editer, de l'espace client, des téléchargements et des services associés pour Grand Theft Auto V et FiveM.
           </p>
           <div class="aww-legal-meta" data-gsap="fade-up" data-delay="0.45">
@@ -86,30 +84,30 @@
             </ul>
           </aside>
 
-          <div class="aww-docs-content" data-gsap="fade-up">
+          <div class="aww-docs-content aww-legal-content" data-gsap="fade-up">
             <!-- 1. EDITEUR -->
             <section id="editeur" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 01</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">1. Éditeur du Service</h2>
+              <h2 class="aww-legal-heading">1. Éditeur du Service</h2>
               <div class="aww-legal-card">
                 <p>
                   Le service <strong>SR Editer</strong> (comprenant le site web, l'application desktop Windows, les serveurs d'authentification et les modules cloud) est édité et administré par l'exploitant du produit SR Editer.
                 </p>
                 <p>
                   <strong>Contact officiel &amp; Assistance :</strong><br>
-                  • Serveur Discord Officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link" style="color: var(--accent);">discord.gg/gNQwHGMRdT</a><br>
-                  • Espace Client : via le gestionnaire de tickets sur <a href="dashboard.html" class="aww-link" style="color: var(--accent);">dashboard.html</a>.
+                  • Serveur Discord Officiel : <a href="https://discord.gg/gNQwHGMRdT" target="_blank" rel="noopener" class="aww-link aww-link--accent">discord.gg/gNQwHGMRdT</a><br>
+                  • Espace Client : via le gestionnaire de tickets sur <a href="dashboard.html" class="aww-link aww-link--accent">dashboard.html</a>.
                 </p>
-                <p style="font-size: 0.9rem; opacity: 0.75;">
+                <p class="aww-legal-note">
                   <em>L'identité civile, l'adresse du siège social et les informations complètes d'immatriculation d'entreprise seront publiées dès validation définitive des formalités d'enregistrement.</em>
                 </p>
               </div>
             </section>
 
             <!-- 2. OBJET -->
-            <section id="objet" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="objet" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 02</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">2. Objet &amp; Champ d'Application</h2>
+              <h2 class="aww-legal-heading">2. Objet &amp; Champ d'Application</h2>
               <div class="aww-legal-card">
                 <p>
                   SR Editer est un studio d'ingénierie et d'édition assistée pour créateurs de contenus, moddeurs et serveurs FiveM. Il permet d'inspecter en lecture sécurisée, d'éditer en multi-calques et de prévisualiser en 3D des textures et archives de Grand Theft Auto V préalablement extraites.
@@ -121,9 +119,9 @@
             </section>
 
             <!-- 3. COMPTE -->
-            <section id="compte" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="compte" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 03</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">3. Compte Utilisateur &amp; Éligibilité</h2>
+              <h2 class="aww-legal-heading">3. Compte Utilisateur &amp; Éligibilité</h2>
               <div class="aww-legal-card">
                 <p>L'accès aux fonctionnalités connectées nécessite la création d'un compte personnel authentifié via Supabase :</p>
                 <ul>
@@ -135,9 +133,9 @@
             </section>
 
             <!-- 4. LICENCE -->
-            <section id="licence" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="licence" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 04</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">4. Licence d'Utilisation &amp; Droits</h2>
+              <h2 class="aww-legal-heading">4. Licence d'Utilisation &amp; Droits</h2>
               <div class="aww-legal-card">
                 <p>
                   Sous réserve de l'acceptation des présentes conditions et du respect de votre formule d'abonnement, nous vous concédons une licence personnelle, non exclusive, révocable et non transférable pour installer et exécuter SR Editer sur vos postes Windows autorisés.
@@ -149,9 +147,9 @@
             </section>
 
             <!-- 5. ABONNEMENTS -->
-            <section id="abonnements" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="abonnements" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 05</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">5. Abonnements &amp; Modalités de Paiement</h2>
+              <h2 class="aww-legal-heading">5. Abonnements &amp; Modalités de Paiement</h2>
               <div class="aww-legal-card">
                 <p>
                   Les fonctions avancées de sauvegarde, d'export vers archives RPF, d'accès à la bibliothèque de textures 4K et d'assistance prioritaire nécessitent la souscription d'un abonnement actif (Standard, Pro ou VIP).
@@ -165,9 +163,9 @@
             </section>
 
             <!-- 6. PROPRIETE -->
-            <section id="propriete" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="propriete" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 06</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">6. Contenu Utilisateur &amp; Absence d'Affiliation</h2>
+              <h2 class="aww-legal-heading">6. Contenu Utilisateur &amp; Absence d'Affiliation</h2>
               <div class="aww-legal-card">
                 <p>
                   <strong>Avertissement Trademark &amp; Affiliation :</strong> SR Editer est un outil logiciel indépendant développé par des passionnés pour la communauté de création numérique. SR Editer n'est en aucun cas sponsorisé, approuvé, lié ou affilié à Rockstar Games, Take-Two Interactive Software, Inc., Cfx.re ou FiveM. Toutes les marques et droits d'auteur associés aux jeux vidéo cités demeurent la propriété exclusive de leurs détenteurs respectifs.
@@ -179,9 +177,9 @@
             </section>
 
             <!-- 7. IA -->
-            <section id="ia" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="ia" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 07</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">7. Intelligence Artificielle &amp; Services Tiers</h2>
+              <h2 class="aww-legal-heading">7. Intelligence Artificielle &amp; Services Tiers</h2>
               <div class="aww-legal-card">
                 <p>
                   Certaines fonctionnalités avancées de génération de variations de textures font appel à des modèles de vision et de diffusion tiers (OpenAI, Google Gemini, Hugging Face).
@@ -195,9 +193,9 @@
             </section>
 
             <!-- 8. MAJ -->
-            <section id="maj" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="maj" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 08</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">8. Disponibilité &amp; Mises à Jour</h2>
+              <h2 class="aww-legal-heading">8. Disponibilité &amp; Mises à Jour</h2>
               <div class="aww-legal-card">
                 <p>
                   Nous mettons en œuvre tous les moyens raisonnables pour assurer la disponibilité continue de l'infrastructure web et de la vérification de licences. Des interruptions pour maintenance ou mise à niveau peuvent survenir occasionnellement.
@@ -209,9 +207,9 @@
             </section>
 
             <!-- 9. RESPONSABILITE -->
-            <section id="responsabilite" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="responsabilite" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 09</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">9. Limitation de Responsabilité</h2>
+              <h2 class="aww-legal-heading">9. Limitation de Responsabilité</h2>
               <div class="aww-legal-card">
                 <p>
                   Dans les limites autorisées par la législation applicable, SR Editer est fourni « en l'état » et « selon disponibilité », sans garantie d'adéquation à un besoin spécifique.
@@ -223,9 +221,9 @@
             </section>
 
             <!-- 10. DROIT -->
-            <section id="droit" class="aww-docs-section" style="margin-top: 4rem;">
+            <section id="droit" class="aww-docs-section">
               <span class="ticket-count-badge">SECTION 10</span>
-              <h2 style="font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 1rem 0 1.25rem;">10. Droit Applicable &amp; Règlement des Litiges</h2>
+              <h2 class="aww-legal-heading">10. Droit Applicable &amp; Règlement des Litiges</h2>
               <div class="aww-legal-card">
                 <p>
                   Les présentes Conditions Générales d'Utilisation sont exclusivement soumises et interprétées conformément au <strong>droit français</strong>.
@@ -244,7 +242,7 @@
               <a href="docs.html" class="aww-btn aww-btn-outline" data-magnetic>
                 <span class="aww-btn-text">Documentation Technique →</span>
               </a>
-              <a href="index.html" class="aww-link" style="color: var(--text-secondary); font-size: 0.95rem;">
+              <a href="index.html" class="aww-link aww-link--muted">
                 ← Retour à l'accueil
               </a>
             </div>
@@ -271,17 +269,16 @@
       </footer>
   </main>
 
-  <!-- Libraries -->
+  <!-- Librairies -->
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/split-type"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-  
-  <!-- Core Logic & Animations -->
-  <script src="js/config.js"></script>
-  <script src="js/sr-supabase.js"></script>
-  <script src="js/awwwards.js"></script>
-  
+
+  <!-- Site -->
+  <script src="js/core/config.js"></script>
+  <script src="js/core/supabase.js"></script>
+  <script src="js/core/header-auth.js"></script>
+  <script src="js/core/site.js"></script>
 </body>
 </html>

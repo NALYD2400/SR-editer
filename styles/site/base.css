@@ -1,0 +1,170 @@
+/* ==========================================================================
+   SR Editer — Site public · Base
+   Tokens, reset, smooth scroll (Lenis), fond vidéo, typographie, utilitaires.
+   Chargé en premier sur toutes les pages publiques.
+   ========================================================================== */
+
+/* ── Tokens ── */
+:root {
+  --bg-color: #030303;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.5);
+  --accent: #ff6b35;
+  --accent-secondary: #ff3366;
+  --accent-tertiary: #ffa800;
+  --accent-gradient: linear-gradient(135deg, #ff3366 0%, #ff6b35 50%, #ffa800 100%);
+  --accent-glow: rgba(255, 107, 53, 0.4);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --font-heading: 'Clash Display', sans-serif;
+  --font-body: 'Satoshi', sans-serif;
+  --ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ── Reset ── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+html {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+html, body {
+  scroll-behavior: auto !important;
+}
+
+body.aww-page {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ── Lenis (smooth scroll) ── */
+html.lenis, html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped:not(.is-autoscrolling) {
+  overflow: hidden;
+}
+html.is-autoscrolling,
+html.is-autoscrolling body {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}
+
+/* ── Fond vidéo ── */
+.site-bg-container {
+  position: fixed;
+  top: 0; left: 0; width: 100vw; height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+}
+.site-bg-video {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.65;
+}
+.site-bg-overlay {
+  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+  background: radial-gradient(circle at center, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.65) 100%);
+}
+.site-bg-grain {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+/* ── Typographie ── */
+h1, h2, h3 {
+  font-family: var(--font-heading);
+  text-transform: uppercase;
+  font-weight: 600;
+  line-height: 0.9;
+}
+.aww-text-stroke {
+  background: linear-gradient(135deg, #ff3366 0%, #ff6b35 48%, #ffa800 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: var(--accent);
+  display: inline-block;
+  vertical-align: top;
+}
+/* Sécurité : évite un texte transparent si SplitType découpe l'intérieur du dégradé */
+.aww-text-stroke .char,
+.aww-text-stroke .word {
+  color: var(--accent) !important;
+  -webkit-text-fill-color: var(--accent) !important;
+  background: transparent !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  display: inline-block;
+}
+.word {
+  white-space: nowrap;
+}
+
+/* ── Utilitaires ── */
+.text-center { text-align: center; }
+.text-accent { color: var(--accent); }
+.text-muted { color: var(--text-secondary); }
+.aww-text-danger { color: #ff4e4e !important; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.justify-center { justify-content: center; }
+.mt-2 { margin-top: 1rem; }
+.mt-4 { margin-top: 3rem; }
+
+/* ── Animations partagées ── */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes awwModalPop {
+  0% { transform: scale(0.95) translateY(12px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  /* 16px minimum : empêche le zoom automatique d'iOS sur focus */
+  input,
+  select,
+  textarea,
+  .aww-input,
+  .aww-select,
+  .aww-textarea {
+    font-size: 16px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

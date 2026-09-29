@@ -1,0 +1,274 @@
+/* ==========================================================================
+   SR Editer — Page d'accueil (index.html)
+   Hero minimaliste, cartes "Workflow & outils", grille des licences.
+   ========================================================================== */
+
+/* ── Hero ── */
+.minimalist-hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 6rem 2rem 4rem;
+  box-sizing: border-box;
+}
+.minimalist-hero .aww-hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+.minimalist-hero .aww-hero-heading {
+  font-size: clamp(2.6rem, 5.8vw, 5rem);
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  margin-bottom: 1.25rem;
+}
+.minimalist-hero .aww-hero-desc {
+  font-size: 1.15rem;
+  max-width: 580px;
+  margin-bottom: 2.25rem;
+  opacity: 0.85;
+}
+
+/* ── Sections ── */
+.minimalist-section {
+  padding: 12rem 4rem 10rem;
+}
+.minimalist-section .aww-section-header {
+  margin-bottom: 6.5rem;
+}
+.minimalist-section .aww-section-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  letter-spacing: -1px;
+}
+
+/* ── Cartes fonctionnalités ── */
+.aww-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.25rem;
+}
+.minimalist-grid {
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+/* Décalage vertical en escalier des 3 cartes */
+.minimalist-grid .stagger-1 { margin-top: 0; }
+.minimalist-grid .stagger-2 { margin-top: 3rem; }
+.minimalist-grid .stagger-3 { margin-top: 6rem; }
+
+.aww-feature-card {
+  padding: 2.5rem;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.clean-card {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+.clean-card:hover,
+.clean-card:focus,
+.clean-card:focus-visible,
+.clean-card:focus-within,
+.clean-card:active {
+  transform: translateY(-5px) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  outline: none !important;
+}
+.aww-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #000;
+}
+.aww-card-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s var(--ease-out-expo);
+  will-change: transform;
+}
+.clean-card:hover .aww-card-img-wrap img {
+  transform: scale(1.06);
+}
+.clean-card .aww-card-img-wrap {
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.aww-card-num {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.aww-feature-card h3 {
+  font-size: 1.35rem;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.5px;
+}
+.aww-feature-card p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+.clean-card h3 {
+  font-size: 1.25rem;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+.clean-card p {
+  font-size: 0.95rem;
+  opacity: 0.7;
+}
+
+/* ── Licences ── */
+.aww-pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2.25rem;
+  margin-top: 2rem;
+}
+.minimalist-pricing {
+  max-width: 1200px;
+  margin: 3rem auto 0;
+  grid-template-columns: repeat(3, 1fr);
+}
+.aww-pricing-badge {
+  position: absolute;
+  top: -12px;
+  left: 2.5rem;
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px rgba(255, 107, 53, 0.35);
+}
+.aww-pricing-tier {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.aww-pricing-amount {
+  font-family: var(--font-heading);
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin: 1.25rem 0 0.5rem;
+  line-height: 1;
+}
+.clean-pricing {
+  background: rgba(10, 10, 15, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 3rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+.clean-pricing:hover {
+  background: rgba(15, 15, 22, 0.7);
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: none;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+.clean-pricing.is-featured {
+  background: rgba(18, 12, 10, 0.65);
+  border: 1px solid rgba(255, 107, 53, 0.4);
+  box-shadow: 0 0 30px rgba(255, 107, 53, 0.12), 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+.pricing-desc {
+  color: var(--text-secondary);
+  margin-bottom: 2.5rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  flex-grow: 1;
+}
+
+/* ── Footer ── */
+.minimalist-footer {
+  border-top: none;
+  padding-top: 6rem;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .minimalist-section {
+    padding: 7rem 2.5rem 5rem;
+  }
+  .minimalist-section .aww-section-header {
+    margin-bottom: 3.5rem;
+  }
+  .minimalist-grid {
+    gap: 2rem;
+  }
+  .minimalist-pricing {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .minimalist-hero {
+    padding: 6.5rem 1.25rem 3rem !important;
+    min-height: calc(100vh - 50px);
+    min-height: calc(100dvh - 50px);
+  }
+  .minimalist-hero .aww-hero-heading {
+    letter-spacing: -1px;
+  }
+  .minimalist-hero .aww-hero-desc {
+    max-width: 100%;
+  }
+  .minimalist-section {
+    padding: 4.5rem 1.25rem 3.5rem !important;
+  }
+  .minimalist-section .aww-section-header {
+    margin-bottom: 2.5rem !important;
+  }
+  .minimalist-grid {
+    grid-template-columns: 1fr !important;
+    gap: 2.25rem !important;
+  }
+  .minimalist-grid .stagger-1,
+  .minimalist-grid .stagger-2,
+  .minimalist-grid .stagger-3 {
+    margin-top: 0 !important;
+  }
+  .clean-pricing {
+    padding: 2.5rem 1.5rem !important;
+  }
+  .aww-pricing-amount {
+    font-size: 2.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .minimalist-section {
+    padding: 3.5rem 1rem 2.5rem !important;
+  }
+  .clean-pricing {
+    padding: 2rem 1.25rem !important;
+  }
+}

@@ -12,10 +12,10 @@
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
-    <script src="js/theme.js?v=0.3.3-vercel"></script>
-    <link rel="stylesheet" href="styles/tokens.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/base.css?v=0.3.3" />
-    <link rel="stylesheet" href="styles/admin.css?v=0.4.83-models" />
+    <script src="js/admin/theme.js?v=0.3.3-vercel"></script>
+    <link rel="stylesheet" href="styles/admin/tokens.css?v=0.3.3" />
+    <link rel="stylesheet" href="styles/admin/base.css?v=0.3.3" />
+    <link rel="stylesheet" href="styles/admin/admin.css?v=0.4.84-refresh" />
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   </head>
   <body>
@@ -159,6 +159,12 @@
             </div>
           </div>
           <div class="admin-topbar-actions">
+            <button type="button" class="btn btn-ghost admin-topbar-link admin-topbar-refresh" id="topbar-refresh-btn" title="Actualiser l'onglet (R)">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
+              </svg>
+              <span>Actualiser</span>
+            </button>
             <a href="dashboard.html" class="btn btn-ghost admin-topbar-link">Espace client</a>
             <a href="index.html" class="btn btn-ghost admin-topbar-link">Retour au site</a>
           </div>
@@ -2017,11 +2023,11 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-    <script src="js/wallpapers.js?v=0.3.3"></script>
-    <script src="js/config.js?v=0.4.1-discord-admin"></script>
-    <script src="js/admin.js?v=0.5.1-stripe"></script>
+    <script src="js/admin/wallpapers.js?v=0.3.3"></script>
+    <script src="js/core/config.js?v=0.4.1-discord-admin"></script>
+    <script src="js/admin/admin.js?v=0.5.2-refresh"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="js/admin-library-models.js?v=0.3.0-oauth-drive"></script>
+    <script src="js/admin/library-models.js?v=0.3.0-oauth-drive"></script>
     <script>
       if (window.SRTheme && window.SRTheme.bindToggle) {
         window.SRTheme.bindToggle(".theme-toggle");
