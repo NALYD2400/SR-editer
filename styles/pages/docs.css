@@ -1,37 +1,10 @@
 /* ==========================================================================
-   SR Editer — Documentation technique (docs.html)
+   SR Editer — Documentation (docs.html)
    Chargé après article.css : surcharge la mise en page article (sommaire
-   à 300px, tiroir mobile) et ajoute les composants de doc (callouts, code,
-   tableaux, flux, pagination).
+   à 300px, tiroir mobile) et ajoute les composants de doc (callouts,
+   cartes, tableaux, étapes, FAQ, pagination).
    ========================================================================== */
 
-:root {
-  --doc-code-bg: #090a0f;
-}
-
-/* ── Badge de version (hero) ── */
-.doc-version-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.3rem 0.9rem;
-  border-radius: 999px;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  background: rgba(255, 107, 53, 0.12);
-  border: 1px solid rgba(255, 107, 53, 0.35);
-  color: var(--accent);
-  margin-bottom: 1.25rem;
-  box-shadow: 0 0 20px rgba(255, 107, 53, 0.15);
-}
-.doc-version-tag span.dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
-}
 
 /* Layout override for modern doc style */
 .aww-docs {
@@ -312,84 +285,6 @@
 }
 .doc-callout-success strong { color: #34d399; }
 
-/* Code Blocks & Token Syntax Highlighting */
-.doc-code-block {
-  background: var(--doc-code-bg);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 12px;
-  margin: 1.6rem 0;
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
-}
-.doc-code-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 1.1rem;
-  background: rgba(255, 255, 255, 0.035);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  font-size: 0.78rem;
-  color: rgba(255, 255, 255, 0.6);
-  font-family: inherit;
-}
-.doc-code-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
-}
-.token-badge {
-  display: inline-block;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-}
-.doc-copy-btn {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 6px;
-  color: rgba(255, 255, 255, 0.75);
-  padding: 0.25rem 0.7rem;
-  font-size: 0.74rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  font-weight: 500;
-}
-.doc-copy-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.3);
-}
-.doc-code-block pre {
-  margin: 0;
-  padding: 1.25rem 1.35rem;
-  overflow-x: auto;
-  font-family: 'JetBrains Mono', 'Cascadia Code', 'Consolas', monospace;
-  font-size: 0.86rem;
-  line-height: 1.65;
-  color: #e2e8f0;
-  scrollbar-width: thin;
-}
-
-/* Syntax Tokens */
-.token-keyword { color: #ff7b72; font-weight: 600; }
-.token-fn { color: #d2a8ff; }
-.token-string { color: #a5d6ff; }
-.token-comment { color: #8b949e; font-style: italic; }
-.token-type { color: #7ee787; }
-.token-number { color: #79c0ff; }
-.token-prop { color: #79c0ff; }
-.token-tag { color: #7ee787; }
-
 /* Comparison Tables */
 .doc-table-wrapper {
   overflow-x: auto;
@@ -585,6 +480,63 @@ kbd {
   line-height: 1.55;
 }
 
+/* Carte de téléchargement */
+.doc-download-card {
+  margin: 2rem 0;
+  border-color: rgba(255, 107, 53, 0.35);
+  background: rgba(255, 107, 53, 0.03);
+}
+.doc-download-card h3 {
+  color: #fff;
+  font-size: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.aww-docs-content .doc-download-card p {
+  margin-bottom: 1.25rem;
+}
+.doc-download-actions {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.doc-download-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Listes à puces dans les cartes */
+.doc-list {
+  margin: 0.75rem 0 0 1.25rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+.doc-list strong {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Cartes "pris en charge" / "pas encore possible" */
+.doc-card-item--success { border-color: rgba(16, 185, 129, 0.3); }
+.doc-card-item--danger { border-color: rgba(239, 68, 68, 0.3); }
+.doc-card-title--success { color: #34d399 !important; }
+.doc-card-title--danger { color: #f87171 !important; }
+
+/* FAQ */
+.doc-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+/* Libellé du bouton de sommaire mobile */
+.doc-mobile-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* Next / Previous Pagination Footer */
 .doc-pagination {
   display: grid;
@@ -669,7 +621,7 @@ kbd {
     padding: 0 1.25rem 6rem;
   }
   .aww-docs-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 2rem;
   }
   .doc-mobile-nav-bar {
@@ -698,7 +650,7 @@ kbd {
     padding-right: 0;
   }
   .doc-pagination {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .doc-pagination-card.next {
     text-align: left;

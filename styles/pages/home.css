@@ -138,6 +138,67 @@
   opacity: 0.7;
 }
 
+/* ── Manifeste (mots révélés au scroll) ── */
+.aww-manifesto {
+  padding: 10rem 4rem 4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.aww-manifesto .aww-kicker {
+  margin-bottom: 2rem;
+}
+.aww-manifesto-text {
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 3.6vw, 3.3rem);
+  font-weight: 500;
+  line-height: 1.18;
+  letter-spacing: -0.5px;
+  color: var(--text-primary);
+}
+
+/* ── Bandeau défilant ── */
+.aww-marquee {
+  overflow: hidden;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+  padding: 1.75rem 0;
+  margin: 2rem 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.aww-marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  width: max-content;
+  animation: aww-marquee 38s linear infinite;
+}
+.aww-marquee:hover .aww-marquee-track {
+  animation-play-state: paused;
+}
+.aww-marquee-item {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 6vw, 5.5rem);
+  font-weight: 600;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.35);
+  transition: color 0.4s ease, -webkit-text-stroke-color 0.4s ease;
+}
+.aww-marquee-item:hover {
+  color: var(--text-primary);
+  -webkit-text-stroke-color: var(--text-primary);
+}
+.aww-marquee-sep {
+  font-size: clamp(1.2rem, 2.5vw, 2rem);
+  color: var(--accent);
+}
+@keyframes aww-marquee {
+  to { transform: translateX(-50%); }
+}
+
 /* ── Licences ── */
 .aww-pricing-grid {
   display: grid;
@@ -258,6 +319,15 @@
   }
   .clean-pricing {
     padding: 2.5rem 1.5rem !important;
+  }
+  .aww-manifesto {
+    padding: 5rem 1.25rem 2rem;
+  }
+  .aww-marquee {
+    padding: 1.25rem 0;
+  }
+  .aww-marquee-track {
+    gap: 1.75rem;
   }
   .aww-pricing-amount {
     font-size: 2.6rem;

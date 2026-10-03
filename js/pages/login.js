@@ -1,3 +1,8 @@
+/* ==========================================================================
+   SR Editer — Connexion / inscription (login.html)
+   E-mail + mot de passe ou Discord. Après connexion, redirige vers la page
+   demandée (?next= ou ?redirect=, pages .html du site uniquement) ou le dashboard.
+   ========================================================================== */
 (function () {
   const client = typeof window.getSRSupabase === "function" ? window.getSRSupabase() : null;
   if (!client || !window.SR_CONFIG) {
@@ -14,42 +19,17 @@
   const submitBtn = document.getElementById("submit-btn");
   const discordBtn = document.getElementById("discord-btn");
   const errorMessage = document.getElementById("error-message");
-  const discordRecoveryLink = document.getElementById("discord-recovery-link");
   const successMessage = document.getElementById("success-message");
   const authSubtitle = document.getElementById("auth-subtitle");
   const authSwitch = document.getElementById("auth-switch");
-  const discordRequiredModal = document.getElementById("discord-required-modal");
-  const discordRequiredDialog = discordRequiredModal && discordRequiredModal.querySelector(".discord-required-dialog");
-  const discordRequiredMessage = document.getElementById("discord-required-message");
-  const discordRequiredJoin = document.getElementById("discord-required-join");
-  const discordRequiredRetry = document.getElementById("discord-required-retry");
-  const discordRequiredClose = document.getElementById("discord-required-close");
 
   let mode = "login"; // "login" | "signup"
-  let recoveryPreviousFocus = null;
 
-  function getDiscordErrorMessage(error, code) {
-    const message = typeof error === "string" ? error : error && error.message ? error.message : "";
-    if (code === "DISCORD_MEMBERSHIP_REQUIRED" || /dois être membre du serveur discord/i.test(message)) {
-      return "Rejoins le serveur Discord SR Editer, accepte le règlement, puis relance la connexion.";
-    }
-    if (code === "DISCORD_RULES_REQUIRED" || /accepte d'abord le règlement/i.test(message)) {
-      return "Accepte le règlement sur le serveur Discord pour obtenir le rôle Membre, puis réessaie.";
-    }
-    if (/resource owner|authorization server denied|access[_ ]denied/i.test(message)) {
-      return "Connexion Discord annulée. Tu peux réessayer quand tu veux.";
-    }
-    if (/unsupported provider|provider is not enabled/i.test(message)) {
-      return "La connexion Discord n'est pas encore activée sur le serveur.";
-    }
-    if (/invalid login credentials/i.test(message)) {
-      return "E-mail ou mot de passe incorrect. Si tu as créé ce compte avec Discord, utilise « Continuer avec Discord ».";
-    }
-    if (/invalid session|session required/i.test(message)) {
-      return "Ta session a expiré. Recommence la connexion.";
-    }
-    return message || "Impossible de continuer avec Discord.";
-  }
+  const discordModal = window.SRDiscord.createRequiredModal({
+    onRetry: function () {
+      discordBtn.click();
+    },
+  });
 
   function clearPendingDiscordOAuth() {
     window.localStorage.removeItem("sr-editer:discord-signin-pending");
@@ -57,67 +37,15 @@
     window.localStorage.removeItem("sr-editer:discord-link-pending");
   }
 
-  function discordRecoveryKind(message, code) {
-    if (code === "DISCORD_RULES_REQUIRED" || /accepte le règlement/i.test(message || "")) return "rules";
-    if (code === "DISCORD_MEMBERSHIP_REQUIRED" || /rejoins le serveur discord/i.test(message || "")) return "membership";
-    return null;
-  }
-
-  function closeDiscordRequiredModal() {
-    if (!discordRequiredModal || discordRequiredModal.hidden) return;
-    discordRequiredModal.hidden = true;
-    document.body.classList.remove("discord-modal-open");
-    if (recoveryPreviousFocus && typeof recoveryPreviousFocus.focus === "function") {
-      recoveryPreviousFocus.focus();
-    }
-    recoveryPreviousFocus = null;
-  }
-
-  function openDiscordRequiredModal(message, kind, inviteUrl) {
-    if (!discordRequiredModal || !kind || !inviteUrl) return;
-    recoveryPreviousFocus = document.activeElement;
-    if (discordRequiredMessage) discordRequiredMessage.textContent = message;
-    if (discordRequiredJoin) {
-      discordRequiredJoin.href = inviteUrl;
-      discordRequiredJoin.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
-    }
-    if (discordRequiredRetry) {
-      discordRequiredRetry.textContent = kind === "rules" ? "J’ai accepté, réessayer" : "J’ai rejoint, réessayer";
-    }
-    discordRequiredModal.hidden = false;
-    document.body.classList.add("discord-modal-open");
-    window.requestAnimationFrame(function () {
-      if (discordRequiredJoin) discordRequiredJoin.focus();
-      else if (discordRequiredDialog) discordRequiredDialog.focus();
-    });
-  }
-
-  function updateDiscordRecovery(message, code) {
-    if (!discordRecoveryLink) return;
-    const inviteUrl = String(window.SR_CONFIG.discordInviteUrl || "").trim();
-    const rulesUrl = String(window.SR_CONFIG.discordRulesUrl || "").trim();
-    const kind = discordRecoveryKind(message, code);
-    const targetUrl = kind === "rules" ? (rulesUrl || inviteUrl) : inviteUrl;
-    const visible = Boolean(targetUrl && kind);
-    discordRecoveryLink.hidden = !visible;
-    if (!visible) {
-      closeDiscordRequiredModal();
-      return;
-    }
-    discordRecoveryLink.href = targetUrl;
-    discordRecoveryLink.textContent = kind === "rules" ? "Ouvrir le règlement Discord" : "Rejoindre le Discord";
-    openDiscordRequiredModal(message, kind, targetUrl);
-  }
-
   function showError(message, code) {
     if (successMessage) {
       successMessage.textContent = "";
       successMessage.classList.remove("is-visible");
     }
-    const displayMessage = getDiscordErrorMessage(message, code);
+    const displayMessage = window.SRDiscord.errorMessage(message, code);
     errorMessage.textContent = displayMessage;
     errorMessage.classList.add("is-visible");
-    updateDiscordRecovery(displayMessage, code);
+    discordModal.showFor(displayMessage, code);
   }
 
   function showSuccess(message) {
@@ -125,7 +53,7 @@
       errorMessage.textContent = "";
       errorMessage.classList.remove("is-visible");
     }
-    updateDiscordRecovery("", "");
+    discordModal.close();
     if (!successMessage) return;
     successMessage.textContent = message;
     successMessage.classList.add("is-visible");
@@ -140,7 +68,7 @@
       successMessage.textContent = "";
       successMessage.classList.remove("is-visible");
     }
-    updateDiscordRecovery("", "");
+    discordModal.close();
   }
 
   function bindSwitch(button, nextMode) {
@@ -224,40 +152,6 @@
       }
     });
   }
-
-  if (discordRequiredClose) discordRequiredClose.addEventListener("click", closeDiscordRequiredModal);
-  if (discordRequiredModal) {
-    discordRequiredModal.addEventListener("mousedown", function (event) {
-      if (event.target === discordRequiredModal) closeDiscordRequiredModal();
-    });
-  }
-  if (discordRequiredRetry) {
-    discordRequiredRetry.addEventListener("click", function () {
-      closeDiscordRequiredModal();
-      discordBtn.click();
-    });
-  }
-  document.addEventListener("keydown", function (event) {
-    if (!discordRequiredModal || discordRequiredModal.hidden) return;
-    if (event.key === "Escape") {
-      event.preventDefault();
-      closeDiscordRequiredModal();
-      return;
-    }
-    if (event.key === "Tab" && discordRequiredDialog) {
-      const focusable = Array.from(discordRequiredDialog.querySelectorAll("a[href], button:not([disabled]), [tabindex]:not([tabindex='-1'])"));
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (!first || !last) return;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    }
-  });
 
   if (window.location.hash === "#signup" || new URLSearchParams(window.location.search).get("mode") === "signup") {
     setMode("signup");

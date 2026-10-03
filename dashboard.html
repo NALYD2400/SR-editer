@@ -7,14 +7,16 @@
   <title>Dashboard · SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
+  <!-- Polices : une requête par famille (Fontshare ignore la 2e famille d'une requête groupée) -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap" />
   <link rel="stylesheet" href="styles/site/base.css" />
   <link rel="stylesheet" href="styles/site/layout.css" />
   <link rel="stylesheet" href="styles/site/components.css" />
   <link rel="stylesheet" href="styles/pages/dashboard.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </head>
-<body class="aww-page">
+<body class="aww-page aww-page--reading">
   <!-- Fond vidéo -->
   <div class="site-bg-container" aria-hidden="true">
     <video class="site-bg-video" src="assets/videos/bg-landscape.mp4" preload="auto" muted playsinline poster="assets/videos/bg-landscape-poster.webp" loop autoplay></video>
@@ -25,17 +27,17 @@
   <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
-      <a href="index.html" class="aww-logo" data-magnetic>
+      <a href="index.html" class="aww-logo">
         <img src="assets/logo_small.png" alt="SR Editer" />
         <span class="aww-logo-text">SR<br>EDITER</span>
       </a>
       <nav class="aww-nav">
-        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
-        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
-        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
-        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
-        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
-        <a href="login.html" class="aww-link aww-nav-portal-mobile" data-magnetic><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
+        <a href="index.html" class="aww-link"><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
+        <a href="dashboard.html" class="aww-link"><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
+        <a href="library.html" class="aww-link"><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
+        <a href="docs.html" class="aww-link"><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
+        <a href="blog.html" class="aww-link"><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
+        <a href="login.html" class="aww-link aww-nav-portal-mobile"><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
       </nav>
       <div class="aww-header-actions">
         <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
@@ -52,12 +54,12 @@
 
       <div id="loading" class="aww-loading">
         <div class="aww-spinner"></div>
-        <span>Loading Command Center...</span>
+        <span>Chargement de votre espace…</span>
       </div>
       <section class="aww-page-hero aww-page-hero--dashboard">
         <h1 class="aww-page-title" data-gsap="split-text">COMMAND<br><span class="aww-text-stroke">CENTER</span></h1>
       </section>
-      <section class="aww-dashboard" id="dashboard-content" style="display:none;" hidden>
+      <section class="aww-dashboard" id="dashboard-content" hidden>
         <div class="aww-dash-grid">
           <div class="aww-dash-sidebar">
             <div class="aww-user-profile">
@@ -74,42 +76,42 @@
               <button class="aww-dash-tab" data-tab="support">Support &amp; Tickets</button>
               <button class="aww-dash-tab" data-tab="downloads">Téléchargements</button>
               <button class="aww-dash-tab" data-tab="settings">Paramètres &amp; Sécurité</button>
-              <a href="admin.html" class="aww-dash-tab" id="portal-admin-link" style="color: var(--accent); text-decoration: none;" hidden>Administration ↗</a>
+              <a href="admin.html" class="aww-dash-tab aww-dash-tab--link" id="portal-admin-link" hidden>Administration ↗</a>
               <button class="aww-dash-tab aww-text-danger" id="logout-btn">Se déconnecter</button>
             </nav>
           </div>
           <div class="aww-dash-content">
-            <div id="account-global-banner" class="aww-global-banner" style="display:none;" hidden></div>
+            <div id="account-global-banner" class="aww-global-banner" hidden></div>
             <!-- 1. OVERVIEW -->
             <div class="aww-panel active" id="panel-overview">
               <h2>Bienvenue dans votre atelier SR Editer</h2>
               <div class="aww-stats-grid">
                 <div class="aww-stat-card">
-                  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <div class="aww-row-between">
                     <h4>Quota IA Texture</h4>
-                    <button type="button" id="ai-quota-refresh" style="background: none; border: none; color: var(--accent); cursor: pointer; font-size: 0.8rem; text-decoration: underline;">Actualiser</button>
+                    <button type="button" id="ai-quota-refresh" class="aww-text-link-btn">Actualiser</button>
                   </div>
                   <p class="aww-stat-val" id="ai-quota-copy">Chargement...</p>
-                  <p id="ai-quota-meta" style="font-size:0.8rem; color:var(--text-secondary); margin-top: 4px;"></p>
-                  <div style="width:100%; background:rgba(255,255,255,0.1); height:6px; margin-top:1.2rem; border-radius:3px; overflow: hidden;">
-                     <div id="ai-quota-meter-fill" style="width:0%; background:linear-gradient(90deg, var(--accent), #d946ef); height:100%; border-radius:3px;"></div>
+                  <p id="ai-quota-meta" class="aww-stat-meta aww-stat-meta--sm"></p>
+                  <div class="aww-meter">
+                    <div id="ai-quota-meter-fill" class="aww-meter-fill"></div>
                   </div>
                 </div>
                 <div class="aww-stat-card">
                   <h4>Compte Discord</h4>
-                  <p class="aww-stat-val" id="discord-account-name" style="font-size: 1.4rem;">Non lié</p>
-                  <p id="discord-account-status" style="font-size:0.85rem; color:var(--text-secondary); margin-top: 4px;"></p>
+                  <p class="aww-stat-val aww-stat-val--md" id="discord-account-name">Non lié</p>
+                  <p id="discord-account-status" class="aww-stat-meta"></p>
                 </div>
                 <div class="aww-stat-card">
                   <h4>Formule Active</h4>
-                  <p class="aww-stat-val" id="overview-tier-label" style="font-size: 1.4rem;">Gratuit</p>
-                  <p id="user-status" style="font-size:0.85rem; color:var(--text-secondary); margin-top: 4px;"></p>
+                  <p class="aww-stat-val aww-stat-val--md" id="overview-tier-label">Gratuit</p>
+                  <p id="user-status" class="aww-stat-meta"></p>
                 </div>
               </div>
-              <div class="aww-dash-card" style="margin-top: 2.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+              <div class="aww-dash-card aww-dash-card--row">
                 <div>
-                  <h3 style="font-size: 1.25rem; margin-bottom: 0.4rem;">Application Desktop SR Editer</h3>
-                  <p style="color: var(--text-secondary); font-size: 0.95rem;">Retrouvez l'atelier complet pour GTA V / FiveM, compatible Windows 10/11 x64.</p>
+                  <h3 class="aww-dash-card-title">Application Desktop SR Editer</h3>
+                  <p class="aww-dash-card-text">Retrouvez l'atelier complet pour GTA V / FiveM, compatible Windows 10/11 x64.</p>
                 </div>
                 <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid" id="download-app-link" data-magnetic>
                   <span class="aww-btn-text">Télécharger <span data-app-version></span></span>
@@ -118,11 +120,11 @@
             </div>
 
             <!-- 2. SUBSCRIPTION -->
-            <div class="aww-panel" id="panel-subscription" style="display:none;">
+            <div class="aww-panel" id="panel-subscription">
               <h2>Gestion de votre abonnement</h2>
-              <p style="color: var(--text-secondary); margin-top: 0.5rem;">Gérez vos formules, vos paiements sécurisés et votre facturation via Stripe.</p>
-              <div id="billing-error" class="aww-auth-error" style="display:none; text-align: left; margin: 1.5rem 0;"></div>
-              <div style="margin: 2rem 0;">
+              <p class="aww-panel-lead">Gérez vos formules, vos paiements sécurisés et votre facturation via Stripe.</p>
+              <div id="billing-error" class="aww-auth-error aww-auth-error--block"></div>
+              <div class="aww-dash-actions">
                 <button id="manage-billing-btn" class="aww-btn aww-btn-solid" data-magnetic>
                   <span class="aww-btn-text">Gérer ma facturation (Portail Stripe)</span>
                 </button>
@@ -132,7 +134,7 @@
                  <div class="aww-pricing-card" data-plan="standard">
                     <h3>Standard</h3>
                     <p class="price">9,99 € <span>/ mois</span></p>
-                    <ul style="list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    <ul class="aww-plan-features">
                       <li>✓ Enregistrement &amp; injection directs</li>
                       <li>✓ Atlas UV jusqu'à 2K</li>
                       <li>✓ 100 générations IA textures / jour</li>
@@ -141,16 +143,16 @@
                     <button class="aww-btn aww-btn-outline" data-upgrade-tier="standard" data-magnetic>S'ABONNER STANDARD</button>
                  </div>
                  <div class="aww-pricing-card" data-plan="pro">
-                    <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <div class="aww-row-between">
                       <h3>Pro</h3>
-                      <span style="font-size: 0.75rem; background: var(--accent); color: #fff; padding: 2px 8px; border-radius: 999px; font-weight: 700;">POPULAIRE</span>
+                      <span class="aww-plan-badge">POPULAIRE</span>
                     </div>
                     <p class="price">24,99 € <span>/ mois</span></p>
-                    <ul style="list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    <ul class="aww-plan-features">
                       <li>✓ Tout le plan Standard</li>
                       <li>✓ Atlas UV jusqu'à 4K</li>
                       <li>✓ 250 générations IA textures / jour</li>
-                      <li>✓ Génération 3D TRELLIS &amp; PBR</li>
+                      <li>✓ Génération 3D &amp; PBR par IA</li>
                       <li>✓ Support prioritaire Haute</li>
                     </ul>
                     <button class="aww-btn aww-btn-outline" data-upgrade-tier="pro" data-magnetic>S'ABONNER PRO</button>
@@ -158,7 +160,7 @@
                  <div class="aww-pricing-card" data-plan="premium">
                     <h3>Premium</h3>
                     <p class="price">49,99 € <span>/ mois</span></p>
-                    <ul style="list-style: none; margin-bottom: 2rem; display: flex; flex-direction: column; gap: 0.75rem; color: var(--text-secondary); font-size: 0.95rem;">
+                    <ul class="aww-plan-features">
                       <li>✓ Tout le plan Pro</li>
                       <li>✓ 500 générations IA textures / jour</li>
                       <li>✓ Accès aux fonctionnalités expérimentales</li>
@@ -171,50 +173,50 @@
             </div>
 
             <!-- 3. SUPPORT & TICKETS (SPT) -->
-            <div class="aww-panel" id="panel-support" style="display:none;">
+            <div class="aww-panel" id="panel-support">
               <div class="support-tickets-header">
                 <div>
                   <h2>Support &amp; Assistance</h2>
-                  <p style="color: var(--text-secondary); margin-top: 0.4rem;">
+                  <p class="aww-panel-lead">
                     Suivez vos demandes d'assistance, échangez directement avec notre équipe technique et retrouvez vos échanges synchronisés dans l'application.
                   </p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                  <span id="web-ticket-count-badge" class="ticket-count-badge">0 Ticket</span>
+                <div class="support-tickets-actions">
+                  <span id="web-ticket-count-badge" class="ticket-count-badge">0 ticket</span>
                   <button type="button" class="aww-btn aww-btn-solid" id="open-new-ticket-modal-btn" data-magnetic>
                     <span class="aww-btn-text">+ Nouveau Ticket</span>
                   </button>
                 </div>
               </div>
-              <div id="web-tickets-list-container" style="display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem;">
-                <div style="text-align: center; padding: 40px; color: var(--text-secondary); font-size: 14px; border: 1px dashed var(--border-color); border-radius: 16px;">
+              <div id="web-tickets-list-container" class="aww-tickets-list">
+                <div class="aww-tickets-placeholder">
                   Chargement des tickets d'assistance...
                 </div>
               </div>
             </div>
 
             <!-- 4. DOWNLOADS -->
-            <div class="aww-panel" id="panel-downloads" style="display:none;">
+            <div class="aww-panel" id="panel-downloads">
               <h2>Téléchargements &amp; Versions</h2>
-              <p style="color: var(--text-secondary); margin-top: 0.5rem;">Téléchargez la dernière version officielle de SR Editer pour Windows.</p>
-              <div style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 1.5rem;">
+              <p class="aww-panel-lead">Téléchargez la dernière version officielle de SR Editer pour Windows.</p>
+              <div class="aww-dash-cards-grid">
                 <div class="aww-dash-card">
-                  <span style="font-size: 0.8rem; color: var(--accent); font-weight: 700; text-transform: uppercase;">Build Officiel Windows</span>
-                  <h3 style="font-size: 1.4rem; margin: 0.5rem 0 1rem;">SR Editer Desktop <span data-app-version>v0.7.1</span></h3>
-                  <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.5; margin-bottom: 1.5rem;">
-                    Installeur officiel x64 intégrant le décodeur natif RSC7, l'éditeur de textures multi-calques et le viewport 3D temps réel.
+                  <span class="aww-card-eyebrow">Build Officiel Windows</span>
+                  <h3 class="aww-dash-card-heading">SR Editer Desktop <span data-app-version>v0.7.1</span></h3>
+                  <p class="aww-dash-card-desc">
+                    Installeur officiel pour Windows : explorateur de mods, éditeur de textures multi-calques et aperçu 3D temps réel.
                   </p>
                   <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid" data-magnetic>
                     <span class="aww-btn-text">Télécharger .exe (x64)</span>
                   </a>
                 </div>
                 <div class="aww-dash-card">
-                  <span style="font-size: 0.8rem; color: var(--text-secondary); font-weight: 700; text-transform: uppercase;">Configuration requise</span>
-                  <h3 style="font-size: 1.4rem; margin: 0.5rem 0 1rem;">Prérequis Système</h3>
-                  <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.6rem; color: var(--text-secondary); font-size: 0.9rem;">
+                  <span class="aww-card-eyebrow aww-card-eyebrow--muted">Configuration requise</span>
+                  <h3 class="aww-dash-card-heading">Prérequis Système</h3>
+                  <ul class="aww-dash-list">
                     <li>🖥️ <strong>Système :</strong> Windows 10 (64-bit) ou Windows 11</li>
                     <li>🧠 <strong>Mémoire RAM :</strong> 8 Go minimum (16 Go recommandés)</li>
-                    <li>🎮 <strong>GPU :</strong> Compatible WebGL 2.0 / DirectX 11+</li>
+                    <li>🎮 <strong>GPU :</strong> Compatible DirectX 11 ou plus récent</li>
                     <li>📁 <strong>Jeux :</strong> GTA V Legacy, Gen9 / Enhanced, FiveM</li>
                   </ul>
                 </div>
@@ -222,28 +224,28 @@
             </div>
 
             <!-- 5. SETTINGS -->
-            <div class="aww-panel" id="panel-settings" style="display:none;">
+            <div class="aww-panel" id="panel-settings">
               <h2>Paramètres &amp; Sécurité</h2>
-              <div class="aww-dash-card" style="margin-top: 2rem;">
+              <div class="aww-dash-card aww-dash-card--spaced">
                 <h3>Liaison Discord</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0.5rem 0 1rem;">Associez votre compte Discord pour synchroniser automatiquement vos rôles et avantages.</p>
-                <p id="discord-account-note" style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1.5rem;"></p>
-                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <p class="aww-dash-card-note">Associez votre compte Discord pour synchroniser automatiquement vos rôles et avantages.</p>
+                <p id="discord-account-note" class="aww-dash-card-hint"></p>
+                <div class="aww-dash-btn-row">
                   <button class="aww-btn aww-btn-outline" id="discord-link-btn">Lier mon compte Discord</button>
                   <button class="aww-btn aww-btn-outline" id="discord-sync-btn" hidden>Synchroniser les rôles</button>
                 </div>
-                <div id="account-action-message" style="margin-top:1rem; color:var(--accent);" hidden></div>
+                <div id="account-action-message" hidden></div>
               </div>
-              <div class="aww-dash-card aww-dash-card--danger" style="margin-top: 2rem;">
-                <h3 style="color: #f87171;">Zone de danger</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; margin: 0.5rem 0 1.2rem;">La suppression de votre compte annule immédiatement votre abonnement actif et supprime définitivement toutes vos données associées.</p>
+              <div class="aww-dash-card aww-dash-card--danger aww-dash-card--spaced">
+                <h3>Zone de danger</h3>
+                <p class="aww-dash-card-note aww-dash-card-note--lg">La suppression de votre compte annule immédiatement votre abonnement actif et supprime définitivement toutes vos données associées.</p>
                 <button type="button" class="aww-btn aww-btn-outline aww-text-danger" id="delete-account-start">
                   <span class="aww-btn-text">Supprimer définitivement mon compte</span>
                 </button>
                 <div class="delete-account-box" id="delete-account-confirmation" hidden>
                   <p>⚠️ <strong>Action irréversible :</strong> saisissez votre adresse email pour confirmer la suppression de votre compte :</p>
-                  <input type="email" id="delete-account-email" class="aww-input" placeholder="votre-email@exemple.com" style="margin-bottom: 1rem;" />
-                  <div style="display: flex; gap: 1rem; justify-content: flex-end;">
+                  <input type="email" id="delete-account-email" class="aww-input" placeholder="votre-email@exemple.com" />
+                  <div class="delete-account-actions">
                     <button type="button" class="aww-btn aww-btn-outline" id="delete-account-cancel">Annuler</button>
                     <button type="button" class="aww-btn aww-btn-solid aww-btn-danger aww-text-danger" id="delete-account-confirm" disabled>Confirmer la suppression</button>
                   </div>
@@ -255,7 +257,7 @@
         </div>
       </section>
       
-      <!-- Modals -->
+      <!-- Modales -->
       <div id="web-create-ticket-modal" class="aww-modal-backdrop" hidden>
         <div class="aww-modal-window" data-lenis-prevent>
           <div class="aww-modal-header">
@@ -264,7 +266,7 @@
           </div>
           <form id="web-create-ticket-form">
             <div class="aww-modal-body" data-lenis-prevent>
-              <div id="web-create-ticket-error" class="aww-auth-error" style="display:none; margin-bottom: 1rem;"></div>
+              <div id="web-create-ticket-error" class="aww-auth-error aww-auth-error--spaced"></div>
               <div class="aww-input-group">
                 <label for="web-ticket-subject">SUJET DE LA DEMANDE</label>
                 <input type="text" id="web-ticket-subject" class="aww-input" placeholder="ex: Problème d'export de texture DDS" required />
@@ -292,59 +294,35 @@
       </div>
 
       <div id="web-ticket-chat-modal" class="aww-modal-backdrop" hidden>
-        <div class="aww-modal-window" style="max-width: 720px; height: 80vh;" data-lenis-prevent>
-          <div class="aww-modal-header" style="gap: 0.75rem;">
-            <div style="min-width: 0; flex: 1; overflow: hidden;">
-              <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
-                <h3 class="aww-modal-title" id="web-chat-ticket-subject" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; flex: 1;">Ticket #</h3>
-                <span id="web-chat-ticket-status-pill" class="ticket-count-badge" style="flex-shrink: 0;">Ouvert</span>
+        <div class="aww-modal-window aww-modal-window--chat" data-lenis-prevent>
+          <div class="aww-modal-header aww-modal-header--chat">
+            <div class="chat-head">
+              <div class="chat-head-row">
+                <h3 class="aww-modal-title chat-head-title" id="web-chat-ticket-subject">Ticket #</h3>
+                <span id="web-chat-ticket-status-pill" class="ticket-count-badge chat-status chat-status--open">Ouvert</span>
               </div>
             </div>
-            <button type="button" class="aww-modal-close" id="close-ticket-chat-modal-btn" style="flex-shrink: 0;" aria-label="Fermer la conversation">&times;</button>
+            <button type="button" class="aww-modal-close" id="close-ticket-chat-modal-btn" aria-label="Fermer la conversation">&times;</button>
           </div>
-          <div id="web-ticket-reply-error" class="aww-auth-error" style="display:none; margin: 0.75rem 1.5rem 0;"></div>
-          <div id="web-chat-messages-container" data-lenis-prevent style="flex: 1; min-height: 0; overflow-y: auto; padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
-          <form id="web-ticket-reply-form" style="padding: 1rem 1.5rem; border-top: 1px solid var(--border-color); display: flex; gap: 0.75rem; align-items: flex-end;">
-            <textarea id="web-reply-message" rows="2" class="aww-textarea" style="min-height: 48px; padding: 0.6rem 0.85rem; flex: 1;" placeholder="Écrire votre réponse..." required></textarea>
-            <button type="submit" id="submit-ticket-reply-btn" class="aww-btn aww-btn-solid" style="height: 48px; padding: 0 1.5rem; flex-shrink: 0;">Envoyer</button>
+          <div id="web-ticket-reply-error" class="aww-auth-error aww-auth-error--chat"></div>
+          <div id="web-chat-messages-container" data-lenis-prevent></div>
+          <form id="web-ticket-reply-form" class="chat-reply-form">
+            <textarea id="web-reply-message" rows="2" class="aww-textarea chat-reply-input" placeholder="Écrire votre réponse..." required></textarea>
+            <button type="submit" id="submit-ticket-reply-btn" class="aww-btn aww-btn-solid chat-reply-btn">Envoyer</button>
           </form>
         </div>
       </div>
 
-      <div id="liquid-checkout-modal" class="liquid-checkout-backdrop" style="display: none;">
-        <div class="liquid-checkout-modal-content" data-lenis-prevent>
-          <button type="button" class="liquid-checkout-close" id="liquid-checkout-close-btn" aria-label="Fermer le paiement">&times;</button>
-          <div class="liquid-checkout-header">
-            <div class="liquid-checkout-badge">Paiement Sécurisé SR Editer</div>
-            <h2 id="liquid-checkout-plan-title">Abonnement Pro</h2>
-            <p class="liquid-checkout-price" id="liquid-checkout-plan-price">24,99 € <span>/ mois</span></p>
-          </div>
-          <div id="liquid-checkout-error" class="liquid-checkout-error-banner" style="display: none;"></div>
-          <div id="liquid-checkout-loading" class="liquid-checkout-spinner" style="display: none;">Connexion à la passerelle de paiement sécurisée...</div>
-          <div id="stripe-embedded-checkout-container"></div>
-          <div class="liquid-checkout-footer">
-            <span>🔒 Chiffrement SSL 256-bit</span>
-            <span>⚡ Activation instantanée</span>
-          </div>
-          <div style="text-align: center; margin-top: 10px;">
-            <a id="liquid-checkout-direct-link" href="#" target="_blank" style="display: none; color: var(--accent); font-size: 0.85rem; text-decoration: underline; font-weight: 500;">
-              Problème d'affichage ? Ouvrir la page de paiement Stripe ➔
-            </a>
-          </div>
-        </div>
-      </div>
-
       <div id="discord-required-modal" class="aww-modal-backdrop" hidden>
-        <div class="discord-required-dialog" data-lenis-prevent>
-          <h3 style="font-family: var(--font-heading); margin-bottom: 1rem;">Discord Requis</h3>
-          <p id="discord-required-message" style="color: var(--text-secondary);"></p>
-          <a id="discord-required-join" target="_blank" rel="noopener" class="aww-btn aww-btn-solid" style="margin-bottom: 0.75rem; text-align: center;">Rejoindre le serveur Discord</a>
-          <button type="button" id="discord-required-retry" class="aww-btn aww-btn-outline" style="margin-bottom: 0.75rem;">J'ai rejoint, réessayer</button>
+        <div class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title" data-lenis-prevent>
+          <h3 id="discord-required-title">Discord requis</h3>
+          <p id="discord-required-message"></p>
+          <a id="discord-required-join" target="_blank" rel="noopener" class="aww-btn aww-btn-solid">Rejoindre le serveur Discord</a>
+          <button type="button" id="discord-required-retry" class="aww-btn aww-btn-outline">J'ai rejoint, réessayer</button>
           <button type="button" id="discord-required-close" class="aww-btn aww-btn-outline">Fermer</button>
         </div>
       </div>
 
-      <a id="discord-recovery-link" hidden></a>
 
       <footer class="aww-footer">
         <div class="aww-footer-content">
@@ -369,7 +347,7 @@
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js" integrity="sha384-wQImCCD/id1jPTwSloatzKlEpnEAQ5aH8H2Ud27FnNcJ1lf2+hB75ctoWnWxyD8X" crossorigin="anonymous"></script>
 
   <!-- Site -->
   <script src="js/core/config.js"></script>
@@ -378,6 +356,7 @@
   <script src="js/core/site.js"></script>
 
   <!-- Page -->
+  <script src="js/components/discord.js"></script>
   <script src="js/pages/dashboard-tabs.js"></script>
   <script src="js/pages/dashboard.js"></script>
 </body>

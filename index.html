@@ -7,16 +7,16 @@
   <title>Home · SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
 
-  <link
-    href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap"
-    rel="stylesheet">
+  <!-- Polices : une requête par famille (Fontshare ignore la 2e famille d'une requête groupée) -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap" />
   <link rel="stylesheet" href="styles/site/base.css" />
   <link rel="stylesheet" href="styles/site/layout.css" />
   <link rel="stylesheet" href="styles/site/components.css" />
   <link rel="stylesheet" href="styles/pages/home.css" />
 
   <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </head>
 
 <body class="aww-page">
@@ -32,22 +32,22 @@
   <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
-      <a href="index.html" class="aww-logo" data-magnetic>
+      <a href="index.html" class="aww-logo">
         <img src="assets/logo_small.png" alt="SR Editer" />
         <span class="aww-logo-text">SR<br>EDITER</span>
       </a>
       <nav class="aww-nav">
-        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+        <a href="index.html" class="aww-link"><span class="aww-link-inner"
             data-hover="HOME">HOME</span></a>
-        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+        <a href="dashboard.html" class="aww-link"><span class="aww-link-inner"
             data-hover="DASHBOARD">DASHBOARD</span></a>
-        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+        <a href="library.html" class="aww-link"><span class="aww-link-inner"
             data-hover="LIBRARY">LIBRARY</span></a>
-        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+        <a href="docs.html" class="aww-link"><span class="aww-link-inner"
             data-hover="DOCS">DOCS</span></a>
-        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner"
+        <a href="blog.html" class="aww-link"><span class="aww-link-inner"
             data-hover="BLOG">BLOG</span></a>
-        <a href="login.html" class="aww-link aww-nav-portal-mobile" data-magnetic><span class="aww-link-inner"
+        <a href="login.html" class="aww-link aww-nav-portal-mobile"><span class="aww-link-inner"
             data-hover="PORTAL">PORTAL</span></a>
       </nav>
       <div class="aww-header-actions">
@@ -83,6 +83,14 @@
 
     </section>
 
+    <section class="aww-manifesto">
+      <div class="aww-kicker">MANIFESTE</div>
+      <p class="aww-manifesto-text" data-gsap="words-scrub">
+        <span class="text-accent">Un seul studio</span> pour explorer, retoucher et prévisualiser vos créations GTA V &amp; FiveM.
+        Fini les allers-retours entre dix outils : vous ouvrez, vous peignez, vous voyez le résultat en 3D.
+      </p>
+    </section>
+
     <section class="aww-features minimalist-section" id="features">
       <div class="aww-section-header text-center">
         <h2 class="aww-section-title" data-reveal="text">WORKFLOW &amp; <span class="aww-text-stroke">OUTILS</span></h2>
@@ -94,26 +102,43 @@
           </div>
           <div class="aww-card-num">01</div>
           <h3>ATLAS UV &amp; CALQUES 4K</h3>
-          <p>Édition multi-calques non destructive. Support natif des formats DDS BC7, DXT5 et PNG haute fidélité.</p>
+          <p>Édition multi-calques non destructive. Importez et exportez vos textures en haute qualité, prêtes pour le jeu.</p>
         </div>
         <div class="aww-feature-card clean-card stagger-2" data-gsap="card-reveal">
           <div class="aww-card-img-wrap" data-gsap="parallax" data-speed="1.15">
             <img src="assets/app-viewport-3d.webp" alt="Viewport 3D" loading="lazy" />
           </div>
           <div class="aww-card-num">02</div>
-          <h3>VIEWPORT 3D WEBGL</h3>
-          <p>Rendu physique temps réel et shaders RAGE. Éclairage studio HDRI et synchronisation immédiate.</p>
+          <h3>APERÇU 3D TEMPS RÉEL</h3>
+          <p>Voyez vos textures sur le modèle pendant que vous les retouchez, sous un éclairage studio.</p>
         </div>
         <div class="aww-feature-card clean-card stagger-3" data-gsap="card-reveal">
           <div class="aww-card-img-wrap" data-gsap="parallax" data-speed="1.2">
             <img src="assets/app-rpf-explorer.png" alt="RPF Explorer" loading="lazy" />
           </div>
           <div class="aww-card-num">03</div>
-          <h3>ROCKSTAR RSC7 &amp; RPF</h3>
-          <p>Exploration directe des archives RPF. Injection chirurgicale des formats .ytd, .ydr, .yft et .ydd.</p>
+          <h3>ARCHIVES &amp; MODS</h3>
+          <p>Explorez les archives du jeu et vos mods, puis enregistrez directement dans vos fichiers .ytd, .ydr et .yft.</p>
         </div>
       </div>
     </section>
+
+    <div class="aww-marquee" aria-hidden="true">
+      <div class="aww-marquee-track">
+        <span class="aww-marquee-item">Textures</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Modèles 3D</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Calques</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Rendu temps réel</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">GTA V</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">FiveM</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Textures</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Modèles 3D</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Calques</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">Rendu temps réel</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">GTA V</span><span class="aww-marquee-sep">✦</span>
+        <span class="aww-marquee-item">FiveM</span><span class="aww-marquee-sep">✦</span>
+      </div>
+    </div>
 
     <section class="aww-features minimalist-section" id="abonnements">
       <div class="aww-section-header text-center">
@@ -171,7 +196,7 @@
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js" integrity="sha384-wQImCCD/id1jPTwSloatzKlEpnEAQ5aH8H2Ud27FnNcJ1lf2+hB75ctoWnWxyD8X" crossorigin="anonymous"></script>
 
   <!-- Site -->
   <script src="js/core/config.js"></script>

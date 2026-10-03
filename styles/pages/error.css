@@ -1,0 +1,99 @@
+/* ==========================================================================
+   SR Editer — Page d'erreur 404 (404.html)
+   ========================================================================== */
+
+.aww-error-hero {
+  justify-content: center;
+  text-align: center;
+}
+.aww-error-content {
+  position: relative;
+  max-width: 760px;
+  margin: 0 auto;
+  perspective: 900px;
+}
+
+/* ── Le "404" géant ── */
+.aww-error-hero .aww-error-code {
+  font-size: clamp(8rem, 24vw, 19rem);
+  font-weight: 600;
+  line-height: 0.82;
+  letter-spacing: -0.05em;
+  margin-bottom: 1.5rem;
+  transform-style: preserve-3d;
+  will-change: transform;
+  /* léger halo orange derrière les chiffres */
+  filter: drop-shadow(0 20px 60px rgba(255, 107, 53, 0.18));
+}
+
+/* ── Textes ── */
+.aww-error-title {
+  font-family: var(--font-heading);
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.75rem;
+}
+.aww-error-hero .aww-hero-desc {
+  margin: 0 auto 2.25rem;
+  max-width: 460px;
+}
+.aww-error-hero .aww-hero-actions {
+  justify-content: center;
+}
+
+/* ── Raccourcis ── */
+.aww-error-links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-top: 3rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--border-color);
+}
+.aww-error-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+.aww-error-link span {
+  display: inline-block;
+  transition: transform 0.3s var(--ease-out-expo);
+}
+.aww-error-link:hover {
+  color: var(--accent);
+}
+.aww-error-link:hover span {
+  transform: translate(3px, -3px);
+}
+
+.aww-error-footnote {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 860px) {
+  /* le layout.css force la taille des titres du hero sur mobile : on garde un grand 404 */
+  .aww-error-hero .aww-error-code {
+    font-size: clamp(6.5rem, 30vw, 11rem) !important;
+    line-height: 0.85 !important;
+  }
+  .aww-error-links {
+    gap: 1.5rem;
+    margin-top: 2.25rem;
+  }
+  .aww-error-footnote {
+    bottom: 1.25rem;
+  }
+}

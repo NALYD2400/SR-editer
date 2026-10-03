@@ -1,19 +1,21 @@
-
 <!doctype html>
 <html lang="fr" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Blog &amp; Releases · SR Editer</title>
+  <meta name="robots" content="noindex" />
+  <!-- La 404 peut être servie à n'importe quelle profondeur d'URL : tous les liens partent de la racine -->
+  <base href="/" />
+  <title>Page introuvable · SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
-  
+
   <!-- Polices : une requête par famille (Fontshare ignore la 2e famille d'une requête groupée) -->
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" />
   <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap" />
   <link rel="stylesheet" href="styles/site/base.css" />
   <link rel="stylesheet" href="styles/site/layout.css" />
   <link rel="stylesheet" href="styles/site/components.css" />
-  <link rel="stylesheet" href="styles/pages/blog.css" />
+  <link rel="stylesheet" href="styles/pages/error.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </head>
 <body class="aww-page aww-page--reading">
@@ -49,53 +51,38 @@
       </div>
     </div>
   </header>
-  
+
   <main class="aww-smooth-scroll">
+    <section class="aww-hero aww-error-hero">
+      <div class="aww-hero-content aww-error-content">
+        <div class="aww-kicker">ERREUR 404</div>
 
-      <section class="aww-page-hero aww-page-hero--tall">
-        <div class="aww-hero-content">
-          <div class="aww-kicker" data-gsap="fade-up">05 — TRANSMISSIONS</div>
-          <h1 class="aww-page-title" data-gsap="split-text">TRANSMISSIONS<br><span class="aww-text-stroke">&amp; PATCHES</span></h1>
-          <p class="aww-hero-desc aww-hero-desc--wide" data-gsap="fade-up" data-delay="0.3">
-            Journal officiel des mises à jour, notes de version et annonces de développement de SR Editer.
-          </p>
-        </div>
-      </section>
+        <!-- Le "404" s'incline en 3D en suivant la souris (js/pages/error.js) -->
+        <h1 class="aww-hero-heading aww-error-code" aria-label="Erreur 404">4<span class="aww-text-stroke">0</span>4</h1>
 
-      <section class="aww-blog" data-gsap="fade-up">
-        <!-- Conteneur de chargement -->
-        <div id="changelog-loading" class="blog-loading">
-          <div class="aww-spinner"></div>
-          <p>Chargement des versions officielles...</p>
-        </div>
+        <p class="aww-error-title">Page introuvable</p>
+        <p class="aww-hero-desc">
+          La page que vous cherchez n'existe pas ou a été déplacée.
+        </p>
 
-        <!-- Titre Versions -->
-        <div id="past-releases-header" class="blog-releases-header">
-          <h2>Historique des Versions</h2>
-          <span id="releases-count-badge" class="ticket-count-badge">0 version</span>
+        <div class="aww-hero-actions">
+          <a href="index.html" class="aww-btn aww-btn-solid" data-magnetic>
+            <span class="aww-btn-text">RETOUR À L'ACCUEIL</span>
+          </a>
+          <a href="docs.html" class="aww-btn aww-btn-outline" data-magnetic>
+            <span class="aww-btn-text">DOCUMENTATION</span>
+          </a>
         </div>
 
-        <!-- Grille des Versions -->
-        <div id="changelog-container" class="aww-blog-list"></div>
-      </section>
+        <nav class="aww-error-links" aria-label="Pages principales">
+          <a href="library.html" class="aww-error-link">Library <span aria-hidden="true">↗</span></a>
+          <a href="blog.html" class="aww-error-link">Blog <span aria-hidden="true">↗</span></a>
+          <a href="dashboard.html" class="aww-error-link">Dashboard <span aria-hidden="true">↗</span></a>
+        </nav>
+      </div>
 
-      <footer class="aww-footer">
-        <div class="aww-footer-content">
-          <div class="aww-footer-top">
-            <h2 class="aww-footer-title" data-gsap="split-text">EXPERIENCE<br>MODDING</h2>
-            <a href="https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe" class="aww-btn aww-btn-solid aww-btn-massive" id="download-btn-2" data-magnetic>
-              <span class="aww-btn-text">GET SR EDITER</span>
-            </a>
-          </div>
-          <div class="aww-footer-bottom">
-            <p>© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
-            <div class="aww-footer-links">
-              <a href="privacy.html" class="aww-link">Privacy</a>
-              <a href="terms.html" class="aww-link">Terms</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <p class="aww-error-footnote">© 2026 SR Editer. Not affiliated with Rockstar Games.</p>
+    </section>
   </main>
 
   <!-- Librairies -->
@@ -111,6 +98,6 @@
   <script src="js/core/site.js"></script>
 
   <!-- Page -->
-  <script src="js/pages/blog.js"></script>
+  <script src="js/pages/error.js"></script>
 </body>
 </html>

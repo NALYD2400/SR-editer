@@ -147,7 +147,7 @@
     padding: 0 1.25rem 4rem !important;
   }
   .aww-docs-container {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: minmax(0, 1fr) !important; /* minmax : la barre de pastilles ne doit pas élargir la colonne */
     gap: 1.5rem !important;
   }
   /* Sommaire → barre de pastilles horizontale collante */

@@ -1266,16 +1266,21 @@
       permissionInputs.map((input) => [input.dataset.appPermission, input.checked])
     );
 
+    const billingTesterInput = document.getElementById("detail-billing-tester");
+    if (billingTesterInput) billingTesterInput.checked = user.billing_tester === true;
+
     const baseline = {
       role: String(user.role || "membre"),
       writeMode: String(user.write_mode || "direct"),
       permissions: readAppPermissions(),
+      billingTester: user.billing_tester === true,
     };
 
     const saveBtn = document.getElementById("save-detail-btn");
     const isDetailDirty = () => {
       if (!roleSelect || !modeSelect) return false;
       if (roleSelect.value !== baseline.role || modeSelect.value !== baseline.writeMode) return true;
+      if (billingTesterInput && billingTesterInput.checked !== baseline.billingTester) return true;
       return permissionInputs.some((input) => {
         const key = input.dataset.appPermission;
         return Boolean(input.checked) !== Boolean(baseline.permissions[key]);
@@ -1297,6 +1302,7 @@
     });
     if (roleSelect) roleSelect.onchange = syncDetailDirty;
     if (modeSelect) modeSelect.onchange = syncDetailDirty;
+    if (billingTesterInput) billingTesterInput.onchange = syncDetailDirty;
 
     const permAllOn = document.getElementById("perm-all-on");
     const permAllOff = document.getElementById("perm-all-off");
@@ -1394,7 +1400,13 @@
 
         try {
           if (supabase) {
-            await adminRequest("update", { email, role: rVal, writeMode: mVal, appPermissions: readAppPermissions() });
+            await adminRequest("update", {
+              email,
+              role: rVal,
+              writeMode: mVal,
+              appPermissions: readAppPermissions(),
+              billingTester: Boolean(billingTesterInput?.checked),
+            });
           } else if (demoMode) {
             const mockStorage = sessionStorage.getItem("sr_mock_profiles");
             const mockUsers = mockStorage ? JSON.parse(mockStorage) : [];
@@ -4081,10 +4093,18 @@
       return;
     }
 
+    if (!list.dataset.fallbackBound) {
+      list.dataset.fallbackBound = "1";
+      list.addEventListener("error", (event) => {
+        const img = event.target;
+        if (!(img instanceof HTMLImageElement) || !img.dataset.fallbackSrc) return;
+        if (img.getAttribute("src") !== img.dataset.fallbackSrc) img.src = img.dataset.fallbackSrc;
+      }, true);
+    }
     list.innerHTML = filtered.map((row) => `
       <article class="texture-library-card" data-id="${escapeHtml(row.id)}">
         <div class="texture-card-media">
-          <img src="${escapeHtml(row.url)}" alt="${escapeHtml(row.name)}" loading="lazy" onerror="this.src='assets/logo_small.png'" />
+          <img src="${escapeHtml(row.url)}" alt="${escapeHtml(row.name)}" loading="lazy" data-fallback-src="assets/logo_small.png" />
         </div>
         <div class="texture-card-body">
           <div class="texture-card-name" title="${escapeHtml(row.name)}">${escapeHtml(row.name)}</div>

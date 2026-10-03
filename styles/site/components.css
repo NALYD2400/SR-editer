@@ -343,7 +343,7 @@ button.aww-btn {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   color: #fff;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 .discord-required-dialog p {
   margin-bottom: 1.5rem;
@@ -356,7 +356,7 @@ button.aww-btn {
   display: flex;
   width: 100%;
   padding: 0.9rem 1.5rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
   border-radius: 100px;
   font-family: var(--font-heading);
   font-size: 0.88rem;

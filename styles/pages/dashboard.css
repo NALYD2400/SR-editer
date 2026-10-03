@@ -197,6 +197,7 @@
 }
 #account-action-message {
   margin-top: 1rem;
+  color: var(--accent);
   padding: 0.75rem 1rem;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -225,11 +226,158 @@
   padding: 1.5rem;
   margin-top: 1.5rem;
 }
+.delete-account-box .aww-input {
+  margin-bottom: 1rem;
+}
+.delete-account-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
 .delete-account-box p {
   color: #fca5a5;
   font-size: 0.9rem;
   line-height: 1.5;
   margin-bottom: 1rem;
+}
+
+/* ── Éléments de contenu ── */
+.aww-dash-tab.aww-dash-tab--link,
+.aww-dash-tab.aww-dash-tab--link:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+.aww-row-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.aww-text-link-btn {
+  background: none;
+  border: none;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 0.8rem;
+  text-decoration: underline;
+}
+.aww-stat-val--md {
+  font-size: 1.4rem;
+}
+.aww-stat-meta {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.aww-stat-meta--sm {
+  font-size: 0.8rem;
+}
+.aww-meter {
+  width: 100%;
+  height: 6px;
+  margin-top: 1.2rem;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+}
+.aww-meter-fill {
+  width: 0%;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--accent), #d946ef);
+}
+.aww-panel-lead {
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+.support-tickets-header .aww-panel-lead {
+  margin-top: 0.4rem;
+}
+.aww-dash-actions {
+  margin: 2rem 0;
+}
+.aww-dash-card--spaced {
+  margin-top: 2rem;
+}
+.aww-dash-card--row {
+  margin-top: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+.aww-dash-card--danger h3 {
+  color: #f87171;
+}
+.aww-dash-card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.4rem;
+}
+.aww-dash-card-text {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.aww-dash-card-heading {
+  font-size: 1.4rem;
+  margin: 0.5rem 0 1rem;
+}
+.aww-dash-card-desc {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+.aww-dash-card-note {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0.5rem 0 1rem;
+}
+.aww-dash-card-note--lg {
+  margin-bottom: 1.2rem;
+}
+.aww-dash-card-hint {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+.aww-dash-btn-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.aww-dash-cards-grid {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+  gap: 1.5rem;
+}
+.aww-card-eyebrow {
+  font-size: 0.8rem;
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.aww-card-eyebrow--muted {
+  color: var(--text-secondary);
+}
+.aww-dash-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+.aww-auth-error--block {
+  text-align: left;
+  margin: 1.5rem 0;
+}
+.aww-auth-error--spaced {
+  margin-bottom: 1rem;
+}
+.aww-auth-error--chat {
+  margin: 0.75rem 1.5rem 0;
 }
 
 /* ── Bannière de notification ── */
@@ -266,6 +414,23 @@
 
 /* ── Abonnement ── */
 .aww-pricing-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 2rem; }
+.aww-plan-features {
+  list-style: none;
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+.aww-plan-badge {
+  font-size: 0.75rem;
+  background: var(--accent);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+}
 
 /* ── Modales ── */
 .aww-modal-backdrop {
@@ -406,102 +571,212 @@ body.aww-modal-open {
   border-color: var(--accent);
   box-shadow: 0 0 14px rgba(255, 107, 53, 0.35);
 }
+/* Liste */
+.support-tickets-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.aww-tickets-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+.aww-tickets-placeholder {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  border: 1px dashed var(--border-color);
+  border-radius: 16px;
+}
+.aww-tickets-empty {
+  text-align: center;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+.aww-tickets-empty p {
+  margin: 0;
+  font-size: 12px;
+}
+.aww-tickets-empty .aww-tickets-empty-title {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
+}
+.aww-ticket-info {
+  min-width: 0;
+  flex: 1;
+}
+.aww-ticket-subject {
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 3px;
+  word-break: break-word;
+}
+.aww-ticket-date {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5);
+}
+.ticket-status {
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  border: 1px solid;
+}
+.ticket-status--open    { background: rgba(34, 197, 94, 0.15);  color: #22c55e; border-color: #22c55e40; }
+.ticket-status--pending { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: #38bdf840; }
+.ticket-status--closed  { background: rgba(148, 163, 184, 0.15); color: #94a3b8; border-color: #94a3b840; }
+
+/* Discussion */
+.aww-modal-window--chat {
+  max-width: 720px;
+  height: 80vh;
+}
+.aww-modal-header--chat {
+  gap: 0.75rem;
+}
+.aww-modal-header--chat .aww-modal-close {
+  flex-shrink: 0;
+}
+.chat-head {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+}
+.chat-head-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.chat-head-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+.chat-status {
+  flex-shrink: 0;
+}
+.ticket-count-badge.chat-status--open    { background: rgba(34, 197, 94, 0.2);  color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.4); }
+.ticket-count-badge.chat-status--pending { background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); }
+.ticket-count-badge.chat-status--closed  { background: rgba(148, 163, 184, 0.2); color: #94a3b8; border: 1px solid rgba(148, 163, 184, 0.4); }
 #web-chat-messages-container {
+  flex: 1;
   min-height: 0;
+  overflow-y: auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.chat-placeholder {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  padding: 20px;
+}
+.chat-placeholder--error {
+  color: #ef4444;
+}
+.chat-msg {
+  display: flex;
+  gap: 12px;
+  max-width: 88%;
+  margin-bottom: 8px;
+}
+.chat-msg--staff { flex-direction: row; align-self: flex-start; }
+.chat-msg--user  { flex-direction: row-reverse; align-self: flex-end; }
+.chat-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+.chat-msg--staff .chat-avatar { background: rgba(56, 189, 248, 0.2); }
+.chat-msg--user .chat-avatar  { background: rgba(255, 255, 255, 0.12); }
+.chat-avatar-sr {
+  color: #38bdf8;
+  font-weight: 800;
+}
+.chat-body {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 44px);
+}
+.chat-msg--staff .chat-body { align-items: flex-start; }
+.chat-msg--user .chat-body  { align-items: flex-end; }
+.chat-meta {
+  font-size: 11px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+  padding: 0 2px;
+}
+.chat-time {
+  font-weight: 400;
+  opacity: 0.85;
 }
 .aww-chat-bubble {
   white-space: pre-wrap;
   word-break: break-word;
   overflow-wrap: break-word;
+  padding: 10px 16px;
+  border: 1px solid;
+  color: #f1f5f9;
+  font-size: 13.5px;
+  line-height: 1.5;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+  min-width: 50px;
+  text-align: left;
 }
-
-/* ── Paiement (checkout) ── */
-.liquid-checkout-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.85);
-  z-index: 10001;
+.chat-msg--staff .aww-chat-bubble {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px 10px 10px 3px;
+}
+.chat-msg--user .aww-chat-bubble {
+  background: rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.35);
+  border-radius: 10px 10px 3px 10px;
+}
+/* .aww-modal-window form (formulaire de ticket) étire les formulaires en colonne :
+   la barre de réponse doit rester une ligne compacte en bas de la discussion */
+.aww-modal-window .chat-reply-form {
+  flex: none;
+  flex-direction: row;
+}
+.chat-reply-form {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border-color);
   display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 1.5rem;
+  gap: 0.75rem;
+  align-items: flex-end;
 }
-.liquid-checkout-modal-content {
-  background: #0f0f13;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 24px;
-  width: 100%;
-  max-width: 580px;
-  max-height: 90vh;
-  overflow-y: auto;
-  padding: 2.5rem;
-  position: relative;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
+.chat-reply-input {
+  min-height: 48px;
+  padding: 0.6rem 0.85rem;
+  flex: 1;
 }
-.liquid-checkout-close {
-  position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  background: rgba(255, 255, 255, 0.08);
-  border: none;
-  color: #fff;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 1.4rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-.liquid-checkout-close:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-.liquid-checkout-badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-weight: 700;
-  color: var(--accent);
-  background: rgba(255, 107, 53, 0.15);
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin-bottom: 0.75rem;
-}
-.liquid-checkout-price {
-  font-size: 2rem;
-  font-family: var(--font-heading);
-  color: #fff;
-  margin: 0.5rem 0 1.5rem;
-}
-.liquid-checkout-price span {
-  font-size: 1rem;
-  color: var(--text-secondary);
-  font-family: var(--font-body);
-}
-.liquid-checkout-error-banner {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #f87171;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 0.9rem;
-  margin-bottom: 1.5rem;
-}
-.liquid-checkout-spinner {
-  text-align: center;
-  padding: 2rem;
-  color: var(--text-secondary);
-}
-.liquid-checkout-footer {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  margin-top: 1.5rem;
-  font-size: 0.85rem;
-  color: var(--text-secondary);
+.chat-reply-btn {
+  height: 48px;
+  padding: 0 1.5rem;
+  flex-shrink: 0;
 }
 
 /* ── Responsive ── */
@@ -610,10 +885,6 @@ body.aww-modal-open {
     width: 95%;
     max-height: 90vh;
   }
-  .liquid-checkout-modal-content {
-    width: 95%;
-    padding: 1.5rem 1rem;
-  }
 }
 
 @media (max-width: 640px) {
@@ -631,16 +902,6 @@ body.aww-modal-open {
 }
 
 @media (max-width: 480px) {
-  .liquid-checkout-backdrop {
-    padding: 0.75rem !important;
-  }
-  .liquid-checkout-modal-content {
-    width: 96% !important;
-    max-height: 90vh !important;
-    max-height: 90dvh !important;
-    padding: 1.5rem 1.25rem !important;
-    border-radius: 18px !important;
-  }
   .aww-modal-window {
     width: 96% !important;
     max-height: 90vh !important;

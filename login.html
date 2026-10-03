@@ -7,12 +7,14 @@
   <title>Portal · SR Editer</title>
   <link rel="icon" type="image/png" href="assets/logo_small.png" />
   
-  <link href="https://api.fontshare.com/v2/css?f[]=satoshi@900,700,500,300,400&f[]=clash-display@200,400,700,500,600,300&display=swap" rel="stylesheet">
+  <!-- Polices : une requête par famille (Fontshare ignore la 2e famille d'une requête groupée) -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700,900&display=swap" />
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@200,300,400,500,600,700&display=swap" />
   <link rel="stylesheet" href="styles/site/base.css" />
   <link rel="stylesheet" href="styles/site/layout.css" />
   <link rel="stylesheet" href="styles/site/components.css" />
   <link rel="stylesheet" href="styles/pages/login.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
 </head>
 <body class="aww-page">
   <!-- Fond vidéo -->
@@ -26,17 +28,17 @@
   <!-- Header -->
   <header class="aww-header" data-gsap="fade-down">
     <div class="aww-header-inner">
-      <a href="index.html" class="aww-logo" data-magnetic>
+      <a href="index.html" class="aww-logo">
         <img src="assets/logo_small.png" alt="SR Editer" />
         <span class="aww-logo-text">SR<br>EDITER</span>
       </a>
       <nav class="aww-nav">
-        <a href="index.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
-        <a href="dashboard.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
-        <a href="library.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
-        <a href="docs.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
-        <a href="blog.html" class="aww-link" data-magnetic><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
-        <a href="login.html" class="aww-link aww-nav-portal-mobile" data-magnetic><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
+        <a href="index.html" class="aww-link"><span class="aww-link-inner" data-hover="HOME">HOME</span></a>
+        <a href="dashboard.html" class="aww-link"><span class="aww-link-inner" data-hover="DASHBOARD">DASHBOARD</span></a>
+        <a href="library.html" class="aww-link"><span class="aww-link-inner" data-hover="LIBRARY">LIBRARY</span></a>
+        <a href="docs.html" class="aww-link"><span class="aww-link-inner" data-hover="DOCS">DOCS</span></a>
+        <a href="blog.html" class="aww-link"><span class="aww-link-inner" data-hover="BLOG">BLOG</span></a>
+        <a href="login.html" class="aww-link aww-nav-portal-mobile"><span class="aww-link-inner" data-hover="PORTAL">PORTAL</span></a>
       </nav>
       <div class="aww-header-actions">
         <a href="login.html" class="aww-btn aww-btn-outline" data-magnetic>
@@ -104,7 +106,6 @@
             
             <div id="error-message" class="aww-auth-error"></div>
             <div id="success-message" class="aww-auth-success"></div>
-            <a id="discord-recovery-link" hidden></a>
 
             <button type="submit" class="auth-submit-btn" id="submit-btn">
               Se connecter
@@ -116,13 +117,14 @@
         </div>
       </section>
       
-      <!-- Modals for Discord Requirements -->
+      <!-- Modale "Discord requis" (js/components/discord.js) -->
       <div id="discord-required-modal" hidden>
-        <div class="discord-required-dialog">
+        <div class="discord-required-dialog" role="dialog" aria-modal="true" aria-labelledby="discord-required-title">
+          <h3 id="discord-required-title">Discord requis</h3>
           <p id="discord-required-message"></p>
-          <a id="discord-required-join"></a>
-          <button id="discord-required-retry"></button>
-          <button id="discord-required-close">Close</button>
+          <a id="discord-required-join" target="_blank" rel="noopener" class="aww-btn aww-btn-solid">Rejoindre le serveur Discord</a>
+          <button type="button" id="discord-required-retry" class="aww-btn aww-btn-outline">J'ai rejoint, réessayer</button>
+          <button type="button" id="discord-required-close" class="aww-btn aww-btn-outline">Fermer</button>
         </div>
       </div>
 
@@ -149,7 +151,7 @@
   <script src="https://unpkg.com/@studio-freight/lenis@1.0.39/dist/lenis.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/split-type"></script>
+  <script src="https://unpkg.com/split-type@0.3.4/umd/index.min.js" integrity="sha384-wQImCCD/id1jPTwSloatzKlEpnEAQ5aH8H2Ud27FnNcJ1lf2+hB75ctoWnWxyD8X" crossorigin="anonymous"></script>
 
   <!-- Site -->
   <script src="js/core/config.js"></script>
@@ -158,6 +160,7 @@
   <script src="js/core/site.js"></script>
 
   <!-- Page -->
+  <script src="js/components/discord.js"></script>
   <script src="js/pages/login.js"></script>
 </body>
 </html>

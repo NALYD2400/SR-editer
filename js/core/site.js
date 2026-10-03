@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const hasGsap = typeof gsap !== 'undefined';
   const hasScrollTrigger = hasGsap && typeof ScrollTrigger !== 'undefined';
   const isFinePointer = window.matchMedia('(pointer: fine)').matches;
+  const isInHero = (el) => el.closest('.aww-hero') || el.closest('.aww-page-hero');
+  const cameFromSite = (() => {
+    try { return new URL(document.referrer).origin === window.location.origin; } catch (_) { return false; }
+  })();
 
   const lenis = initLenis();
   initMobileMenu();
@@ -243,7 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (hasScrollTrigger) initScrollReveals();
   }
 
-  // Découpe les titres en caractères (SplitType) et les place en position de départ
+  // Découpe les titres (SplitType) et les place en position de départ :
+  // - titres du hero : lettre par lettre (révélés par l'intro)
+  // - autres titres : ligne par ligne sous un masque (révélés au scroll)
   function splitHeadings() {
     if (typeof SplitType === 'undefined') return;
     const headings = document.querySelectorAll(
@@ -253,20 +259,35 @@ document.addEventListener('DOMContentLoaded', () => {
       if (heading.dataset.splitDone) return;
       heading.dataset.splitDone = "true";
       try {
-        new SplitType(heading, { types: 'lines, words, chars' });
-        // Remet le texte brut dans .aww-text-stroke pour garder un dégradé continu
-        heading.querySelectorAll('.aww-text-stroke').forEach(strokeEl => {
-          strokeEl.innerHTML = strokeEl.textContent;
-        });
-        gsap.set(heading.querySelectorAll('.char, .aww-text-stroke'), {
-          y: '120%',
-          rotateZ: 4,
-          opacity: 0,
-          willChange: 'transform, opacity'
-        });
+        if (isInHero(heading)) {
+          new SplitType(heading, { types: 'lines, words, chars' });
+          restoreStrokeText(heading);
+          gsap.set(heading.querySelectorAll('.char, .aww-text-stroke'), {
+            y: '120%',
+            rotateZ: 4,
+            opacity: 0,
+            willChange: 'transform, opacity'
+          });
+        } else {
+          heading._split = new SplitType(heading, { types: 'lines' });
+          heading.querySelectorAll('.line').forEach(line => {
+            const mask = document.createElement('span');
+            mask.className = 'aww-line-mask';
+            line.parentNode.insertBefore(mask, line);
+            mask.appendChild(line);
+          });
+          gsap.set(heading.querySelectorAll('.line'), { yPercent: 110 });
+        }
       } catch (e) {
         console.warn('SplitType error on heading:', e);
       }
+    });
+  }
+
+  // Remet le texte brut dans .aww-text-stroke pour garder un dégradé continu
+  function restoreStrokeText(heading) {
+    heading.querySelectorAll('.aww-text-stroke').forEach(strokeEl => {
+      strokeEl.innerHTML = strokeEl.textContent;
     });
   }
 
@@ -274,7 +295,8 @@ document.addEventListener('DOMContentLoaded', () => {
   function playIntroTimeline() {
     const introTl = gsap.timeline({ defaults: { ease: "power4.out" } });
 
-    if (header) {
+    // Navigation interne : le header est conservé par la transition de page, pas de ré-apparition
+    if (header && !cameFromSite) {
       introTl.fromTo(header,
         { y: -30, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.85, ease: "power3.out" }
@@ -328,20 +350,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Apparitions au scroll (sections sous la ligne de flottaison)
   function initScrollReveals() {
-    const isInHero = (el) => el.closest('.aww-hero') || el.closest('.aww-page-hero');
-
-    // Titres de section
-    document.querySelectorAll('.aww-section-title, .aww-footer-title').forEach(title => {
-      if (isInHero(title)) return;
-      const chars = title.querySelectorAll('.char, .aww-text-stroke');
-      if (!chars.length) return;
-      gsap.to(chars, {
-        opacity: 1, rotateZ: 0, y: '0%',
-        duration: 1.2, stagger: 0.03, ease: "power4.out",
-        clearProps: "willChange,transformOrigin",
-        scrollTrigger: { trigger: title, start: "top 85%", once: true }
+    // Titres hors hero : les lignes remontent sous leur masque, puis le découpage
+    // est annulé pour que le titre se ré-adapte librement au redimensionnement
+    document.querySelectorAll('.aww-section-title, .aww-footer-title, [data-gsap="split-text"]').forEach(title => {
+      if (isInHero(title) || !title._split) return;
+      gsap.to(title.querySelectorAll('.line'), {
+        yPercent: 0,
+        duration: 1.1, stagger: 0.12, ease: "power4.out",
+        scrollTrigger: { trigger: title, start: "top 85%", once: true },
+        onComplete: () => title._split.revert()
       });
     });
+
+    // Paragraphe "manifeste" : les mots s'allument au fil du scroll
+    if (typeof SplitType !== 'undefined') {
+      document.querySelectorAll('[data-gsap="words-scrub"]').forEach(el => {
+        const words = new SplitType(el, { types: 'words' }).words;
+        gsap.fromTo(words,
+          { opacity: 0.15 },
+          {
+            opacity: 1, stagger: 0.1, ease: "none",
+            scrollTrigger: { trigger: el, start: "top 80%", end: "bottom 50%", scrub: true }
+          }
+        );
+      });
+    }
 
     // Cartes fonctionnalités & tarifs (entrée en cascade)
     document.querySelectorAll('.aww-feature-grid, .aww-pricing-grid').forEach(grid => {
@@ -435,11 +468,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!entry.isIntersecting) return;
         const id = entry.target.getAttribute('id');
         tocLinks.forEach(link => {
-          link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+          const isActive = link.getAttribute('href') === `#${id}`;
+          link.classList.toggle('active', isActive);
+          if (isActive) keepPillVisible(link);
         });
       });
     }, { rootMargin: '-20% 0px -65% 0px' });
 
     tocSections.forEach(section => observer.observe(section));
+
+    // Mobile : le sommaire devient une barre de pastilles défilante → on centre la pastille active
+    function keepPillVisible(link) {
+      const bar = link.closest('ul');
+      if (!bar || bar.scrollWidth <= bar.clientWidth) return;
+      const target = link.offsetLeft - (bar.clientWidth - link.offsetWidth) / 2;
+      bar.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+    }
   }
 });

@@ -2,34 +2,8 @@
    SR Editer — Documentation technique
    Recherche dans le sommaire (Ctrl+K ou /), tiroir de navigation mobile,
    pagination précédent/suivant synchronisée avec la section visible,
-   bouton "haut de page", copie des blocs de code.
+   bouton "haut de page".
    ========================================================================== */
-
-// Boutons "Copier" des blocs de code
-document.addEventListener('click', (e) => {
-  const button = e.target.closest('.doc-copy-btn');
-  if (button) copyCodeSnippet(button);
-});
-
-// Copy code snippet helper
-function copyCodeSnippet(button) {
-  const codeBlock = button.closest('.doc-code-block');
-  if (!codeBlock) return;
-  const codeText = codeBlock.querySelector('pre code').innerText;
-  navigator.clipboard.writeText(codeText).then(() => {
-    const originalText = button.innerHTML;
-    button.innerHTML = '✓ Copié !';
-    button.style.borderColor = '#10b981';
-    button.style.color = '#34d399';
-    setTimeout(() => {
-      button.innerHTML = originalText;
-      button.style.borderColor = '';
-      button.style.color = '';
-    }, 2000);
-  }).catch(err => {
-    console.error('Erreur copie :', err);
-  });
-}
 
 document.addEventListener('DOMContentLoaded', () => {
   // 1. Search filter with keyword matching and keyboard shortcut

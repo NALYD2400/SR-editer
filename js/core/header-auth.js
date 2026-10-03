@@ -95,7 +95,7 @@
     var avatarHtml = '';
     if (userData.avatarUrl) {
       avatarHtml = '<span class="aww-user-avatar' + (userData.isDiscord ? ' is-discord' : '') + '">' +
-        '<img src="' + escapeAttr(userData.avatarUrl) + '" alt="" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML=\'<span class=\\\'aww-user-initial\\\'>' + escapeHtml(userData.initial) + '</span>\'">' +
+        '<img src="' + escapeAttr(userData.avatarUrl) + '" alt="" referrerpolicy="no-referrer" data-avatar-initial="' + escapeAttr(userData.initial) + '">' +
         '</span>';
     } else {
       avatarHtml = '<span class="aww-user-avatar"><span class="aww-user-initial">' + escapeHtml(userData.initial) + '</span></span>';
@@ -113,6 +113,18 @@
       navPortalMobile.classList.add("is-user");
       navPortalMobile.innerHTML = avatarHtml + '<span class="aww-link-inner" data-hover="' + escapeAttr(userData.displayName) + '">' + escapeHtml(userData.displayName) + '</span>';
     }
+
+    // Avatar Discord indisponible : retombe sur l'initiale (sans attribut onerror, bloqué par la CSP).
+    [headerPortalBtn, navPortalMobile].forEach(function (root) {
+      var img = root && root.querySelector("img[data-avatar-initial]");
+      if (!img) return;
+      img.addEventListener("error", function () {
+        var initial = document.createElement("span");
+        initial.className = "aww-user-initial";
+        initial.textContent = img.getAttribute("data-avatar-initial") || "";
+        img.replaceWith(initial);
+      }, { once: true });
+    });
   }
 
   function readCachedUser() {

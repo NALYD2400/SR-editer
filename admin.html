@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="styles/admin/tokens.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/admin/base.css?v=0.3.3" />
     <link rel="stylesheet" href="styles/admin/admin.css?v=0.4.84-refresh" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/dist/umd/supabase.js" integrity="sha384-Rj26LVGvoeRVR6+mwQmFfcR3QOBEwT+ZmuCWpuiqeTzJpCs0ER4ITAWGb4Hiy3Ok" crossorigin="anonymous"></script>
   </head>
   <body>
     <div class="ambient-layer" id="ambient-layer"></div>
@@ -516,6 +516,17 @@
                       <option value="draft">Brouillon (Review)</option>
                     </select>
                   </div>
+
+                  <label class="app-permission-row" for="detail-billing-tester">
+                    <div class="perm-text">
+                      <strong>Testeur paiement</strong>
+                      <small>Peut s’abonner avant l’ouverture publique (Stripe en test)</small>
+                    </div>
+                    <span class="perm-switch">
+                      <input type="checkbox" id="detail-billing-tester" role="switch" />
+                      <span class="perm-switch-ui" aria-hidden="true"></span>
+                    </span>
+                  </label>
 
                   <button type="button" class="btn btn-primary user-detail-save" id="save-detail-btn">Enregistrer</button>
                 </div>
@@ -2028,20 +2039,6 @@
     <script src="js/admin/admin.js?v=0.5.2-refresh"></script>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="js/admin/library-models.js?v=0.3.0-oauth-drive"></script>
-    <script>
-      if (window.SRTheme && window.SRTheme.bindToggle) {
-        window.SRTheme.bindToggle(".theme-toggle");
-      }
-      (function syncSidebarThemeHint() {
-        function updateHint() {
-          var hint = document.getElementById("sidebar-theme-hint");
-          if (!hint) return;
-          var theme = (window.SRTheme && window.SRTheme.get) ? window.SRTheme.get() : (document.documentElement.dataset.theme || "dark");
-          hint.textContent = theme === "light" ? "Clair" : "Sombre";
-        }
-        updateHint();
-        window.addEventListener("sr-theme-change", updateHint);
-      })();
-    </script>
+    <script src="js/admin/theme-hint.js?v=1"></script>
   </body>
 </html>

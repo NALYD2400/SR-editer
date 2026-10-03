@@ -9,6 +9,8 @@ window.SR_CONFIG = {
   discordRulesUrl: "https://discord.gg/gNQwHGMRdT",
   updateManifestUrl: "/update.json",
   demoMode: false,
+  // Abonnements ouverts à tous (passage Stripe en live). Sinon : testeurs + équipe.
+  checkoutOpen: false,
   // URL de secours uniquement ; le site charge normalement updateManifestUrl.
   downloadUrl: "https://github.com/NALYD2400/SR-editer/releases/download/0.7.1/SR.Editer_0.7.1_x64-setup.exe"
 };
