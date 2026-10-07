@@ -440,6 +440,7 @@
       releases: "releases",
       activity: "audit",
       audit: "audit",
+      security: "audit",
       system: "system",
       team: "team",
       pulse: "console",
@@ -2647,6 +2648,84 @@
     }
   }
 
+  function syncSecurityCounts(filteredCount) {
+    const countEl = document.getElementById("security-count");
+    const labelEl = document.getElementById("security-count-label");
+    const total = currentSecurityRows.length;
+    const showingFiltered = typeof filteredCount === "number" && (securityFilter !== "all" || securitySearch);
+    if (countEl) countEl.textContent = showingFiltered ? `${filteredCount}` : String(total);
+    if (labelEl) {
+      if (showingFiltered) labelEl.textContent = `sur ${total}`;
+      else labelEl.textContent = total === 1 ? "anomalie interceptée" : "anomalies interceptées";
+    }
+  }
+
+  function renderSecurityTable() {
+    const tbody = document.getElementById("security-tbody");
+    if (!tbody) return;
+
+    let filtered = currentSecurityRows;
+    if (securityFilter !== "all") {
+      filtered = filtered.filter((row) => row.severity === securityFilter);
+    }
+    if (securitySearch) {
+      filtered = filtered.filter((row) => [
+        row.event_type,
+        row.actor_email,
+        row.ip_address,
+        row.origin,
+        JSON.stringify(row.details || {}),
+      ].map((v) => String(v || "").toLowerCase()).join(" ").includes(securitySearch));
+    }
+
+    syncSecurityCounts(filtered.length);
+
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Aucun événement de sécurité correspondant.</td></tr>';
+      return;
+    }
+
+    const severityLabels = { critical: "🚨 Critique", warning: "⚠️ Avertissement", info: "ℹ️ Info" };
+    const severityTones = { critical: "danger", warning: "update", info: "create" };
+    tbody.innerHTML = filtered.map((row) => {
+      const tone = severityTones[row.severity] || "update";
+      const details = row.details && Object.keys(row.details).length ? JSON.stringify(row.details) : "";
+      const origin = [row.origin, row.ip_address].filter(Boolean).join(" · ") || "—";
+      return `
+        <tr class="audit-row is-${tone}">
+          <td class="col-date" data-label="Date">
+            <span class="audit-date">${escapeHtml(formatActivityShortTime(row.created_at))}</span>
+          </td>
+          <td class="col-tone" data-label="Sévérité">
+            <span class="audit-tone-pill is-${tone}">${escapeHtml(severityLabels[row.severity] || row.severity || "—")}</span>
+          </td>
+          <td class="col-action" data-label="Événement">
+            <code class="audit-action-key">${escapeHtml(row.event_type || "—")}</code>
+          </td>
+          <td class="col-admin" data-label="Utilisateur">${escapeHtml(row.actor_email || "anonyme")}</td>
+          <td class="col-target" data-label="Origine">
+            <code class="audit-target" title="${escapeHtml(details)}">${escapeHtml(origin)}</code>
+            ${details ? `<code class="audit-target">${escapeHtml(details.slice(0, 160))}</code>` : ""}
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  async function loadSecurity() {
+    const tbody = document.getElementById("security-tbody");
+    if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-state">Chargement…</td></tr>';
+    try {
+      const data = await adminRequest("security-list");
+      currentSecurityRows = data.rows || [];
+      renderSecurityTable();
+    } catch (reason) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-state">${escapeHtml(String(reason))}</td></tr>`;
+      syncSecurityCounts(0);
+    }
+  }
+
   async function loadSystem() {
     const checks = document.getElementById("system-checks");
     const diagDb = document.getElementById("diag-db");
@@ -3216,7 +3295,7 @@
   });
 
   function loadPanel(panelId) {
-    const loaders = { overview: loadDashboard, users: refreshUsers, subscriptions: loadSubscriptions, coupons: loadCoupons, support: loadSupport, contacts: loadContacts, releases: loadReleases, activity: loadActivity, audit: loadAudit, system: loadSystem, team: loadTeam, pulse: loadPulseStats, library: loadLibrary };
+    const loaders = { overview: loadDashboard, users: refreshUsers, subscriptions: loadSubscriptions, coupons: loadCoupons, support: loadSupport, contacts: loadContacts, releases: loadReleases, activity: loadActivity, audit: loadAudit, security: loadSecurity, system: loadSystem, team: loadTeam, pulse: loadPulseStats, library: loadLibrary };
     return loaders[panelId]?.();
   }
 

@@ -9478,7 +9478,8 @@ html[data-theme="light"] #panel-activity .filter-tab.is-active {
   font-size: 11px;
 }
 
-#panel-audit .audit-tone-pill {
+#panel-audit .audit-tone-pill,
+#panel-security .audit-tone-pill {
   display: inline-flex;
   align-items: center;
   min-height: 22px;
@@ -9493,19 +9494,22 @@ html[data-theme="light"] #panel-activity .filter-tab.is-active {
   white-space: nowrap;
 }
 
-#panel-audit .audit-tone-pill.is-create {
+#panel-audit .audit-tone-pill.is-create,
+#panel-security .audit-tone-pill.is-create {
   border-color: color-mix(in srgb, #3ecf8e 40%, var(--border));
   background: color-mix(in srgb, #3ecf8e 12%, transparent);
   color: #3ecf8e;
 }
 
-#panel-audit .audit-tone-pill.is-update {
+#panel-audit .audit-tone-pill.is-update,
+#panel-security .audit-tone-pill.is-update {
   border-color: color-mix(in srgb, #60a5fa 40%, var(--border));
   background: color-mix(in srgb, #60a5fa 12%, transparent);
   color: #93c5fd;
 }
 
-#panel-audit .audit-tone-pill.is-danger {
+#panel-audit .audit-tone-pill.is-danger,
+#panel-security .audit-tone-pill.is-danger {
   border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
   background: color-mix(in srgb, var(--danger) 12%, transparent);
   color: color-mix(in srgb, var(--danger) 85%, #fff);
