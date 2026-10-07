@@ -1272,16 +1272,23 @@ html[data-theme="light"] .sidebar-footer .sidebar-theme-icon {
   cursor: pointer;
 }
 
+/* .btn ajoute 15px de padding : sur 32px il ne restait rien pour l'icône. */
+.btn.btn-menu-mobile {
+  padding: 0;
+}
+
 .btn-menu-mobile svg {
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
 }
 
-@media (max-width: 768px) {
+/* Sous 1024px, la barre latérale (260px) écrasait le contenu : elle passe en tiroir. */
+@media (max-width: 1024px) {
   .admin-shell {
     flex-direction: column;
   }
-  
+
   .admin-sidebar {
     position: fixed;
     top: 0;
@@ -1300,7 +1307,9 @@ html[data-theme="light"] .sidebar-footer .sidebar-theme-icon {
   .btn-menu-mobile {
     display: flex !important;
   }
-  
+}
+
+@media (max-width: 768px) {
   .admin-content {
     padding: 24px 16px;
     gap: 24px;
@@ -2391,6 +2400,14 @@ html[data-theme="light"] .panel-card {
   border-radius: 10px;
   color: var(--text-muted);
   font-size: 12px;
+}
+
+/* Dans un tableau, display: grid annule le colspan : le message restait dans la 1re colonne. */
+td.empty-state {
+  display: table-cell;
+  height: 94px;
+  text-align: center;
+  vertical-align: middle;
 }
 
 .diagnostic-grid {
