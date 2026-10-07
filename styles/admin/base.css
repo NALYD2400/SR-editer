@@ -8,6 +8,12 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Accepte la transition lancée par les pages du site, sinon Chrome l'annule
+   avec « InvalidStateError: Transition was aborted ». */
+@view-transition {
+  navigation: auto;
+}
+
 body {
   margin: 0;
   min-height: 100vh;
